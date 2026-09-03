@@ -116,11 +116,31 @@ no un detalle.
 
 ## 5. El dominio
 
-En el panel de Cloudflare → Workers & Pages → `tecnia-plataforma` → Settings →
-Domains & Routes → **Add custom domain**: `centecnologia.com.mx` y
-`www.centecnologia.com.mx`.
+**Estado al 3-sep-2026: pendiente, y por una razón concreta.**
+`centecnologia.com.mx` ya tiene los nameservers de Cloudflare
+(`val.ns.cloudflare.com`, `finley.ns.cloudflare.com`), pero la zona **no está
+en la cuenta desde la que se despliega** (`campanaeducativanacional@gmail.com`,
+id `226aa1ea…`). Cloudflare lo dice sin rodeos: «The zone
+"centecnologia.com.mx" does not exist on your account» (código 10083). Y el
+dominio todavía no resuelve a ninguna IP.
 
-Cloudflare crea los registros DNS solo. No hace falta tocar `wrangler.jsonc`.
+Hay dos caminos:
+
+1. **Añadir el sitio a esta cuenta**: panel de Cloudflare → *Add a site* →
+   `centecnologia.com.mx`. Como los nameservers ya apuntan a Cloudflare, la
+   activación es rápida (hay que comprobar que los que asigne coinciden con
+   los que tiene puestos el registrador).
+2. **Desplegar desde la cuenta que ya tenga la zona**: `npx wrangler login`
+   con esa cuenta y volver a `npm run deploy:cf`.
+
+Con la zona en su sitio, se descomenta el bloque `routes` de `wrangler.jsonc`
+y `wrangler deploy` crea los registros DNS y el certificado solo.
+
+> **Cuidado, esto costó una caída de varios minutos.** Al declarar `routes`,
+> wrangler **apaga el subdominio `workers.dev`**. Si el paso de dominios falla
+> después —como pasó—, el sitio se queda sin ninguna dirección. Por eso
+> `wrangler.jsonc` lleva `"workers_dev": true` explícito: déjalo puesto hasta
+> haber comprobado que el dominio responde.
 
 ---
 
