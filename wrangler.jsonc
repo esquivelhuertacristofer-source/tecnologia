@@ -15,7 +15,15 @@
  */
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "tecnia-plataforma",
+  /*
+   * TIENE que coincidir con el nombre de la aplicación en Cloudflare Workers
+   * Builds, que es `tecnologia`. Si no coincide, `wrangler deploy` publica en
+   * un Worker distinto del que está conectado al repositorio: la construcción
+   * sale en verde, el panel dice que se desplegó, y el sitio que mira la gente
+   * no cambia. El propio panel lo avisa («Update wrangler.jsonc in your repo to
+   * keep settings consistent»), y ese aviso es fácil de cerrar sin leerlo.
+   */
+  "name": "tecnologia",
   "main": ".open-next/worker.js",
   // Tiene que ser 2024-09-23 o posterior para el adaptador; y 2025-08-16 o
   // posterior para que el SDK de Sentry pueda enviar (necesita `https.request`).
