@@ -38,6 +38,27 @@
   "images": {
     "binding": "IMAGES"
   },
+  /*
+   * EL DOMINIO, CUANDO LA ZONA ESTÉ EN ESTA CUENTA (3-sep-2026).
+   *
+   * `centecnologia.com.mx` ya apunta a Cloudflare (val.ns / finley.ns), pero
+   * la zona NO está en la cuenta campanaeducativanacional@gmail.com, que es
+   * desde la que se despliega: el intento devolvió «Can't infer zone from
+   * route [10082]». O se mueve la zona a esta cuenta, o se despliega desde la
+   * cuenta que tenga la zona.
+   *
+   * Y una advertencia comprada cara: al declarar `routes`, wrangler APAGA el
+   * subdominio workers.dev. Como el paso de dominios falló después, el sitio
+   * se quedó sin ninguna dirección durante unos minutos. Por eso
+   * `workers_dev` está explícito aquí abajo: cuando se añadan las rutas, hay
+   * que dejarlo en `true` hasta comprobar que el dominio responde.
+   *
+   * "routes": [
+   *   { "pattern": "centecnologia.com.mx", "custom_domain": true },
+   *   { "pattern": "www.centecnologia.com.mx", "custom_domain": true }
+   * ],
+   */
+  "workers_dev": true,
   "observability": {
     "enabled": true
   },
