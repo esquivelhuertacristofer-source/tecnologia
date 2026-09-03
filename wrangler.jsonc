@@ -1,0 +1,53 @@
+/**
+ * Worker de la plataforma (Tecnia · CEN) — centecnologia.com.mx
+ *
+ * Sirve todo el sitio. Los ficheros de `public/` viajan como Workers Assets
+ * salvo los 238 videos: pesan 4,46 GB y el límite de Assets son 25 MiB por
+ * archivo (30 de ellos lo pasan). Los videos viven en R2 y los sirve
+ * `src/app/assets/[...ruta]/route.ts`, al que llegan porque Assets sólo
+ * responde por lo que existe y deja pasar el resto. Ver DESPLIEGUE-CLOUDFLARE.md.
+ *
+ * OJO CON LAS `vars`: las que empiezan por NEXT_PUBLIC_ las incrusta `next
+ * build` en el paquete del navegador, así que lo que vale es su valor EN EL
+ * MOMENTO DE CONSTRUIR (`.env.local` aquí, variables del entorno en CI). Las de
+ * aquí abajo son la misma cosa para el código de servidor y una red de
+ * seguridad si alguien construye sin `.env.local`.
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tecnia-plataforma",
+  "main": ".open-next/worker.js",
+  // Tiene que ser 2024-09-23 o posterior para el adaptador; y 2025-08-16 o
+  // posterior para que el SDK de Sentry pueda enviar (necesita `https.request`).
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    // El guion `scripts/cloudflare/medios.mjs` aparta los .mp4 antes de construir.
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "r2_buckets": [
+    {
+      "binding": "MEDIOS",
+      "bucket_name": "tecnia-medios"
+    }
+  ],
+  // Optimización de imágenes de next/image. Si la cuenta no tiene Images
+  // habilitado, quita este bloque: OpenNext lo detecta y sirve el PNG original
+  // sin optimizar (más pesado, pero nada se rompe).
+  "images": {
+    "binding": "IMAGES"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "NEXT_PUBLIC_DEMO_MODE": "0",
+    "NEXT_PUBLIC_APP_URL": "https://centecnologia.com.mx",
+    "NEXT_PUBLIC_SUPABASE_URL": "https://tnobteemrdhcqqmjwxbt.supabase.co",
+    // Llave PUBLICABLE: viaja al navegador por diseño, sola no puede leer nada
+    // que las políticas RLS no permitan. La llave SECRETA no está aquí ni debe
+    // estarlo: no la usa ningún archivo de `src/`.
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_5zMB20mO6lA495W8r-GX_Q_kEwkBU_W"
+  }
+}

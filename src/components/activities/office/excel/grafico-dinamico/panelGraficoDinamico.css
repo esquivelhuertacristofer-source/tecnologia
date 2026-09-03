@@ -1,0 +1,67 @@
+/**
+ * `Panel.tsx` de `of-excel-grafico-dinamico` (bloques 51 y 52).
+ *
+ * Mismo molde que `panelDinamica.css`, al lado —éste no la redefine, sólo
+ * añade lo que sus cuatro secciones nuevas necesitan y que `.pdn-*` no
+ * tenía: un botón de mes que se ve PULSADO (la gracia entera de la
+ * segmentación frente a un filtro escondido) y una lista de series con su
+ * frase de «trazada sobre N puntos» debajo.
+ */
+
+.pgd {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.82rem;
+}
+
+.pgd-meses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pgd-mes {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 999px;
+  background: #fff;
+  padding: 5px 12px;
+  font-size: 0.76rem;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.pgd-mes:hover {
+  background: rgba(31, 95, 184, 0.12);
+}
+
+/* El botón pulsado se ve pulsado: es literalmente lo que la clase enseña que
+   un filtro de tabla no hace. */
+.pgd-mes.es-activo {
+  background: #1f5fb8;
+  border-color: #1f5fb8;
+  color: #fff;
+  font-weight: 700;
+}
+
+.pgd-series {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pgd-serie {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pgd-n {
+  margin: 0;
+  padding-left: 2px;
+  font-size: 0.74rem;
+  opacity: 0.72;
+}

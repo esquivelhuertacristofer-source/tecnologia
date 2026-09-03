@@ -1,0 +1,111 @@
+/**
+ * `PanelValidacion.tsx` — validación de datos, buscar, ir a y reemplazar,
+ * para `of-excel-validacion` (bloques 32 y 39).
+ *
+ * Mismo molde que `panelTablas.css` (`of-excel-tablas-y-filtros`): el panel
+ * entra por `panelFijo`, que ya envuelve el cuerpo en `.txtw-panel-cuerpo`
+ * —márgenes y fondo son de ahí—, así que aquí sólo se ordenan las secciones.
+ */
+
+.pva {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.82rem;
+}
+
+.pva-sel {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(15, 108, 189, 0.08);
+  color: inherit;
+}
+
+.pva-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.pva-seccion:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.pva-seccion h4 {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
+
+.pva-ayuda {
+  margin: 0;
+  font-size: 0.76rem;
+  opacity: 0.7;
+}
+
+.pva-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.pva-fila button,
+.pva-seccion > button {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: #fff;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.pva-fila button:hover {
+  background: rgba(15, 108, 189, 0.1);
+}
+
+.pva-fila button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pva-fila select,
+.pva-fila input[type='text'],
+.pva-fila input[type='number'],
+.pva-seccion > input[type='text'] {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.78rem;
+  min-width: 0;
+}
+
+.pva-fila input[type='number'] {
+  width: 80px;
+}
+
+.pva-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+}
+
+.pva-resultado {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(52, 211, 153, 0.12);
+  font-size: 0.78rem;
+}
+
+.pva-resultado.es-error {
+  background: rgba(248, 113, 113, 0.12);
+}

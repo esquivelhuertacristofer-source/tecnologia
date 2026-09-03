@@ -1,0 +1,621 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `n4-real-o-generado` — «Tecnia Muro», el visor de publicaciones.
+
+   Prefijo `rog-` (real o generado) para no chocar con ninguna otra hoja de
+   estilos del temario. SIN 3D a propósito: no hay mueble, ni mesa, ni escena;
+   esto es una app de verdad renderizada en DOM plano, color pleno y
+   controles integrados en la propia tarjeta de la publicación.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.rog-sala {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  color: #eef2ff;
+}
+
+@media (min-width: 960px) {
+  .rog-sala {
+    grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+/* ── barra superior ─────────────────────────────────────────────────────── */
+
+.rog-barra {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0f172a, #1e1b4b);
+  border: 1px solid rgba(148, 163, 255, 0.25);
+}
+
+.rog-barra-marca {
+  font-weight: 900;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  background: linear-gradient(120deg, #22d3ee, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.rog-barra-fase {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(34, 211, 238, 0.14);
+  color: #67e8f9;
+  border: 1px solid rgba(103, 232, 249, 0.35);
+}
+
+.rog-barra-paso {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #cbd5f5;
+}
+
+.rog-barra-marcador {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #a5b4fc;
+}
+
+.rog-barra-marcador strong {
+  color: #fde68a;
+  font-size: 0.95rem;
+}
+
+.rog-barra-salir {
+  border: 1px solid rgba(226, 232, 255, 0.3);
+  background: rgba(15, 23, 42, 0.6);
+  color: #e2e8ff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 7px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.rog-barra-salir:hover {
+  background: rgba(30, 41, 59, 0.9);
+}
+
+/* ── panel lateral: Bit + herramientas + objetivo ───────────────────────── */
+
+.rog-lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rog-bit {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 255, 0.2);
+}
+
+.rog-bit-retrato {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 2px solid #22d3ee;
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.15);
+}
+
+.rog-bit-globo {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: #e2e8ff;
+}
+
+.rog-bit-globo strong {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #67e8f9;
+  margin-bottom: 2px;
+}
+
+.rog-objetivo {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px dashed rgba(148, 163, 255, 0.3);
+  font-size: 0.85rem;
+  color: #cbd5f5;
+}
+
+.rog-objetivo strong {
+  display: block;
+  color: #fbbf24;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.rog-herramientas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rog-herramienta-estado {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(148, 163, 255, 0.15);
+  font-size: 0.8rem;
+  color: #94a3c8;
+}
+
+.rog-herramienta-estado.es-activa {
+  color: #eef2ff;
+  border-color: rgba(52, 211, 153, 0.4);
+  background: rgba(52, 211, 153, 0.1);
+}
+
+.rog-herramienta-icono {
+  width: 26px;
+  text-align: center;
+}
+
+.rog-herramienta-candado {
+  margin-left: auto;
+  opacity: 0.6;
+}
+
+/* ── el visor: la tarjeta de la publicación ─────────────────────────────── */
+
+.rog-visor {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rog-tarjeta {
+  border-radius: 20px;
+  overflow: hidden;
+  background: #0b1226;
+  border: 1px solid rgba(148, 163, 255, 0.22);
+  box-shadow: 0 18px 40px -20px rgba(2, 6, 23, 0.8);
+}
+
+.rog-tarjeta-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.rog-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.95rem;
+  color: #0b1226;
+  flex: none;
+  background: linear-gradient(145deg, var(--acento), var(--acento-deep));
+}
+
+.rog-cabecera-textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rog-cabecera-nombre {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: #f8fafc;
+}
+
+.rog-verificada {
+  color: #38bdf8;
+  font-size: 0.85rem;
+}
+
+.rog-cabecera-meta {
+  font-size: 0.75rem;
+  color: #8b96c4;
+}
+
+.rog-tarjeta-texto {
+  margin: 0;
+  padding: 0 16px 12px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #e2e8ff;
+}
+
+/* ── el marcador de imagen (nunca un archivo) ───────────────────────────── */
+
+.rog-imagen {
+  position: relative;
+  margin: 0 16px 12px;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  padding: 14px;
+  background: linear-gradient(155deg, var(--acento) 0%, var(--acento-deep) 130%);
+}
+
+.rog-imagen-marco {
+  position: absolute;
+  inset: 8px;
+  border: 2px dashed rgba(11, 18, 38, 0.4);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.rog-imagen-emoji {
+  font-size: 2.6rem;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
+}
+
+.rog-imagen-desc {
+  margin: 0;
+  max-width: 30ch;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(11, 18, 38, 0.85);
+}
+
+.rog-imagen-etiqueta {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(11, 18, 38, 0.55);
+  color: #f8fafc;
+}
+
+/* ── barra de acciones de la publicación (herramientas) ─────────────────── */
+
+.rog-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 16px 14px;
+}
+
+.rog-accion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 255, 0.28);
+  background: rgba(30, 41, 59, 0.55);
+  color: #cbd5f5;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.rog-accion:hover {
+  background: rgba(51, 65, 108, 0.7);
+}
+
+.rog-accion.es-abierta {
+  background: rgba(34, 211, 238, 0.16);
+  border-color: rgba(34, 211, 238, 0.5);
+  color: #67e8f9;
+}
+
+/* ── paneles emergentes (pistas, cuenta, cruce): integrados, no flotantes ── */
+
+.rog-panel {
+  margin: 0 16px 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(148, 163, 255, 0.22);
+  font-size: 0.82rem;
+  color: #dfe4ff;
+}
+
+.rog-panel-titulo {
+  margin: 0 0 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3c8;
+}
+
+.rog-pistas-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.rog-pistas-lista li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  line-height: 1.4;
+}
+
+.rog-pistas-lista li::before {
+  content: '🔎';
+  flex: none;
+}
+
+.rog-panel-vacio {
+  margin: 0;
+  color: #8b96c4;
+  font-style: italic;
+}
+
+.rog-cuenta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 14px;
+}
+
+.rog-cuenta-dato {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rog-cuenta-dato span {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7c88b8;
+}
+
+.rog-cuenta-dato strong {
+  font-size: 0.85rem;
+  color: #f1f5f9;
+}
+
+/* ── veredicto: los tres botones integrados en la tarjeta ───────────────── */
+
+.rog-veredicto {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 4px 16px 16px;
+}
+
+.rog-veredicto-boton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+  font-weight: 800;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
+  color: #0b1226;
+}
+
+.rog-veredicto-boton:hover {
+  transform: translateY(-2px);
+}
+
+.rog-veredicto-boton.es-compartir {
+  background: #34d399;
+}
+
+.rog-veredicto-boton.es-no-compartir {
+  background: #f87171;
+}
+
+.rog-veredicto-boton.es-no-seguro {
+  background: #fbbf24;
+}
+
+.rog-veredicto-boton.es-mal {
+  animation: rog-sacude 0.4s ease;
+  filter: brightness(0.7) saturate(1.4);
+  border-color: #fff;
+}
+
+.rog-veredicto-boton:disabled {
+  opacity: 0.55;
+  cursor: default;
+  transform: none;
+}
+
+@keyframes rog-sacude {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* ── retroalimentación tras responder ────────────────────────────────────── */
+
+.rog-feedback {
+  margin: 0 16px 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  border: 1px solid;
+}
+
+.rog-feedback.es-bien {
+  background: rgba(52, 211, 153, 0.12);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: #d1fae5;
+}
+
+.rog-feedback.es-mal {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #fee2e2;
+}
+
+/* ── toast de transición de fase ─────────────────────────────────────────── */
+
+.rog-toast {
+  grid-column: 1 / -1;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: linear-gradient(120deg, rgba(167, 139, 250, 0.22), rgba(34, 211, 238, 0.22));
+  border: 1px solid rgba(167, 139, 250, 0.4);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f5f3ff;
+  text-align: center;
+}
+
+/* ── pantalla final ──────────────────────────────────────────────────────── */
+
+.rog-final {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 40px 24px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #0f172a, #1e1b4b 70%);
+  border: 1px solid rgba(148, 163, 255, 0.3);
+}
+
+.rog-final-insignia {
+  width: 92px;
+  height: 92px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.6rem;
+  background: radial-gradient(circle at 35% 30%, #fde68a, #f59e0b 70%);
+  box-shadow: 0 0 0 8px rgba(251, 191, 36, 0.18);
+}
+
+.rog-final-nombre {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fbbf24;
+}
+
+.rog-final-titulo {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #f8fafc;
+}
+
+.rog-final-detalle {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #cbd5f5;
+}
+
+.rog-final-resumen {
+  display: flex;
+  gap: 22px;
+  margin: 10px 0;
+}
+
+.rog-final-dato {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.rog-final-dato span {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3c8;
+}
+
+.rog-final-dato strong {
+  font-size: 1.05rem;
+  color: #f8fafc;
+}
+
+.rog-final-botones {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.rog-final-boton {
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: none;
+}
+
+.rog-final-boton.es-primario {
+  background: linear-gradient(120deg, #22d3ee, #a78bfa);
+  color: #0b1226;
+}
+
+.rog-final-boton.es-fantasma {
+  background: transparent;
+  border: 1px solid rgba(226, 232, 255, 0.35);
+  color: #e2e8ff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rog-veredicto-boton.es-mal {
+    animation: none;
+  }
+}

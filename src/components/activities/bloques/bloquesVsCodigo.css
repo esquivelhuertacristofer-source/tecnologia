@@ -1,0 +1,74 @@
+/*
+ * `n6-bloques-vs-codigo` — la cara de texto y su consola.
+ *
+ * `.blq-escenario` es `flex: 0 0 auto` (ventanaBloques.css:524): se ajusta a
+ * su contenido. Esta clase le da el ancho a su PROPIA raíz dentro del hueco,
+ * sin tocar `ventanaBloques.css` — lo comparten ocho actividades, y
+ * `SalaBloques` tampoco pasa `className` a `VentanaBloques`, así que
+ * cualquier regla escrita desde `.blqs-marco` caería también sobre el
+ * micro:bit y el robot.
+ */
+
+.bvc-cara {
+  width: min(46vw, 560px);
+  flex-shrink: 0;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bvc-consola {
+  flex: 0 0 auto;
+  max-height: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid #2b3a7a;
+  background: #070c22;
+  overflow: hidden;
+}
+
+.bvc-consola-titulo {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7dd3fc;
+}
+
+.bvc-consola-vacia {
+  margin: 0;
+  font-size: 13px;
+  color: #56699f;
+}
+
+.bvc-consola-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SF Mono', Menlo, 'DejaVu Sans Mono', monospace;
+  font-size: 13px;
+  color: #dce7ff;
+}
+
+.bvc-consola-lista li {
+  padding: 1px 0;
+  border-bottom: 1px solid rgba(86, 105, 159, 0.25);
+}
+.bvc-consola-lista li:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 900px) {
+  .bvc-cara {
+    width: min(60vw, 420px);
+  }
+}

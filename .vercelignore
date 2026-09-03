@@ -1,0 +1,38 @@
+# Lo que NO sube a Vercel.
+#
+# ⚠ OJO AL PONER ALGO AQUÍ: en cuanto existe este archivo, Vercel deja de leer
+# `.gitignore` y usa SÓLO éste. Por eso las tres primeras reglas —secretos,
+# dependencias y build— están repetidas de `.gitignore`: sin ellas, crear este
+# archivo habría subido `.env.local` con la llave de servicio de Supabase dentro.
+# Es la clase de regresión que no avisa: el despliegue funciona igual de bien.
+
+# ── SECRETOS. Nunca, bajo ningún concepto. ──
+.env
+.env.*
+!.env.local.example
+
+# ── Lo que se reconstruye allá ──
+node_modules/
+.next/
+out/
+coverage/
+
+# ── El estudio de video: proyecto aparte, con su package.json y su tsconfig ──
+# Además ROMPÍA el despliegue: importa `remotion`, que sólo está instalado en su
+# propio sub-proyecto, y el chequeo de tipos de la app lo arrastraba dentro.
+video-explicativo/
+
+# ── Respaldos y borradores ──
+_backups/
+scratchpad/
+*.bak
+*.bak2
+*.bak3
+
+# ── Scripts de trabajo (ComfyUI, TTS, sondas). No corren en el servidor. ──
+scripts/
+
+# ── Documentación interna y migraciones ──
+*.md
+docs/
+supabase/

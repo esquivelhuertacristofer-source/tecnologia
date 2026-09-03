@@ -1,0 +1,365 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `n9-ia-copiloto` — el reporte del Club de Robótica.
+
+   Se apoya en `salaIA.css` (variables --tia-*, `.tia-sala`, `.tia-portada`,
+   `.tia-boton`) y añade sólo lo propio: el armazón invertido de
+   `VentanaAsistente` (mismo truco que `.gia-asis` en `generaConIa.css`,
+   escrito aquí de nuevo porque esa hoja es de otra clase), las dos tarjetas
+   de «tú vs. copiloto» de los encargos 0–1, la caja de prueba con datos
+   reales de los encargos 2–4, la hoja de resultados de los encargos 5–6, y
+   las tarjetas de clasificación del cierre.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Invertir el armazón: hilo estrecho, panel ancho ─────────────────────── */
+
+.iac-asis .asis-cuerpo {
+  align-items: stretch;
+}
+.iac-asis .asis-hilo {
+  flex: 0 0 clamp(220px, 26%, 300px);
+  max-width: 300px;
+  border-right: 2px solid #16416a;
+  padding-right: 12px;
+}
+.iac-asis .asis-panel {
+  flex: 1 1 auto;
+  max-width: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+@media (max-width: 900px) {
+  .iac-asis .asis-cuerpo {
+    flex-direction: column;
+  }
+  .iac-asis .asis-hilo {
+    flex: 0 0 180px;
+    max-width: none;
+    border-right: none;
+    border-bottom: 2px solid #16416a;
+    padding-right: 0;
+    padding-bottom: 10px;
+  }
+}
+
+/* ── El panel ─────────────────────────────────────────────────────────────── */
+
+.iac-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+  color: var(--tia-texto);
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.iac-encargo-cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 2px solid var(--tia-morado);
+  background: linear-gradient(160deg, #241a3a, #150f24);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--tia-morado) 26%, transparent);
+}
+.iac-encargo-numero {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e3d8ff;
+}
+.iac-encargo-situacion {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 750;
+  color: #ffffff;
+}
+
+/* ── Los dos caminos: «hazlo tú» contra «pídele al copiloto» ─────────────── */
+
+.iac-caminos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.iac-camino {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  color: #eaf4ff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.iac-camino:hover:not(:disabled) {
+  border-color: var(--tia-cian);
+}
+.iac-camino:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.iac-camino:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.iac-camino-titulo {
+  font-size: 13.5px;
+  font-weight: 900;
+}
+.iac-camino-detalle {
+  font-size: 11.5px;
+  font-weight: 650;
+  color: var(--tia-texto-suave);
+}
+
+/* ── La caja de prueba: datos reales, botón «Probar», resultado ──────────── */
+
+.iac-prueba {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid #1c4b76;
+  background: radial-gradient(120% 90% at 50% -10%, rgba(167, 139, 250, 0.1), transparent 60%),
+    linear-gradient(170deg, #0a2340, #061a2e);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.iac-prueba-titulo {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tia-cian);
+}
+.iac-prueba-datos {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #050e1a;
+  border: 1px dashed #375f85;
+  color: #cfe6ff;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.iac-prueba-boton {
+  align-self: flex-start;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--tia-morado);
+  background: linear-gradient(165deg, var(--tia-morado), var(--tia-morado-honda));
+  color: #ffffff;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.iac-prueba-boton:hover {
+  filter: brightness(1.08);
+}
+.iac-prueba-boton:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.iac-prueba-resultado {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border-left: 6px solid var(--tia-morado);
+  background: #082238;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Los veredictos — reusados por código y por texto ─────────────────────── */
+
+.iac-veredictos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.iac-veredicto {
+  flex: 1 1 140px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  color: #eaf4ff;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.iac-veredicto:hover:not(:disabled) {
+  border-color: var(--tia-ambar);
+}
+.iac-veredicto:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+.iac-veredicto:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.iac-veredicto.es-aceptar {
+  border-color: var(--tia-verde);
+}
+.iac-veredicto.es-corregir {
+  border-color: var(--tia-rosa);
+}
+
+/* ── La hoja de resultados reales — encargos 5 y 6 ────────────────────────── */
+
+.iac-hoja {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid var(--tia-ambar);
+  background: linear-gradient(160deg, #2b2008, #17110a);
+}
+.iac-hoja-titulo {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffe6b3;
+}
+.iac-hoja-dato {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 750;
+  color: #ffffff;
+}
+.iac-hoja-nota {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  font-weight: 650;
+  color: var(--tia-texto-suave);
+}
+
+/* ── El cierre: clasificar tareas ─────────────────────────────────────────── */
+
+.iac-clasifica {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.iac-tarea {
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+}
+.iac-tarea.es-resuelta {
+  border-color: var(--tia-verde);
+}
+.iac-tarea-texto {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 750;
+  color: #eaf4ff;
+}
+.iac-tarea-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.iac-tarea-boton {
+  padding: 7px 12px;
+  border-radius: 10px;
+  border: 2px solid #2a6a9c;
+  background: #082238;
+  color: #cfe6ff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.iac-tarea-boton:hover:not(:disabled) {
+  border-color: var(--tia-cian);
+}
+.iac-tarea-boton:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.iac-tarea-boton.es-resuelta-copiloto,
+.iac-tarea-boton.es-resuelta-tu {
+  background: linear-gradient(165deg, var(--tia-verde), var(--tia-verde-honda));
+  border-color: var(--tia-verde);
+  color: #04241a;
+}
+.iac-tarea-boton:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.iac-tarea-porque {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--tia-rosa);
+}
+
+/* ── El cierre: reflexión ─────────────────────────────────────────────────── */
+
+.iac-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.iac-opcion {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  color: #eaf4ff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.iac-opcion:hover:not(:disabled) {
+  border-color: var(--tia-ambar);
+}
+.iac-opcion:disabled {
+  cursor: default;
+}
+.iac-opcion.es-correcta {
+  border-color: var(--tia-verde);
+  background: linear-gradient(165deg, #0b5137, #063526);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--tia-verde) 34%, transparent);
+}
+.iac-opcion.es-incorrecta {
+  border-color: var(--tia-rosa);
+  background: linear-gradient(165deg, #3a0b1c, #1e0410);
+}
+.iac-opcion:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.iac-opcion-porque {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  font-weight: 750;
+  color: var(--tia-texto-suave);
+}
+
+/* ── La marca de la frase falsa, dentro del hilo del chat ─────────────────── */
+
+.iac-asis .asis-parte[data-marca='senalada'] {
+  background: color-mix(in srgb, var(--tia-rosa) 24%, transparent);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--tia-rosa) 55%, transparent);
+}

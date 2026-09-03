@@ -1,0 +1,354 @@
+/*
+ * Tecnia Agenda — el calendario.
+ *
+ * Color pleno y saturado sobre fondo oscuro con drama de luz, misma familia
+ * que `ventanaMuro.css`, `ventanaCorreo.css` y `ventanaTablero.css`.
+ *
+ * Lo que esta hoja tiene que conseguir por encima de todo: que dos citas a la
+ * misma hora SE VEAN las dos. Por eso los bloques se posicionan en porcentaje
+ * dentro de la columna del día —`left` y `width` salen de los carriles que
+ * calcula `disponerDia`— y los solapados llevan borde ámbar.
+ *
+ * El marco (barra de título) llega con `VentanaBase`.
+ */
+
+.ta {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  background: radial-gradient(120% 100% at 70% 0%, #10233f 0%, #0a1527 55%, #050b16 100%);
+  color: #e9f1ff;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* ── barra superior ──────────────────────────────────────────────────────── */
+
+.ta-barra {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px;
+  background: #0b1c33;
+  border-bottom: 2px solid #1c3e63;
+}
+.ta-nav {
+  width: 30px;
+  height: 28px;
+  border: 2px solid #285079;
+  border-radius: 8px;
+  background: #12293f;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  color: #cfe2ff;
+  cursor: pointer;
+}
+.ta-nav:hover {
+  border-color: #38bdf8;
+  color: #fff;
+}
+.ta-barra-dia {
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.ta-barra-aviso {
+  font-size: 12px;
+  font-weight: 800;
+  color: #fbbf24;
+}
+.ta-vistas {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #12293f;
+}
+.ta-vista {
+  padding: 5px 15px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  color: #8fb0d6;
+  cursor: pointer;
+}
+.ta-vista.es-activa {
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  color: #04121f;
+}
+
+.ta-marco {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+}
+.ta-lienzo {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 12px;
+  overflow: auto;
+}
+.ta-panel {
+  flex: 0 0 250px;
+  min-height: 0;
+  padding: 14px;
+  border-left: 2px solid #1c3e63;
+  background: #081729;
+  overflow-y: auto;
+}
+
+/* ── vista de semana ─────────────────────────────────────────────────────── */
+
+.ta-semana {
+  display: grid;
+  grid-template-columns: 52px repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  min-height: 100%;
+}
+
+.ta-horas {
+  display: flex;
+  flex-direction: column;
+}
+.ta-horas-hueco {
+  flex: none;
+  height: 38px;
+}
+.ta-hora {
+  flex: 1;
+  padding-right: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #5d80a8;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ta-columna {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 2px solid #17334f;
+  border-radius: 10px;
+  background: #0a1b30;
+  overflow: hidden;
+}
+.ta-columna.es-hoy {
+  border-color: #38bdf8;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25) inset;
+}
+.ta-columna-cabecera {
+  flex: none;
+  height: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  border: 0;
+  border-bottom: 2px solid #17334f;
+  background: #0e2440;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+}
+button.ta-columna-cabecera {
+  cursor: pointer;
+}
+button.ta-columna-cabecera:hover {
+  background: #16375c;
+}
+.ta-columna-dia {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: #5d80a8;
+}
+.ta-columna-n {
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.ta-columna.es-hoy .ta-columna-n {
+  color: #38bdf8;
+}
+
+.ta-rejilla {
+  position: relative;
+  flex: 1;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+}
+.ta-franja {
+  flex: 1;
+  border-bottom: 1px solid rgba(28, 62, 99, 0.55);
+}
+
+.ta-bloque {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+  padding: 4px 6px;
+  border: 2px solid #4f46e5;
+  border-radius: 8px;
+  background: #312e81;
+  font: inherit;
+  font-size: 11px;
+  color: #eef2ff;
+  text-align: left;
+  cursor: default;
+}
+button.ta-bloque {
+  cursor: pointer;
+}
+button.ta-bloque:hover {
+  filter: brightness(1.15);
+}
+.ta-bloque.es-abierta {
+  border-color: #a5b4fc;
+  box-shadow: 0 0 18px rgba(165, 180, 252, 0.6);
+}
+/* Dos citas a la vez: borde ámbar en las dos. El dato se ve, no se explica. */
+.ta-bloque.es-solapada {
+  border-color: #f5a524;
+}
+.ta-bloque-hora {
+  font-weight: 900;
+  font-size: 10px;
+  color: #c7d2fe;
+  font-variant-numeric: tabular-nums;
+}
+.ta-bloque-titulo {
+  font-weight: 800;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ta-bloque-lugar,
+.ta-bloque-invitados {
+  font-size: 10px;
+  color: #c7d2fe;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── vista de mes ────────────────────────────────────────────────────────── */
+
+.ta-mes {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+.ta-mes-eti {
+  padding: 3px 0 6px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: #5d80a8;
+}
+.ta-casilla {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 84px;
+  padding: 5px;
+  border: 2px solid #17334f;
+  border-radius: 9px;
+  background: #0a1b30;
+}
+.ta-casilla.es-fuera {
+  opacity: 0.42;
+}
+.ta-casilla.es-hoy {
+  border-color: #38bdf8;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.22) inset;
+}
+.ta-casilla-n {
+  align-self: flex-start;
+  min-width: 22px;
+  padding: 1px 5px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  color: #9fbfe0;
+  cursor: default;
+  font-variant-numeric: tabular-nums;
+}
+button.ta-casilla-n {
+  cursor: pointer;
+}
+button.ta-casilla-n:hover {
+  background: #16375c;
+  color: #fff;
+}
+.ta-casilla.es-hoy .ta-casilla-n {
+  color: #38bdf8;
+}
+.ta-casilla-citas {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 0;
+}
+.ta-pastilla {
+  display: block;
+  width: 100%;
+  padding: 2px 6px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: #312e81;
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #eef2ff;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+}
+button.ta-pastilla {
+  cursor: pointer;
+}
+button.ta-pastilla:hover {
+  filter: brightness(1.15);
+}
+.ta-pastilla.es-abierta {
+  border-color: #a5b4fc;
+}
+.ta-pastilla.es-solapada {
+  border-color: #f5a524;
+}
+.ta-pastilla-hora {
+  font-weight: 900;
+  color: #c7d2fe;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 900px) {
+  .ta-panel {
+    flex-basis: 190px;
+  }
+  .ta-semana {
+    grid-template-columns: 42px repeat(7, minmax(0, 1fr));
+  }
+}

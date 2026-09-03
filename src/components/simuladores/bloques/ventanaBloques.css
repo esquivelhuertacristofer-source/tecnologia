@@ -1,0 +1,541 @@
+/*
+ * Tecnia Bloques — el editor.
+ *
+ * Fondo oscuro con drama de luz y color PLENO en las piezas: el editor de
+ * bloques de verdad es oscuro y sus bloques son bofetadas de color, y el pastel
+ * en este proyecto está rechazado tres veces.
+ *
+ * ── LO QUE CAMBIA RESPECTO AL EDITOR DE N4·U3 ─────────────────────────────
+ *
+ * Aquel vivía dentro del bisel de un monitor 3D: 588 x 310 px CLAVADOS, y 72 de
+ * sus 224 reglas colgaban de un ancestro `.arcade-n1` que sólo existe en la sala
+ * de N4. Fuera de esa sala el editor se veía sin estilo. Aquí no hay ni una
+ * medida fija ni un ancestro: la ventana llena lo que le den, y las tres
+ * actividades que no llevan 3D (`n6-programa-un-microbit`, `n6-reto-robot`,
+ * `n9-automatiza-tareas`) pueden montarla a pantalla completa.
+ *
+ * ── EL COLOR LO PONE LA ACTIVIDAD ─────────────────────────────────────────
+ *
+ * `--blq-color` llega por `style` desde la categoría de cada ficha. El idioma de
+ * color —movimiento cian, control ámbar, sensores verde— es de la actividad y no
+ * del armazón, porque en un constructor de flujos las categorías no son ésas.
+ * Lo que sí es del armazón es que el color sea PLENO y que la forma se lea.
+ */
+
+.blq {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: radial-gradient(120% 100% at 50% 0%, #123049 0%, #0a1b2b 60%, #06111d 100%);
+  color: #e8f4ff;
+  font: 400 14px/1.4 system-ui, sans-serif;
+  user-select: none;
+
+  --blq-color: #0ea5c6;
+  --blq-lienzo: #08202f;
+  --blq-paleta: #061c2a;
+  --blq-borde: rgba(34, 211, 238, 0.25);
+}
+
+/* ── barra de título ─────────────────────────────────────────────────────── */
+
+.blq-barra {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  background: linear-gradient(#0d3247, #0a2536);
+  border-bottom: 1px solid var(--blq-borde);
+}
+
+.blq-semaforo {
+  display: flex;
+  gap: 4px;
+}
+
+.blq-semaforo i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: block;
+}
+
+.blq-semaforo i.es-rojo {
+  background: #ef5350;
+}
+.blq-semaforo i.es-ambar {
+  background: #f5a524;
+}
+.blq-semaforo i.es-verde {
+  background: #4ade80;
+}
+
+.blq-marca {
+  font: 800 13px/1 system-ui, sans-serif;
+  letter-spacing: 0.4px;
+  color: #9fe8ff;
+}
+
+.blq-archivo {
+  margin-left: auto;
+  font: 600 11px/1 system-ui, sans-serif;
+  color: rgba(159, 232, 255, 0.55);
+}
+
+/* ── cuerpo ──────────────────────────────────────────────────────────────── */
+
+.blq-cuerpo {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+.blq-categorias {
+  flex: 0 0 116px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 5px;
+  background: #0a2334;
+  border-right: 1px solid var(--blq-borde);
+}
+
+.blq-categoria {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #cbe9f7;
+  font: 700 12px/1.1 system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.blq-categoria:hover {
+  background: rgba(34, 211, 238, 0.12);
+}
+
+.blq-categoria.es-activa {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+}
+
+/* La categoría que guarda la pieza que hace falta ahora late: es la ayuda que
+   evita que nadie se quede atorado buscando en la columna. */
+.blq-categoria.es-pide {
+  animation: blq-pide 1.6s ease-in-out infinite;
+}
+
+@keyframes blq-pide {
+  0%,
+  100% {
+    background: rgba(34, 211, 238, 0.06);
+  }
+  50% {
+    background: rgba(34, 211, 238, 0.26);
+  }
+}
+
+.blq-punto {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  background: var(--blq-color);
+}
+
+/* ── paleta ──────────────────────────────────────────────────────────────── */
+
+.blq-paleta {
+  flex: 0 0 210px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 10px;
+  overflow-y: auto;
+  background: var(--blq-paleta);
+  border-right: 1px solid var(--blq-borde);
+}
+
+.blq-paleta-vacia {
+  margin: 0;
+  color: rgba(159, 232, 255, 0.5);
+  font: 600 12px/1.3 system-ui, sans-serif;
+}
+
+/* ── las piezas: la forma es la lección ──────────────────────────────────── */
+
+/*
+ * El diente de abajo y la muesca de arriba. La pieza y el agujero salen del
+ * MISMO polígono declarado una vez, así que no pueden desalinearse; con imágenes
+ * serían dos dibujos que hay que mantener a juego.
+ */
+.blq-ficha.es-orden,
+.blq-bloque.es-orden > .blq-cabeza {
+  clip-path: polygon(
+    0 0,
+    12px 0,
+    16px 5px,
+    26px 5px,
+    30px 0,
+    100% 0,
+    100% calc(100% - 5px),
+    30px calc(100% - 5px),
+    26px 100%,
+    16px 100%,
+    12px calc(100% - 5px),
+    0 calc(100% - 5px)
+  );
+}
+
+/* Una condición es un hexágono porque sólo cabe en un agujero hexagonal: es la
+   manera de descubrir sin que nadie lo explique que una pregunta no es una
+   orden. */
+.blq-ficha.es-hexagono,
+.blq-bloque.es-hexagono > .blq-cabeza {
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0 50%);
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+/* El reportero es redondo: no contesta sí o no, contesta un número. */
+.blq-ficha.es-reportero {
+  border-radius: 999px;
+}
+
+.blq-ficha.es-sombrero,
+.blq-bloque.es-sombrero > .blq-cabeza {
+  border-radius: 14px 14px 4px 4px;
+}
+
+.blq-ficha {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 10px 13px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--blq-color);
+  color: #f2feff;
+  font: 800 12.5px/1.15 system-ui, sans-serif;
+  text-align: left;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+  cursor: grab;
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+.blq-ficha:hover {
+  filter: brightness(1.12);
+  transform: translateX(2px);
+}
+
+/* Elegida con un toque: la otra vía de encaje. El halo va POR DENTRO porque
+   `clip-path` recorta también la sombra de fuera y no se vería nada. */
+.blq-ficha.es-elegida {
+  box-shadow: inset 0 0 0 2px #ffffff, inset 0 0 14px rgba(255, 255, 255, 0.55);
+  filter: brightness(1.22) saturate(1.15);
+  transform: translateX(3px) scale(1.04);
+}
+
+/* ── el taller ───────────────────────────────────────────────────────────── */
+
+.blq-taller {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.blq-cabecera {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #0a2334;
+  border-bottom: 1px solid var(--blq-borde);
+}
+
+.blq-mando {
+  width: 30px;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e8f4ff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.blq-mando.es-correr {
+  border-color: #4ade80;
+  color: #bbf7d0;
+}
+
+.blq-mando.es-parar {
+  border-color: #ef5350;
+  color: #fecaca;
+}
+
+.blq-mando:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.blq-velocidad,
+.blq-ranura {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.35);
+  color: #e8f4ff;
+  font: 700 12px/1 system-ui, sans-serif;
+  padding: 4px 6px;
+}
+
+.blq-reto {
+  font: 700 12.5px/1.2 system-ui, sans-serif;
+  color: #9fe8ff;
+}
+
+.blq-estado {
+  margin-left: auto;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(74, 222, 128, 0.2);
+  color: #bbf7d0;
+  font: 800 10.5px/1 system-ui, sans-serif;
+  letter-spacing: 0.6px;
+}
+
+/* El aviso del tope de pasos. Ámbar y con sitio propio: no es un error del
+   alumno, es el programa contando lo que le pasa. */
+.blq-aviso {
+  margin: 0;
+  padding: 7px 12px;
+  background: rgba(245, 165, 36, 0.18);
+  border-bottom: 1px solid rgba(245, 165, 36, 0.45);
+  color: #fde3b0;
+  font: 600 12.5px/1.35 system-ui, sans-serif;
+}
+
+/* ── el lienzo ───────────────────────────────────────────────────────────── */
+
+.blq-lienzo {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 14px;
+  background: var(--blq-lienzo);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 18px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.blq-guion {
+  display: flex;
+  flex-direction: column;
+  min-width: 190px;
+}
+
+.blq-renglon {
+  display: flex;
+  flex-direction: column;
+}
+
+.blq-bloque {
+  display: flex;
+  flex-direction: column;
+  margin-top: -5px;
+}
+
+.blq-cabeza {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 13px;
+  border-radius: 4px;
+  background: var(--blq-color);
+  color: #f2feff;
+  font: 800 12.5px/1.15 system-ui, sans-serif;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* El bloque que se está ejecutando AHORA. Es el halo que pedían las ocho
+   actividades y la razón de que el intérprete avance de uno en uno. */
+.blq-bloque.es-corriendo > .blq-cabeza {
+  box-shadow: inset 0 0 0 3px #fde68a, 0 0 18px rgba(253, 230, 138, 0.75);
+  filter: brightness(1.2);
+}
+
+.blq-texto,
+.blq-quitar {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.blq-quitar {
+  margin-left: auto;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.28);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.blq-ovalo {
+  display: inline-block;
+  padding: 1px 7px;
+  margin: 0 2px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.32);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.blq-ranura {
+  width: 56px;
+  padding: 2px 5px;
+}
+
+.blq-ranura.es-lista {
+  width: auto;
+}
+
+/* El hueco hexagonal: el mismo polígono que la pieza que entra. */
+.blq-hueco {
+  min-width: 92px;
+  padding: 2px;
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0 50%);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.blq-hueco .blq-bloque {
+  margin-top: 0;
+}
+
+.blq-hueco-pista,
+.blq-pista {
+  border: 0;
+  background: transparent;
+  color: rgba(232, 244, 255, 0.65);
+  font: 600 11px/1.2 system-ui, sans-serif;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* La boca de un bloque en C: donde vive lo que sólo pasa a veces. El sangrado y
+   la pared de la izquierda son lo que hace ver de un vistazo qué está DENTRO. */
+.blq-boca {
+  margin-left: 16px;
+  padding: 3px 0 3px 8px;
+  border-left: 16px solid var(--blq-color);
+  background: rgba(0, 0, 0, 0.22);
+  min-height: 26px;
+}
+
+.blq-medio {
+  display: block;
+  margin: 2px 0 2px -8px;
+  font: 800 12px/1 system-ui, sans-serif;
+  color: #f2feff;
+}
+
+.blq-pie {
+  height: 12px;
+  border-radius: 0 0 5px 5px;
+  background: var(--blq-color);
+}
+
+/* ── las zonas de encaje ─────────────────────────────────────────────────── */
+
+.blq-entre {
+  height: 7px;
+  margin: -3px 0;
+}
+
+.blq-linea {
+  display: block;
+  height: 3px;
+  border-radius: 3px;
+  background: transparent;
+}
+
+.blq-cola {
+  min-height: 22px;
+}
+
+/* La sombra de encaje. La pinta la MISMA función que decide si se acepta, así
+   que si se ilumina, soltar funciona. */
+.blq-entre.es-diana .blq-linea {
+  background: #4ade80;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.8);
+}
+
+.blq-cola.es-diana,
+.blq-hueco.es-diana,
+.blq-boca > .blq-cola.es-diana {
+  outline: 2px dashed #4ade80;
+  outline-offset: -2px;
+  background: rgba(74, 222, 128, 0.14);
+}
+
+/* El rebote: aquí NO cabía. Dura lo que la actividad deje puesto el rechazo. */
+.blq-entre.es-rebote,
+.blq-cola.es-rebote,
+.blq-hueco.es-rebote {
+  outline: 2px solid #ef5350;
+  outline-offset: -2px;
+  background: rgba(239, 83, 80, 0.18);
+  animation: blq-rebote 0.28s ease-in-out 2;
+}
+
+@keyframes blq-rebote {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+/* ── el escenario de la actividad ────────────────────────────────────────── */
+
+.blq-escenario {
+  flex: 0 0 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: #061520;
+  border-left: 1px solid var(--blq-borde);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blq-categoria.es-pide,
+  .blq-entre.es-rebote,
+  .blq-cola.es-rebote,
+  .blq-hueco.es-rebote {
+    animation: none;
+  }
+}

@@ -1,0 +1,45 @@
+/*
+ * Los cuadritos de tinta de `n2-viste-tus-letras`.
+ *
+ * El botón de la cinta lo pinta el motor: un `<span class="txtw-glifo">` con el
+ * glifo dentro. Aquí ese hueco se convierte en una muestra de color de verdad
+ * —el cuadrado del glifo se apaga con `font-size: 0` y el color lo pone el
+ * fondo—, y no un emoji: el emoji lo dibuja la fuente del sistema y su rojo no
+ * es el rojo que la clase aplica al documento. La muestra tiene que ser
+ * exactamente la tinta que va a caer en el papel, porque el niño elige mirando
+ * el cuadrito.
+ *
+ * El glifo que se apaga aquí sí se ve en la FICHA del modo guía, que lo pinta
+ * como carácter y sin este CSS. Por eso `cinta.ts` le pone un emoji de cuadro
+ * de color: en la cinta sigue invisible y en la ficha ilustra de qué botón
+ * habla. Está explicado allí, junto a `CUADRO`.
+ *
+ * El borde no es adorno: el amarillo #FFC000 sobre el blanco de la cinta se
+ * queda sin silueta y parece un botón vacío.
+ */
+
+.txtw-boton[data-control^='color-'] .txtw-glifo {
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.32);
+  border-radius: 2px;
+  /* Apaga el ■ del glifo: la muestra la pinta el fondo. */
+  font-size: 0;
+  line-height: 0;
+}
+
+.txtw-boton[data-control='color-auto'] .txtw-glifo { background: #1b1a19; }
+.txtw-boton[data-control='color-rojo'] .txtw-glifo { background: #ff0000; }
+.txtw-boton[data-control='color-naranja'] .txtw-glifo { background: #ed7d31; }
+.txtw-boton[data-control='color-amarillo'] .txtw-glifo { background: #ffc000; }
+.txtw-boton[data-control='color-verde'] .txtw-glifo { background: #00b050; }
+.txtw-boton[data-control='color-azul'] .txtw-glifo { background: #0070c0; }
+.txtw-boton[data-control='color-morado'] .txtw-glifo { background: #7030a0; }
+
+/* Hundido: el cuadrito se pone un pelo más grande dentro del botón azul, que es
+   como se ve en Word que ése es el color puesto. */
+.txtw-boton[data-control^='color-'].es-activo .txtw-glifo {
+  border-color: rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0 0 1px #fff inset;
+}

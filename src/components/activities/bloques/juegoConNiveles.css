@@ -1,0 +1,248 @@
+/*
+ * El escenario de «Historia o juego con niveles»: la pantalla de la consola con
+ * las cuatro escenas de la Torre de Nova, el marcador de memoria —la variable
+ * `nivel`, hecha visible— y la tira de pantallas que se pintaron.
+ *
+ * Color pleno sobre fondo oscuro, con drama de luz: cada escena tiene su color
+ * saturado propio y su halo, y el marcador de memoria brilla en ámbar porque es
+ * la pieza que el alumno tiene que mirar. Nada de pastel, nada de blanco sobre
+ * blanco, ningún borde punteado.
+ *
+ * Nada flota encima de la escena: esto vive dentro del hueco `escenario` de
+ * VentanaBloques y los únicos mandos son los del propio editor.
+ */
+
+.jn-escenario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 264px;
+  height: 100%;
+  padding: 14px 12px;
+  border-radius: 20px;
+  border: 3px solid #1e3a5f;
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(56, 189, 248, 0.18), transparent 62%),
+    linear-gradient(175deg, #0a1f3a, #070d20 64%);
+}
+
+/* ── la consola y su pantalla ──────────────────────────────────────────────── */
+
+.jn-tele {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 18px;
+  border: 3px solid #164e63;
+  background: linear-gradient(180deg, #0f2b3d, #071624);
+  box-shadow: inset 0 2px 0 rgba(125, 211, 252, 0.25);
+}
+
+.jn-pantalla {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 128px;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 2px solid #0b1120;
+  transition: background 220ms ease, box-shadow 220ms ease;
+}
+
+/* Las cinco caras del juego. Cada una con su color pleno y su halo. */
+.jn-pantalla[data-escena='titulo'] {
+  background: radial-gradient(90% 90% at 50% 30%, #3730a3, #111034 70%);
+  box-shadow: inset 0 0 34px rgba(129, 140, 248, 0.45);
+}
+.jn-pantalla[data-escena='perdida'] {
+  background: repeating-linear-gradient(135deg, #4c1d24 0 12px, #3b141b 12px 24px);
+  box-shadow: inset 0 0 34px rgba(248, 113, 113, 0.5);
+}
+.jn-pantalla[data-escena='bosque'] {
+  background: radial-gradient(90% 90% at 50% 35%, #15803d, #052e16 72%);
+  box-shadow: inset 0 0 36px rgba(74, 222, 128, 0.55);
+}
+.jn-pantalla[data-escena='rio'] {
+  background: radial-gradient(90% 90% at 50% 35%, #0e7490, #082f49 72%);
+  box-shadow: inset 0 0 36px rgba(34, 211, 238, 0.55);
+}
+.jn-pantalla[data-escena='torre'] {
+  background: radial-gradient(90% 90% at 50% 35%, #6d28d9, #2e1065 72%);
+  box-shadow: inset 0 0 36px rgba(167, 139, 250, 0.6);
+}
+.jn-pantalla[data-escena='final'] {
+  background: radial-gradient(90% 90% at 50% 35%, #b45309, #451a03 72%);
+  box-shadow: inset 0 0 40px rgba(251, 191, 36, 0.7);
+}
+
+.jn-arte {
+  font-size: 54px;
+  line-height: 1;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.65));
+}
+
+.jn-nova {
+  position: absolute;
+  right: 18px;
+  bottom: 10px;
+  font-size: 30px;
+  line-height: 1;
+  filter: drop-shadow(0 0 12px rgba(125, 211, 252, 0.9));
+}
+
+.jn-nombre {
+  margin: 0;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 2px solid #0e7490;
+  background: rgba(8, 47, 73, 0.85);
+  color: #e0f2fe;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.jn-escenario[data-escena='final'] .jn-nombre {
+  border-color: #f59e0b;
+  background: rgba(120, 53, 15, 0.9);
+  color: #fef3c7;
+}
+.jn-escenario[data-escena='perdida'] .jn-nombre {
+  border-color: #f87171;
+  background: rgba(127, 29, 29, 0.9);
+  color: #fee2e2;
+}
+
+/* ── el marcador de memoria: la variable, hecha visible ────────────────────── */
+
+.jn-memoria {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 14px;
+  border: 2px solid #f59e0b;
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.22), rgba(120, 53, 15, 0.32));
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.35);
+}
+
+.jn-memoria[data-vacia='si'] {
+  border-color: #64748b;
+  background: linear-gradient(180deg, rgba(100, 116, 139, 0.22), rgba(15, 23, 42, 0.5));
+  box-shadow: none;
+}
+
+.jn-memoria-etiqueta {
+  color: #fde68a;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.jn-memoria[data-vacia='si'] .jn-memoria-etiqueta {
+  color: #94a3b8;
+}
+
+.jn-memoria-caja {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jn-memoria-nombre {
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 2px solid #fbbf24;
+  background: rgba(120, 53, 15, 0.6);
+  color: #fef3c7;
+  font-size: 12px;
+  font-weight: 800;
+}
+.jn-memoria[data-vacia='si'] .jn-memoria-nombre {
+  border-color: #64748b;
+  background: rgba(30, 41, 59, 0.8);
+  color: #cbd5e1;
+}
+
+.jn-memoria-valor {
+  min-width: 34px;
+  color: #fff;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 0 16px rgba(251, 191, 36, 0.95);
+}
+.jn-memoria[data-vacia='si'] .jn-memoria-valor {
+  color: #94a3b8;
+  text-shadow: none;
+}
+
+/* ── la tira de pantallas que se pintaron ──────────────────────────────────── */
+
+.jn-tira {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 40px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 2px solid #1e3a5f;
+  background: rgba(6, 20, 38, 0.92);
+}
+
+.jn-tira-vacia {
+  align-self: center;
+  color: #7dd3fc;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.jn-chip {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 2px solid #38bdf8;
+  background: rgba(56, 189, 248, 0.16);
+  font-size: 14px;
+}
+.jn-chip[data-escena='bosque'] {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.2);
+}
+.jn-chip[data-escena='rio'] {
+  border-color: #22d3ee;
+  background: rgba(34, 211, 238, 0.2);
+}
+.jn-chip[data-escena='torre'] {
+  border-color: #a78bfa;
+  background: rgba(167, 139, 250, 0.22);
+}
+.jn-chip[data-escena='final'] {
+  border-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.24);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+}
+.jn-chip[data-escena='perdida'] {
+  border-color: #f87171;
+  background: rgba(248, 113, 113, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jn-pantalla {
+    transition: none;
+  }
+}

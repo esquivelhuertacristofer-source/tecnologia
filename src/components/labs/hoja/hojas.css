@@ -1,0 +1,462 @@
+/* Prueba de concepto · el evaluador de fórmulas. No es producto: es un
+   instrumento. El estilo copia el de `diapositiva.css` y `paginacion.css` a
+   propósito — un banco tiene que parecer un banco y no una clase, para que
+   nadie lo confunda con producto. */
+
+.hj-banco {
+  min-height: 100vh;
+  background: #0b1220;
+  color: #e8eefc;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  padding: 16px 20px 60px;
+}
+
+.hj-hud h1 {
+  font-size: 20px;
+  margin: 0 0 2px;
+  letter-spacing: -0.01em;
+}
+
+.hj-pregunta {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: #8ea6d4;
+  max-width: 92ch;
+  line-height: 1.5;
+}
+
+.hj-pregunta b {
+  color: #cfe0ff;
+}
+
+/* ── las cifras ─────────────────────────────────────────────────────────── */
+
+.hj-cifras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.hj-cifra {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: #16213a;
+  border: 1px solid #24365c;
+  font-size: 12px;
+  color: #9db3dd;
+}
+
+.hj-cifra b {
+  font-size: 19px;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.hj-cifra.es-bien {
+  border-color: #1f7a4d;
+  background: #10281d;
+}
+
+.hj-cifra.es-bien b {
+  color: #4ade80;
+}
+
+.hj-cifra.es-mal {
+  border-color: #a13b3b;
+  background: #2a1414;
+}
+
+.hj-cifra.es-mal b {
+  color: #f87171;
+}
+
+/* Los errores de una hoja son contenido, no avería (§45.4): ni verde ni rojo. */
+.hj-cifra.es-ojo {
+  border-color: #8a6a1f;
+  background: #2a2210;
+}
+
+.hj-cifra.es-ojo b {
+  color: #fbbf24;
+}
+
+/* ── botones ────────────────────────────────────────────────────────────── */
+
+.hj-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.hj-botones button {
+  padding: 6px 11px;
+  border-radius: 7px;
+  border: 1px solid #2d4470;
+  background: #172a49;
+  color: #cfe0ff;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.hj-botones button:hover:not(:disabled) {
+  background: #1f3a63;
+  border-color: #3d63a8;
+}
+
+.hj-botones button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.hj-botones button.es-principal {
+  background: #1d4ed8;
+  border-color: #3b82f6;
+  color: #fff;
+  font-weight: 600;
+}
+
+.hj-botones button.es-grabando {
+  background: #b91c1c;
+  border-color: #ef4444;
+  color: #fff;
+  font-weight: 600;
+}
+
+.hj-botones button.es-avería {
+  border-style: dashed;
+  border-color: #8a6a1f;
+  color: #fbbf24;
+}
+
+.hj-sep {
+  width: 1px;
+  height: 22px;
+  background: #24365c;
+  margin: 0 4px;
+}
+
+/* ── informes ───────────────────────────────────────────────────────────── */
+
+.hj-informes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.hj-informe {
+  border-radius: 9px;
+  padding: 10px 13px;
+  border: 1px solid #24365c;
+  background: #131d33;
+}
+
+.hj-informe.es-bien {
+  border-color: #1f7a4d;
+}
+
+.hj-informe.es-mal {
+  border-color: #a13b3b;
+}
+
+.hj-informe h3 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: #fff;
+}
+
+.hj-informe p {
+  margin: 2px 0;
+  font-size: 12px;
+  color: #9db3dd;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── la ventana de la hoja ──────────────────────────────────────────────── */
+
+.hj-ventana {
+  background: #10182b;
+  border: 1px solid #24365c;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.hj-barra {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #24365c;
+  background: #16213a;
+}
+
+.hj-nombre {
+  width: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #cfe0ff;
+  border-right: 1px solid #24365c;
+}
+
+.hj-fx {
+  width: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: italic;
+  font-size: 13px;
+  color: #6f86b4;
+  border-right: 1px solid #24365c;
+}
+
+.hj-formula {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: #e8eefc;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: 'Cascadia Mono', Consolas, monospace;
+  outline: none;
+}
+
+.hj-aviso {
+  background: #3a2410;
+  color: #fbbf24;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-bottom: 1px solid #8a6a1f;
+}
+
+/* ── la rejilla ─────────────────────────────────────────────────────────── */
+
+.hj-rejilla {
+  display: grid;
+  overflow: auto;
+  max-height: 62vh;
+  outline: none;
+  background: #0e1526;
+}
+
+.hj-esquina,
+.hj-cabecera {
+  position: sticky;
+  top: 0;
+  background: #1b2942;
+  color: #9db3dd;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  padding: 5px 0;
+  border-right: 1px solid #24365c;
+  border-bottom: 1px solid #24365c;
+  z-index: 2;
+}
+
+.hj-cabecera.es-activa {
+  background: #2a4370;
+  color: #fff;
+}
+
+.hj-cabecera.hj-num {
+  position: sticky;
+  left: 0;
+  top: auto;
+  z-index: 1;
+}
+
+.hj-esquina {
+  left: 0;
+  z-index: 3;
+}
+
+.hj-celda {
+  border-right: 1px solid #1b2942;
+  border-bottom: 1px solid #1b2942;
+  padding: 4px 6px;
+  font-size: 12.5px;
+  min-height: 24px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: cell;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Una celda con fórmula se marca: es la mitad del bloque 13 —«la celda enseña
+   el resultado y guarda la regla»— dicha con un color. */
+.hj-celda.es-formula {
+  background: #121e36;
+  box-shadow: inset 2px 0 0 #3b82f6;
+}
+
+.hj-celda.es-error {
+  color: #f87171;
+  font-weight: 600;
+}
+
+.hj-celda.es-circular {
+  background: #2a1414;
+  box-shadow: inset 0 0 0 1px #a13b3b;
+}
+
+/* Las flechas de la clase 47, pintadas como fondos en vez de como flechas. */
+.hj-celda.es-precede {
+  background: #10281d;
+  box-shadow: inset 0 0 0 1px #1f7a4d;
+}
+
+.hj-celda.es-depende {
+  background: #2a2210;
+  box-shadow: inset 0 0 0 1px #8a6a1f;
+}
+
+.hj-celda.es-sel {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+  background: #1a2b4d;
+}
+
+.hj-editor {
+  width: 100%;
+  border: 0;
+  background: #0b1220;
+  color: #fff;
+  font-size: 12.5px;
+  font-family: 'Cascadia Mono', Consolas, monospace;
+  outline: none;
+  padding: 0;
+}
+
+/* ── pestañas y barra de estado ─────────────────────────────────────────── */
+
+.hj-pestanas {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: #16213a;
+  border-top: 1px solid #24365c;
+}
+
+.hj-pestanas button {
+  padding: 4px 12px;
+  border-radius: 5px 5px 0 0;
+  border: 1px solid #24365c;
+  border-bottom: 0;
+  background: #131d33;
+  color: #9db3dd;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.hj-pestanas button.es-activa {
+  background: #0e1526;
+  color: #fff;
+  border-color: #3b82f6;
+}
+
+.hj-estado {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: #6f86b4;
+}
+
+.hj-estado .es-circular {
+  color: #fbbf24;
+}
+
+/* ── la grabadora ───────────────────────────────────────────────────────── */
+
+.hj-macro {
+  background: #10182b;
+  border: 1px solid #24365c;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.hj-macro-cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hj-macro h2 {
+  font-size: 14px;
+  margin: 0;
+  color: #cfe0ff;
+}
+
+.hj-macro .hj-botones {
+  margin-bottom: 0;
+}
+
+.hj-vacio {
+  font-size: 12.5px;
+  color: #8ea6d4;
+  max-width: 88ch;
+  line-height: 1.55;
+}
+
+.hj-gestos {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.hj-gestos li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #131d33;
+  border: 1px solid #24365c;
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 12px;
+}
+
+.hj-gesto-n {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 50%;
+  background: #1d4ed8;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.hj-gesto-txt {
+  color: #e8eefc;
+  flex: none;
+  min-width: 30ch;
+}
+
+.hj-gestos code {
+  color: #6f86b4;
+  font-size: 11px;
+  font-family: 'Cascadia Mono', Consolas, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

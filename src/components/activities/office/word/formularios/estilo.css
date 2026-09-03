@@ -1,0 +1,357 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `of-word-formularios` — lo que esta clase pinta dentro de Tecnia Textos.
+
+   Todo lleva el prefijo `frmw-` (formularios de Word) para no chocar con
+   `txtw-` ni con ninguna otra clase del temario: hay 154 construyéndose y
+   ninguna puede tocar el CSS de la ventana.
+
+   El lenguaje visual es el de Word, no el de la plataforma. §36.2 lo dice: el
+   color pleno vive en la entrada y en el panel del maestro; dentro del programa
+   manda la fidelidad, porque el encargo era que la ventana FUERA Word.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────── los campos en la hoja ─────────────────────────── */
+
+/* El sombreado gris ya lo pone la marca del documento. Esto es lo de encima:
+   el cursor que anuncia que se puede pulsar, y —cuando la ficha está
+   protegida— el reborde azul que dice «éste es de los pocos sitios vivos».
+   Va en decoración y no en el documento a propósito: es información de la
+   pantalla, no contenido, y no tiene por qué acabar dentro del archivo. */
+.frmw-campo {
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+.frmw-campo.es-casilla,
+.frmw-campo.es-lista {
+  cursor: pointer;
+}
+
+.frmw-campo.es-texto {
+  cursor: text;
+}
+
+/* Los cuadritos ☐ ☒ no existen en Carlito: sin esta pila salen como un
+   rectángulo vacío del tipo «carácter que no tengo». */
+.frmw-campo.es-casilla {
+  font-family: 'Segoe UI Symbol', 'Segoe UI', 'Apple Symbols', sans-serif;
+  font-size: 16pt;
+  line-height: 1;
+}
+
+.frmw-campo.es-vivo {
+  box-shadow: inset 0 0 0 1px #185abd;
+}
+
+/* ────────────────── la cinta cuando la ficha está cerrada ────────────────── */
+
+/* Con la ficha protegida, en Word se apaga medio Inicio. Los botones ya lo
+   hacen solos —los envuelve `controles.ts`—, pero hay dos sitios que la ventana
+   pinta por su cuenta y que no le preguntan a la clase si están inertes:
+
+     · la GALERÍA DE ESTILOS, que dibuja sus propias cajitas «Aa». Pulsarlas ya
+       estaba bien bloqueado —contestan «aquí no se puede» y no cambian nada—,
+       pero se veían tan vivas como siempre: prometían algo que no iba a pasar.
+     · los dos DESPLEGABLES de la letra, que además se apagan de verdad desde
+       `Lab.tsx`; esto es sólo que se note.
+
+   Se hace con `:has` sobre la marca que el laboratorio cuelga dentro de la
+   ventana, y no editando `ventanaTextos.css`: así la regla existe únicamente
+   mientras esta clase esté en pantalla y con la ficha cerrada. */
+.txtw:has(> .frmw-cerrado) .txtw-estilo {
+  opacity: 0.42;
+  cursor: default;
+}
+
+.txtw:has(> .frmw-cerrado) .txtw-select {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ─────────────────────────── el panel de tareas ─────────────────────────── */
+
+/* Acoplado al canto derecho del documento y pegado al panel del maestro, como
+   el panel de tareas de Word.
+
+   Se ancla por ABAJO —la barra de estado mide 26 px fijos— y crece hasta donde
+   empieza el documento. Anclarlo por arriba era imposible: la ventana es una
+   rejilla de cinco filas y la de la cinta mide `auto`, así que su altura cambia
+   con la pestaña abierta y el panel quedaría bailando. Los 208 px son las otras
+   cuatro filas medidas: 38 de título + 34 de pestañas + 110 de cinta + 26 de
+   estado.
+
+   Los 236 px de ancho están medidos, no elegidos a ojo: en 1440 la hoja Carta
+   se centra entre 142 y 958 y su columna de texto acaba en 862, así que con
+   este ancho el panel arranca en 864 y no tapa ni una letra. En pantallas más
+   estrechas sí muerde el canto derecho del papel, porque Word ENCOGE el área
+   del documento al abrir un panel de tareas y aquí eso exigiría tocar la
+   ventana, que es de todos. El mal menor, y anotado: la pista del último
+   encargo le dice al alumno que puede cerrarlo con la X. */
+.frmw-panel {
+  position: absolute;
+  right: 340px;
+  bottom: 26px;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  width: 236px;
+  height: calc(100vh - 208px);
+  background: #fff;
+  border: 1px solid #d0cece;
+  border-bottom: none;
+  border-right: none;
+  box-shadow: -6px 0 16px rgba(0, 0, 0, 0.18);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #201f1e;
+}
+
+.frmw-panel-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 8px 8px 12px;
+  border-bottom: 1px solid #e1dfdd;
+  background: #f3f2f1;
+  flex: none;
+}
+
+.frmw-panel-titulo {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #185abd;
+}
+
+.frmw-panel-x {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: #605e5c;
+  cursor: pointer;
+}
+
+.frmw-panel-x:hover {
+  background: #e1dfdd;
+  color: #201f1e;
+}
+
+.frmw-panel-cuerpo {
+  padding: 12px;
+  overflow: auto;
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.frmw-seccion h4 {
+  margin: 0 0 7px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #201f1e;
+}
+
+.frmw-linea {
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr);
+  gap: 7px;
+  align-items: start;
+  font-size: 12.5px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.frmw-linea.es-apagada {
+  color: #a19f9d;
+  cursor: default;
+}
+
+.frmw-linea input {
+  margin: 1px 0 0;
+  accent-color: #185abd;
+}
+
+.frmw-select {
+  width: 100%;
+  margin-top: 7px;
+  padding: 4px 6px;
+  border: 1px solid #8a8886;
+  border-radius: 2px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: #201f1e;
+}
+
+.frmw-select:disabled {
+  background: #f3f2f1;
+  color: #a19f9d;
+}
+
+.frmw-nota {
+  margin: 6px 0 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #605e5c;
+}
+
+.frmw-boton {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #185abd;
+  border-radius: 2px;
+  background: #185abd;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.frmw-boton:hover {
+  background: #103f91;
+}
+
+.frmw-boton.es-secundario {
+  background: #fff;
+  color: #185abd;
+}
+
+.frmw-boton.es-secundario:hover {
+  background: #eff4fc;
+}
+
+.frmw-estado {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin: 0 0 9px;
+  padding: 8px 9px;
+  border: 1px solid #b7dfc4;
+  border-radius: 2px;
+  background: #eef8f1;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #0b6a34;
+}
+
+.frmw-estado svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+.frmw-estado.es-alerta {
+  border-color: #f0c9a0;
+  background: #fdf4ea;
+  color: #8a4b09;
+}
+
+/* ── el señalador, dentro del panel (§37) ──────────────────────────────────
+
+   El aro del motor sólo sabe apuntar a la cinta, y el encargo de aplicar la
+   protección se resuelve entero dentro de este panel: era el único de los ocho
+   sin nada remarcado. Se usa el MISMO naranja y el MISMO latido que
+   `.txtw-halo`, para que el alumno lea «es el aro de siempre, que se ha mudado
+   aquí» y no un adorno nuevo de otra procedencia.
+
+   Se dibuja pegado al renglón —no flotando encima— y sin `pointer-events`
+   propios: el aro no se interpone entre el dedo y lo que señala. */
+.frmw-linea.es-guia,
+.frmw-boton.es-guia {
+  position: relative;
+  border-radius: 3px;
+  box-shadow:
+    0 0 0 3px #ffb020,
+    0 0 0 7px rgba(255, 176, 32, 0.34),
+    0 0 18px rgba(255, 176, 32, 0.5);
+  animation: frmw-latido 1.5s ease-in-out infinite;
+}
+
+.frmw-linea.es-guia {
+  padding: 4px 6px;
+  margin: -4px -6px;
+}
+
+@keyframes frmw-latido {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 3px #ffb020,
+      0 0 0 7px rgba(255, 176, 32, 0.34),
+      0 0 18px rgba(255, 176, 32, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px #ffb020,
+      0 0 0 11px rgba(255, 176, 32, 0.16),
+      0 0 26px rgba(255, 176, 32, 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frmw-linea.es-guia,
+  .frmw-boton.es-guia {
+    animation: none;
+  }
+}
+
+.frmw-recado {
+  margin: 8px 0 0;
+  padding: 7px 9px;
+  border-left: 3px solid #d83b01;
+  background: #fdf3f0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #8a2c05;
+}
+
+/* ─────────────────────────── el desplegable de la lista ─────────────────────────── */
+
+.frmw-lista {
+  position: fixed;
+  z-index: 70;
+  min-width: 190px;
+  max-width: 300px;
+  padding: 2px;
+  border: 1px solid #8a8886;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.frmw-lista-opcion {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: #201f1e;
+  text-align: left;
+  cursor: pointer;
+}
+
+.frmw-lista-opcion:hover,
+.frmw-lista-opcion:focus-visible {
+  background: #cfe4fa;
+  outline: none;
+}
+
+/* Portátil de aula (1024×768): el panel del maestro ya se lleva 340 px y la
+   hoja va al 80 %, así que un panel de 260 px dejaría el documento sin ver. Se
+   estrecha lo justo y se le quita altura para que quepa. */
+@media (max-width: 1120px) {
+  .frmw-panel {
+    width: 214px;
+  }
+
+  .frmw-panel-cuerpo {
+    padding: 10px;
+    gap: 11px;
+  }
+}

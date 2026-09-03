@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Quiz Mágico del Dinero - Final v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* PALETA AGUA CEN */
+  --brand-blue: #0980E8;
+  --brand-light: #60A5FA;
+  --brand-dark: #1E3A8A;
+  
+  --fondo-inicio: #0980E8;
+  --fondo-fin: #0EA5E9;
+  
+  --card-bg: rgba(255, 255, 255, 0.96);
+  --card-border: rgba(255, 255, 255, 1);
+  
+  --texto-principal: #0F172A;
+  --texto-secundario: #475569;
+  
+  --acento: #F59E0B; /* Dorado */
+  --exito: #10B981;
+  --peligro: #EF4444;
+  
+  --sombra-suave: 0 10px 40px -10px rgba(9, 128, 232, 0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Epilogue', sans-serif; }
+
+body, html {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Fondo Animado --- */
+.bg-blob {
+  position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; z-index: 0;
+  animation: pulseBlob 10s infinite alternate;
+}
+.blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #BAE6FD; }
+.blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #BFDBFE; animation-delay: -5s; }
+@keyframes pulseBlob { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+
+#game {
+  width: 100%; height: 100%;
+  display: flex; justify-content: center; align-items: center;
+  position: relative; z-index: 1; padding: 20px;
+}
+
+/* --- Tarjeta Principal --- */
+.card {
+  width: 100%; max-width: 750px;
+  height: clamp(600px, 90vh, 750px);
+  background: var(--card-bg);
+  border-radius: 24px;
+  border: 2px solid white;
+  box-shadow: var(--sombra-suave);
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  container-type: inline-size;
+  container-name: quiz-card;
+}
+
+/* Pantallas */
+.screen {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  padding: 2rem;
+  overflow-y: auto; /* Scroll si es necesario */
+}
+
+#questionScreen {
+  justify-content: flex-start; /* Contenido arriba */
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+}
+
+.hidden { opacity: 0; transform: scale(0.95); pointer-events: none; }
+
+/* Tipografía Fluida */
+@container quiz-card (min-width: 1px) {
+  h1 { font-size: clamp(2rem, 5cqw, 3rem); }
+  h2 { font-size: clamp(1.25rem, 3cqw, 1.8rem); }
+  p { font-size: clamp(1rem, 2.5cqw, 1.25rem); }
+  .btn, .option-btn { font-size: clamp(0.9rem, 2cqw, 1.05rem); }
+}
+
+h1, h2 {
+  color: var(--brand-blue); font-weight: 900;
+  margin-bottom: 1rem; line-height: 1.1;
+}
+
+p {
+  color: var(--texto-secundario); font-weight: 500;
+  margin-bottom: 2rem; line-height: 1.6; max-width: 50ch;
+}
+
+#questionText { margin-bottom: 1.5rem; color: var(--texto-principal); }
+
+/* Botones Principales */
+.btn {
+  background: var(--brand-blue); color: white;
+  border: none; border-radius: 16px;
+  padding: 16px 32px; font-weight: 800;
+  cursor: pointer; margin: 1rem 0;
+  transition: all 0.2s;
+  box-shadow: 0 4px 10px rgba(9, 128, 232, 0.3);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(9, 128, 232, 0.4); }
+.btn:active { transform: translateY(1px) scale(0.98); }
+
+/* Botones de Opción */
+#optionsContainer {
+  display: flex; flex-direction: column; gap: 12px;
+  width: 100%; max-width: 600px;
+}
+
+.option-btn {
+  background: white; border: 2px solid #E2E8F0;
+  color: var(--texto-principal);
+  border-radius: 16px; padding: 1.2rem 1.5rem;
+  width: 100%; text-align: left;
+  font-weight: 600; cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  opacity: 0; transform: translateY(15px); /* Para animación de entrada */
+}
+.option-btn.show { opacity: 1; transform: translateY(0); }
+
+.option-btn:not(:disabled):hover {
+  border-color: var(--brand-blue); background: #EFF6FF; color: var(--brand-blue);
+  transform: translateX(5px);
+}
+
+.option-btn.correct { background: #F0FDF4; border-color: var(--exito); color: #166534; }
+.option-btn.incorrect { background: #FEF2F2; border-color: var(--peligro); color: #991B1B; }
+
+/* Feedback Box */
+.feedback {
+  background: #F8FAFC; border-radius: 12px;
+  padding: 1.2rem; margin-top: 1.5rem; width: 100%; max-width: 600px;
+  color: var(--texto-principal); font-weight: 600;
+  display: flex; align-items: flex-start; gap: 1rem; text-align: left;
+  animation: slideUp 0.3s ease-out;
+  border-left: 6px solid transparent;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.feedback.feedback-correct { border-color: var(--exito); background: #F0FDF4; }
+.feedback.feedback-incorrect { border-color: var(--peligro); background: #FEF2F2; }
+.feedback.hidden { display: none; }
+
+.feedback svg { flex-shrink: 0; width: 24px; height: 24px; margin-top: 2px; }
+
+/* Progress Bar */
+.progress-wrapper {
+  position: absolute; bottom: 0; left: 0; width: 100%;
+  height: 6px; background: #E2E8F0;
+}
+#progressBar {
+  height: 100%; width: 0%;
+  background: var(--brand-blue);
+  transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Confetti */
+.confetti { position: absolute; width: 10px; height: 10px; animation: fall linear forwards; z-index: 60; }
+@keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+
+/* Botón Sonido */
+#soundBtn {
+  position: absolute; top: 1.5rem; right: 1.5rem;
+  width: 40px; height: 40px; border-radius: 12px;
+  background: white; border: 1px solid #E2E8F0;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--texto-secundario);
+  transition: all 0.2s; z-index: 30;
+}
+#soundBtn:hover { background: #F1F5F9; color: var(--brand-blue); transform: scale(1.05); }
+
+</style>
+</head>
+<body>
+
+<div class="bg-blob blob-1"></div>
+<div class="bg-blob blob-2"></div>
+
+<div id="game">
+  <div class="card">
+    
+    <button id="soundBtn" title="Activar/Desactivar Sonido">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+    </button>
+
+    <div id="startScreen" class="screen" style="justify-content: center;">
+      <h1>El Quiz Mágico del Dinero</h1>
+      <p>Demuestra lo que aprendiste sobre el valor del dinero, el esfuerzo y el ahorro. ¿Listo para el reto?</p>
+      <button class="btn" id="startBtn">Empezar Quiz 🚀</button>
+    </div>
+
+    <div id="questionScreen" class="screen hidden">
+      <h2 id="questionText">Pregunta va aquí...</h2>
+      
+      <div id="optionsContainer">
+        </div>
+
+      <div class="feedback hidden" id="feedback"></div>
+      
+      <button class="btn hidden" id="nextBtn">Siguiente Pregunta ➡️</button>
+      
+      <div class="progress-wrapper"><div id="progressBar"></div></div>
+    </div>
+
+    <div id="endScreen" class="screen hidden" style="justify-content: center;">
+      <h2 id="endTitle">¡Quiz Completado!</h2>
+      <div style="background:#F8FAFC; padding:2rem; border-radius:16px; margin-bottom:2rem; width:100%; max-width:500px; box-shadow:0 4px 10px rgba(0,0,0,0.03);">
+        <p id="scoreText" style="margin:0; font-size:1.2rem; color:var(--texto-principal); font-weight:700;"></p>
+      </div>
+      <button class="btn" id="restartBtn">Intentar de Nuevo 🔄</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// --- AUDIO SISTEMA PRO (Igual que en tus otros juegos) ---
+let audioCtx = null;
+let isSoundEnabled = false;
+
+const iconMute = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
+const iconSound = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function playSound(type) {
+  if (!isSoundEnabled || !audioCtx) return;
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  const now = audioCtx.currentTime;
+
+  if (type === 'correct') {
+    // Sonido agradable tipo "ding"
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, now);
+    osc.frequency.exponentialRampToValueAtTime(1000, now + 0.1);
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc.start(now); osc.stop(now + 0.3);
+  } else if (type === 'incorrect') {
+    // Sonido grave tipo "error"
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(150, now);
+    osc.frequency.linearRampToValueAtTime(100, now + 0.2);
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+    osc.start(now); osc.stop(now + 0.2);
+  } else if (type === 'win') {
+    // Fanfarria
+    [0, 0.1, 0.2].forEach((delay, i) => {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.type = 'triangle';
+      o.frequency.value = 440 + (i*100);
+      g.gain.setValueAtTime(0.1, now + delay);
+      g.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.4);
+      o.start(now + delay); o.stop(now + delay + 0.4);
+    });
+  } else {
+    // Click suave
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(400, now);
+    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+    osc.start(now); osc.stop(now + 0.05);
+  }
+}
+
+// --- ICONOS ---
+const iconCorrect = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>`;
+const iconIncorrect = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>`;
+
+// --- VARIABLES ---
+const startScreen = document.getElementById('startScreen');
+const questionScreen = document.getElementById('questionScreen');
+const endScreen = document.getElementById('endScreen');
+const questionText = document.getElementById('questionText');
+const optionsContainer = document.getElementById('optionsContainer');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const progressBar = document.getElementById('progressBar');
+const scoreText = document.getElementById('scoreText');
+const soundBtn = document.getElementById('soundBtn');
+
+let currentQ = 0; 
+let score = 0;
+
+const questions = [
+  {q:"Según el texto, ¿qué es el dinero principalmente?", options:["Un juguete para coleccionar.","Una herramienta para conseguir cosas.","Algo que solo los adultos usan.","Algo mágico que aparece solo."], answer:1, justification:"¡Exacto! El dinero es como una llave, una herramienta que nos ayuda a conseguir lo que necesitamos y a construir nuestros sueños."},
+  {q:"¿De dónde viene realmente el dinero?", options:["Crece en los árboles.","Es una recompensa por nuestro trabajo y esfuerzo.","Se imprime en casa.","Los bancos lo regalan."], answer:1, justification:"¡Así es! Cada moneda representa el valor del trabajo que alguien ha hecho. Es una recompensa por el esfuerzo."},
+  {q:"El texto dice que el dinero...", options:["Es siempre bueno.","Es siempre malo.","No es bueno ni malo, depende de cómo lo uses.","Es solo para personas ricas."], answer:2, justification:"¡Muy bien! El dinero es neutral. Usarlo para ayudar o ahorrar es bueno. Gastarlo sin pensar no lo es tanto. ¡Tú decides cómo usar la herramienta!"},
+  {q:"¿Cuál de estas es una idea equivocada sobre el dinero?", options:["Que puede ayudarte a comprar comida.","Que es difícil de conseguir.","Que se puede ahorrar para el futuro.","Que se obtiene a cambio de un trabajo."], answer:1, justification:"¡Correcto! Pensar que el dinero es difícil de conseguir es una idea equivocada. Con esfuerzo y buenas ideas, todos podemos generarlo."},
+  {q:"¿Para qué nos sirve el dinero, según el texto?", options:["Solo para comprar dulces.","Para guardarlo y nunca usarlo.","Para comprar cosas y lograr nuestros sueños.","Solo para pagar las cuentas."], answer:2, justification:"¡Excelente! El dinero es un recurso que nos sirve tanto para nuestras necesidades diarias como para alcanzar metas más grandes, ¡como nuestros sueños!"},
+  {q:"Si el dinero es una recompensa por el trabajo, ¿qué significa esto?", options:["Que el dinero aparece sin hacer nada.","Que el esfuerzo que pones en una tarea tiene un valor.","Que solo los trabajos muy aburridos dan dinero.","Que el dinero es más importante que el trabajo."], answer:1, justification:"¡Perfecto! El dinero es la forma en que la sociedad reconoce el valor de tu esfuerzo, tu tiempo y tu talento al hacer un trabajo."},
+  {q:"El texto describe el dinero como un recurso valioso. ¿Qué es un recurso?", options:["Algo que es infinito y nunca se acaba.","Algo que podemos usar para lograr un objetivo.","Algo que debemos esconder.","Algo que solo se puede gastar."], answer:1, justification:"¡Muy bien! Un recurso es algo que tienes a tu disposición para ayudarte. El dinero es un recurso que, si lo usas bien, te ayuda a conseguir lo que necesitas."},
+  {q:"¿Cuál de estas opciones es un buen ejemplo de 'cómo usamos' el dinero?", options:["Encontrar una moneda en la calle.","Decidir entre ahorrar para una bicicleta o comprar un helado.","Mirar el dinero en una alcancía.","Dibujar billetes en un papel."], answer:1, justification:"¡Correcto! La forma en que 'usamos' el dinero se trata de las decisiones que tomamos con él, como elegir entre un gasto inmediato y una meta a largo plazo."},
+  {q:"¿Cómo te ayuda el dinero a lograr tus sueños?", options:["Mágicamente, pidiendo un deseo a una moneda.","Permitiéndote ahorrar para obtener lo que necesitas para ese sueño.","El dinero no tiene nada que ver con los sueños.","Comprando todos los juguetes del mundo."], answer:1, justification:"¡Así es! Si tu sueño es ser un gran pintor, el dinero te ayuda a comprar los pinceles. Si es viajar, te ayuda a comprar el boleto. Es una herramienta para construir sueños."},
+  {q:"¿Cuál es el mensaje más importante del texto?", options:["Que comprar dulces es lo más divertido.","Que el dinero es un tema solo para adultos.","Que el dinero es una recompensa por el esfuerzo y una herramienta útil.","Que el dinero es muy misterioso."], answer:2, justification:"¡Lo tienes! El mensaje central es que el dinero no es un misterio, sino el resultado del trabajo, y es una herramienta poderosa que podemos aprender a usar para bien."}
+];
+
+// --- FUNCIONES ---
+
+function showQuestion() {
+  const q = questions[currentQ];
+  questionText.textContent = q.q;
+  optionsContainer.innerHTML = '';
+  feedback.classList.add('hidden');
+  nextBtn.classList.add('hidden');
+  
+  // Reseteamos scroll si es necesario
+  document.getElementById('questionScreen').scrollTop = 0;
+  
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => selectOption(i);
+    optionsContainer.appendChild(btn);
+    // Animación escalonada (Stagger)
+    setTimeout(() => btn.classList.add('show'), i * 80);
+  });
+  
+  updateProgress();
+}
+
+function selectOption(index) {
+  const q = questions[currentQ];
+  const buttons = optionsContainer.querySelectorAll('button');
+  const isCorrect = index === q.answer;
+
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.answer) btn.classList.add('correct');
+    if (i === index && !isCorrect) btn.classList.add('incorrect');
+    // Opacar las no seleccionadas
+    if (i !== q.answer && i !== index) btn.style.opacity = '0.5';
+  });
+
+  if (isCorrect) {
+    playSound('correct');
+    score++;
+    feedback.innerHTML = `${iconCorrect} <span>${q.justification}</span>`;
+    feedback.className = 'feedback feedback-correct';
+  } else {
+    playSound('incorrect');
+    feedback.innerHTML = `${iconIncorrect} <span>${q.justification}</span>`;
+    feedback.className = 'feedback feedback-incorrect';
+  }
+
+  // Scroll suave hacia la respuesta si es pantalla pequeña
+  nextBtn.classList.remove('hidden');
+  setTimeout(() => {
+    nextBtn.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, 100);
+}
+
+function updateProgress() {
+  const pct = ((currentQ) / questions.length) * 100;
+  progressBar.style.width = `${pct}%`;
+}
+
+nextBtn.onclick = () => {
+  playSound('click');
+  currentQ++;
+  if (currentQ < questions.length) {
+    showQuestion();
+  } else {
+    showEnd();
+  }
+};
+
+function showEnd() {
+  questionScreen.classList.add('hidden');
+  endScreen.classList.remove('hidden');
+  progressBar.style.width = '100%';
+  
+  const percentage = (score / questions.length) * 100;
+  let msg = "";
+  
+  if (percentage === 100) {
+    msg = "¡PERFECTO! 🌟 Eres un experto financiero.";
+    playSound('win');
+    fireConfetti();
+  } else if (percentage >= 70) {
+    msg = "¡Muy buen trabajo! 🚀 Entiendes muy bien el valor del dinero.";
+    playSound('win');
+    fireConfetti();
+  } else {
+    msg = "¡Sigue practicando! 📚 Repasa los temas y vuelve a intentarlo.";
+  }
+
+  scoreText.innerHTML = `
+    Acertaste <strong>${score} de ${questions.length}</strong> preguntas.<br><br>
+    <span style="color:var(--brand-blue); font-size:1.1em">${msg}</span>
+  `;
+}
+
+function fireConfetti() {
+  const colors = ['#FCD34D', '#0980E8', '#EF4444', '#10B981'];
+  for(let i=0; i<60; i++) {
+    const conf = document.createElement('div');
+    conf.className = 'confetti';
+    conf.style.left = Math.random() * 100 + '%';
+    conf.style.top = -10 + 'px';
+    conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    conf.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    document.body.appendChild(conf);
+    setTimeout(() => conf.remove(), 4000);
+  }
+}
+
+// Event Listeners
+document.getElementById('startBtn').onclick = () => {
+  initAudio();
+  playSound('click');
+  startScreen.classList.add('hidden');
+  questionScreen.classList.remove('hidden');
+  currentQ = 0;
+  score = 0;
+  showQuestion();
+};
+
+document.getElementById('restartBtn').onclick = () => {
+  playSound('click');
+  endScreen.classList.add('hidden');
+  startScreen.classList.remove('hidden');
+};
+
+soundBtn.onclick = () => {
+  isSoundEnabled = !isSoundEnabled;
+  soundBtn.innerHTML = isSoundEnabled ? iconSound : iconMute;
+  if(isSoundEnabled) initAudio();
+};
+
+// Iniciar muteado visualmente
+soundBtn.innerHTML = iconMute;
+
+</script>
+</body>
+</html>

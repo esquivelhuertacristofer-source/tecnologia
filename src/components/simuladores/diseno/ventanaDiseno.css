@@ -1,0 +1,274 @@
+/* TECNIA DISEÑO · la ventana.
+   Color pleno sobre fondo oscuro, como el resto de la plataforma: nada de
+   pastel y nada de blanco sobre blanco. Las variables (--cian, --azul,
+   --apagado) las trae la pantalla que monta el laboratorio; aquí se dan
+   respaldos para que la ventana se vea bien también fuera del arcade. */
+
+.dis-marco {
+  --dis-cian: var(--cian, #22d3ee);
+  --dis-azul: var(--azul, #2563eb);
+  --dis-apagado: var(--apagado, #7f9cc0);
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  color: #eaf4ff;
+  background: linear-gradient(165deg, #0a1626, #050b14);
+  font-family: inherit;
+}
+
+/* ── barras ── */
+.dis-barra,
+.dis-opciones {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(92, 225, 230, 0.18);
+  background: linear-gradient(180deg, #10273d, #0b1c2e);
+}
+.dis-opciones {
+  min-height: 44px;
+  background: rgba(11, 28, 46, 0.6);
+}
+.dis-hueco { flex: 1; }
+
+.dis-herr,
+.dis-btn,
+.dis-pag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(92, 225, 230, 0.28);
+  background: rgba(9, 24, 40, 0.9);
+  color: #eaf4ff;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.dis-herr:hover,
+.dis-btn:hover:not(:disabled),
+.dis-pag:hover { border-color: var(--dis-cian); filter: brightness(1.15); }
+.dis-herr.dis-on,
+.dis-btn.dis-on,
+.dis-pag.dis-on {
+  background: linear-gradient(135deg, var(--dis-cian), var(--dis-azul));
+  color: #04121f;
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(34, 211, 238, 0.35);
+}
+.dis-btn:disabled { opacity: 0.4; cursor: default; }
+.dis-peligro { border-color: #ef4444; color: #fecaca; }
+.dis-herr-txt { font-size: 11px; letter-spacing: 0.01em; }
+
+.dis-recorte-grupo {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 10px;
+  background: rgba(9, 24, 40, 0.5);
+}
+
+.dis-tinta {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+}
+.dis-tinta:hover { transform: translateY(-1px); box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.35); }
+.dis-nota { font-size: 11px; font-weight: 700; color: var(--dis-apagado); }
+.dis-rechazo {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.16);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-radius: 8px;
+  padding: 4px 10px;
+}
+.dis-entrada {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(92, 225, 230, 0.3);
+  background: #061523;
+  color: #eaf4ff;
+  font-weight: 700;
+  min-width: 180px;
+}
+
+/* ── el centro ── */
+.dis-medio { flex: 1; min-height: 0; display: flex; }
+.dis-tapete {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  overflow: auto;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.18), transparent 60%),
+    #060d18;
+  touch-action: none;
+}
+.dis-lienzo {
+  position: relative;
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(92, 225, 230, 0.25);
+  overflow: hidden;
+  transform-origin: center center;
+}
+
+/* ── el monitor: pintado ANTES que las capas en el DOM, así queda debajo ── */
+.dis-monitor {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  display: grid;
+  place-items: center;
+}
+
+/* ── capas ── */
+.dis-capa {
+  position: absolute;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+}
+.dis-capa:focus-visible { outline: 3px solid var(--dis-cian); outline-offset: 2px; }
+.dis-capa[data-bloqueada='si'] { cursor: not-allowed; }
+.dis-figura { width: 100%; height: 100%; display: block; }
+.dis-texto {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  line-height: 1.15;
+  word-break: break-word;
+  padding: 2px 4px;
+}
+.dis-imagen {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  display: grid;
+  place-items: center;
+}
+.dis-glifo { font-size: 40px; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5)); }
+
+/* ── selección ── */
+.dis-marca {
+  position: absolute;
+  pointer-events: none;
+  outline: 2px solid var(--dis-cian);
+  outline-offset: 0;
+  box-shadow: 0 0 22px rgba(34, 211, 238, 0.45);
+}
+.dis-tirador {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--dis-cian);
+  border: 2px solid #04121f;
+  pointer-events: auto;
+}
+.dis-t-nw { left: -6px; top: -6px; cursor: nwse-resize; }
+.dis-t-n { left: calc(50% - 6px); top: -6px; cursor: ns-resize; }
+.dis-t-ne { right: -6px; top: -6px; cursor: nesw-resize; }
+.dis-t-e { right: -6px; top: calc(50% - 6px); cursor: ew-resize; }
+.dis-t-se { right: -6px; bottom: -6px; cursor: nwse-resize; }
+.dis-t-s { left: calc(50% - 6px); bottom: -6px; cursor: ns-resize; }
+.dis-t-sw { left: -6px; bottom: -6px; cursor: nesw-resize; }
+.dis-t-w { left: -6px; top: calc(50% - 6px); cursor: ew-resize; }
+.dis-giro {
+  position: absolute;
+  left: calc(50% - 8px);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #facc15;
+  border: 2px solid #04121f;
+  pointer-events: auto;
+  cursor: grab;
+}
+
+/* ── columna de la derecha ── */
+.dis-lado {
+  flex: none;
+  width: 232px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  overflow: auto;
+  border-left: 1px solid rgba(92, 225, 230, 0.18);
+  background: rgba(8, 20, 34, 0.85);
+}
+.dis-bloque {
+  border: 1px solid rgba(92, 225, 230, 0.2);
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: rgba(6, 16, 28, 0.8);
+}
+.dis-tit {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dis-apagado);
+}
+.dis-capas, .dis-pasos { margin: 0; padding: 0 0 0 0; list-style: none; font-size: 12px; }
+.dis-pasos { counter-reset: paso; }
+.dis-pasos li {
+  padding: 3px 0 3px 20px;
+  position: relative;
+  color: #cfe6ff;
+  border-bottom: 1px dashed rgba(92, 225, 230, 0.12);
+}
+.dis-pasos li::before {
+  counter-increment: paso;
+  content: counter(paso);
+  position: absolute;
+  left: 0;
+  font-weight: 900;
+  color: var(--dis-cian);
+}
+.dis-fila {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: none;
+  color: #eaf4ff;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.dis-fila:hover { background: rgba(34, 211, 238, 0.12); }
+.dis-fila.dis-on { background: linear-gradient(135deg, var(--dis-cian), var(--dis-azul)); color: #04121f; }
+.dis-fila-tipo { width: 16px; text-align: center; opacity: 0.8; }
+.dis-vacio { color: var(--dis-apagado); font-size: 11.5px; font-style: italic; padding: 4px 0; }
+
+/* ── pantallas del prototipo ── */
+.dis-paginas {
+  flex: none;
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  border-top: 1px solid rgba(92, 225, 230, 0.18);
+  background: rgba(11, 28, 46, 0.7);
+  overflow-x: auto;
+}

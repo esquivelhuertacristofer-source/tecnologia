@@ -1,0 +1,648 @@
+/**
+ * El Backstage de Tecnia Diapositivas (§43.1).
+ *
+ * Tapa la ventana entera y se pinta del naranja de PowerPoint en la columna,
+ * como el programa: entrar a Archivo es SALIR del documento, y el color de
+ * pared es lo que lo dice antes de leer una palabra.
+ */
+
+.bks {
+  position: absolute;
+  inset: 0;
+  /*
+   * Tapa la ventana entera menos el panel del maestro, igual que el escenario
+   * de §43.1 y por el mismo motivo, que se vio jugando: el encargo dice
+   * «sácale una copia en PDF desde Archivo → Exportar», y si al entrar a
+   * Archivo desaparece el encargo, el alumno se queda dentro sin saber qué
+   * venía a hacer. El PowerPoint de verdad tapa hasta el borde; aquí el panel
+   * es la clase y no se apaga.
+   *
+   * Y se hace tapando TODO y dejando que el panel se pinte encima, no parando
+   * el Backstage en `right: var(--w-maestro)`: parándolo ahí quedaba asomando
+   * sobre el panel una franja blanca con el trozo de barra de título y de
+   * cinta que le tocaba a esa columna. Mismo defecto y mismo arreglo que en el
+   * escenario de las dos pantallas; el relleno de la derecha es lo que evita
+   * que el contenido se meta debajo del panel.
+   */
+  padding-right: var(--w-maestro);
+  z-index: 40;
+  display: grid;
+  grid-template-columns: 208px minmax(0, 1fr);
+  background: #fff;
+  color: #1f2937;
+  font-size: 13px;
+}
+
+/* ── la columna de secciones ── */
+
+.bks-lado {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 0;
+  background: #c43e1c;
+  color: #fff;
+}
+
+.bks-volver {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 16px 12px;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.14);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bks-volver:hover {
+  background: rgb(255 255 255 / 0.24);
+}
+
+.bks-seccion {
+  padding: 9px 20px;
+  border: 0;
+  border-left: 3px solid transparent;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bks-seccion:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.bks-seccion.es-aqui {
+  border-left-color: #fff;
+  background: rgb(255 255 255 / 0.18);
+  font-weight: 700;
+}
+
+/* ── el cuerpo ── */
+
+.bks-cuerpo {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 20px 26px 18px;
+  overflow: auto;
+  /* Una línea de 1300 px no se lee. El Backstage de PowerPoint tampoco la
+     tiene: su contenido vive en una columna y el resto es aire. */
+  container-type: inline-size;
+}
+
+.bks-titulo {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+
+.bks-sub {
+  margin: 4px 0 16px;
+  font-size: 12.5px;
+  color: #5b6678;
+}
+
+/* ── los formatos ── */
+
+.bks-formatos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bks-formato {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 176px;
+  gap: 16px;
+  align-items: start;
+  padding: 13px 15px;
+  border: 1px solid #e6eaf0;
+  border-radius: 9px;
+  background: #fbfcfe;
+}
+
+.bks-formato-que b {
+  font-size: 14px;
+}
+
+.bks-formato-que > small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #5b6678;
+}
+
+.bks-conserva {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.bks-conserva li {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.bks-conserva li.es-si {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.bks-conserva li.es-no {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.bks-dato {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  color: #46505f;
+}
+
+.bks-formato-hacer {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.bks-boton {
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 7px;
+  background: #c43e1c;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bks-boton:hover:not(:disabled) {
+  background: #a83415;
+}
+
+.bks-boton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.bks-barra {
+  height: 5px;
+  border-radius: 3px;
+  background: #f1d3c8;
+  overflow: hidden;
+  position: relative;
+}
+
+.bks-barra::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  background: #c43e1c;
+  transform-origin: left;
+  animation: bks-crecer 1.5s linear forwards;
+}
+
+@keyframes bks-crecer {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bks-barra::after {
+    animation: none;
+    transform: scaleX(1);
+  }
+}
+
+.bks-listo {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #15803d;
+}
+
+/* ── el inspector de documento (§43.6) ── */
+
+.bks-inspector {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border: 1px solid #e6eaf0;
+  border-radius: 9px;
+  background: #fbfcfe;
+}
+
+.bks-inspector h3 {
+  margin: 0 0 6px;
+  font-size: 13.5px;
+}
+
+.bks-inspector-que {
+  margin: 0 0 12px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #67707f;
+}
+
+.bks-hallazgos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.bks-hallazgos li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 11px;
+  border: 1px solid #e6eaf0;
+  border-left: 3px solid #b45309;
+  border-radius: 0 6px 6px 0;
+  background: #fff;
+}
+
+.bks-hallazgo-que b {
+  display: block;
+  font-size: 12.5px;
+}
+
+.bks-hallazgo-que b i {
+  font-style: normal;
+  color: #b45309;
+}
+
+.bks-hallazgo-que small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #67707f;
+}
+
+.bks-boton.es-quitar {
+  padding: 6px 14px;
+  background: #fff;
+  border: 1px solid #c43e1c;
+  color: #c43e1c;
+}
+
+.bks-boton.es-quitar:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+/* La pregunta antes de quitar: el aviso arriba y los dos botones debajo, para
+   que no se pueda confirmar sin haber pasado por encima del aviso. */
+.bks-confirmar {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+  text-align: right;
+}
+
+.bks-confirmar b {
+  font-size: 11px;
+  color: #991b1b;
+}
+
+.bks-confirmar > span {
+  display: flex;
+  gap: 6px;
+}
+
+.bks-boton.es-secundario {
+  background: #eef2f7;
+  border: 1px solid #d7dde7;
+  color: #334155;
+  padding: 6px 14px;
+}
+
+.bks-boton.es-secundario:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.bks-inspector-limpio {
+  margin: 0;
+  padding: 11px 13px;
+  border-radius: 7px;
+  background: #ecfdf5;
+  color: #14532d;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.bks-inspector-aviso {
+  margin: 12px 0 0;
+  padding: 9px 11px;
+  border-left: 3px solid #0369a1;
+  border-radius: 0 6px 6px 0;
+  background: #f0f9ff;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #0c4a6e;
+}
+
+/* ── proteger ── */
+
+.bks-proteger {
+  padding: 14px 16px;
+  border: 1px solid #e6eaf0;
+  border-radius: 9px;
+  background: #fbfcfe;
+}
+
+.bks-proteger h3 {
+  margin: 0 0 10px;
+  font-size: 13.5px;
+}
+
+.bks-casilla {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+  margin-bottom: 9px;
+  cursor: pointer;
+}
+
+.bks-casilla input {
+  width: 16px;
+  height: 16px;
+  margin: 2px 0 0;
+  accent-color: #c43e1c;
+}
+
+.bks-casilla b {
+  display: block;
+  font-size: 12.5px;
+}
+
+.bks-casilla small {
+  display: block;
+  font-size: 11px;
+  color: #67707f;
+}
+
+.bks-aviso {
+  margin: 12px 0 0;
+  padding: 9px 11px;
+  border-left: 3px solid #b45309;
+  border-radius: 0 6px 6px 0;
+  background: #fffaf0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #78350f;
+}
+
+/* ── la bandeja ── */
+
+.bks-bandeja {
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.bks-bandeja h3 {
+  margin: 0 0 7px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #67707f;
+}
+
+.bks-bandeja ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bks-bandeja li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 88px 96px 52px;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid #e6eaf0;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bks-bandeja li span {
+  color: #5b6678;
+}
+
+.bks-vacio {
+  margin: 0;
+  font-size: 12px;
+  color: #8a93a2;
+}
+
+.bks-simulador {
+  margin: 9px 0 0;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: #67707f;
+}
+
+.bks-titulo,
+.bks-sub,
+.bks-formatos,
+.bks-proteger,
+.bks-bandeja {
+  width: 100%;
+  max-width: 980px;
+}
+
+.txtw:has(.bks) .txtw-panel {
+  position: relative;
+  z-index: 41;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   IMPRIMIR (§44.4)
+
+   Dos columnas, como PowerPoint: las opciones a la izquierda y el previo
+   grande a la derecha. La proporción no es decorativa — la clase es «mira lo
+   que sale», así que el previo se lleva más de la mitad.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.bks-imprimir {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .bks-imprimir {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.bks-print-opciones {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.bks-print-campo {
+  display: grid;
+  grid-template-columns: auto 90px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.bks-print-campo input {
+  padding: 6px 8px;
+  border: 1px solid var(--w-borde);
+  border-radius: 5px;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.bks-print-grupo {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid var(--w-borde);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.bks-print-grupo legend {
+  padding: 0 6px;
+  color: var(--w-gris);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.bks-print-opcion {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 9px;
+  padding: 8px 9px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.bks-print-opcion:hover {
+  background: #f3f4f6;
+}
+
+.bks-print-opcion.es-puesta {
+  border-color: var(--t-marca);
+  background: rgb(37 99 235 / 0.07);
+}
+
+.bks-print-opcion span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.bks-print-opcion b {
+  font-size: 13px;
+}
+
+/* Para quién es. Va antes que el detalle a propósito: la decisión que la clase
+   enseña es «¿para quién imprimo?», no «¿cuántas caben?». */
+.bks-print-opcion i {
+  color: var(--t-marca);
+  font-size: 11.5px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.bks-print-opcion small {
+  color: var(--w-gris);
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.bks-boton.es-imprimir {
+  padding: 11px;
+  font-size: 14px;
+}
+
+.bks-print-previo {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  min-width: 0;
+}
+
+.bks-print-cuenta {
+  margin: 0;
+  color: var(--w-gris);
+  font-size: 12.5px;
+}
+
+.bks-print-cuenta b {
+  color: #111827;
+  font-size: 13.5px;
+}
+
+.bks-print-cuenta em {
+  color: #b45309;
+  font-style: normal;
+  font-weight: 700;
+}
+
+/*
+ * Las hojas ENVUELVEN, no van en fila con desplazamiento lateral.
+ *
+ * Salió jugando: en fila, la tercera hoja de tres quedaba medio tapada por el
+ * panel del maestro y con un scroll horizontal que nadie ve. Y esta clase es
+ * «mira lo que sale»: un previo donde hay que adivinar que se puede desplazar
+ * no se mira, y entonces no enseña nada. Envolviendo, las tres caben de una vez
+ * y el desplazamiento que queda es el vertical, que sí se reconoce.
+ */
+.bks-print-hojas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: start;
+  max-height: 62vh;
+  padding: 6px 4px 12px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.bks-print-hojas > .hoja {
+  flex: 0 0 auto;
+  width: 196px;
+}
+
+.bks-print-hojas > .hoja.es-apaisada {
+  width: 274px;
+}

@@ -1,0 +1,588 @@
+/*
+ * Tecnia Correo — el cliente de correo.
+ *
+ * Color pleno y saturado sobre fondo oscuro con drama de luz, misma familia
+ * que `ventanaMuro.css`: un programa de correo de verdad es denso y de
+ * acentos intensos, no pastel. Los controles viven pegados a lo que tocan
+ * —las acciones dentro del panel de lectura, el clip dentro de la ventana de
+ * redacción— y no flotan encima como overlays genéricos.
+ *
+ * El marco (barra de título, botón de encender) llega con `VentanaBase`;
+ * todo lo de aquí vive dentro de su hueco de contenido.
+ */
+
+.tc {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  position: relative;
+  background: radial-gradient(120% 100% at 20% 0%, #0d2340 0%, #071426 55%, #040d1a 100%);
+  color: #e8f4ff;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.tc-marco {
+  display: grid;
+  grid-template-columns: 190px 260px minmax(0, 1fr);
+  min-height: 0;
+  flex: 1;
+}
+
+.tc-vacio {
+  margin: auto;
+  padding: 24px;
+  text-align: center;
+  color: #6f92b8;
+  font-weight: 700;
+  max-width: 32ch;
+}
+
+/* ── columna de carpetas ─────────────────────────────────────────────────── */
+
+.tc-carpetas {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 10px;
+  background: #08182c;
+  border-right: 2px solid #123a5e;
+  overflow-y: auto;
+}
+
+.tc-redactar {
+  margin-bottom: 8px;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 12px;
+  font: inherit;
+  font-weight: 900;
+  color: #041423;
+  background: linear-gradient(135deg, #22d3ee, #3b82f6);
+  box-shadow: 0 8px 22px rgba(34, 211, 238, 0.35);
+  cursor: pointer;
+}
+.tc-redactar:hover {
+  filter: brightness(1.08);
+}
+
+.tc-carpeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 11px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  color: #a9c8e6;
+  text-align: left;
+  cursor: pointer;
+}
+.tc-carpeta:disabled {
+  cursor: default;
+}
+.tc-carpeta:not(:disabled):hover {
+  background: #0f2a45;
+  color: #e8f4ff;
+}
+.tc-carpeta.es-activa {
+  background: #13355a;
+  border-color: #22d3ee;
+  color: #fff;
+}
+.tc-carpeta-txt {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tc-carpeta-n {
+  flex: none;
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #1d4269;
+  font-size: 11.5px;
+  font-weight: 900;
+  text-align: center;
+  color: #cfe6ff;
+}
+.tc-carpeta-n.es-nuevo {
+  background: #f5a524;
+  color: #2a1704;
+  box-shadow: 0 0 14px rgba(245, 165, 36, 0.5);
+}
+
+/* ── lista de la bandeja ─────────────────────────────────────────────────── */
+
+.tc-lista {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 10px 8px;
+  background: #061627;
+  border-right: 2px solid #123a5e;
+  overflow-y: auto;
+}
+.tc-lista-tit {
+  margin: 0 0 8px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #5f87ae;
+}
+
+.tc-fila {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  grid-template-areas:
+    'punto de marcas'
+    'punto asunto fecha';
+  align-items: center;
+  gap: 2px 8px;
+  padding: 9px 10px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  font: inherit;
+  color: #b9d4ee;
+  text-align: left;
+  cursor: pointer;
+}
+.tc-fila:disabled {
+  cursor: default;
+}
+.tc-fila:not(:disabled):hover {
+  background: #0d2740;
+}
+.tc-fila.es-abierta {
+  background: #143659;
+  border-color: #22d3ee;
+  color: #fff;
+}
+.tc-fila-punto {
+  grid-area: punto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #22d3ee;
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.8);
+}
+.tc-fila-punto.es-leido {
+  background: transparent;
+  box-shadow: none;
+}
+.tc-fila-de {
+  grid-area: de;
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tc-fila.es-sin-leer .tc-fila-de {
+  color: #fff;
+}
+.tc-fila-asunto {
+  grid-area: asunto;
+  font-size: 12.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tc-fila-marcas {
+  grid-area: marcas;
+  display: flex;
+  gap: 3px;
+  font-size: 11px;
+}
+.tc-fila-fecha {
+  grid-area: fecha;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5f87ae;
+}
+
+/* ── panel de lectura ────────────────────────────────────────────────────── */
+
+.tc-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.tc-lectura {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 20px;
+}
+.tc-lectura-asunto {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.tc-cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 11px 13px;
+  background: #0b2138;
+  border: 2px solid #16405f;
+  border-radius: 12px;
+}
+.tc-campo,
+.tc-red-campo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0;
+}
+.tc-campo-eti {
+  flex: none;
+  min-width: 46px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5f87ae;
+}
+.tc-campo-fecha {
+  margin-left: auto;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #5f87ae;
+}
+.tc-campo-vacio {
+  font-style: italic;
+  color: #5f87ae;
+}
+.tc-persona {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.tc-persona-nombre {
+  font-weight: 800;
+  color: #e8f4ff;
+}
+/* La dirección de verdad, cuando la clase la destapa: monoespaciada, porque
+   una dirección se lee letra por letra o no se lee. */
+.tc-persona-dir {
+  font-family: ui-monospace, 'Cascadia Mono', Menlo, monospace;
+  font-size: 12px;
+  color: #f5a524;
+}
+
+.tc-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.tc-accion {
+  padding: 8px 13px;
+  border: 2px solid #1d4a70;
+  border-radius: 999px;
+  background: #0e2b46;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #cfe6ff;
+  cursor: pointer;
+}
+.tc-accion:hover {
+  border-color: #22d3ee;
+  color: #fff;
+}
+.tc-accion.es-activa {
+  background: #f5a524;
+  border-color: #f5a524;
+  color: #2a1704;
+}
+.tc-accion.es-borrar:hover {
+  border-color: #f87171;
+}
+.tc-accion.es-no-deseado:hover {
+  border-color: #fbbf24;
+}
+
+.tc-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.tc-parrafo {
+  margin: 0;
+}
+.tc-parrafo.es-cita {
+  padding-left: 11px;
+  border-left: 3px solid #1d4a70;
+  color: #86a9ca;
+}
+
+.tc-enlaces {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.tc-enlace {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 9px;
+  padding: 7px 12px;
+  border: 2px solid #1d4a70;
+  border-radius: 10px;
+  background: #0b2138;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.tc-enlace:hover {
+  border-color: #22d3ee;
+}
+.tc-enlace-texto {
+  font-weight: 800;
+  color: #38bdf8;
+  text-decoration: underline;
+}
+/* A dónde va DE VERDAD. Monoespaciada y en ámbar: es la otra mitad del dato. */
+.tc-enlace-destino {
+  font-family: ui-monospace, 'Cascadia Mono', Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #f5a524;
+}
+
+.tc-adjuntos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tc-adjunto-caja {
+  display: inline-flex;
+  align-items: center;
+}
+.tc-adjunto {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 2px solid #1d4a70;
+  border-radius: 10px;
+  background: #0b2138;
+  font: inherit;
+  font-size: 12.5px;
+  color: #cfe6ff;
+  cursor: default;
+}
+button.tc-adjunto {
+  cursor: pointer;
+}
+button.tc-adjunto:hover {
+  border-color: #22d3ee;
+}
+.tc-adjunto.es-peligroso {
+  border-color: #f87171;
+  background: #2b0f18;
+}
+.tc-adjunto-nombre {
+  font-weight: 800;
+  color: #e8f4ff;
+}
+.tc-adjunto-peso {
+  font-size: 11.5px;
+  color: #5f87ae;
+}
+.tc-adjunto-alarma {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #f87171;
+  font-size: 11px;
+  font-weight: 900;
+  color: #2b0509;
+}
+.tc-adjunto-quitar {
+  margin-left: -4px;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 50%;
+  background: #1d4a70;
+  color: #cfe6ff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* ── ventana de redacción ────────────────────────────────────────────────── */
+
+.tc-redaccion {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: min(430px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #22d3ee;
+  border-radius: 14px;
+  background: #0a1f36;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.6), 0 0 34px rgba(34, 211, 238, 0.25);
+  overflow: hidden;
+}
+.tc-red-barra {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 13px;
+  background: linear-gradient(180deg, #16456c, #0f3255);
+}
+.tc-red-titulo {
+  font-size: 12.5px;
+  font-weight: 900;
+  color: #fff;
+}
+.tc-red-cerrar {
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #cfe6ff;
+  font-weight: 900;
+  cursor: pointer;
+}
+.tc-red-cerrar:hover {
+  background: #f87171;
+  color: #2b0509;
+}
+.tc-red-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  min-height: 0;
+  overflow-y: auto;
+}
+.tc-red-valor {
+  font-weight: 700;
+}
+.tc-red-cuadro,
+.tc-red-mensaje {
+  width: 100%;
+  background: #061627;
+  border: 2px solid #1d4a70;
+  border-radius: 9px;
+  padding: 8px 11px;
+  color: #e8f4ff;
+  font: inherit;
+  font-weight: 600;
+}
+.tc-red-cuadro:focus,
+.tc-red-mensaje:focus {
+  outline: none;
+  border-color: #22d3ee;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.28);
+}
+.tc-red-mensaje {
+  resize: none;
+  min-height: 130px;
+}
+.tc-red-mensaje.es-fijo {
+  min-height: 90px;
+}
+
+.tc-ficha {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 5px 3px 10px;
+  border-radius: 999px;
+  background: #13355a;
+  border: 2px solid #1d4a70;
+  font-size: 12px;
+  font-weight: 800;
+  color: #e8f4ff;
+}
+.tc-ficha-dir {
+  font-family: ui-monospace, 'Cascadia Mono', Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #8fb4d6;
+}
+.tc-ficha-quitar {
+  width: 19px;
+  height: 19px;
+  border: 0;
+  border-radius: 50%;
+  background: #1d4a70;
+  color: #cfe6ff;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.tc-ficha-quitar:hover {
+  background: #f87171;
+  color: #2b0509;
+}
+
+.tc-red-pie {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-top: 2px solid #16405f;
+  background: #08192c;
+}
+.tc-red-clip {
+  padding: 7px 12px;
+  border: 2px solid #1d4a70;
+  border-radius: 9px;
+  background: #0e2b46;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #cfe6ff;
+  cursor: pointer;
+}
+.tc-red-clip:hover {
+  border-color: #22d3ee;
+}
+.tc-red-aviso {
+  flex: 1;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #f5a524;
+}
+.tc-red-enviar {
+  margin-left: auto;
+  padding: 9px 24px;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 900;
+  color: #041423;
+  background: linear-gradient(135deg, #22d3ee, #3b82f6);
+  box-shadow: 0 8px 22px rgba(34, 211, 238, 0.4);
+  cursor: pointer;
+}
+.tc-red-enviar:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 900px) {
+  .tc-marco {
+    grid-template-columns: 150px 210px minmax(0, 1fr);
+  }
+}

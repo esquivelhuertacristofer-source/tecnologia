@@ -1,0 +1,26 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   `n6-que-es-un-robot` — retoques mínimos sobre `lab3d-clases.css`.
+
+   Todo lo que es mecánica —charolas, aros, mandos, letreros— vive dentro del
+   lienzo y ya trae su estilo del armazón. Lo único que hace falta aquí es
+   que la pregunta del encargo 9, al leerse en el respaldo sin WebGL, no
+   herede el tratamiento en mayúsculas de una etiqueta de grupo (es una
+   pregunta completa, no un rótulo de tres palabras) y que el contador de
+   choques se lea como una nota informativa, no como un error: chocar es
+   temario, no falta.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.lab3d-sala .qer-pregunta {
+  display: block;
+  margin-bottom: 2px;
+  color: #f2fbff;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.lab3d-sala .qer-choques {
+  color: #fbbf24;
+  font-weight: 700;
+}

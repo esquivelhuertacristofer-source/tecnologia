@@ -1,0 +1,467 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `n7-verifica-a-la-ia` — sólo lo que `salaIA.css` no da: las dos ventanas
+   lado a lado (`VentanaBase` es `position:absolute`, así que cada una
+   necesita su propia caja `position:relative`), la Hoja de verificación, las
+   chapas de señal y la banda de adjuntar de Tecnia Consulta.
+
+   Color pleno y saturado sobre fondo oscuro. Nunca pastel, nunca blanco
+   sobre blanco, nunca bordes punteados (hasta el «resultado vacío», que
+   pide un marco punteado en la vitrina de referencias, se pinta aquí con
+   marco ámbar LISO — es una regla del cliente, no una excepción de esta
+   clase).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Las dos ventanas, lado a lado ───────────────────────────────────────── */
+
+.tva-caja-ventana {
+  position: relative;
+  min-height: 0;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+/* La Hoja necesita más sitio que el panel por omisión (240–380px): el pliego
+   mide 340–420px. Se ensancha desde aquí, con una clase propia en
+   `VentanaAsistente`, sin tocar `ventanaAsistente.css` — que si se tocara,
+   cambiaría el ancho de las otras cuatro clases de IA que ya usan el panel. */
+.tva-asistente .asis-panel {
+  flex: 0 0 clamp(320px, 40%, 430px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .tva-asistente .asis-panel {
+    flex: 1 1 auto;
+  }
+}
+
+/* ── El índice de la Hoja: una fila por afirmación, señales incluidas ───── */
+
+.tva-indice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tva-indice-fila {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 2px solid #1f4d78;
+  background: #0a2440;
+  color: #cfe4ff;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+}
+.tva-indice-fila:hover {
+  border-color: var(--tia-cian);
+}
+.tva-indice-fila.es-activa {
+  border-color: var(--tia-cian);
+  background: linear-gradient(165deg, #0e5a75, #073a4d);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--tia-cian) 34%, transparent);
+}
+.tva-indice-fila.es-resuelta {
+  border-color: var(--tia-verde);
+  color: #d8fff0;
+}
+.tva-indice-fila:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.tva-indice-numero {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #123a5b;
+  font-size: 11px;
+  font-weight: 900;
+}
+.tva-indice-fila.es-resuelta .tva-indice-numero {
+  background: var(--tia-verde);
+  color: #04241a;
+}
+
+.tva-indice-chapas {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ── Las chapas de señal — la sexta es gris a propósito: «sin pistas» está
+   presente, no ausente ────────────────────────────────────────────────── */
+
+.tva-chapa-senal {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tia-ambar) 22%, #0a2440);
+  border: 1px solid var(--tia-ambar);
+  color: #ffe8b8;
+  font-size: 10.5px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.tva-chapa-senal.es-sin-pistas {
+  background: #16283c;
+  border-color: #64748b;
+  color: #b7c4d6;
+}
+
+/* ── El detalle de la fila activa ────────────────────────────────────────── */
+
+.tva-detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+  border-top: 2px solid #17456e;
+}
+
+.tva-paso-etiqueta {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tia-cian);
+}
+
+.tva-anclas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tva-ancla {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  color: #eaf4ff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.tva-ancla:hover {
+  border-color: var(--tia-cian);
+}
+.tva-ancla.es-elegida {
+  border-color: var(--tia-cian);
+  background: linear-gradient(165deg, #0e5a75, #073a4d);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--tia-cian) 34%, transparent);
+}
+.tva-ancla:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* ── El contador de pruebas ──────────────────────────────────────────────── */
+
+.tva-contador-pruebas {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--tia-texto-suave);
+}
+.tva-casilla {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+}
+.tva-casilla.es-llena {
+  border-color: var(--tia-verde);
+  background: var(--tia-verde);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--tia-verde) 55%, transparent);
+}
+
+/* ── Cada prueba adjuntada ───────────────────────────────────────────────── */
+
+.tva-pruebas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tva-prueba {
+  padding: 9px 11px;
+  border-radius: 12px;
+  border: 2px solid #1f5580;
+  background: #082238;
+  font-size: 12.5px;
+  color: #dcecff;
+}
+.tva-prueba-fuente {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--tia-cian);
+}
+.tva-prueba.es-vacio {
+  border-style: solid;
+  border-color: var(--tia-ambar);
+  background: color-mix(in srgb, var(--tia-ambar) 10%, #082238);
+}
+.tva-prueba-etiqueta-vacio {
+  font-weight: 900;
+  color: var(--tia-ambar);
+}
+.tva-prueba-nota {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #9dc0e2;
+}
+
+/* ── La copia, cara a cara: la imagen central de la clase ────────────────── */
+
+.tva-copia {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 2px solid var(--tia-rosa);
+  background: linear-gradient(165deg, #35091a, #1a040d);
+}
+.tva-copia-titulo {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffd9e2;
+}
+.tva-copia-parrafo {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 12px;
+  color: #ffe4ec;
+}
+.tva-copia-pie {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 900;
+  color: var(--tia-rosa);
+}
+
+/* ── Los tres veredictos: mismo tamaño, mismo peso, cada uno su forma ────── */
+
+.tva-veredictos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.tva-veredicto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  border: none;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 900;
+  color: #04121f;
+  cursor: pointer;
+}
+.tva-veredicto-icono {
+  font-size: 18px;
+}
+.tva-veredicto.es-confirmada {
+  background: linear-gradient(165deg, var(--tia-verde), var(--tia-verde-honda));
+  clip-path: polygon(12% 0, 88% 0, 100% 50%, 88% 100%, 12% 100%, 0 50%);
+}
+.tva-veredicto.es-contradicha {
+  background: linear-gradient(165deg, var(--tia-rosa), var(--tia-rosa-honda));
+  border-radius: 6px;
+}
+.tva-veredicto.es-sin-respaldo {
+  background: linear-gradient(165deg, var(--tia-ambar), var(--tia-ambar-honda));
+  border-radius: 999px;
+}
+.tva-veredicto:disabled {
+  cursor: not-allowed;
+  background: #123a5b;
+  color: #6d92b4;
+  clip-path: none;
+}
+.tva-veredicto:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.tva-veredicto-motivo {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--tia-texto-suave);
+}
+
+/* ── La fila resuelta ─────────────────────────────────────────────────────── */
+
+.tva-resuelta {
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 2px solid var(--tia-verde);
+  background: linear-gradient(165deg, #06301f, #041c14);
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #d8fff0;
+}
+
+/* ── Acto 2: la cita ──────────────────────────────────────────────────────── */
+
+.tva-cita {
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 2px solid var(--tia-morado);
+  background: linear-gradient(165deg, #1b1246, #0a0a24);
+  font-size: 12.5px;
+  color: #e5dcff;
+}
+.tva-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tva-opcion {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  color: #eaf4ff;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-align: left;
+  cursor: pointer;
+}
+.tva-opcion:hover:not(:disabled) {
+  border-color: var(--tia-cian);
+}
+.tva-opcion:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.tva-opcion.es-mal {
+  border-color: var(--tia-rosa);
+  background: linear-gradient(165deg, #3a0b1c, #1e0410);
+}
+.tva-opcion:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* ── Acto 3: consultas y revelación ──────────────────────────────────────── */
+
+.tva-consultas {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 2px solid var(--tia-ambar);
+  background: color-mix(in srgb, var(--tia-ambar) 12%, #0a2440);
+  color: #ffe8b8;
+  font-size: 12.5px;
+  font-weight: 900;
+}
+
+.tva-revelacion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tva-revelacion-fila {
+  padding: 9px 11px;
+  border-radius: 12px;
+  border: 2px solid #1f5580;
+  background: #082238;
+  font-size: 12px;
+  color: #dcecff;
+}
+.tva-revelacion-fila.es-sin-tiempo {
+  border-color: var(--tia-ambar);
+  background: color-mix(in srgb, var(--tia-ambar) 10%, #082238);
+}
+
+/* ── La banda de adjuntar, dentro de `barraEstado` de Tecnia Consulta ────── */
+
+.tva-banda {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+.tva-banda-titulo {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--apagado, #7fa3c9);
+}
+.tva-banda-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tva-banda-texto {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11.5px;
+  color: #cfe0f2;
+}
+.tva-banda-boton {
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 2px solid var(--tia-cian, #22d3ee);
+  background: rgba(34, 211, 238, 0.14);
+  color: #a5f3fc;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.tva-banda-boton:hover:not(:disabled) {
+  background: rgba(34, 211, 238, 0.28);
+}
+.tva-banda-boton:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+.tva-banda-vacio {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--apagado, #7fa3c9);
+}

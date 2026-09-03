@@ -1,0 +1,58 @@
+/**
+ * `PanelGraficas.tsx` — Barras y Dispersión, para `n6-elige-la-grafica`
+ * (bloques 37-38).
+ *
+ * Mismo molde que `panelTablas.css`: el panel entra por `panelFijo`, que ya
+ * envuelve el cuerpo en `.txtw-panel-cuerpo` —márgenes y fondo son de ahí—,
+ * así que aquí sólo se ordenan los dos botones.
+ */
+
+.peg {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.82rem;
+}
+
+.peg-ayuda {
+  margin: 0;
+  font-size: 0.76rem;
+  opacity: 0.7;
+}
+
+.peg-fila {
+  display: flex;
+  gap: 10px;
+}
+
+.peg-boton {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(15, 108, 189, 0.06);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.peg-boton:hover {
+  background: rgba(15, 108, 189, 0.14);
+}
+
+.peg-glifo {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.peg-sel {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(15, 108, 189, 0.08);
+  color: inherit;
+}

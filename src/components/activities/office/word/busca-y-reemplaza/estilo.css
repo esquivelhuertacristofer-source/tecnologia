@@ -1,0 +1,329 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `of-word-busca-y-reemplaza` · el cuadro de Buscar y reemplazar
+
+   Es un DIÁLOGO DE WORD, no un panel de juego: caja clara, bordes de un píxel,
+   tipografía de sistema y el azul #185ABD sólo donde Word lo pone —la pestaña
+   activa y el botón por omisión—. La regla de color pleno de la plataforma
+   gobierna la entrada y el panel del maestro; aquí manda la fidelidad, porque
+   el alumno tiene que reconocer este cuadro el día que abra el Word de la
+   escuela (doc §36.2).
+
+   Todas las clases van con el prefijo `bur-` para no chocar con las otras 153
+   clases del temario, que se construyen en paralelo.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── las marcas sobre la hoja ─── */
+
+/*
+   El amarillo de las coincidencias y el naranja de la actual. Son decoraciones
+   en línea, así que se pintan DENTRO del documento y siguen al texto cuando la
+   página se repagina. El contraste está elegido para que se lean encima: negro
+   sobre amarillo da 12:1, y sobre el naranja 7:1.
+*/
+.txtw .bur-marca {
+  background: #ffe58f;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(180, 130, 0, 0.35);
+}
+
+.txtw .bur-marca.es-actual {
+  background: #ff9d2e;
+  box-shadow: 0 0 0 1px #b45309;
+}
+
+/* ─── el cuadro ─── */
+
+/*
+   Por debajo del halo (60) a propósito: el maestro tiene que poder señalar un
+   campo o una casilla DE ESTE cuadro, y un diálogo por encima se comería el
+   aro naranja justo en los encargos que dependen de él.
+*/
+.bur-caja {
+  position: absolute;
+  z-index: 40;
+  /* Lo justo para que los cuatro botones de «Reemplazar» quepan en UN renglón,
+     como en Word. Medido: los cuatro suman 431 px con sus huecos, más 28 de
+     relleno; a 396 —y también a 458, por un pelo— se partían en dos renglones y
+     el cuadro dejaba de parecerse al de verdad. */
+  width: 476px;
+  background: #f9f8f7;
+  border: 1px solid #b9b7b5;
+  border-radius: 3px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.32);
+  font-family: 'Segoe UI', 'Selawik', system-ui, -apple-system, sans-serif;
+  font-size: 12.5px;
+  color: #201f1e;
+  user-select: none;
+}
+
+.bur-caja *,
+.bur-caja *::before,
+.bur-caja *::after {
+  box-sizing: border-box;
+}
+
+/* ─── barra de título ─── */
+
+.bur-barra {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px 7px 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #eeecea 100%);
+  border-bottom: 1px solid #d6d4d2;
+  border-radius: 2px 2px 0 0;
+  cursor: move;
+  touch-action: none;
+}
+
+.bur-barra-titulo {
+  flex: 1;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.bur-cerrar {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 22px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: none;
+  color: #605e5c;
+  cursor: pointer;
+}
+
+.bur-cerrar:hover {
+  background: #e81123;
+  border-color: #e81123;
+  color: #fff;
+}
+
+/* ─── pestañas del diálogo ─── */
+
+.bur-pestanas {
+  display: flex;
+  gap: 2px;
+  padding: 8px 10px 0;
+  border-bottom: 1px solid #c8c6c4;
+}
+
+.bur-pestana {
+  padding: 5px 13px 6px;
+  border: 1px solid #c8c6c4;
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  margin-bottom: -1px;
+  background: #edebe9;
+  color: #201f1e;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.bur-pestana:hover {
+  background: #e3e1df;
+}
+
+.bur-pestana.es-activa {
+  background: #f9f8f7;
+  border-bottom: 1px solid #f9f8f7;
+  font-weight: 700;
+  color: #185abd;
+}
+
+/* ─── cuerpo ─── */
+
+.bur-cuerpo {
+  padding: 13px 14px 12px;
+}
+
+.bur-campo {
+  display: grid;
+  grid-template-columns: 106px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+
+/* «Número de página:» no cabe en la columna de «Buscar:» y se partía en dos
+   renglones, que en un diálogo de Word canta. La columna crece sólo ahí. */
+.bur-campo.es-etiqueta-larga {
+  grid-template-columns: 138px minmax(0, 1fr);
+}
+
+.bur-campo > label {
+  font-size: 12.5px;
+}
+
+.bur-campo input[type='text'],
+.bur-campo input[type='number'] {
+  width: 100%;
+  padding: 4px 7px;
+  border: 1px solid #8a8886;
+  border-radius: 2px;
+  background: #fff;
+  color: #201f1e;
+  font-family: inherit;
+  font-size: 12.5px;
+  user-select: text;
+}
+
+.bur-campo input:focus {
+  outline: none;
+  border-color: #185abd;
+  box-shadow: 0 0 0 1px #185abd;
+}
+
+/* ─── el contador ─── */
+
+/*
+   Word no siempre lo enseña; aquí sí, y es a propósito: el segundo encargo pide
+   LEER cuántas veces aparece una palabra, y sin un número que mirar el alumno
+   sólo puede contar a ojo sobre dos hojas de texto.
+*/
+.bur-cuenta {
+  margin: -2px 0 10px 114px;
+  font-size: 11.5px;
+  color: #605e5c;
+}
+
+.bur-cuenta b {
+  color: #185abd;
+}
+
+/* ─── opciones ─── */
+
+/* «Más >>» va pegado a la izquierda, separado del resto de botones. */
+.bur-boton.es-mas {
+  min-width: 78px;
+  margin-right: auto;
+}
+
+.bur-opciones {
+  margin: 12px 0 0;
+  padding: 9px 11px 10px;
+  border: 1px solid #d6d4d2;
+  border-radius: 2px;
+  background: #f3f2f1;
+}
+
+.bur-opciones-titulo {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #605e5c;
+}
+
+.bur-casilla {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 2px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.bur-casilla:hover {
+  background: #e7e6e4;
+}
+
+/*
+   Un respiro entre las dos casillas, y no es cosmético: el encargo 7 le pone el
+   aro naranja a «Sólo palabras completas», y el aro no es una línea —son tres
+   píxeles de borde y siete de resplandor que se salen de la caja—. Pegadas, el
+   resplandor caía encima de «Coincidir mayúsculas y minúsculas» y la dejaba
+   lavada, como si estuviera apagada, justo en el encargo que manda marcar LAS
+   DOS. Se vio en la captura, no en los números.
+*/
+.bur-casilla + .bur-casilla {
+  margin-top: 8px;
+}
+
+.bur-casilla input {
+  width: 14px;
+  height: 14px;
+  accent-color: #185abd;
+  cursor: pointer;
+}
+
+/* ─── botones ─── */
+
+.bur-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.bur-boton {
+  min-width: 86px;
+  padding: 6px 11px;
+  border: 1px solid #8a8886;
+  border-radius: 2px;
+  background: #fff;
+  color: #201f1e;
+  font-family: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.bur-boton:hover:not(:disabled) {
+  background: #eff6fc;
+  border-color: #185abd;
+}
+
+.bur-boton:active:not(:disabled) {
+  background: #dfeaf7;
+}
+
+.bur-boton.es-principal {
+  border-color: #185abd;
+  background: #185abd;
+  color: #fff;
+  font-weight: 600;
+}
+
+.bur-boton.es-principal:hover:not(:disabled) {
+  background: #103f91;
+  border-color: #103f91;
+}
+
+.bur-boton:disabled {
+  border-color: #d6d4d2;
+  background: #f3f2f1;
+  color: #a19f9d;
+  cursor: default;
+}
+
+/* ─── el recado del programa ─── */
+
+/*
+   «Se hicieron 12 reemplazos» es la frase que Word contesta y es la que hace
+   visible el desastre del tercer encargo: doce cambios cuando el alumno quería
+   ocho. El número es la primera pista de que algo se le fue de las manos.
+*/
+.bur-recado {
+  margin: 10px 0 0;
+  padding: 7px 9px;
+  border-left: 3px solid #185abd;
+  background: #eff6fc;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.bur-recado.es-vacio {
+  border-left-color: #a19f9d;
+  background: #f3f2f1;
+  color: #605e5c;
+}
+
+.bur-nota {
+  margin: 0 0 10px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #605e5c;
+}

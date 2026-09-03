@@ -1,0 +1,530 @@
+/**
+ * «Tecnia Mensajes» — la app de chat de n4-si-algo-me-incomoda.
+ *
+ * Estilos propios y autocontenidos (prefijo `.msj-`, sin depender de
+ * `.arcade-n1` ni de ninguna hoja 3D): esta actividad no lleva escena — es
+ * la app entera, a pantalla completa, tal como se vería una app de mensajes
+ * de verdad. Fondo navy oscuro y acentos de color pleno por contacto — nunca
+ * pastel, y nunca coloreando distinto al contacto que «es el peligro»: eso
+ * sería una pista de interfaz que le haría trampa al alumno.
+ */
+
+.msj-app {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  min-height: 640px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: radial-gradient(circle at 18% -10%, #133249 0%, #061019 62%);
+  box-shadow: 0 30px 70px rgba(2, 10, 20, 0.45);
+  border: 1px solid rgba(148, 205, 255, 0.14);
+}
+
+/* ── barra superior ───────────────────────────────────────────────────── */
+
+.msj-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 0 0 auto;
+  padding: 14px 20px;
+  background: linear-gradient(180deg, #0e2c3e, #0a2333);
+  border-bottom: 1px solid rgba(94, 196, 255, 0.18);
+}
+
+.msj-topbar-marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 900 16px/1 'Epilogue', system-ui, sans-serif;
+  color: #eaf6ff;
+  letter-spacing: 0.01em;
+}
+
+.msj-topbar-paso {
+  margin-left: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(94, 196, 255, 0.12);
+  color: #9fe8ff;
+  font: 800 12px/1 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.msj-topbar-salir {
+  margin-left: auto;
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 2px solid rgba(234, 246, 255, 0.28);
+  background: transparent;
+  color: #eaf6ff;
+  font: 800 13px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.msj-topbar-salir:hover {
+  background: rgba(234, 246, 255, 0.1);
+}
+
+.msj-topbar-salir:focus-visible {
+  outline: 3px solid #9fe8ff;
+  outline-offset: 2px;
+}
+
+/* ── cuerpo: lista + chat ─────────────────────────────────────────────── */
+
+.msj-cuerpo {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ── lista de conversaciones ──────────────────────────────────────────── */
+
+.msj-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 0 300px;
+  padding: 14px 10px;
+  background: #0a2233;
+  border-right: 1px solid rgba(94, 196, 255, 0.14);
+  overflow-y: auto;
+}
+
+.msj-lista-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  padding: 11px 12px;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.msj-lista-item:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateX(2px);
+}
+
+.msj-lista-item:focus-visible {
+  outline: 3px solid #9fe8ff;
+  outline-offset: 2px;
+}
+
+.msj-lista-item.es-activa {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--acento, #22d3ee);
+}
+
+.msj-lista-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.msj-lista-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--acento, #22d3ee);
+  font-size: 21px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.msj-lista-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.msj-lista-nombre {
+  font: 800 14px/1.2 'Epilogue', system-ui, sans-serif;
+  color: #eaf6ff;
+}
+
+.msj-lista-vista {
+  font: 600 12px/1.3 system-ui, sans-serif;
+  color: rgba(234, 246, 255, 0.55);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.msj-lista-check {
+  flex: 0 0 auto;
+  color: #4ade80;
+  font: 900 15px/1 system-ui, sans-serif;
+}
+
+.msj-lista-nuevo {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.25);
+}
+
+/* ── panel de chat ─────────────────────────────────────────────────────── */
+
+.msj-chat {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.msj-chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+  padding: 14px 22px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(94, 196, 255, 0.14);
+}
+
+.msj-chat-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--acento, #22d3ee);
+  font-size: 19px;
+}
+
+.msj-chat-nombre {
+  font: 800 16px/1 'Epilogue', system-ui, sans-serif;
+  color: #eaf6ff;
+}
+
+.msj-chat-hilo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 20px 22px;
+  overflow-y: auto;
+}
+
+/* burbujas */
+
+.msj-bubble {
+  max-width: 72%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font: 600 14.5px/1.45 system-ui, sans-serif;
+}
+
+.msj-bubble p {
+  margin: 0;
+}
+
+.msj-bubble--ellos {
+  align-self: flex-start;
+  background: #163a52;
+  color: #eaf6ff;
+  border-bottom-left-radius: 4px;
+}
+
+.msj-bubble--yo {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #0e7490, #22d3ee);
+  color: #04222e;
+  font-weight: 700;
+  border-bottom-right-radius: 4px;
+}
+
+.msj-bubble-quien {
+  display: block;
+  margin-bottom: 3px;
+  font: 800 11px/1 system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9fe8ff;
+}
+
+/* avisos de sistema (silenciaste el chat, guardaste la captura...) */
+
+.msj-sistema {
+  align-self: center;
+  margin: 4px 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(234, 246, 255, 0.6);
+  font: 700 12px/1.3 system-ui, sans-serif;
+  font-style: italic;
+  text-align: center;
+}
+
+/* eco de la elección del alumno */
+
+.msj-eleccion {
+  align-self: center;
+  max-width: 84%;
+  margin: 2px 0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #b45309, #f5a524);
+  color: #2a1400;
+  font: 800 13px/1.4 system-ui, sans-serif;
+  text-align: center;
+}
+
+/* feedback de Bit (bien / mal) */
+
+.msj-feedback {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: flex-start;
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 2px solid rgba(148, 205, 255, 0.25);
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.msj-feedback.es-bien {
+  border-color: rgba(74, 222, 128, 0.45);
+  background: rgba(74, 222, 128, 0.12);
+}
+
+.msj-feedback.es-mal {
+  border-color: rgba(148, 205, 255, 0.35);
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.msj-feedback-avatar {
+  flex: 0 0 auto;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.msj-feedback p {
+  margin: 0;
+  font: 600 13.5px/1.45 system-ui, sans-serif;
+  color: #eaf6ff;
+}
+
+/* ── respuestas rápidas: integradas al pie del chat, no flotando ────────── */
+
+.msj-respuestas {
+  flex: 0 0 auto;
+  padding: 14px 22px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid rgba(94, 196, 255, 0.14);
+}
+
+.msj-respuestas-pregunta {
+  margin: 0 0 10px;
+  font: 800 13px/1.3 system-ui, sans-serif;
+  color: rgba(234, 246, 255, 0.7);
+}
+
+.msj-respuestas-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.msj-opcion {
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #0e7490, #155e75);
+  color: #eaf6ff;
+  font: 700 14px/1.35 system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+
+.msj-opcion:hover {
+  background: linear-gradient(135deg, #1091b4, #1b7a96);
+  transform: translateY(-1px);
+}
+
+.msj-opcion:active {
+  transform: translateY(0);
+}
+
+.msj-opcion:focus-visible {
+  outline: 3px solid #9fe8ff;
+  outline-offset: 2px;
+}
+
+.msj-resuelta {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 14px 22px 18px;
+  color: rgba(74, 222, 128, 0.9);
+  font: 800 13px/1.3 system-ui, sans-serif;
+  text-align: center;
+}
+
+/* ── pantalla final ───────────────────────────────────────────────────── */
+
+.msj-final {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 56px 28px;
+  text-align: center;
+}
+
+.msj-final-insignia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f5a524, #fbbf24);
+  font-size: 46px;
+  box-shadow: 0 12px 30px rgba(245, 165, 36, 0.35);
+}
+
+.msj-final-nombre {
+  margin: 0;
+  color: #fbbf24;
+  font: 800 13px/1 system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.msj-final-titulo {
+  margin: 0;
+  max-width: 620px;
+  color: #eaf6ff;
+  font: 900 26px/1.3 'Epilogue', system-ui, sans-serif;
+}
+
+.msj-final-detalle {
+  margin: 0;
+  max-width: 560px;
+  color: rgba(234, 246, 255, 0.78);
+  font: 600 15px/1.6 system-ui, sans-serif;
+}
+
+.msj-final-resumen {
+  display: flex;
+  gap: 14px;
+  margin: 10px 0 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.msj-final-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 20px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  min-width: 130px;
+}
+
+.msj-final-resumen dt {
+  font: 700 11px/1 system-ui, sans-serif;
+  color: rgba(234, 246, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.msj-final-resumen dd {
+  margin: 0;
+  font: 900 20px/1.2 'Epilogue', system-ui, sans-serif;
+  color: #eaf6ff;
+}
+
+.msj-final-acciones {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.msj-final-repetir {
+  padding: 13px 26px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #22d3ee, #0e7490);
+  color: #04222e;
+  font: 800 14px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.msj-final-repetir:hover {
+  filter: brightness(1.08);
+}
+
+.msj-final-salir {
+  padding: 13px 26px;
+  border-radius: 999px;
+  border: 2px solid rgba(234, 246, 255, 0.28);
+  background: transparent;
+  color: #eaf6ff;
+  font: 800 14px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.msj-final-salir:hover {
+  background: rgba(234, 246, 255, 0.08);
+}
+
+/* ── responsivo ───────────────────────────────────────────────────────── */
+
+@media (max-width: 820px) {
+  .msj-cuerpo {
+    flex-direction: column;
+  }
+
+  .msj-lista {
+    flex: 0 0 auto;
+    flex-direction: row;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    border-right: none;
+    border-bottom: 1px solid rgba(94, 196, 255, 0.14);
+  }
+
+  .msj-lista-item {
+    flex: 0 0 auto;
+    min-width: 180px;
+  }
+
+  .msj-lista-info {
+    max-width: 110px;
+  }
+
+  .msj-bubble {
+    max-width: 88%;
+  }
+}
+
+@media (max-width: 520px) {
+  .msj-topbar-paso {
+    display: none;
+  }
+}

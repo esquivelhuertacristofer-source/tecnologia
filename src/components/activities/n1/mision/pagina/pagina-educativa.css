@@ -1,0 +1,478 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Página educativa que acompaña al simulador 3D (hoja izquierda del
+   laboratorio de dos hojas). Ver DOC-PEDAGOGICO-PAGINA-CONECTA-EL-EQUIPO.md.
+
+   Hereda el lenguaje visual de la landing v4 —«sala oscura, pantallas
+   encendidas»— porque es justo la referencia que pidió el cliente, y comparte
+   el azul-noche de mision.css para que las dos hojas se lean como un solo
+   mueble. Tema único a propósito: es el mundo del laboratorio, no un
+   documento que deba adaptarse al tema claro del sistema.
+
+   Todo el ancho se mide en % del panel, nunca en vw: la hoja izquierda cambia
+   de anchura con el mando del riel y con vw quedaría descuadrada.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.pagina-edu {
+  --pe-bg: #06101c;
+  --pe-bg-2: #0a1a2c;
+  --pe-panel: rgba(13, 32, 54, 0.82);
+  --pe-line: rgba(150, 200, 245, 0.16);
+  --pe-line-fuerte: rgba(150, 200, 245, 0.32);
+  --pe-blue: #32a8ff;
+  --pe-cyan: #5ce1e6;
+  --pe-green: #58e29c;
+  --pe-yellow: #ffd25a;
+  --pe-red: #ff6d7c;
+  --pe-violet: #b78cff;
+  --pe-text: #eef8ff;
+  /* Neutro con sesgo hacia el azul de la página: elegido, no heredado. */
+  --pe-muted: #9db6cc;
+
+  position: relative;
+  min-height: 100%;
+  background:
+    radial-gradient(1100px 520px at 12% -6%, rgba(50, 168, 255, 0.16), transparent 62%),
+    radial-gradient(760px 460px at 96% 22%, rgba(92, 225, 230, 0.09), transparent 66%),
+    var(--pe-bg);
+  color: var(--pe-text);
+  font-family: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+.pagina-edu * { box-sizing: border-box; }
+
+/* Medida editorial: la columna nunca pasa de ~68 caracteres aunque el panel
+   se ensanche con el mando. */
+.pagina-edu .pe-medida {
+  width: min(100%, 720px);
+  margin-inline: auto;
+  padding-inline: clamp(18px, 4.2%, 44px);
+}
+
+/* ── Encabezados de bloque ── */
+.pagina-edu .pe-bloque { padding-block: clamp(30px, 5.4vh, 54px); }
+.pagina-edu .pe-bloque + .pe-bloque { border-top: 1px solid rgba(150, 200, 245, 0.1); }
+
+.pagina-edu .pe-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: var(--pe-cyan);
+}
+.pagina-edu .pe-eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--pe-cyan), transparent);
+}
+
+.pagina-edu h2 {
+  margin: 12px 0 10px;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(23px, 3.4vw, 31px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.pagina-edu h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.pagina-edu p { margin: 0 0 14px; color: #cfe2f3; }
+.pagina-edu p:last-child { margin-bottom: 0; }
+.pagina-edu .pe-lead { font-size: 16.5px; color: #dcecfb; }
+.pagina-edu strong { color: var(--pe-text); font-weight: 800; }
+
+/* ── Hero ── */
+.pagina-edu .pe-hero { position: relative; overflow: hidden; }
+.pagina-edu .pe-hero-foto {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.pagina-edu .pe-hero-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 58% 50%;
+  filter: saturate(0.82) contrast(1.06);
+}
+/* Velo: la foto es atmósfera, el texto manda — pero la foto tiene que verse.
+   Antes eran dos degradados fuertes que se multiplicaban y sumaban ~0,98 de
+   opacidad justo donde va el texto: la fotografía desaparecía. Ahora el peso
+   va en diagonal (denso bajo el texto, casi transparente en la esquina
+   opuesta) y el segundo degradado sólo cose el pie del hero con el fondo de
+   la página. */
+.pagina-edu .pe-hero-foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(105deg, rgba(4, 13, 24, 0.9) 0%, rgba(4, 13, 24, 0.72) 34%, rgba(4, 13, 24, 0.3) 66%, rgba(4, 13, 24, 0.1) 100%),
+    linear-gradient(180deg, rgba(4, 13, 24, 0) 56%, rgba(4, 13, 24, 0.55) 82%, var(--pe-bg) 100%);
+}
+.pagina-edu .pe-hero-texto {
+  position: relative;
+  z-index: 1;
+  padding-block: clamp(34px, 7vh, 62px) clamp(28px, 5vh, 46px);
+  /* Con el velo aligerado el texto se apoya en su propia sombra, no en un
+     muro negro encima de la fotografía. */
+  text-shadow: 0 2px 18px rgba(2, 9, 18, 0.85), 0 1px 3px rgba(2, 9, 18, 0.7);
+}
+.pagina-edu .pe-hero h1 {
+  margin: 14px 0 14px;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(30px, 5.6vw, 46px);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.038em;
+  text-wrap: balance;
+}
+.pagina-edu .pe-hero h1 em {
+  font-style: normal;
+  background: linear-gradient(96deg, var(--pe-cyan), var(--pe-blue) 68%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── Tira de reglas (las «cifras» de la landing, aquí son reglas del taller) ── */
+.pagina-edu .pe-reglas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 22px;
+  border: 1px solid var(--pe-line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--pe-line);
+}
+.pagina-edu .pe-regla {
+  background: linear-gradient(180deg, rgba(11, 28, 47, 0.96), rgba(7, 19, 33, 0.96));
+  padding: 15px 16px 16px;
+}
+.pagina-edu .pe-regla b {
+  display: block;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--pe-acc, var(--pe-blue));
+}
+.pagina-edu .pe-regla i {
+  display: block;
+  margin-top: 3px;
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pe-muted);
+}
+.pagina-edu .pe-regla span {
+  display: block;
+  margin-top: 9px;
+  font-size: 13.5px;
+  line-height: 1.42;
+  color: #cfe2f3;
+}
+
+/* ── Pareja de fichas con foto (puerto/cable, VGA/HDMI, …) ── */
+.pagina-edu .pe-duo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+.pagina-edu .pe-ficha {
+  --pe-acc: var(--pe-blue);
+  position: relative;
+  border: 1px solid var(--pe-line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--pe-panel);
+}
+.pagina-edu .pe-ficha-foto {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: #071523;
+  overflow: hidden;
+}
+.pagina-edu .pe-ficha-foto img { object-fit: cover; }
+/* Las fotos de Commons vienen con fondos dispares (estudio blanco, sábana,
+   mesa). El degradado inferior las cose al panel para que no floten
+   recortadas sobre el azul. */
+.pagina-edu .pe-ficha-foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 44%, rgba(9, 24, 41, 0.82) 88%, var(--pe-panel) 100%);
+}
+.pagina-edu .pe-ficha-etiqueta {
+  position: absolute;
+  z-index: 2;
+  left: 12px;
+  top: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #04121f;
+  background: var(--pe-acc);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+.pagina-edu .pe-ficha-texto { padding: 4px 16px 17px; }
+.pagina-edu .pe-ficha-texto p { font-size: 14px; }
+
+/* ── Bloque a plena anchura: foto grande + texto ── */
+.pagina-edu .pe-lamina {
+  position: relative;
+  margin-top: 20px;
+  border: 1px solid var(--pe-line);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--pe-panel);
+}
+.pagina-edu .pe-lamina-foto {
+  position: relative;
+  aspect-ratio: 16 / 8;
+  background: #071523;
+}
+.pagina-edu .pe-lamina-foto img { object-fit: cover; }
+.pagina-edu .pe-lamina-foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(9, 24, 41, 0.86) 86%, var(--pe-panel) 100%);
+}
+.pagina-edu .pe-lamina-texto { padding: 6px 18px 18px; }
+
+/* ── Aviso de seguridad ── */
+.pagina-edu .pe-aviso {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 12px;
+  align-items: start;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 210, 90, 0.34);
+  border-left: 4px solid var(--pe-yellow);
+  border-radius: 14px;
+  background: rgba(255, 210, 90, 0.09);
+}
+.pagina-edu .pe-aviso span { font-size: 22px; line-height: 1; }
+.pagina-edu .pe-aviso p { margin: 0; font-size: 14px; color: #ffeec0; }
+.pagina-edu .pe-aviso b { color: #fff6dc; }
+
+/* ── Mapa del panel trasero: foto panorámica con llamadas numeradas ── */
+.pagina-edu .pe-mapa-lienzo {
+  margin-top: 20px;
+  /* Sin desplazamiento horizontal. Antes el mapa tenía `min-width: 760px` y
+     en la hoja de 643 px la quinta llamada (Audio) quedaba fuera de la caja
+     sin ninguna pista de que hubiera scroll: medido, x=678 contra un borde en
+     643. El mapa entero cabe siempre y el detalle de cada puerto lo da la
+     lupa de la leyenda. */
+  overflow: hidden;
+  border: 1px solid var(--pe-line);
+  border-radius: 18px;
+  background: #050f1b;
+}
+.pagina-edu .pe-mapa {
+  position: relative;
+  aspect-ratio: 1908 / 566;
+}
+.pagina-edu .pe-mapa img { object-fit: cover; }
+.pagina-edu .pe-marca {
+  position: absolute;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  color: #04121f;
+  background: var(--pe-acc, var(--pe-cyan));
+  box-shadow:
+    0 0 0 3px rgba(4, 14, 27, 0.72),
+    0 0 22px color-mix(in srgb, var(--pe-acc, var(--pe-cyan)) 70%, transparent);
+  cursor: pointer;
+  transition: transform 0.16s ease;
+}
+.pagina-edu .pe-marca:hover,
+.pagina-edu .pe-marca:focus-visible { transform: scale(1.18); outline: none; }
+.pagina-edu .pe-marca[aria-pressed="true"] { transform: scale(1.24); }
+.pagina-edu .pe-marca::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 2px solid var(--pe-acc, var(--pe-cyan));
+  opacity: 0;
+}
+.pagina-edu .pe-marca[aria-pressed="true"]::after { opacity: 0.55; }
+
+/* Leyenda: la misma información sin depender de acertar un círculo de 30 px.
+   Cada entrada lleva su LUPA — un recorte ampliado de la misma fotografía
+   centrado en ese puerto. Es la fotografía real, no un icono ni un cuadrado
+   de color: el alumno ve el puerto al que se refiere el texto a ~1,6× del
+   tamaño al que se ve en el mapa. */
+.pagina-edu .pe-leyenda {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+.pagina-edu .pe-leyenda-item {
+  --pe-acc: var(--pe-cyan);
+  --pe-lupa: 116px;
+  display: grid;
+  grid-template-columns: var(--pe-lupa) 1fr;
+  gap: 13px;
+  align-items: center;
+  width: 100%;
+  padding: 10px 13px;
+  border: 1px solid var(--pe-line);
+  border-radius: 14px;
+  background: rgba(10, 26, 44, 0.66);
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+.pagina-edu .pe-leyenda-item:hover,
+.pagina-edu .pe-leyenda-item[aria-pressed="true"] {
+  border-color: var(--pe-acc);
+  background: color-mix(in srgb, var(--pe-acc) 12%, rgba(10, 26, 44, 0.66));
+}
+
+/* La ventana de la lupa. */
+.pagina-edu .pe-lupa {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  width: var(--pe-lupa);
+  aspect-ratio: 1.41;
+  border-radius: 11px;
+  border: 1px solid color-mix(in srgb, var(--pe-acc) 55%, transparent);
+  background: #050f1b;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--pe-acc) 24%, transparent);
+}
+/* El recorte: la foto entera, ampliada, y desplazada de modo que el punto
+   (x%, y%) —el mismo par de coordenadas que sitúa la llamada en el mapa—
+   quede exactamente en el centro de la ventana. Los porcentajes de translate
+   son relativos al elemento transformado, que es lo que hace que la cuenta
+   salga sin conocer los píxeles. */
+.pagina-edu .pe-lupa img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 866%;
+  height: auto;
+  max-width: none;
+  transform: translate(calc(var(--pe-lx) * -1), calc(var(--pe-ly) * -1));
+  filter: saturate(1.05) contrast(1.04);
+}
+/* El número, en la esquina, para no perder el vínculo con el mapa. */
+.pagina-edu .pe-lupa-num {
+  position: absolute;
+  z-index: 2;
+  left: 5px;
+  top: 5px;
+  width: 21px;
+  height: 21px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  color: #04121f;
+  background: var(--pe-acc);
+  box-shadow: 0 2px 8px rgba(3, 10, 20, 0.75);
+}
+/* Acotado al bloque de texto: si se dejara en `.pe-leyenda-item span` también
+   alcanzaría a la lupa y a su número, y por especificidad les ganaría. */
+.pagina-edu .pe-leyenda-texto b { display: block; font-size: 14.5px; }
+.pagina-edu .pe-leyenda-texto span { display: block; font-size: 13.5px; line-height: 1.45; color: #cfe2f3; }
+
+/* Hoja angosta (el mando en 🔬): la lupa se encoge, no desaparece. */
+@container hoja (max-width: 460px) {
+  .pagina-edu .pe-leyenda-item { --pe-lupa: 84px; gap: 11px; }
+}
+
+/* ── Reglas de oro ── */
+.pagina-edu .pe-oro { display: grid; gap: 9px; margin-top: 18px; counter-reset: oro; }
+.pagina-edu .pe-oro li {
+  counter-increment: oro;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 13px;
+  align-items: center;
+  padding: 13px 15px;
+  border: 1px solid var(--pe-line);
+  border-radius: 14px;
+  background: linear-gradient(100deg, rgba(88, 226, 156, 0.1), rgba(10, 26, 44, 0.66) 46%);
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #dcecfb;
+}
+.pagina-edu .pe-oro li::before {
+  content: counter(oro);
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  color: #04121f;
+  background: var(--pe-green);
+}
+
+/* ── Créditos: obligatorios (CC BY-SA / CC BY), diseñados, no pegados al final ── */
+.pagina-edu .pe-creditos { padding-block: 26px 44px; }
+.pagina-edu .pe-creditos-lista {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px solid rgba(150, 200, 245, 0.12);
+  border-radius: 14px;
+  background: rgba(7, 19, 33, 0.7);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--pe-muted);
+}
+.pagina-edu .pe-creditos-lista b { color: #c3d8ea; font-weight: 700; }
+
+/* ── Panel estrecho: todo a una columna ── */
+@container hoja (max-width: 520px) {
+  .pagina-edu .pe-duo,
+  .pagina-edu .pe-reglas { grid-template-columns: 1fr; }
+  .pagina-edu .pe-medida { padding-inline: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pagina-edu * { transition: none !important; animation: none !important; }
+}

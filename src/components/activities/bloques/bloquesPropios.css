@@ -1,0 +1,189 @@
+/*
+ * El escenario de «Bloques propios y mensajes»: la tarima del festival, los seis
+ * focos, Chispa con sus cinco poses, la cinta de movimientos y el marcador de
+ * llamadas.
+ *
+ * Color pleno sobre fondo oscuro, con drama de luz: los focos apagados son
+ * pizarra CON borde (nunca gris claro sobre claro) y encendidos tiran un halo
+ * de verdad sobre la tarima. Nada flota encima de la escena: esto vive dentro
+ * del hueco `escenario` de VentanaBloques y los únicos mandos son los del
+ * propio editor.
+ */
+
+.bp-escenario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 264px;
+  height: 100%;
+  padding: 14px 12px;
+  border-radius: 20px;
+  border: 3px solid #3b1360;
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(167, 139, 250, 0.18), transparent 62%),
+    linear-gradient(175deg, #140a33, #0b1026 62%);
+}
+
+/* ── la parrilla de focos ──────────────────────────────────────────────────── */
+
+.bp-parrilla {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  width: 100%;
+  padding: 8px 6px 10px;
+  border-radius: 14px;
+  border: 2px solid #2a1a52;
+  background: linear-gradient(180deg, #1a1040, #0d0824);
+}
+
+.bp-foco {
+  display: block;
+  height: 16px;
+  border-radius: 4px 4px 9px 9px;
+  border: 2px solid #475569;
+  background: #334155;
+  transition: background 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.bp-foco.es-encendido {
+  border-color: #fde68a;
+  box-shadow: 0 0 16px rgba(253, 230, 138, 0.85), 0 6px 22px rgba(244, 114, 182, 0.5);
+}
+.bp-foco.es-encendido[data-foco='0'] { background: #f87171; }
+.bp-foco.es-encendido[data-foco='1'] { background: #fbbf24; }
+.bp-foco.es-encendido[data-foco='2'] { background: #4ade80; }
+.bp-foco.es-encendido[data-foco='3'] { background: #22d3ee; }
+.bp-foco.es-encendido[data-foco='4'] { background: #818cf8; }
+.bp-foco.es-encendido[data-foco='5'] { background: #f472b6; }
+
+/* ── la tarima y Chispa ────────────────────────────────────────────────────── */
+
+.bp-tarima {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  width: 100%;
+  height: 132px;
+  padding-bottom: 10px;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 2px solid #4c1d95;
+  background: linear-gradient(180deg, #2a0f52 0%, #16093a 58%, #241046 58%, #120730 100%);
+}
+
+.bp-telon {
+  position: absolute;
+  inset: 0 0 42% 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(124, 45, 145, 0.55) 0 10px,
+    rgba(76, 29, 149, 0.55) 10px 20px
+  );
+  border-bottom: 2px solid #7c2d91;
+}
+
+.bp-escenario[data-luces='arcoiris'] .bp-tarima {
+  box-shadow: inset 0 22px 40px rgba(253, 230, 138, 0.28);
+}
+
+.bp-chispa {
+  position: relative;
+  font-size: 42px;
+  line-height: 1;
+  filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.65));
+  transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 180ms ease;
+}
+
+.bp-chispa[data-pose='reposo'] { transform: none; }
+.bp-chispa[data-pose='salto'] { transform: translateY(-24px) scale(1.06); }
+.bp-chispa[data-pose='giro'] { transform: rotate(28deg) scaleX(-1); }
+.bp-chispa[data-pose='aplauso'] {
+  transform: scale(1.14);
+  filter: drop-shadow(0 0 18px rgba(251, 191, 36, 0.9));
+}
+.bp-chispa[data-pose='reverencia'] {
+  transform: translateY(10px) rotate(-14deg) scaleY(0.82);
+}
+
+.bp-etiqueta-pose {
+  position: relative;
+  margin: 0;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 2px solid #a78bfa;
+  background: rgba(167, 139, 250, 0.16);
+  color: #ede9fe;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* ── la cinta de movimientos ───────────────────────────────────────────────── */
+
+.bp-cinta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 38px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 2px solid #164e63;
+  background: rgba(8, 32, 47, 0.9);
+}
+
+.bp-cinta-vacia {
+  align-self: center;
+  color: #7dd3fc;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.bp-chip {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  border: 2px solid #22d3ee;
+  background: rgba(34, 211, 238, 0.16);
+  font-size: 13px;
+}
+.bp-chip[data-mov='pintar-arcoiris'] {
+  border-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.2);
+}
+
+/* ── el marcador de llamadas ───────────────────────────────────────────────── */
+
+.bp-marcador {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 2px solid #f472b6;
+  background: rgba(244, 114, 182, 0.14);
+  color: #fbcfe8;
+  font-size: 11.5px;
+  font-weight: 800;
+  text-align: center;
+}
+.bp-marcador strong {
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bp-foco,
+  .bp-chispa {
+    transition: none;
+  }
+}

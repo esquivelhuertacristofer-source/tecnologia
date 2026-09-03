@@ -1,0 +1,671 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   n4-comprueba-la-respuesta · «Tecnia Asistente» + «Tecnia Buscador»
+
+   Sin 3D y sin metáfora física (nada de lupas ni balanzas): lo que en la vida
+   real es software se construye como software. Dos ventanas de programa, lado
+   a lado, con color pleno y saturado — la regla de la plataforma manda aquí
+   entera porque, a diferencia de Tecnia Textos, no hay ningún programa real al
+   que tener que parecerse con fidelidad.
+
+   Tokens propios en `.car-app`, como hace `.txtw`: así esta hoja no depende de
+   que `CenHub.css` esté cargado (el arnés de pruebas monta el laboratorio
+   suelto, sin el shell del hub).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.car-app {
+  --car-navy: #061a35;
+  --car-navy-2: #0b2d5b;
+  --car-ink: #0b1f3a;
+  --car-cian: #22d3ee;
+  --car-cian-honda: #0e7490;
+  --car-ambar: #fbbf24;
+  --car-ambar-honda: #b45309;
+  --car-verde: #34d399;
+  --car-verde-honda: #0f766e;
+  --car-morado: #a78bfa;
+  --car-morado-honda: #5b21b6;
+  --car-rosa: #fb7185;
+  --car-rosa-honda: #9f1239;
+  --car-rojo: #ef4444;
+  --car-texto: #eaf2ff;
+  --car-texto-suave: #a9c0e0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 640px;
+  padding: 18px;
+  border-radius: 22px;
+  background: radial-gradient(circle at 15% 0%, var(--car-navy-2) 0%, var(--car-navy) 62%);
+  color: var(--car-texto);
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.car-app *,
+.car-app *::before,
+.car-app *::after {
+  box-sizing: border-box;
+}
+
+/* ─────────────────────────── cabecera ─────────────────────────── */
+
+.car-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.car-header-titulo {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.car-header-pasos {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--car-texto-suave);
+}
+
+.car-header-pip {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--car-cian) 20%, transparent);
+}
+
+.car-header-pip.es-hecho {
+  background: var(--car-cian);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--car-cian) 70%, transparent);
+}
+
+.car-header-marcador {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.car-header-marcador span {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--car-texto-suave);
+}
+
+.car-header-marcador strong {
+  font-size: 1rem;
+  color: var(--car-ambar);
+}
+
+.car-salir {
+  border: 1.5px solid color-mix(in srgb, var(--car-texto) 30%, transparent);
+  background: transparent;
+  color: var(--car-texto);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.car-salir:hover {
+  background: color-mix(in srgb, var(--car-texto) 12%, transparent);
+}
+
+/* ─────────────────────────── Bit ─────────────────────────── */
+
+.car-bit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--car-navy-2) 60%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--car-cian) 25%, transparent);
+}
+
+.car-bit-retrato {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  overflow: hidden;
+  flex: none;
+  border: 2px solid var(--car-cian);
+}
+
+.car-bit-linea {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.car-bit-linea b {
+  color: var(--car-cian);
+  margin-right: 4px;
+}
+
+/* ─────────────────────────── el apagador ─────────────────────────── */
+
+.car-cerrado {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 60px 20px;
+  border-radius: 18px;
+  border: 2px dashed color-mix(in srgb, var(--car-cian) 30%, transparent);
+  text-align: center;
+}
+
+.car-cerrado-marca {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--car-texto-suave);
+}
+
+.car-abrir {
+  border: none;
+  border-radius: 999px;
+  padding: 14px 30px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--car-ink);
+  background: linear-gradient(135deg, var(--car-cian), #67e8f9);
+  cursor: pointer;
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--car-cian) 45%, transparent);
+}
+
+.car-abrir:hover {
+  filter: brightness(1.06);
+}
+
+.car-cerrado-pie {
+  margin: 0;
+  color: var(--car-texto-suave);
+  font-size: 0.85rem;
+}
+
+/* ─────────────────────────── la mesa: dos ventanas ─────────────────────────── */
+
+.car-mesa {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+@media (max-width: 860px) {
+  .car-mesa {
+    grid-template-columns: 1fr;
+  }
+}
+
+.car-ventana {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--car-ink);
+  border: 1.5px solid color-mix(in srgb, #ffffff 10%, transparent);
+  min-height: 420px;
+}
+
+.car-ventana-barra {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  background: color-mix(in srgb, var(--car-navy-2) 80%, black 10%);
+  border-bottom: 1.5px solid color-mix(in srgb, #ffffff 10%, transparent);
+  flex: none;
+}
+
+.car-ventana-punto {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--car-texto) 25%, transparent);
+}
+
+.car-ventana-marca {
+  font-weight: 800;
+  font-size: 0.85rem;
+  margin-left: 4px;
+}
+
+/* ─────────────────────────── Tecnia Asistente (chat) ─────────────────────────── */
+
+.car-chat-cuerpo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  overflow-y: auto;
+}
+
+.car-burbuja {
+  max-width: 88%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.car-burbuja-sofi {
+  align-self: flex-end;
+  background: var(--car-cian-honda);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.car-burbuja-asistente-envoltura {
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 92%;
+}
+
+.car-burbuja-etiqueta {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--car-texto-suave);
+  margin-left: 4px;
+}
+
+.car-afirmacion {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1.5px solid color-mix(in srgb, #ffffff 14%, transparent);
+  background: color-mix(in srgb, var(--car-navy-2) 70%, transparent);
+  color: var(--car-texto);
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.car-afirmacion:disabled {
+  cursor: default;
+}
+
+.car-afirmacion.es-actual {
+  border-color: var(--car-ambar);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--car-ambar) 45%, transparent);
+}
+
+.car-afirmacion.es-ok {
+  border-color: var(--car-verde);
+  background: color-mix(in srgb, var(--car-verde-honda) 45%, var(--car-navy-2));
+}
+
+.car-afirmacion.es-mal-detectada {
+  border-color: var(--car-rosa);
+  background: color-mix(in srgb, var(--car-rosa-honda) 45%, var(--car-navy-2));
+}
+
+.car-afirmacion-marca {
+  float: right;
+  font-weight: 900;
+}
+
+.car-burbuja-cita {
+  align-self: flex-start;
+  max-width: 92%;
+  border: 1.5px dashed var(--car-morado);
+  background: color-mix(in srgb, var(--car-morado-honda) 35%, var(--car-navy-2));
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.car-repite {
+  align-self: flex-start;
+  max-width: 92%;
+  border: 1.5px solid color-mix(in srgb, var(--car-rojo) 55%, transparent);
+  background: color-mix(in srgb, var(--car-rojo) 18%, var(--car-navy-2));
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.car-chat-pie {
+  flex: none;
+  padding: 10px 14px;
+  border-top: 1.5px solid color-mix(in srgb, #ffffff 10%, transparent);
+}
+
+.car-otra-vez {
+  width: 100%;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in srgb, var(--car-texto) 25%, transparent);
+  background: transparent;
+  color: var(--car-texto);
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.car-otra-vez:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--car-texto) 10%, transparent);
+}
+
+.car-otra-vez:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ─────────────────────────── Tecnia Buscador ─────────────────────────── */
+
+.car-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 6px 8px 0;
+  background: color-mix(in srgb, var(--car-navy-2) 60%, transparent);
+  flex: none;
+}
+
+.car-tab {
+  border: none;
+  border-radius: 10px 10px 0 0;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: transparent;
+  color: var(--car-texto-suave);
+  cursor: pointer;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.car-tab.es-activa {
+  background: var(--car-ink);
+  color: var(--car-texto);
+}
+
+.car-tab.es-vista::after {
+  content: ' ✓';
+  color: var(--car-verde);
+}
+
+.car-direccion {
+  flex: none;
+  margin: 0;
+  padding: 8px 14px;
+  background: var(--car-ink);
+  color: var(--car-texto-suave);
+  font-size: 0.72rem;
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  border-bottom: 1.5px solid color-mix(in srgb, #ffffff 10%, transparent);
+}
+
+.car-pagina {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.car-pagina-titulo {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.car-pagina-meta {
+  margin: 0 0 12px;
+  font-size: 0.76rem;
+  color: var(--car-texto-suave);
+}
+
+.car-pagina-meta.es-sin-firma {
+  color: var(--car-rosa);
+}
+
+.car-pagina p {
+  margin: 0 0 10px;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.car-pagina-vacia {
+  color: var(--car-texto-suave);
+  font-size: 0.85rem;
+}
+
+.car-browser-pie {
+  flex: none;
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-top: 1.5px solid color-mix(in srgb, #ffffff 10%, transparent);
+  background: color-mix(in srgb, var(--car-navy-2) 40%, transparent);
+}
+
+.car-veredicto {
+  flex: 1;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  color: var(--car-ink);
+}
+
+.car-veredicto:disabled {
+  opacity: 0.35;
+  cursor: default;
+  color: var(--car-texto-suave);
+  background: color-mix(in srgb, var(--car-texto) 15%, transparent) !important;
+}
+
+.car-veredicto.es-cierto {
+  background: linear-gradient(135deg, var(--car-verde), #6ee7b7);
+}
+
+.car-veredicto.es-falso {
+  background: linear-gradient(135deg, var(--car-rosa), #fca5a5);
+}
+
+.car-browser-hint {
+  flex: none;
+  margin: 0;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  color: var(--car-texto-suave);
+  text-align: center;
+}
+
+/* ─────────────────────────── fase decidir (cierre) ─────────────────────────── */
+
+.car-decidir {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 40px 20px;
+  border-radius: 18px;
+  border: 2px dashed color-mix(in srgb, var(--car-morado) 35%, transparent);
+}
+
+.car-decidir-pregunta {
+  margin: 0;
+  max-width: 560px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.car-decidir .car-opciones {
+  width: 100%;
+  max-width: 560px;
+}
+
+/* ─────────────────────────── corrección / opciones ─────────────────────────── */
+
+.car-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 14px 14px;
+}
+
+.car-opcion {
+  text-align: left;
+  border: 1.5px solid color-mix(in srgb, #ffffff 14%, transparent);
+  background: color-mix(in srgb, var(--car-navy-2) 60%, transparent);
+  color: var(--car-texto);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+
+.car-opcion.es-mal {
+  border-color: var(--car-rosa);
+  background: color-mix(in srgb, var(--car-rosa-honda) 45%, var(--car-navy-2));
+}
+
+/* Dentro de una página del navegador (la corrección de la afirmación falsa)
+   ya hay relleno propio en `.car-pagina`; el de `.car-opciones` sobraría. */
+.car-pagina .car-opciones {
+  padding: 0;
+}
+
+/* ─────────────────────────── aviso ─────────────────────────── */
+
+.car-aviso {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  background: color-mix(in srgb, var(--car-ink) 92%, black 8%);
+  border: 1.5px solid color-mix(in srgb, var(--car-ambar) 45%, transparent);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  z-index: 5;
+  animation: car-aviso-in 220ms ease-out;
+}
+
+@keyframes car-aviso-in {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ─────────────────────────── pantalla final ─────────────────────────── */
+
+.car-final {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.car-final-insignia {
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.car-final-insignia-nombre {
+  margin: 8px 0 2px;
+  color: var(--car-ambar);
+  font-weight: 800;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.car-final-titulo {
+  margin: 0 0 10px;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.car-final-detalle {
+  margin: 0 auto 18px;
+  max-width: 560px;
+  color: var(--car-texto-suave);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.car-final-resumen {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.car-final-dato {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--car-navy-2) 60%, transparent);
+  min-width: 84px;
+}
+
+.car-final-dato span {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  color: var(--car-texto-suave);
+}
+
+.car-final-dato strong {
+  font-size: 1.1rem;
+}
+
+.car-final-botones {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.car-boton {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-weight: 800;
+  font-size: 0.92rem;
+  cursor: pointer;
+  color: var(--car-ink);
+  background: linear-gradient(135deg, var(--car-cian), #67e8f9);
+}
+
+.car-boton--fantasma {
+  background: transparent;
+  color: var(--car-texto);
+  border: 1.5px solid color-mix(in srgb, var(--car-texto) 30%, transparent);
+}

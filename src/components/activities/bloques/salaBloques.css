@@ -1,0 +1,314 @@
+/*
+ * Las clases de Tecnia Bloques — la portada de objetivos, el panel del
+ * encargo y el encaje del editor dentro de la pantalla del gabinete.
+ *
+ * Mismo patrón que `python/salaCodigo.css` (documento §50): fondo oscuro con
+ * drama de luz, color pleno en las chapas, un solo botón grande. Ni pastel,
+ * ni blanco sobre blanco, ni bordes punteados. El editor de bloques trae su
+ * propia hoja (`ventanaBloques.css`); aquí sólo se reparte el alto para que
+ * llene el bisel del gabinete.
+ */
+
+/* ─────────────────────────── la portada de objetivos ─────────────────────── */
+
+.blqs-portada {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  justify-items: center;
+  align-content: safe center;
+  padding: 20px;
+  overflow-y: auto;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(56, 89, 220, 0.32), transparent 62%),
+    linear-gradient(165deg, #131a46, #070c1e 70%);
+}
+
+.blqs-portada-caja {
+  width: min(760px, 100%);
+  border-radius: 22px;
+  border: 3px solid #3d55b0;
+  background: linear-gradient(170deg, #131c4c, #0a1030);
+  box-shadow: 0 26px 70px rgba(2, 6, 20, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  padding: 22px 24px 24px;
+  color: #e8f0ff;
+}
+
+.blqs-portada-situacion {
+  margin: 0 0 6px;
+  color: #7ee0ff;
+  font-size: 12.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.blqs-portada-tema {
+  margin: 0 0 16px;
+  font-size: clamp(23px, 3.4vw, 33px);
+  font-weight: 900;
+  line-height: 1.12;
+  color: #fff;
+  text-shadow: 0 0 26px rgba(99, 102, 241, 0.55);
+}
+
+.blqs-portada-etiqueta {
+  display: block;
+  margin-bottom: 6px;
+  color: #8fa6e0;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.blqs-portada-objetivo {
+  border-radius: 14px;
+  border: 2px solid #22d3ee;
+  background: linear-gradient(120deg, rgba(34, 211, 238, 0.16), rgba(34, 211, 238, 0.04));
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+.blqs-portada-objetivo p {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.42;
+  color: #eaf6ff;
+}
+
+.blqs-portada-cuerpo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.blqs-portada-lista {
+  flex: 1 1 340px;
+  min-width: 0;
+}
+.blqs-portada-lista ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: blqs-paso;
+}
+.blqs-portada-lista li {
+  counter-increment: blqs-paso;
+  position: relative;
+  padding: 7px 0 7px 36px;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #cfe0ff;
+}
+.blqs-portada-lista li::before {
+  content: counter(blqs-paso);
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 12.5px;
+  font-weight: 900;
+  color: #07122c;
+  background: linear-gradient(140deg, #fbbf24, #f59e0b);
+  box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);
+}
+
+.blqs-portada-lado {
+  flex: 0 0 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.blqs-portada-datos {
+  display: flex;
+  gap: 10px;
+}
+.blqs-portada-datos span {
+  flex: 1;
+  border-radius: 12px;
+  border: 2px solid #3d55b0;
+  background: #0a1130;
+  padding: 9px 6px;
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #8fa6e0;
+}
+.blqs-portada-datos b {
+  display: block;
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.blqs-portada-insignia {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  border: 2px solid #a78bfa;
+  background: linear-gradient(120deg, rgba(167, 139, 250, 0.22), rgba(167, 139, 250, 0.05));
+  padding: 10px 12px;
+}
+.blqs-portada-insignia-glifo {
+  font-size: 26px;
+  line-height: 1;
+}
+.blqs-portada-insignia-nombre {
+  font-size: 12px;
+  font-weight: 900;
+  color: #e5dcff;
+  line-height: 1.25;
+}
+
+.blqs-portada-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+  border: 0;
+  border-radius: 16px;
+  padding: 16px 26px;
+  font-size: 19px;
+  font-weight: 900;
+  color: #04122a;
+  background: linear-gradient(135deg, #22d3ee, #3b82f6);
+  box-shadow: 0 14px 36px rgba(59, 130, 246, 0.45);
+  cursor: pointer;
+}
+.blqs-portada-boton:hover {
+  filter: brightness(1.08);
+}
+.blqs-portada-boton:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 3px;
+}
+.blqs-portada-boton-glifo {
+  font-size: 23px;
+}
+
+/* ───────────────────────────── el panel del encargo ───────────────────────── */
+
+.blqs-panel {
+  border-radius: 16px;
+  border: 2px solid #2b3a7a;
+  background: linear-gradient(170deg, #101a44, #070c22);
+  padding: 14px 16px;
+  color: #e8f0ff;
+}
+.blqs-panel[data-hecho='si'] {
+  border-color: #22c55e;
+}
+
+.blqs-panel-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.blqs-panel-num {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8fa6e0;
+}
+.blqs-panel-check {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #22c55e;
+  color: #05210f;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.blqs-panel-titulo {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.blqs-panel-instruccion {
+  margin: 0 0 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.44;
+  color: #cfe0ff;
+}
+
+.blqs-panel-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.blqs-opcion {
+  border-radius: 11px;
+  border: 2px solid #3d55b0;
+  background: #0a1130;
+  padding: 9px 12px;
+  color: #dce6ff;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.blqs-opcion:hover {
+  border-color: #6d81c4;
+}
+.blqs-opcion.es-bien {
+  border-color: #22c55e;
+  background: linear-gradient(120deg, rgba(34, 197, 94, 0.22), rgba(34, 197, 94, 0.05));
+  color: #d7ffe9;
+}
+.blqs-opcion.es-mal {
+  border-color: #f87171;
+  background: linear-gradient(120deg, rgba(248, 113, 113, 0.22), rgba(248, 113, 113, 0.05));
+  color: #ffe1e1;
+}
+
+.blqs-panel-pista {
+  border: 0;
+  background: none;
+  padding: 4px 0;
+  color: #7ee0ff;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.blqs-panel-pista-texto {
+  margin: 6px 0 0;
+  border-radius: 10px;
+  border-left: 4px solid #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+  padding: 8px 10px;
+  color: #ffe9b8;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* ───────────────────── el encaje del editor en la pantalla ────────────────── */
+
+.blqs-marco .blq {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+}

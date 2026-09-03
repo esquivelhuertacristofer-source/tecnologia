@@ -1,0 +1,200 @@
+/**
+ * La hoja de la grabación (§44.6).
+ *
+ * Hereda ancho y fondo del panel acoplado, como la hoja de intervalos de §43.3.
+ * Lo suyo es la **rejilla de tres columnas** —qué, antes, ahora— repetida
+ * idéntica en la cabecera, en cada renglón y en el total: si las tres no
+ * comparten la misma plantilla, los números dejan de estar en columna y una
+ * comparación que no se alinea no se compara.
+ */
+
+.hgr {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  font-size: 12px;
+  color: #1f2937;
+  font-variant-numeric: tabular-nums;
+}
+
+/* La plantilla, escrita una vez. */
+.hgr-cabeza,
+.hgr-fila,
+.hgr-total {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px 62px;
+  align-items: center;
+  gap: 6px;
+}
+
+.hgr-cabeza {
+  padding: 8px 13px 4px;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hgr-cabeza span:not(:first-child) {
+  text-align: center;
+}
+
+/* ── la lista, un renglón por diapositiva ── */
+
+.hgr-lista {
+  margin: 0;
+  padding: 0 7px 7px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-bottom: 1px solid #e6eaf0;
+}
+
+.hgr-fila {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hgr-fila:hover {
+  background: #f1f5f9;
+}
+
+.hgr-fila.es-aqui {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+}
+
+.hgr-que {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hgr-que b {
+  font-size: 12px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hgr-que small {
+  color: #b45309;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* El de antes, apagado: está ahí para comparar, no para leerlo. */
+.hgr-antes {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.hgr-ahora {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Con voz, el número se enciende: es la única señal de la hoja que dice que esa
+   diapositiva ya no necesita a nadie. */
+.hgr-ahora.es-voz {
+  color: #b7472a;
+}
+
+.hgr-ahora i {
+  font-style: normal;
+  font-size: 11px;
+}
+
+/* La raya de «todavía nada». Apagada del todo: tiene que leerse como un hueco,
+   no como un dato. */
+.hgr-ahora em {
+  color: #cbd5e1;
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* ── el total y lo que significa ── */
+
+.hgr-total {
+  padding: 10px 13px;
+  border-bottom: 1px solid #e6eaf0;
+  background: #f8fafc;
+}
+
+.hgr-total-que {
+  font-size: 11px;
+  font-weight: 800;
+  color: #475569;
+}
+
+.hgr-total-antes {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.hgr-total-ahora {
+  text-align: center;
+  color: #b7472a;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.hgr-veredicto {
+  margin: 0;
+  padding: 9px 13px;
+  border-bottom: 1px solid #e6eaf0;
+  background: #fff7ed;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #7c2d12;
+}
+
+.hgr-regla {
+  margin: 0;
+  padding: 10px 13px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #475569;
+  border-bottom: 1px solid #e6eaf0;
+}
+
+.hgr-muda {
+  margin: 0;
+  padding: 9px 13px;
+  background: #eef2ff;
+  border-left: 3px solid #6366f1;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #3730a3;
+  font-weight: 600;
+}
+
+.hgr-aviso {
+  margin: 0;
+  padding: 9px 13px;
+  background: #fffbeb;
+  border-left: 3px solid #f59e0b;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #78350f;
+  font-weight: 600;
+}

@@ -1,0 +1,638 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `n5-mi-identidad-digital` — Tecnia Muro, el retrato que se arma solo.
+
+   Prefijo `idd-` para no chocar con `.mur-` (la hermana `n5-lo-que-publico-
+   permanece`) ni con `.tm-` (el armazón `simuladores/muro/`, que pinta la
+   columna izquierda). Fondo oscuro con drama de luz, color pleno y saturado,
+   controles integrados en su propio bloque: nunca flotantes, nunca pastel,
+   nunca punteados.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.idd {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  color: #eef2ff;
+}
+
+/* ── barra superior ─────────────────────────────────────────────────────── */
+
+.idd-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0f172a, #2e1065);
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  box-shadow: 0 16px 40px -24px rgba(139, 92, 246, 0.9);
+}
+
+.idd-topbar-fase {
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(34, 211, 238, 0.18);
+  color: #67e8f9;
+  border: 1px solid rgba(103, 232, 249, 0.45);
+}
+
+.idd-topbar-paso {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #cbd5f5;
+}
+
+.idd-topbar-salir {
+  margin-left: auto;
+  border: 1px solid rgba(226, 232, 255, 0.35);
+  background: rgba(15, 23, 42, 0.7);
+  color: #e2e8ff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 7px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.idd-topbar-salir:hover {
+  background: rgba(51, 65, 105, 0.95);
+}
+
+/* ── las dos columnas ───────────────────────────────────────────────────── */
+
+.idd-cuerpo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 1024px) {
+  .idd-cuerpo {
+    grid-template-columns: 1fr 380px;
+    align-items: start;
+  }
+}
+
+.idd-columna-muro {
+  min-width: 0;
+}
+
+.idd-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Bit ────────────────────────────────────────────────────────────────── */
+
+.idd-bit {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.95));
+  border: 1px solid rgba(103, 232, 249, 0.3);
+  box-shadow: 0 18px 44px -28px rgba(34, 211, 238, 0.9);
+}
+
+.idd-bit-avatar {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #22d3ee, #0e7490);
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2);
+}
+
+.idd-bit-lineas {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.idd-bit-linea {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #94a3c8;
+}
+
+.idd-bit-linea.es-ultima {
+  color: #e2e8ff;
+  font-weight: 600;
+}
+
+/* ── bloque de encargo ──────────────────────────────────────────────────── */
+
+.idd-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #0b1226;
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  box-shadow: 0 20px 48px -30px rgba(2, 6, 23, 0.95);
+}
+
+.idd-bloque.es-transicion {
+  align-items: center;
+  text-align: center;
+  padding: 26px 20px;
+  background: linear-gradient(160deg, #0f172a, #2e1065 75%);
+  border-color: rgba(167, 139, 250, 0.5);
+}
+
+.idd-bloque-kicker {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #c4b5fd;
+}
+
+.idd-pregunta {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 900;
+  line-height: 1.35;
+  color: #f8fafc;
+}
+
+.idd-ayuda {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #9fb0d8;
+}
+
+.idd-transicion-titulo {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #f8fafc;
+}
+
+.idd-transicion-detalle {
+  margin: 0;
+  max-width: 40ch;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: #cbd5f5;
+}
+
+/* ── el borrador del Acto 1 ─────────────────────────────────────────────── */
+
+.idd-borrador-texto {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #e2e8ff;
+}
+
+.idd-borrador-imagen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 14px;
+  border-radius: 14px;
+  text-align: center;
+  background: linear-gradient(155deg, #38bdf8, #6d28d9 130%);
+}
+
+.idd-borrador-emoji {
+  font-size: 2.6rem;
+  filter: drop-shadow(0 6px 14px rgba(2, 6, 23, 0.5));
+}
+
+.idd-borrador-desc {
+  margin: 0;
+  max-width: 32ch;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: rgba(8, 12, 30, 0.88);
+}
+
+/* ── los huecos y la bandeja de piezas (Acto 2) ─────────────────────────── */
+
+.idd-huecos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.idd-hueco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: #7f8bb5;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 255, 0.25);
+}
+
+.idd-hueco.es-lleno {
+  color: #0b1226;
+  background: linear-gradient(140deg, #a78bfa, #7c3aed);
+  border-color: rgba(196, 181, 253, 0.9);
+  box-shadow: 0 0 22px -4px rgba(139, 92, 246, 0.8);
+}
+
+.idd-bandeja {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.idd-pieza {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 255, 0.35);
+  background: rgba(30, 41, 82, 0.9);
+  color: #e2e8ff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.idd-pieza:hover {
+  transform: translateX(3px);
+  background: rgba(51, 65, 130, 0.95);
+}
+
+.idd-pieza.es-elegida {
+  background: linear-gradient(120deg, #a78bfa, #7c3aed);
+  border-color: rgba(221, 214, 254, 0.9);
+  color: #0b1226;
+  font-weight: 900;
+}
+
+/* ── la comparación de retratos (Acto 2b) ───────────────────────────────── */
+
+.idd-comparacion {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 640px) {
+  .idd-comparacion {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.idd-comparacion-lado {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  box-shadow: 0 0 26px -12px rgba(251, 191, 36, 0.8);
+}
+
+.idd-comparacion-lado.es-despues {
+  border-color: rgba(52, 211, 153, 0.5);
+  box-shadow: 0 0 26px -12px rgba(52, 211, 153, 0.8);
+}
+
+.idd-comparacion-titulo {
+  margin: 0 0 8px;
+  font-size: 0.66rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #fcd34d;
+}
+
+.idd-comparacion-lado.es-despues .idd-comparacion-titulo {
+  color: #6ee7b7;
+}
+
+.idd-retrato-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.idd-retrato-lista li {
+  font-size: 0.79rem;
+  line-height: 1.4;
+  color: #e2e8ff;
+}
+
+.idd-retrato-lista li.es-caido {
+  color: #64748b;
+}
+
+.idd-comparacion-cuenta {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: #6ee7b7;
+}
+
+/* ── retroalimentación ──────────────────────────────────────────────────── */
+
+.idd-feedback {
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  border: 1px solid;
+}
+
+.idd-feedback.es-bien {
+  background: rgba(52, 211, 153, 0.14);
+  border-color: rgba(52, 211, 153, 0.5);
+  color: #d1fae5;
+}
+
+/* «es-nota» y no «es-mal»: aquí nunca se regaña, se explica. */
+.idd-feedback.es-nota {
+  background: rgba(56, 189, 248, 0.14);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #e0f2fe;
+}
+
+/* ── botones ────────────────────────────────────────────────────────────── */
+
+.idd-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 18px;
+  border-radius: 13px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: #0b1226;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.idd-boton.es-principal {
+  background: linear-gradient(120deg, #22d3ee, #a78bfa);
+  box-shadow: 0 14px 32px -16px rgba(34, 211, 238, 0.95);
+}
+
+.idd-boton:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.idd-boton:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.7) brightness(0.7);
+}
+
+.idd-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.idd-opcion {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 13px 15px;
+  border-radius: 13px;
+  border: 1px solid rgba(103, 232, 249, 0.4);
+  background: linear-gradient(120deg, rgba(14, 116, 144, 0.55), rgba(30, 27, 75, 0.9));
+  color: #f0f9ff;
+  font-size: 0.87rem;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.idd-opcion:hover {
+  transform: translateX(3px);
+  border-color: rgba(165, 243, 252, 0.9);
+}
+
+/* ── la tarjeta de perfil ───────────────────────────────────────────────── */
+
+.idd-tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 20px 18px;
+  border-radius: 18px;
+  text-align: center;
+  background: linear-gradient(160deg, #0e7490 -10%, #4c1d95 90%);
+  border: 1px solid rgba(165, 243, 252, 0.45);
+  box-shadow: 0 24px 56px -28px rgba(34, 211, 238, 0.95);
+}
+
+.idd-tarjeta-avatar {
+  width: 68px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, #a5f3fc, #0891b2 75%);
+  box-shadow: 0 0 0 5px rgba(165, 243, 252, 0.25);
+}
+
+.idd-tarjeta-nombre {
+  margin: 4px 0 0;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #f8fafc;
+}
+
+.idd-tarjeta-foto {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #a5f3fc;
+}
+
+.idd-tarjeta-frase {
+  margin: 2px 0 0;
+  max-width: 34ch;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #ecfeff;
+}
+
+.idd-tarjeta-datos {
+  display: flex;
+  gap: 22px;
+  margin: 12px 0 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.idd-tarjeta-datos div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.idd-tarjeta-datos dt {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(236, 254, 255, 0.65);
+}
+
+.idd-tarjeta-datos dd {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+/* ── pantalla final ─────────────────────────────────────────────────────── */
+
+.idd-final {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 11px;
+  padding: 38px 22px;
+  color: #eef2ff;
+  background: linear-gradient(160deg, #0f172a, #2e1065 75%);
+}
+
+.idd-final-insignia {
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+  background: radial-gradient(circle at 35% 30%, #e9d5ff, #7c3aed 72%);
+  box-shadow: 0 0 0 9px rgba(167, 139, 250, 0.22), 0 0 46px -6px rgba(167, 139, 250, 0.9);
+}
+
+.idd-final-nombre {
+  margin: 0;
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #d8b4fe;
+}
+
+.idd-final-titulo {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #f8fafc;
+}
+
+.idd-final-detalle,
+.idd-final-cierre {
+  margin: 0;
+  max-width: 52ch;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #cbd5f5;
+}
+
+.idd-final-resumen {
+  display: flex;
+  gap: 24px;
+  margin: 10px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.idd-final-resumen div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.idd-final-resumen dt {
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3c8;
+}
+
+.idd-final-resumen dd {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #f8fafc;
+}
+
+.idd-final-tarjeta {
+  width: 100%;
+  max-width: 340px;
+  margin: 6px 0;
+}
+
+.idd-final-botones {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.idd-boton-final {
+  padding: 11px 22px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 0.86rem;
+  cursor: pointer;
+  border: none;
+}
+
+.idd-boton-final.es-primario {
+  background: linear-gradient(120deg, #22d3ee, #a78bfa);
+  color: #0b1226;
+  box-shadow: 0 14px 32px -16px rgba(34, 211, 238, 0.95);
+}
+
+.idd-boton-final.es-fantasma {
+  background: transparent;
+  border: 1px solid rgba(226, 232, 255, 0.4);
+  color: #e2e8ff;
+}

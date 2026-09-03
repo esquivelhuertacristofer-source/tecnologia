@@ -1,0 +1,109 @@
+/**
+ * `TuTablaDinamica.tsx` — el panel de clase de `n8-tablas-dinamicas`.
+ *
+ * Mismo molde que `fichaDeCalidad.css`: entra por `panelFijo`, que ya envuelve
+ * el cuerpo en `.txtw-panel-cuerpo` —márgenes y fondo son de ahí—, así que aquí
+ * sólo se ordena la mini-cuadrícula.
+ *
+ * Color pleno, no pastel: verde de Excel (`#107c41`) para una fila completa,
+ * ámbar (`#b45309`) para una pendiente, los dos sobre su propio fondo saturado
+ * — la misma paleta de la ficha hermana, para que las dos clases de la unidad
+ * se sientan de la misma casa.
+ */
+
+.tdam {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.82rem;
+}
+
+.tdam-intro {
+  margin: 0;
+  font-size: 0.76rem;
+  opacity: 0.75;
+}
+
+.tdam-marcador {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(16, 124, 65, 0.12);
+  border-left: 4px solid #107c41;
+  font-weight: 700;
+}
+
+.tdam-marcador b {
+  font-size: 1.15rem;
+  color: #0b5c30;
+}
+
+.tdam-tabla {
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.tdam-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) repeat(3, minmax(0, 0.9fr));
+  gap: 4px;
+  padding: 7px 8px;
+  align-items: center;
+}
+
+.tdam-fila:not(:last-child) {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.tdam-fila span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tdam-cabecera {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.65;
+}
+
+.tdam-etiqueta {
+  font-weight: 700;
+}
+
+.tdam-fila[data-completa='no'] {
+  background: rgba(180, 83, 9, 0.08);
+}
+
+.tdam-fila[data-completa='no'] .tdam-etiqueta::after {
+  content: ' ⋯';
+  opacity: 0.6;
+}
+
+.tdam-fila[data-completa='si'] {
+  background: rgba(16, 124, 65, 0.08);
+}
+
+.tdam-fila[data-total='si'] {
+  font-weight: 800;
+  border-top: 2px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 108, 189, 0.1);
+}
+
+.tdam-nota {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(15, 108, 189, 0.1);
+  border-left: 4px solid #0f6cbd;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}

@@ -1,0 +1,367 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `of-word-plantillas` · lo que esta clase pinta dentro del programa.
+
+   Todo lleva el prefijo `plt-` para no chocar con el motor (`txtw-`) ni con
+   ninguna otra clase de la sala de Word.
+
+   Manda la fidelidad, igual que en la ventana: esto tiene que parecerse a lo
+   que el alumno se va a encontrar en el Word de la escuela, así que el
+   encabezado se dibuja GRIS mientras se escribe en el cuerpo y NEGRO mientras
+   se edita —que es la señal con la que Word te dice en qué capa estás—, la
+   línea es punteada, el rótulo va en una lengüeta pequeña y la galería es la
+   pantalla «Nuevo» con sus tarjetas. Nada de color pleno aquí dentro: ése vive
+   en la entrada de la actividad y en el panel del maestro.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.plt-ancla {
+  display: none;
+}
+
+/* ─────────────────────────── capa de encabezado y pie ─────────────────────────── */
+
+/*
+   Vive DENTRO de `.txtw-pila`, así que hereda el zoom y el desplazamiento de la
+   pila de hojas y no tiene que enterarse de ninguno de los dos. No recibe el
+   ratón: lo reciben sólo las franjas, que están en los márgenes y no tapan ni
+   un carácter del texto.
+*/
+.plt-capa {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-family: 'Carlito', 'Calibri', 'Segoe UI', sans-serif;
+}
+
+.plt-hoja {
+  position: absolute;
+  left: 0;
+}
+
+/* El cuerpo se apaga mientras editas la otra capa, como en Word. */
+.plt-velo {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.plt-zona {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+  font-size: 10pt;
+  line-height: 1.2;
+  color: #9b9b9b;
+  cursor: text;
+}
+
+.plt-zona.es-arriba {
+  border-bottom: 1px dashed transparent;
+}
+
+.plt-zona.es-abajo {
+  border-top: 1px dashed transparent;
+}
+
+/* En Word, encabezado y pie se ven grises cuando NO los estás editando: es la
+   señal de «esto es de otra capa». Al editarlos se ponen negros y aparece la
+   línea punteada con su lengüeta. */
+.plt-zona.es-edita {
+  color: #000;
+  border-color: #a1a1a1;
+}
+
+.plt-texto {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.plt-entrada {
+  flex: 1;
+  min-width: 0;
+  height: 22px;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 2px;
+  background: rgba(24, 90, 189, 0.07);
+  outline: 1px solid rgba(24, 90, 189, 0.4);
+  color: #000;
+  font: inherit;
+  font-size: 10pt;
+}
+
+.plt-entrada::placeholder {
+  color: #a8a8a8;
+  font-style: italic;
+}
+
+.plt-folio {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/* La lengüeta con el nombre de la zona, pegada a la línea punteada. */
+.plt-rotulo {
+  position: absolute;
+  left: 0;
+  padding: 1px 6px;
+  border: 1px solid #a1a1a1;
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  background: #fff;
+  color: #605e5c;
+  font-size: 8.5pt;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.plt-zona.es-arriba .plt-rotulo {
+  bottom: 100%;
+}
+
+.plt-zona.es-abajo .plt-rotulo {
+  top: 100%;
+  border: 1px solid #a1a1a1;
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+}
+
+/* «Cerrar encabezado» y «Quitar el número» van anclados a la franja y no
+   flotando por la pantalla: son el equivalente de los botones que Word pone en
+   su pestaña contextual de encabezado y pie, puestos donde se ve lo que hacen. */
+.plt-acciones {
+  position: absolute;
+  right: 0;
+  display: flex;
+  gap: 6px;
+}
+
+.plt-chip {
+  padding: 3px 10px;
+  border: 1px solid #c8c6c4;
+  border-radius: 3px;
+  background: #fff;
+  color: #185abd;
+  font: inherit;
+  font-size: 9pt;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+}
+
+.plt-chip:hover {
+  background: #eaf3fd;
+  border-color: #185abd;
+}
+
+.plt-zona.es-arriba .plt-acciones {
+  top: calc(100% + 5px);
+}
+
+.plt-zona.es-abajo .plt-acciones {
+  bottom: calc(100% + 5px);
+}
+
+/* ─────────────────────────── galería de plantillas ─────────────────────────── */
+
+/*
+   Ocupa EXACTAMENTE el área del documento, medida del `.txtw-lienzo` de verdad.
+   No tapa el panel del maestro a propósito: el encargo que se está leyendo es
+   el que pide elegir una plantilla.
+*/
+.plt-galeria {
+  position: absolute;
+  z-index: 70;
+  display: grid;
+  place-items: start center;
+  padding: 20px;
+  overflow: auto;
+  background: #f6f7fb;
+  animation: plt-aparece 0.2s ease-out;
+}
+
+@keyframes plt-aparece {
+  from {
+    opacity: 0;
+  }
+}
+
+.plt-galeria-caja {
+  width: min(760px, 100%);
+}
+
+.plt-galeria-cab {
+  position: relative;
+  margin-bottom: 16px;
+  padding-right: 40px;
+}
+
+.plt-galeria-kicker {
+  display: block;
+  margin-bottom: 2px;
+  color: #185abd;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.plt-galeria-cab h2 {
+  margin: 0 0 6px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #201f1e;
+}
+
+.plt-galeria-cab p {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #605e5c;
+}
+
+.plt-galeria-x {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #d6d4d2;
+  border-radius: 4px;
+  background: #fff;
+  color: #605e5c;
+  cursor: pointer;
+}
+
+.plt-galeria-x:hover {
+  background: #f0f0f0;
+  color: #201f1e;
+}
+
+.plt-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.plt-tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  padding: 14px 14px 13px;
+  border: 1px solid #dedcda;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.12s, box-shadow 0.12s, transform 0.12s;
+}
+
+.plt-tarjeta:hover {
+  border-color: #185abd;
+  box-shadow: 0 6px 18px rgba(16, 63, 145, 0.18);
+  transform: translateY(-2px);
+}
+
+.plt-tarjeta:focus-visible {
+  outline: 2px solid #185abd;
+  outline-offset: 2px;
+}
+
+.plt-tarjeta.es-puesta {
+  border-color: #185abd;
+  border-width: 2px;
+  padding: 13px 13px 12px;
+}
+
+.plt-tarjeta-nombre {
+  margin-top: 10px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #201f1e;
+  line-height: 1.2;
+}
+
+.plt-tarjeta-para {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #185abd;
+}
+
+.plt-tarjeta-resumen {
+  margin-top: 4px;
+  font-size: 12.5px;
+  line-height: 1.42;
+  color: #605e5c;
+}
+
+.plt-tarjeta-pie {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eceaea;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #8a8886;
+}
+
+.plt-tarjeta-pie b {
+  color: #605e5c;
+  font-weight: 600;
+}
+
+/* ─── la miniatura: una hoja de mentira, con su encabezado y su pie ─── */
+
+.plt-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  height: 108px;
+  padding: 8px 10px;
+  border: 1px solid #dedcda;
+  border-radius: 3px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #fff, 0 1px 2px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.plt-mini-enc {
+  height: 3px;
+  width: 55%;
+  margin-bottom: 5px;
+  border-bottom: 1px dashed #c8c6c4;
+  background: #e6e5e4;
+}
+
+.plt-mini-titulo {
+  height: 7px;
+  width: 68%;
+  margin-bottom: 3px;
+  border-radius: 1px;
+  background: var(--acento, #185abd);
+}
+
+.plt-mini-linea {
+  height: 3px;
+  border-radius: 1px;
+  background: #dfdedd;
+}
+
+.plt-mini-pie {
+  height: 3px;
+  width: 42%;
+  margin-top: auto;
+  border-top: 1px dashed #c8c6c4;
+  background: #e6e5e4;
+}

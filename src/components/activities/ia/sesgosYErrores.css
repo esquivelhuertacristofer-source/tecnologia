@@ -1,0 +1,387 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `n8-sesgos-y-errores` — Tecnia Generador (N8 · U «IA II» · parada 2)
+
+   Hereda el chasis de `salaIA.css` (`.tia-sala`, `.tia-lienzo`, `.tia-marco`,
+   `.tia-mesa`, `.tia-boton`, `.tia-nota`) y NO lo toca. Aquí sólo va lo que
+   esta clase tiene y ninguna otra: la lista de afirmaciones del asistente, la
+   tabla de generaciones con su atributo constante, la comparación
+   fuente/resumen y las tarjetas del cierre.
+
+   El acento líder de esta clase es el ámbar (`--tia-ambar`), no el cian de
+   sus hermanas: es la clase de las alarmas, y el color lo dice antes que el
+   texto. Color pleno sobre fondo oscuro, sin pastel y sin controles flotando
+   fuera de su panel (regla de la casa).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.sye-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.8fr);
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+}
+@media (max-width: 980px) {
+  .sye-cuerpo {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+}
+
+/* ── El costado: ficha de referencia + bitácora + nota fija ─────────────── */
+
+.sye-costado {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.sye-panel {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid #1c4b76;
+  background: linear-gradient(168deg, #0a2b48, #061a2e);
+  color: var(--tia-texto);
+}
+
+.sye-panel-titulo {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tia-ambar);
+  text-shadow: 0 0 16px rgba(251, 191, 36, 0.55);
+}
+
+.sye-ficha {
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px 10px;
+  font-size: 12.5px;
+}
+.sye-ficha dt {
+  font-weight: 700;
+  color: var(--tia-texto-suave);
+}
+.sye-ficha dd {
+  margin: 0;
+  font-weight: 900;
+  color: #ffffff;
+  text-align: right;
+}
+
+.sye-bitacora {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.sye-entrada {
+  padding: 7px 10px;
+  border-radius: 11px;
+  border-left: 4px solid var(--tia-ambar);
+  background: rgba(251, 191, 36, 0.11);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tia-texto);
+}
+.sye-vacio {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tia-texto-suave);
+}
+
+/* ── La consigna y el veredicto del encargo ──────────────────────────────── */
+
+.sye-consigna {
+  margin: 0;
+  padding: 10px 13px;
+  border-radius: 13px;
+  border-left: 5px solid var(--tia-ambar);
+  background: rgba(251, 191, 36, 0.13);
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.sye-veredicto {
+  margin: 0;
+  padding: 10px 13px;
+  border-radius: 13px;
+  font-size: 13px;
+  font-weight: 750;
+  color: var(--tia-texto);
+  background: rgba(52, 211, 153, 0.15);
+  border-left: 5px solid var(--tia-verde);
+}
+.sye-veredicto.es-mal {
+  background: rgba(251, 113, 133, 0.15);
+  border-left-color: var(--tia-rosa);
+}
+
+/* ── Opciones genéricas de respuesta (criterios, causas, datos, Sí/No) ───── */
+
+.sye-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sye-opcion {
+  padding: 11px 14px;
+  border: 2px solid #17456e;
+  border-radius: 13px;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 750;
+  text-align: left;
+  color: var(--tia-texto);
+  background: linear-gradient(170deg, #0a2740, #071f34);
+  cursor: pointer;
+}
+.sye-opcion:hover:not(:disabled) {
+  border-color: var(--tia-ambar);
+  color: #ffffff;
+}
+.sye-opcion:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.sye-opcion:disabled {
+  cursor: default;
+}
+.sye-opcion.es-senalada {
+  border-color: var(--tia-verde);
+  color: #ffffff;
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-verde) 40%, transparent);
+}
+
+/* ── E1 · las cuatro afirmaciones del asistente, mismo tono ──────────────── */
+
+.sye-afirmaciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sye-afirmacion {
+  padding: 12px 14px;
+  border: 2px solid #1f5580;
+  border-radius: 16px;
+  border-top-left-radius: 4px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  color: var(--tia-texto);
+  background: #082238;
+  cursor: pointer;
+}
+.sye-afirmacion:hover:not(:disabled) {
+  border-color: var(--tia-ambar);
+}
+.sye-afirmacion:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.sye-afirmacion.es-senalada {
+  border-color: var(--tia-verde);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-verde) 38%, transparent);
+}
+
+/* ── E3/E4 · la tabla de generaciones, columna clicable ──────────────────── */
+
+.sye-tabla-caja {
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 2px solid #17456e;
+  background: #061c30;
+}
+.sye-tabla {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: var(--tia-texto);
+}
+.sye-tabla th,
+.sye-tabla td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #123a5b;
+}
+.sye-tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+.sye-tabla td {
+  font-weight: 650;
+}
+.sye-tabla th {
+  padding: 0;
+}
+.sye-tabla td:first-child {
+  font-weight: 900;
+  color: var(--tia-texto-suave);
+}
+
+.sye-cabecera {
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-bottom: 3px solid #17456e;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+  color: #fde68a;
+  background: linear-gradient(180deg, #0e3555, #0a2740);
+  cursor: pointer;
+}
+.sye-cabecera:hover:not(:disabled) {
+  color: #ffffff;
+  background: linear-gradient(180deg, #14486f, #0e3555);
+}
+.sye-cabecera:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: -3px;
+}
+.sye-cabecera.es-elegida {
+  color: #2a1400;
+  background: linear-gradient(180deg, var(--tia-verde), var(--tia-verde-honda));
+  border-bottom-color: var(--tia-verde);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--tia-verde) 45%, transparent);
+}
+
+.sye-generar {
+  padding: 22px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  border-radius: 16px;
+  border: 2px dashed #2a6a9c;
+  text-align: center;
+}
+.sye-generar p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tia-texto-suave);
+  max-width: 46ch;
+}
+
+/* ── Comparación fuente / resumen ────────────────────────────────────────── */
+
+.sye-comparacion {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 640px) {
+  .sye-comparacion {
+    grid-template-columns: 1fr;
+  }
+}
+.sye-comparacion-caja {
+  padding: 11px 13px;
+  border-radius: 14px;
+  border: 2px solid #17456e;
+  background: #071f34;
+}
+.sye-comparacion-caja.es-resumen {
+  border-color: var(--tia-morado);
+  background: linear-gradient(165deg, #1b1246, #0a0a24);
+}
+.sye-comparacion-etiqueta {
+  display: block;
+  margin: 0 0 6px;
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tia-texto-suave);
+}
+.sye-comparacion-caja p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.5;
+  color: var(--tia-texto);
+}
+
+/* ── El cierre: cuatro resultados, cada uno con su propia revisión ───────── */
+
+.sye-resultados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+.sye-resultado {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 2px solid #17456e;
+  border-radius: 15px;
+  background: linear-gradient(170deg, #0b2c48, #061c30);
+  color: var(--tia-texto);
+}
+.sye-resultado.es-resuelto {
+  border-color: var(--tia-verde);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-verde) 30%, transparent);
+}
+.sye-resultado-etiqueta {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 900;
+  color: #ffffff;
+}
+.sye-resultado-descripcion {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--tia-texto-suave);
+}
+.sye-resultado-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+}
+.sye-resultado-opcion {
+  padding: 7px 10px;
+  border: 2px solid #2a6a9c;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  text-align: left;
+  color: #cfe4ff;
+  background: #0b2c47;
+  cursor: pointer;
+}
+.sye-resultado-opcion:hover:not(:disabled) {
+  border-color: var(--tia-ambar);
+  color: #ffffff;
+}
+.sye-resultado-opcion:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.sye-resultado-opcion:disabled {
+  cursor: default;
+}
+.sye-resultado-resuelta {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 2px solid var(--tia-verde);
+  background: rgba(52, 211, 153, 0.15);
+  font-size: 12px;
+  font-weight: 800;
+  color: #d8fff0;
+}

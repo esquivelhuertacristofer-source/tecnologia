@@ -1,0 +1,668 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   N4 · U6 · «ATRAPA EL PHISHING»  ·  la bandeja de entrada de Tecnia Correo
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Esto NO es un programa nuevo. El cliente de correo ya existe —lo construyó
+   `LabPartesDelCorreo` (§24.2) y sus clases viven en `arcade3d/arcade3d.css`
+   bajo el prefijo `correo3d-`—, así que aquí se reusa entero: el marco, la
+   barra de título, la columna de carpetas, la lista de recibidos, el panel de
+   lectura en papel crema, los campos de la cabecera, el mensaje, el adjunto y
+   las chapas. Lo que se añade son las piezas que esta clase necesita y aquella
+   no tenía: las cuatro lupas, el análisis que devuelven, la barra de veredicto
+   y la nota que queda pegada al correo cuando se resuelve.
+
+   Y se añaden TRES ajustes al programa prestado, cada uno con su motivo:
+
+     1. El marco medía 600 × 338 px clavados porque era el hueco medido del
+        bisel del monitor 3D de la estación. Aquí no hay monitor 3D —esta clase
+        no lleva 3D: es un cliente de correo y punto— así que el programa ocupa
+        la pantalla del gabinete entera.
+     2. El panel pasa de apilado (lista arriba, lectura abajo) a las tres
+        columnas clásicas (carpetas · lista · lectura). Allí la lista tenía tres
+        filas y era decorado; aquí tiene diez y es la actividad.
+     3. La fila de la lista se parte en dos renglones. Con la lista en columna
+        el remitente y el asunto no caben en la misma línea.
+
+   La paleta es la del programa, sin inventar ninguna: cian = lo técnico,
+   ámbar = decide, verde = correcto, rojo = lo que se escapa. Color pleno,
+   nada de pastel y ni un solo borde punteado.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── la escena: el programa dentro de la pantalla del gabinete ─────────────── */
+
+/* El faldón de abajo es de Bit: `bit-puesto` flota sobre la pantalla en la
+   esquina inferior izquierda (position:absolute, ~96 px de alto con globo), y
+   sin este hueco el globo taparía la barra de veredicto, que es justo donde el
+   alumno tiene la mano. */
+.phish-escena {
+  position: absolute;
+  inset: 0;
+  padding: 14px 14px 118px;
+}
+
+.phish-escena .correo3d-marco,
+.phish-escena .correo3d-espera {
+  width: 100%;
+  height: 100%;
+}
+
+/* Tres columnas, no dos filas (ajuste 2). */
+.phish-escena .correo3d-panel {
+  flex-direction: row;
+}
+
+.phish-escena .correo3d-lista {
+  flex: 0 0 252px;
+  height: auto;
+  overflow-y: auto;
+  border-right: 1px solid rgba(34, 211, 238, 0.24);
+  border-bottom: none;
+}
+
+/* Dos renglones por fila (ajuste 3): arriba el remitente y la hora, abajo el
+   asunto. El asunto en peso normal para que el nombre mande, que es lo que se
+   lee primero en cualquier bandeja. */
+.phish-escena .phish-fila {
+  flex-wrap: wrap;
+  align-items: center;
+  row-gap: 2px;
+  border-bottom: 1px solid rgba(34, 211, 238, 0.12);
+}
+
+.phish-escena .phish-fila .correo3d-fila-de {
+  flex: 1 1 auto;
+}
+
+/* En un teléfono las tres columnas del ajuste 2 no caben: carpetas (118px,
+   `flex: none`) + lista (252px, `flex: none`) ya suman 370px, más de lo que
+   queda tras el padding de `.phish-escena` en 390px — la lectura, que es
+   donde ocurre la actividad, se quedaba sin nada. En vez de encoger algo que
+   no puede (son anchos fijos a propósito, medidos para la fuente), se
+   revierte al apilado de `.correo3d-panel` de fábrica —el mismo que ya usan
+   `n4-partes-del-correo`/`n4-envia-responde-adjunta` sin problema— y las
+   carpetas pasan de columna a tira horizontal. */
+@media (max-width: 700px) {
+  .phish-escena .correo3d-cuerpo {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .phish-escena .correo3d-carpetas {
+    flex: 0 0 auto;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-right: 0;
+    border-bottom: 1px solid rgba(34, 211, 238, 0.24);
+  }
+
+  .phish-escena .correo3d-panel {
+    flex-direction: column;
+  }
+
+  .phish-escena .correo3d-lista {
+    flex: 0 0 auto;
+    max-height: 38vh;
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid rgba(34, 211, 238, 0.24);
+  }
+}
+
+.phish-escena .phish-fila .correo3d-fila-asunto {
+  flex: 1 0 100%;
+  padding-left: 12px;
+  font-weight: 600;
+  opacity: 0.82;
+}
+
+/* La marca del veredicto, pegada a la fila. Verde = resuelto a la primera;
+   ámbar = resuelto, pero después de haberse equivocado. El ámbar no es un
+   castigo: es la memoria de dónde hay que volver a mirar. */
+.phish-marca {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font: 900 9px/1.4 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.phish-marca.es-bien {
+  background: #34d399;
+  color: #052117;
+}
+
+.phish-marca.es-tarde {
+  background: #f5a524;
+  color: #23150a;
+}
+
+/* La fila que toca. Se enciende, no se le pone una flecha encima. */
+.arcade-n1 .phish-escena .phish-fila.es-pedida {
+  animation: correo3d-esperar 1.6s ease-in-out infinite;
+}
+
+.arcade-n1 .phish-escena .phish-fila.es-resuelta {
+  opacity: 0.68;
+}
+
+/* ── el panel de lectura ──────────────────────────────────────────────────── */
+
+.phish-escena .correo3d-lectura {
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.phish-lectura-scroll {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+  padding: 8px 10px 10px;
+}
+
+/* Los campos de la cabecera aquí no se señalan (eso era la fase 1 de §24.2):
+   se leen. Sin cursor de mano y sin realce al pasar por encima, o el alumno
+   pulsa el remitente esperando que ocurra algo. */
+.phish-escena .correo3d-campo {
+  cursor: default;
+}
+
+.phish-escena .correo3d-campo:hover {
+  background: transparent;
+}
+
+/* El mensaje deja de ser botón y deja de comerse el alto sobrante: aquí abajo
+   vienen el adjunto, el análisis y la nota, y el que reparte el alto es el
+   contenedor con scroll. */
+.phish-escena .correo3d-mensaje {
+  flex: none;
+  overflow: visible;
+  cursor: default;
+}
+
+.phish-escena .correo3d-adjunto {
+  flex: none;
+  cursor: default;
+}
+
+/* La dirección de verdad, destapada por la lupa. Va pegada al nombre y en
+   monoespaciada: una dirección se lee letra por letra. */
+.phish-real {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: rgba(14, 116, 144, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(14, 116, 144, 0.55);
+  color: #0e4a5c;
+  font: 800 10px/1.4 ui-monospace, "Cascadia Mono", Consolas, monospace;
+  white-space: nowrap;
+}
+
+.phish-real.es-alarma {
+  background: rgba(185, 28, 28, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(185, 28, 28, 0.7);
+  color: #8f1414;
+}
+
+/* El enlace se pinta como enlace —azul y subrayado— y NO se puede pulsar. Es a
+   propósito y es la lección: aquí no se comprueba pulsando. A dónde va de
+   verdad lo enseña la lupa, que es el gesto de leer la barra de estado. */
+.phish-enlace {
+  display: inline;
+  color: #1d4ed8;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.phish-destino {
+  display: block;
+  margin: 3px 0 0 14px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  border-left: 3px solid #0e7490;
+  background: rgba(14, 116, 144, 0.12);
+  color: #0e4a5c;
+  font: 800 10px/1.4 ui-monospace, "Cascadia Mono", Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+.phish-destino.es-alarma {
+  border-left-color: #b91c1c;
+  background: rgba(185, 28, 28, 0.12);
+  color: #8f1414;
+}
+
+/* ── las cuatro lupas ─────────────────────────────────────────────────────── */
+
+/* Los mandos van DENTRO del panel de lectura, en su propia regleta, como la
+   barra de acciones de cualquier cliente de correo. Nada flota por encima de
+   la escena. */
+.phish-lupas {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 5px 6px;
+  border-radius: 7px;
+  background: rgba(23, 49, 63, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(23, 49, 63, 0.16);
+}
+
+.phish-lupas-eti {
+  flex: 1 0 100%;
+  margin: 0 0 1px 2px;
+  color: #4d6472;
+  font: 900 9px/1.3 system-ui, sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.arcade-n1 .phish-lupa {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 7px;
+  border: 2px solid #0e7490;
+  background: linear-gradient(180deg, #0e7490, #0a4f63);
+  color: #e0fbff;
+  font: 900 10px/1 system-ui, sans-serif;
+  cursor: pointer;
+  transition: box-shadow 0.12s ease;
+}
+
+.arcade-n1 .phish-lupa:hover {
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.6);
+}
+
+.arcade-n1 .phish-lupa:focus-visible {
+  outline: 3px solid #9fe8ff;
+  outline-offset: 2px;
+}
+
+.arcade-n1 .phish-lupa.es-abierta {
+  border-color: #f5a524;
+  background: linear-gradient(180deg, #f5a524, #c47f10);
+  color: #23150a;
+}
+
+/* ── el análisis que devuelven ────────────────────────────────────────────── */
+
+.phish-analisis {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.phish-hallazgo {
+  padding: 5px 8px;
+  border-radius: 7px;
+  border-left: 5px solid #0e7490;
+  background: rgba(14, 116, 144, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(14, 116, 144, 0.28);
+}
+
+.phish-hallazgo.es-alarma {
+  border-left-color: #b91c1c;
+  background: rgba(185, 28, 28, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(185, 28, 28, 0.3);
+}
+
+.phish-hallazgo-tit {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 0 2px;
+  color: #0e4a5c;
+  font: 900 10px/1.3 system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.phish-hallazgo.es-alarma .phish-hallazgo-tit {
+  color: #8f1414;
+}
+
+.phish-hallazgo-dato {
+  margin: 0 0 2px;
+  color: #17313f;
+  font: 800 11px/1.35 system-ui, sans-serif;
+}
+
+.phish-hallazgo-nota {
+  margin: 0;
+  color: #3d5563;
+  font: 600 11px/1.4 system-ui, sans-serif;
+}
+
+.phish-hallazgo-nota code {
+  padding: 0 3px;
+  border-radius: 3px;
+  background: rgba(23, 49, 63, 0.12);
+  font: 800 10px/1.4 ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+/* ── la nota del programa cuando el correo queda resuelto ─────────────────── */
+
+.phish-leccion {
+  flex: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border-left: 6px solid #f5a524;
+  background: rgba(245, 165, 36, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(245, 165, 36, 0.45);
+}
+
+.phish-leccion.es-anzuelo {
+  border-left-color: #b91c1c;
+  background: rgba(185, 28, 28, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(185, 28, 28, 0.4);
+}
+
+.phish-leccion.es-limpio {
+  border-left-color: #0f766e;
+  background: rgba(52, 211, 153, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.45);
+}
+
+.phish-leccion-tit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 3px;
+  color: #17313f;
+  font: 900 11px/1.3 system-ui, sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.phish-leccion-txt {
+  margin: 0;
+  color: #17313f;
+  font: 600 11px/1.45 system-ui, sans-serif;
+}
+
+.phish-leccion-txt code {
+  padding: 0 3px;
+  border-radius: 3px;
+  background: rgba(23, 49, 63, 0.14);
+  font: 800 10px/1.4 ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+/* ── la barra de veredicto ────────────────────────────────────────────────── */
+
+/* Clavada abajo del panel de lectura, igual que la barra de Responder /
+   Reenviar de un cliente de verdad. No se va con el scroll: la decisión
+   siempre está donde la mano la dejó. */
+.phish-veredicto {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-top: 2px solid rgba(23, 49, 63, 0.2);
+  background: linear-gradient(180deg, #e6d7b6, #d8c69f);
+}
+
+.phish-veredicto-eti {
+  flex: 1;
+  margin: 0;
+  color: #3d5563;
+  font: 900 10px/1.25 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.arcade-n1 .phish-boton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 13px;
+  border-radius: 9px;
+  border: 3px solid transparent;
+  font: 900 12px/1 system-ui, sans-serif;
+  cursor: pointer;
+  transition: box-shadow 0.12s ease;
+}
+
+.arcade-n1 .phish-boton:focus-visible {
+  outline: 3px solid #17313f;
+  outline-offset: 2px;
+}
+
+.arcade-n1 .phish-boton.es-fiar {
+  border-color: #0f766e;
+  background: linear-gradient(180deg, #34d399, #0f766e);
+  color: #052117;
+}
+
+.arcade-n1 .phish-boton.es-borrar {
+  border-color: #57687a;
+  background: linear-gradient(180deg, #9aa9b8, #6b7f8b);
+  color: #12222c;
+}
+
+.arcade-n1 .phish-boton.es-avisar {
+  border-color: #b91c1c;
+  background: linear-gradient(180deg, #f87171, #b91c1c);
+  color: #2d0505;
+}
+
+.arcade-n1 .phish-boton:hover:not(:disabled) {
+  box-shadow: 0 0 16px rgba(23, 49, 63, 0.45);
+}
+
+.arcade-n1 .phish-boton:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Ya se probó y estaba mal: se queda tachado, no desaparece. Que el alumno vea
+   lo que ya intentó es parte de la lección. */
+.arcade-n1 .phish-boton.es-fallado {
+  opacity: 0.5;
+  text-decoration: line-through;
+  box-shadow: inset 0 0 0 2px #b91c1c;
+}
+
+/* El que falta por pulsar late en ámbar, dentro de la propia barra. */
+.arcade-n1 .phish-boton.es-pedido {
+  animation: correo3d-esperar 1.4s ease-in-out infinite;
+}
+
+/* ── la pantalla vacía y el cierre ────────────────────────────────────────── */
+
+.phish-vacio {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px;
+  text-align: center;
+}
+
+.phish-vacio-tit {
+  margin: 0;
+  color: #17313f;
+  font: 900 15px/1.2 system-ui, sans-serif;
+}
+
+.phish-vacio-sub {
+  margin: 0;
+  max-width: 380px;
+  color: #4d6472;
+  font: 600 12px/1.45 system-ui, sans-serif;
+}
+
+/* Las dos preguntas de cierre se dan sobre el cromo, no sobre el papel: ya no
+   se está leyendo un correo, se está contestando al programa. */
+.phish-cierre {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+  overflow-y: auto;
+  padding: 14px 16px;
+  background: linear-gradient(170deg, #0b2b3d, #071a26);
+}
+
+.phish-cierre-paso {
+  margin: 0;
+  color: rgba(159, 232, 255, 0.7);
+  font: 900 10px/1 system-ui, sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.phish-cierre-tit {
+  margin: 0 0 4px;
+  color: #ffffff;
+  font: 900 17px/1.25 system-ui, sans-serif;
+}
+
+.arcade-n1 .phish-opcion {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 9px;
+  border: 2px solid rgba(159, 232, 255, 0.34);
+  background: rgba(4, 18, 27, 0.72);
+  color: #e6f6ff;
+  font: 700 12px/1.35 system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.12s ease;
+}
+
+.arcade-n1 .phish-opcion:hover:not(:disabled) {
+  border-color: #f5a524;
+}
+
+.arcade-n1 .phish-opcion:focus-visible {
+  outline: 3px solid #ffe6bb;
+  outline-offset: 2px;
+}
+
+.arcade-n1 .phish-opcion.es-mal {
+  border-color: #f87171;
+  background: rgba(248, 113, 113, 0.2);
+  transition: none;
+}
+
+.arcade-n1 .phish-opcion.es-bien {
+  border-color: #34d399;
+  background: rgba(52, 211, 153, 0.22);
+}
+
+.phish-opcion-letra {
+  flex: none;
+  width: 21px;
+  height: 21px;
+  border-radius: 6px;
+  background: rgba(34, 211, 238, 0.24);
+  color: #d8f6ff;
+  font: 900 11px/21px system-ui, sans-serif;
+  text-align: center;
+}
+
+/* ── la placa del gabinete ────────────────────────────────────────────────── */
+
+.phish-placa {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 7px 14px;
+  border-radius: 12px;
+  border: 2px solid rgba(245, 165, 36, 0.55);
+  background: linear-gradient(180deg, rgba(60, 40, 8, 0.9), rgba(28, 18, 4, 0.94));
+}
+
+.phish-placa-n {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #f5a524;
+  color: #23150a;
+  font: 900 15px/28px system-ui, sans-serif;
+  text-align: center;
+}
+
+.phish-placa-txt {
+  margin: 0;
+  color: #ffe6bb;
+  font: 800 12px/1.25 system-ui, sans-serif;
+}
+
+/* La regla de oro, grabada en el mueble. Es la frase que tiene que quedarse
+   cuando se acabe la clase, así que está a la vista todo el rato. */
+.phish-regla {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 14px;
+  border-radius: 12px;
+  border: 2px solid rgba(52, 211, 153, 0.5);
+  background: rgba(52, 211, 153, 0.12);
+  color: #b6f5da;
+  font: 800 12px/1.25 system-ui, sans-serif;
+}
+
+.phish-regla b {
+  color: #ffffff;
+}
+
+.phish-contador {
+  display: flex;
+  gap: 12px;
+  padding: 6px 13px;
+  border-radius: 12px;
+  border: 1px solid rgba(92, 225, 230, 0.3);
+  background: rgba(4, 18, 27, 0.8);
+}
+
+.phish-contador div {
+  text-align: center;
+}
+
+.phish-contador span {
+  display: block;
+  color: #9eb5c8;
+  font: 800 8px/1.4 system-ui, sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.phish-contador strong {
+  color: #5ce1e6;
+  font: 900 15px/1.1 ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+/* Pantallas cortas: el gabinete de N1 aguanta hasta ~700 px de alto y por
+   debajo de eso el hueco de Bit se come el panel de lectura. Se recorta el
+   faldón y el globo pasa a solaparse con el borde inferior del programa, que
+   es preferible a quedarse sin sitio donde leer. */
+@media (max-height: 760px) {
+  .phish-escena {
+    padding-bottom: 92px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arcade-n1 .phish-escena .phish-fila.es-pedida,
+  .arcade-n1 .phish-boton.es-pedido {
+    animation: none;
+  }
+}

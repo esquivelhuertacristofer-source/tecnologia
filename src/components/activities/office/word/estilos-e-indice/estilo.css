@@ -1,0 +1,142 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `of-word-estilos-e-indice` · el panel de Navegación
+
+   Va ACOPLADO a la izquierda del documento, como el de Word, y no flotando
+   encima. Eso obliga a abrirle una columna en la rejilla del medio de la
+   ventana, y esa rejilla vive en `ventanaTextos.css`, que es de todas las
+   clases y no se toca.
+
+   La salida es un selector que EXIGE que el panel de esta clase esté montado:
+   `.txtw:has(.ei-nav)`. Mientras esta clase no esté en pantalla, estas reglas
+   no encuentran a quién aplicarse, así que aunque el navegador tenga la hoja
+   cargada no pueden mover una sola caja de otra clase de Word.
+
+   Todo lo demás lleva el prefijo `ei-` (estilos-e-índice) por la misma razón.
+
+   Colores: los del programa, no los de la plataforma. Dentro de la ventana
+   manda la fidelidad con Word (§36.2); el color pleno vive en la entrada y en
+   el panel del maestro.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.txtw:has(.ei-nav) .txtw-medio {
+  grid-template-columns: 258px minmax(0, 1fr) 340px;
+}
+
+.txtw:has(.ei-nav) .txtw-lienzo {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.txtw:has(.ei-nav) .txtw-panel {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.ei-nav {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  /* Seis píxeles de aire a la izquierda para que el halo del maestro quepa: se
+     dibuja con cinco de holgura alrededor de lo que señala, y contra el canto de
+     la ventana su lado izquierdo se veía cortado. Lo que el halo abraza es
+     `.ei-nav-marco`, no esta columna. */
+  padding-left: 6px;
+  background: #fff;
+  border-right: 1px solid #e1dfdd;
+  overflow: hidden;
+}
+
+.ei-nav-marco {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  border-radius: 3px;
+}
+
+.ei-nav-cab {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px 9px;
+  border-bottom: 1px solid #e1dfdd;
+}
+
+.ei-nav-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  color: #201f1e;
+}
+
+.ei-nav-cuenta {
+  font-size: 11px;
+  color: #605e5c;
+}
+
+.ei-nav-lista {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 6px 6px 12px;
+}
+
+.ei-nav-entrada {
+  display: block;
+  width: 100%;
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #201f1e;
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ei-nav-entrada:hover {
+  background: #f3f2f1;
+}
+
+/* El nivel 2 va metido hacia dentro: es la jerarquía del documento hecha
+   visible, y es lo mismo que hace el índice con su sangría. */
+.ei-nav-entrada.es-n2 {
+  padding-left: 26px;
+  font-size: 12px;
+  color: #3b3a39;
+}
+
+.ei-nav-entrada.es-actual {
+  background: #e5effa;
+  color: #185abd;
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 #185abd;
+}
+
+.ei-nav-vacio {
+  padding: 14px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #605e5c;
+}
+
+.ei-nav-pie {
+  flex: none;
+  padding: 9px 12px 11px;
+  border-top: 1px solid #e1dfdd;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #605e5c;
+}
+
+/* Con la ventana estrecha, la columna del maestro y la del documento ya van
+   justas; el panel se encoge antes que comerse la hoja. */
+@media (max-width: 1180px) {
+  .txtw:has(.ei-nav) .txtw-medio {
+    grid-template-columns: 210px minmax(0, 1fr) 300px;
+  }
+}

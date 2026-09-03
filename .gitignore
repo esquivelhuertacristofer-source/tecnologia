@@ -1,0 +1,102 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# generated artifacts (credentials PDFs, validation outputs)
+output/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+scripts/
+
+# Docs con credenciales — gestionar sólo en variables de entorno, nunca versionar valores reales
+docs/CREDENCIALES*.md
+
+# Respaldos y archivos de debug (nunca versionar)
+_respaldo-*/
+_archivo_debug_*/
+_pre-port-backup/
+_pre-fix-backup/
+_diagnostico*.log
+_build-*.log
+build_log.txt
+*.bak
+*.bak2
+*.bak3
+audit_activities.py
+audit_types.py
+clean_json.py
+find_line.py
+find_trailing_commas.py
+process_images.py
+robust_engine.py
+strict_validate.py
+validate_json.py
+
+.vercel
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Cloudflare y medios (3-sep-2026)
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Artefactos del build del Worker
+/.open-next/
+/.medios/
+/.wrangler/
+.dev.vars
+tsconfig.tsbuildinfo
+
+# LOS VIDEOS NO VAN A GIT. Son 238 archivos y 4,46 GB; GitHub no es un
+# almacén de medios y el repositorio se volvería inclonable. Viven en el
+# bucket de R2 `tecnia-medios` (ver DESPLIEGUE-CLOUDFLARE.md) y se suben con
+# `npm run medios:subir`. La plataforma los pide por la misma URL de siempre.
+*.mp4
+*.webm
+*.mov
+
+# El proyecto de producción de video (Remotion): 11,2 GB de fuentes y
+# renders. Es un taller, no parte del sitio que se despliega.
+/video-explicativo/
+
+# Respaldos de la migración: incluyen una copia de `.env.local` con la llave
+# secreta de Supabase. NUNCA a git.
+/_backups/
+
+# Cacharros de sesión
+/scratchpad/
+*.log

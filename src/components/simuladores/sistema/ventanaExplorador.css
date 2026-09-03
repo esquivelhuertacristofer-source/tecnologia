@@ -1,0 +1,209 @@
+/*
+ * Tecnia Sistema — el explorador de archivos.
+ *
+ * Color pleno y saturado sobre fondo oscuro con drama de luz (misma familia
+ * que `ventanaMuro.css`/`ventanaAsistente.css`): un explorador real es denso
+ * y de acentos intensos, no pastel. Las acciones viven pegadas a cada fila
+ * —nunca flotan encima como un overlay genérico— y sólo se ven al pasar el
+ * ratón o cuando la fila está seleccionada, para no ensuciar la lista.
+ *
+ * El marco (barra de título, botón de encender) llega con `VentanaBase`;
+ * todo aquí vive dentro de su hueco de contenido.
+ */
+
+.tsx {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  height: 100%;
+  padding: 12px;
+  background: radial-gradient(120% 100% at 50% 0%, #241a08 0%, #150f05 60%, #0b0803 100%);
+  color: #fdf3e2;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* ── barra de herramientas ─────────────────────────────────────────────── */
+
+.tsx-barra-herramientas {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  background: #241804;
+  border: 2px solid #6b4a0e;
+  border-radius: 14px;
+}
+
+.tsx-barra-herramientas button {
+  border: 0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-weight: 800;
+  font-size: 12.5px;
+  color: #241804;
+  background: linear-gradient(135deg, #ffb703, #fb8500);
+  box-shadow: 0 6px 16px rgba(251, 133, 0, 0.3);
+  cursor: pointer;
+}
+.tsx-barra-herramientas button:hover { filter: brightness(1.08); }
+.tsx-barra-herramientas button:disabled { opacity: 0.4; cursor: not-allowed; filter: none; }
+
+.tsx-boton-subir { padding: 8px 10px !important; font-size: 15px !important; }
+
+.tsx-ruta {
+  flex: 1 1 160px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  min-width: 0;
+}
+.tsx-ruta-tramo { display: flex; align-items: center; gap: 2px; }
+.tsx-ruta-separador { color: #a97d2c; font-weight: 700; }
+.tsx-ruta-item {
+  background: transparent !important;
+  color: #ffcf6b !important;
+  box-shadow: none !important;
+  padding: 4px 6px !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+}
+.tsx-ruta-item.es-actual { color: #fff5df !important; text-decoration: underline; }
+
+.tsx-buscar {
+  flex: 1 1 140px;
+  min-width: 90px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 2px solid #6b4a0e;
+  background: #150f05;
+  color: #fdf3e2;
+  font: inherit;
+  font-weight: 600;
+}
+.tsx-buscar::placeholder { color: #a97d2c; }
+
+.tsx-vista-toggle { display: flex; gap: 4px; }
+.tsx-vista-toggle button { background: #3a2a0a !important; color: #ffcf6b !important; box-shadow: none !important; }
+.tsx-vista-toggle button.es-activo { background: linear-gradient(135deg, #ffb703, #fb8500) !important; color: #241804 !important; }
+
+.tsx-boton-papelera { background: linear-gradient(135deg, #ff5d5d, #c81d1d) !important; color: #fff !important; }
+
+/* ── orden ──────────────────────────────────────────────────────────────── */
+
+.tsx-orden { display: flex; gap: 6px; }
+.tsx-orden button {
+  border: 2px solid #6b4a0e;
+  background: transparent;
+  color: #ffcf6b;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.tsx-orden button.es-activo { background: #6b4a0e; color: #fff5df; }
+
+/* ── avisos ─────────────────────────────────────────────────────────────── */
+
+.tsx-aviso {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #3a2a0a;
+  border: 2px solid #6b4a0e;
+  color: #ffe6ad;
+  font-weight: 700;
+  font-size: 12.5px;
+}
+.tsx-buscando-nota { margin: 0; color: #d1a862; font-weight: 700; font-size: 12px; }
+
+/* ── el listado ─────────────────────────────────────────────────────────── */
+
+.tsx-listado { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+.tsx-vacio { margin: auto; text-align: center; color: #a97d2c; font-weight: 700; max-width: 32ch; }
+
+.tsx-fila {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #1c1406;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+.tsx-fila:hover { border-color: #6b4a0e; }
+.tsx-fila.es-seleccionada { background: #3a2a0a; border-color: #ffb703; }
+.tsx-fila.es-cortando { opacity: 0.5; font-style: italic; }
+
+.tsx-fila-emoji { font-size: 19px; flex: none; }
+.tsx-fila-nombre { flex: 1; min-width: 0; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tsx-fila-tamano { flex: none; width: 68px; text-align: right; color: #d1a862; font-size: 12px; font-weight: 700; }
+.tsx-fila-fecha { flex: none; width: 96px; text-align: right; color: #d1a862; font-size: 12px; font-weight: 700; }
+
+.tsx-fila-acciones { flex: none; display: flex; gap: 4px; opacity: 0; transition: opacity 0.1s; }
+.tsx-fila:hover .tsx-fila-acciones,
+.tsx-fila.es-seleccionada .tsx-fila-acciones { opacity: 1; }
+.tsx-fila-acciones button {
+  border: 0;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.tsx-fila-acciones button:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* vista de iconos: mismas filas, en cuadrícula */
+.tsx-listado-iconos { flex-direction: row; flex-wrap: wrap; align-content: flex-start; }
+.tsx-listado-iconos .tsx-fila {
+  flex-direction: column;
+  width: 96px;
+  text-align: center;
+  gap: 4px;
+}
+.tsx-listado-iconos .tsx-fila-emoji { font-size: 30px; }
+.tsx-listado-iconos .tsx-fila-nombre { font-size: 12px; white-space: normal; }
+.tsx-listado-iconos .tsx-fila-acciones { flex-wrap: wrap; justify-content: center; }
+
+.tsx-renombrar { display: flex; align-items: center; gap: 4px; flex: 1; }
+.tsx-renombrar-input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 2px solid #ffb703;
+  background: #0b0803;
+  color: #fdf3e2;
+  font: inherit;
+}
+.tsx-renombrar-ok, .tsx-renombrar-cancelar { border: 0; border-radius: 6px; width: 24px; height: 24px; cursor: pointer; }
+.tsx-renombrar-ok { background: #2e7d32; color: #fff; }
+.tsx-renombrar-cancelar { background: #6b4a0e; color: #fff; }
+
+/* ── la papelera ────────────────────────────────────────────────────────── */
+
+.tsx-fila-papelera {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #1c1406;
+  border: 2px dashed #6b4a0e;
+}
+.tsx-fila-papelera .tsx-fila-nombre { text-decoration: line-through; color: #d1a862; }
+.tsx-boton-restaurar { border: 0; border-radius: 8px; padding: 6px 10px; font-weight: 800; font-size: 12px; background: #2e7d32; color: #fff; cursor: pointer; }
+.tsx-boton-vaciar { align-self: flex-start; border: 0; border-radius: 10px; padding: 8px 14px; font-weight: 800; background: linear-gradient(135deg, #ff5d5d, #c81d1d); color: #fff; cursor: pointer; }
+
+/* ── espacio en disco ───────────────────────────────────────────────────── */
+
+.tsx-espacio { flex: none; display: flex; align-items: center; gap: 10px; }
+.tsx-espacio-barra { flex: 1; height: 10px; border-radius: 6px; background: #1c1406; border: 1px solid #6b4a0e; overflow: hidden; }
+.tsx-espacio-relleno { display: block; height: 100%; background: linear-gradient(90deg, #ffb703, #fb8500); }
+.tsx-espacio-texto { flex: none; font-size: 11.5px; font-weight: 700; color: #d1a862; }

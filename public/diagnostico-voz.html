@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tecnia · diagnóstico de voces</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 40px 32px; background: #04122a; color: #e8f0ff;
+    font: 16px/1.5 system-ui, -apple-system, Segoe UI, sans-serif;
+  }
+  h1 { font-size: 30px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  p.sub { margin: 0 0 28px; color: #8fb2e0; }
+  .resumen {
+    display: inline-block; padding: 14px 20px; border-radius: 14px;
+    background: #10294d; font-weight: 700; margin-bottom: 24px;
+  }
+  .bien { background: #0b3d1f; color: #7dffab; }
+  .mal  { background: #4a1220; color: #ff9db1; }
+  table { border-collapse: collapse; width: 100%; max-width: 900px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #1d3a63; }
+  th { color: #8fb2e0; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; }
+  tr.premium td { background: #0d3a24; color: #b8ffd4; font-weight: 600; }
+  tr.elegida td { outline: 2px solid #38bdf8; }
+  button {
+    font: inherit; font-weight: 700; padding: 8px 14px; border: 0; border-radius: 10px;
+    background: #1d6fe0; color: #fff; cursor: pointer;
+  }
+  code { background: #0b1f3d; padding: 2px 6px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<h1>Diagnóstico de voces del navegador</h1>
+<p class="sub">Abre esta página en <b>Microsoft Edge</b> con internet. Enumera lo que el navegador
+expone a la plataforma y marca cuál elegiría Tecnia.</p>
+
+<div class="resumen" id="resumen">Leyendo el catálogo…</div>
+<p><button id="reintentar">Volver a leer</button></p>
+
+<table>
+  <thead><tr><th>#</th><th>Voz</th><th>Idioma</th><th>Origen</th><th>Puntos</th><th></th></tr></thead>
+  <tbody id="filas"></tbody>
+</table>
+
+<script>
+// Misma heurística que src/components/activities/n1/mision/audio.ts.
+function puntuarVoz(v) {
+  const n = v.name.toLowerCase();
+  let s = 0;
+  if (/natural|neural/.test(n)) s += 120;
+  if (/google/.test(n)) s += 80;
+  if (/premium|enhanced|wavenet|studio|siri/.test(n)) s += 60;
+  if (v.localService === false) s += 40;
+  if (/es[-_]MX/i.test(v.lang)) s += 16;
+  else if (/es[-_]419/i.test(v.lang)) s += 12;
+  else if (/es[-_]US/i.test(v.lang)) s += 8;
+  else if (/^es/i.test(v.lang)) s += 4;
+  if (/sabina|helena|laura|pablo|raul|microsoft server/.test(n)) s -= 14;
+  return s;
+}
+function esPremium(v) {
+  return /natural|neural|google|premium|enhanced|wavenet|studio/i.test(v.name) || v.localService === false;
+}
+
+var reportado = false;
+
+function pintar() {
+  var todas = speechSynthesis.getVoices();
+  var esp = todas.filter(function (v) { return /^es/i.test(v.lang); });
+  esp.sort(function (a, b) { return puntuarVoz(b) - puntuarVoz(a); });
+  var naturales = todas.filter(function (v) { return /natural|neural|online/i.test(v.name); });
+  var elegida = esp[0] || null;
+
+  var res = document.getElementById('resumen');
+  res.className = 'resumen ' + (elegida && esPremium(elegida) ? 'bien' : 'mal');
+  res.textContent =
+    todas.length + ' voces en total · ' + esp.length + ' en español · ' +
+    naturales.length + ' naturales/online · elegiría: ' +
+    (elegida ? elegida.name : 'ninguna') +
+    (elegida && esPremium(elegida) ? '  ✓ NATURAL' : '  ‼ voz vieja del sistema');
+
+  var cuerpo = document.getElementById('filas');
+  cuerpo.innerHTML = '';
+  esp.forEach(function (v, i) {
+    var tr = document.createElement('tr');
+    if (esPremium(v)) tr.className = 'premium';
+    if (v === elegida) tr.className += ' elegida';
+    tr.innerHTML =
+      '<td>' + (i + 1) + '</td><td>' + v.name + '</td><td><code>' + v.lang + '</code></td>' +
+      '<td>' + (v.localService ? 'local (SAPI)' : 'servidor Microsoft') + '</td>' +
+      '<td>' + puntuarVoz(v) + '</td><td></td>';
+    var td = tr.lastChild;
+    var b = document.createElement('button');
+    b.textContent = 'Probar';
+    b.onclick = function () {
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance('Hola, soy Bit. Vamos a encender la computadora y conocer sus partes.');
+      u.voice = v; u.lang = v.lang;
+      speechSynthesis.speak(u);
+    };
+    td.appendChild(b);
+    cuerpo.appendChild(tr);
+  });
+
+  // Reporta al log del servidor de desarrollo (una sola vez, cuando ya hay
+  // catálogo): así queda registrado sin depender de que alguien lea la pantalla.
+  if (!reportado && todas.length > 0) {
+    reportado = true;
+    var carga = 'total=' + todas.length + '&esp=' + esp.length + '&nat=' + naturales.length +
+      '&elegida=' + encodeURIComponent(elegida ? elegida.name : '-') +
+      '&lista=' + encodeURIComponent(esp.map(function (v) { return (v.localService ? 'L:' : 'R:') + v.name; }).join(' | '));
+    new Image().src = '/__diag-voz?' + carga;
+  }
+}
+
+speechSynthesis.addEventListener('voiceschanged', pintar);
+document.getElementById('reintentar').onclick = function () { reportado = false; pintar(); };
+pintar();
+// Edge puebla el catálogo remoto poco después del primer speak().
+try { speechSynthesis.speak(new SpeechSynthesisUtterance(' ')); } catch (e) {}
+setTimeout(pintar, 1500);
+setTimeout(pintar, 4000);
+</script>
+</body>
+</html>

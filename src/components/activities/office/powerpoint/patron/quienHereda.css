@@ -1,0 +1,171 @@
+/**
+ * El panel de herencia (§43.4).
+ *
+ * Vive dentro del panel acoplado de la ventana y hereda su ancho y su fondo.
+ * Todo el color del panel es morado, el mismo de la franja de la vista Patrón:
+ * el alumno tiene que poder ver de un vistazo que las dos cosas hablan de lo
+ * mismo.
+ */
+
+.qhe {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  font-size: 12px;
+  color: #1f2937;
+}
+
+/* ── lo que manda el patrón ── */
+
+.qhe-patron {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 11px 10px;
+  border-bottom: 1px solid #e6eaf0;
+  background: #f5f3ff;
+}
+
+.qhe-patron.es-mal {
+  background: #fef2f2;
+}
+
+.qhe-muestra {
+  padding: 7px 11px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.qhe-patron-que {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.qhe-patron-que b {
+  font-size: 12px;
+  font-weight: 800;
+  color: #4c1d95;
+}
+
+.qhe-patron.es-mal .qhe-patron-que b {
+  color: #991b1b;
+}
+
+.qhe-patron-que small {
+  font-size: 10.5px;
+  color: #6b7280;
+}
+
+/* ── las doce ── */
+
+.qhe-lista {
+  margin: 0;
+  padding: 7px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  border-bottom: 1px solid #e6eaf0;
+}
+
+.qhe-fila {
+  display: grid;
+  grid-template-columns: 18px 12px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.qhe-fila:hover {
+  background: #f1f5f9;
+}
+
+.qhe-fila.es-aqui {
+  border-color: #ddd6fe;
+  background: #f5f3ff;
+}
+
+/* La que no obedece se ve distinta SIN leer nada: raya roja a la izquierda. */
+.qhe-fila.es-anulada {
+  border-left: 3px solid #b91c1c;
+  border-radius: 3px 6px 6px 3px;
+}
+
+.qhe-num {
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* El color con el que se está pintando ese título. Es el dato del panel: dos
+   puntos distintos en la columna son dos diapositivas que no hacen lo mismo. */
+.qhe-punto {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.18);
+}
+
+.qhe-que {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.qhe-que b {
+  font-size: 12px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qhe-que small {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.qhe-fila.es-anulada .qhe-que small {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+/* ── la cuenta y la regla ── */
+
+.qhe-cuenta {
+  margin: 0;
+  padding: 11px 10px;
+  background: #ecfdf5;
+  color: #14532d;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  border-bottom: 1px solid #e6eaf0;
+}
+
+.qhe-cuenta.es-mal {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.qhe-regla {
+  margin: 0;
+  padding: 10px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #475569;
+}

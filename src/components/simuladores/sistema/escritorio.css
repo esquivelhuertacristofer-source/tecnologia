@@ -1,0 +1,142 @@
+/*
+ * Tecnia Sistema — el escritorio: iconos, ventanas y barra de tareas.
+ *
+ * Mismo mandato de color pleno sobre fondo oscuro con drama de luz que el
+ * resto de los armazones. El escritorio usa un acento distinto (azul-cian)
+ * al del explorador (ámbar) a propósito: son "programas" distintos dentro
+ * del mismo sistema, y en la vida real el fondo del escritorio no es del
+ * mismo color que las ventanas que contiene.
+ */
+
+.tsd {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(120% 100% at 50% 0%, #0a1a2c 0%, #050c16 70%);
+  color: #eaf6ff;
+  font-size: 14px;
+}
+
+.tsd-fondo { position: relative; flex: 1; min-height: 0; }
+
+/* ── iconos ─────────────────────────────────────────────────────────────── */
+
+.tsd-iconos {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 88px);
+  grid-auto-rows: 88px;
+  gap: 6px;
+  padding: 14px;
+  align-content: flex-start;
+}
+
+.tsd-icono {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #eaf6ff;
+  cursor: pointer;
+  padding: 8px 4px;
+}
+.tsd-icono:hover, .tsd-icono:focus-visible { background: rgba(92, 225, 230, 0.14); }
+.tsd-icono-emoji {
+  font-size: 30px;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #17415e, #0d2438);
+  box-shadow: 0 6px 18px rgba(50, 168, 255, 0.25);
+}
+.tsd-icono-etiqueta { font-size: 11px; font-weight: 700; text-align: center; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); }
+
+/* ── ventanas ───────────────────────────────────────────────────────────── */
+
+.tsd-ventanas { position: absolute; inset: 0; pointer-events: none; }
+
+.tsd-ventana {
+  position: absolute;
+  width: min(72%, 640px);
+  height: min(70%, 460px);
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0b1e33;
+  border: 2px solid rgba(92, 225, 230, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+.tsd-ventana-barra {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(180deg, #123049, #0b1e33);
+  border-bottom: 1px solid rgba(92, 225, 230, 0.25);
+}
+.tsd-ventana-titulo { font-weight: 800; font-size: 13px; }
+.tsd-ventana-botones { margin-left: auto; display: flex; gap: 6px; }
+.tsd-ventana-botones button {
+  border: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(238, 248, 255, 0.12);
+  color: #eaf6ff;
+  cursor: pointer;
+  font-size: 12px;
+}
+.tsd-ventana-botones button:hover { background: rgba(255, 93, 93, 0.6); }
+
+.tsd-ventana-cuerpo { flex: 1; min-height: 0; overflow: auto; position: relative; }
+
+/* ── barra de tareas ────────────────────────────────────────────────────── */
+
+.tsd-barra-tareas {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #081524;
+  border-top: 2px solid rgba(92, 225, 230, 0.25);
+}
+
+.tsd-inicio {
+  border: 0;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-weight: 900;
+  font-size: 12.5px;
+  color: #031323;
+  background: linear-gradient(135deg, #5ce1e6, #32a8ff);
+  cursor: pointer;
+}
+
+.tsd-tareas-abiertas { flex: 1; display: flex; gap: 6px; overflow-x: auto; }
+.tsd-tarea {
+  border: 1px solid rgba(92, 225, 230, 0.3);
+  background: rgba(92, 225, 230, 0.08);
+  color: #cdeeff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tsd-tarea.es-activa { background: rgba(92, 225, 230, 0.28); color: #fff; }
+
+.tsd-reloj { flex: none; font-weight: 800; font-size: 12.5px; color: #9fd8ff; }

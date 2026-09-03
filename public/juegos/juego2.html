@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>El Viaje del Pequeño Emprendedor - v2.1 (Layout Fix)</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;700;800;900&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  /* PALETA AGUA CEN */
+  --brand-blue: #0980E8;
+  --brand-light: #60A5FA;
+  --brand-dark: #1E3A8A;
+  
+  --fondo-inicio: #0980E8;
+  --fondo-fin: #0EA5E9; 
+  
+  --card-bg: rgba(255, 255, 255, 0.96); /* Más sólido */
+  
+  --primario: #0980E8;
+  --acento: #F59E0B;
+  --texto-principal: #0F172A;
+  --texto-secundario: #475569;
+  
+  --exito: #10B981;
+  --peligro: #EF4444;
+  
+  --sombra-suave: 0 10px 40px -10px rgba(9, 128, 232, 0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Epilogue', sans-serif; }
+
+body, html {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Fondo animado --- */
+.bg-blob {
+  position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; z-index: 0;
+  animation: pulseBlob 10s infinite alternate;
+}
+.blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #BAE6FD; }
+.blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #BFDBFE; animation-delay: -5s; }
+
+@keyframes pulseBlob { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+
+#game {
+  width: 100%; height: 100%;
+  display: flex; justify-content: center; align-items: center;
+  position: relative; z-index: 1; padding: 20px;
+}
+
+/* --- Tarjeta Principal --- */
+.card {
+  width: 100%; max-width: 800px;
+  height: clamp(600px, 90vh, 750px); /* Ligeramente más alta */
+  background: var(--card-bg);
+  border-radius: 24px;
+  border: 2px solid white;
+  box-shadow: var(--sombra-suave);
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  container-type: inline-size;
+  container-name: quiz-card;
+}
+
+/* Pantallas (Ajuste del Padding aquí) */
+.screen {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; 
+  /* justifyContent: center quitado para evitar colisiones verticales */
+  text-align: center;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  
+  /* --- CORRECCIÓN CLAVE --- */
+  padding-top: 110px; /* Espacio reservado para los medidores de arriba */
+  padding-bottom: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow-y: auto; /* Permitir scroll si el texto es muy largo */
+}
+
+.hidden {
+  opacity: 0; transform: scale(0.95); pointer-events: none;
+}
+
+/* Tipografía Ajustada */
+h1, h2 {
+  color: var(--brand-blue);
+  font-weight: 900; margin-bottom: 1rem;
+  line-height: 1.1;
+  flex-shrink: 0;
+}
+
+@container quiz-card (min-width: 1px) {
+  h1 { font-size: clamp(2rem, 4cqw, 3rem); }
+  /* Reducimos un poco el h2 para que "Tu cumpleaños" no sea gigante */
+  h2 { font-size: clamp(1.5rem, 3.5cqw, 2.2rem); } 
+  p { font-size: clamp(1rem, 2.5cqw, 1.25rem); }
+  .btn { font-size: clamp(0.9rem, 2cqw, 1.1rem); }
+}
+
+p {
+  color: var(--texto-secundario);
+  font-weight: 500; margin-bottom: 1.5rem;
+  max-width: 55ch; line-height: 1.5;
+  flex-shrink: 0;
+}
+
+/* Botones */
+.btn {
+  background: var(--brand-blue); color: white;
+  border: none; border-radius: 16px;
+  padding: 16px 32px; font-weight: 800;
+  cursor: pointer; margin: 0.5rem;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 10px rgba(9, 128, 232, 0.3);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  flex-shrink: 0;
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(9, 128, 232, 0.4); }
+.btn:active { transform: translateY(1px) scale(0.98); }
+.btn:disabled { background: #CBD5E1; color: #64748B; cursor: not-allowed; box-shadow: none; transform: none; }
+
+#options {
+  display: grid; gap: 1rem; width: 100%; max-width: 600px;
+  margin-bottom: 20px; /* Espacio extra abajo */
+}
+
+#options .btn {
+  background: white; border: 2px solid #E2E8F0; color: var(--texto-principal);
+  text-align: left; justify-content: flex-start; padding: 1.2rem;
+  font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  margin: 0; /* Reset margin for grid */
+}
+#options .btn:hover:not(:disabled) {
+  border-color: var(--brand-blue); background: #EFF6FF; color: var(--brand-blue);
+}
+
+/* Medidores (HUD) - FIJOS ARRIBA */
+#hud {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 90px; /* Altura definida */
+  padding: 1.5rem; display: flex; justify-content: center; gap: 2rem;
+  z-index: 20; 
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 40%, rgba(255,255,255,0));
+  pointer-events: none; /* Dejar pasar clics si algo se pone encima */
+}
+
+.meter-group {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; width: 140px;
+}
+
+.meter-label {
+  font-size: 0.85rem; font-weight: 800; color: var(--texto-secundario); text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.meter-track {
+  background: #E2E8F0; border-radius: 99px; width: 100%; height: 12px; overflow: hidden;
+  border: 1px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05) inset;
+}
+
+.meter-fill {
+  height: 100%; border-radius: 99px; width: 50%;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#savingsFill { background: var(--brand-blue); }
+#happyFill { background: var(--acento); }
+
+/* Feedback */
+#feedback {
+  background: #F8FAFC; border-radius: 12px;
+  padding: 1.5rem; margin-top: 0.5rem;
+  color: var(--texto-principal); font-weight: 600;
+  border-left: 6px solid transparent;
+  animation: slideUp 0.3s ease-out;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  flex-shrink: 0;
+  margin-bottom: 20px;
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.feedback-good { border-color: var(--exito); background: #F0FDF4 !important; color: #166534 !important; }
+.feedback-bad { border-color: var(--peligro); background: #FEF2F2 !important; color: #991B1B !important; }
+.feedback-neutral { border-color: var(--brand-light); background: #EFF6FF !important; color: #1E40AF !important; }
+
+/* Botón Sonido */
+#soundBtn {
+  position: absolute; top: 1.5rem; right: 1.5rem;
+  width: 40px; height: 40px; border-radius: 12px;
+  background: white; border: 1px solid #E2E8F0;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--texto-secundario);
+  transition: all 0.2s; z-index: 30;
+}
+#soundBtn:hover { background: #F1F5F9; color: var(--brand-blue); transform: scale(1.05); }
+
+/* Partículas */
+.particle {
+  position: absolute; font-size: 2rem; pointer-events: none;
+  animation: floatParticle 1s ease-out forwards; z-index: 100;
+}
+@keyframes floatParticle {
+  0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+  50% { opacity: 1; transform: translate(0, -30px) scale(1.2); }
+  100% { transform: translate(0, -60px) scale(1); opacity: 0; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="bg-blob blob-1"></div>
+<div class="bg-blob blob-2"></div>
+
+<div id="game">
+  <div class="card">
+    
+    <button id="soundBtn" title="Activar/Desactivar Sonido">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+    </button>
+    
+    <div id="hud" class="hidden">
+      <div class="meter-group">
+        <span class="meter-label">🐷 Ahorros</span>
+        <div class="meter-track"><div class="meter-fill" id="savingsFill"></div></div>
+      </div>
+      <div class="meter-group">
+        <span class="meter-label">⭐ Felicidad</span>
+        <div class="meter-track"><div class="meter-fill" id="happyFill"></div></div>
+      </div>
+    </div>
+    
+    <div id="startScreen" class="screen" style="justify-content: center;">
+      <h1>El Viaje del Pequeño Emprendedor</h1>
+      <p>Toma decisiones inteligentes para equilibrar tu dinero y tu felicidad. ¿Podrás llegar al final con éxito?</p>
+      <button class="btn" id="startBtn">Comenzar Aventura 🚀</button>
+    </div>
+    
+    <div id="gameScreen" class="screen hidden">
+      <h2 id="sceneTitle">Título Escena</h2>
+      <p id="sceneText">Descripción de la situación...</p>
+      
+      <div id="options">
+        </div>
+      
+      <div id="feedback" class="hidden"></div>
+      
+      <button class="btn hidden" id="continueBtn" style="margin-top: 1.5rem;">Continuar ➡️</button>
+    </div>
+    
+    <div id="endScreen" class="screen hidden" style="justify-content: center;">
+      <h2>¡Fin del Viaje!</h2>
+      <div style="background:#F8FAFC; padding:20px; border-radius:16px; margin-bottom:2rem; width:100%; max-width:500px;">
+        <p id="finalText" style="margin:0; color:var(--texto-principal); font-size:1.1rem;"></p>
+      </div>
+      <button class="btn" id="restartBtn">Jugar de Nuevo 🔄</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// --- LÓGICA DEL JUEGO ---
+const scenes = [
+  { 
+    title: "🎁 ¡Tu cumpleaños!", 
+    text: "Tus abuelos te regalaron $50 por tu cumpleaños. ¡Es mucho dinero! ¿Qué decides hacer con él?",
+    options: [
+      { text: "Guardarlo todo en mi alcancía 🐷", s: 30, h: -5, msg: "¡Muy bien! Ahorrar te prepara para cumplir metas grandes en el futuro." },
+      { text: "Comprar dulces para mí 🍬", s: -10, h: 10, msg: "Estaba rico, pero el dinero se fue rápido y el gusto duró poco." },
+      { text: "Comprar un juguete caro 🤖", s: -40, h: 20, msg: "¡Te divertiste! Pero te quedaste casi sin nada de tus ahorros." }
+    ]
+  },
+  { 
+    title: "🛍️ Oferta Especial", 
+    text: "Ves una mochila increíble en oferta, pero no la necesitas realmente porque la tuya sirve bien. ¿Qué haces?",
+    options: [
+      { text: "Comprarla, ¡está barata! 🎒", s: -20, h: 5, msg: "Cuidado, a veces las ofertas nos hacen gastar en cosas que no necesitamos." },
+      { text: "Mejor ahorro ese dinero 🛡️", s: 15, h: 5, msg: "¡Excelente decisión! Diferenciaste entre un deseo y una necesidad." }
+    ]
+  },
+  { 
+    title: "🍋 Puesto de Limonada", 
+    text: "Hace calor y tus vecinos tienen sed. Tienes la idea de vender limonada. ¿Lo haces?",
+    options: [
+      { text: "¡Sí! Invierto en limones y azúcar 🍋", s: 25, h: 10, msg: "¡Felicidades, emprendedor! Trabajaste y multiplicaste tu dinero." },
+      { text: "Qué flojera, mejor veo tele 📺", s: 0, h: -5, msg: "Descansaste, pero perdiste una oportunidad de ganar dinero y aprender." }
+    ]
+  },
+  { 
+    title: "🌱 La Semilla Mágica", 
+    text: "Te regalan una semilla de una planta rara. Cuidarla requiere tiempo y esfuerzo diario.",
+    options: [
+      { text: "La cuido todos los días 💧", s: 10, h: 15, msg: "¡Tu constancia dio frutos! La paciencia es clave para las inversiones." },
+      { text: "Se me olvida regarla 🥀", s: -5, h: -10, msg: "Sin atención y cuidado, las cosas (y el dinero) no crecen." }
+    ]
+  },
+  { 
+    title: "🤝 Un Amigo en Apuros", 
+    text: "Tu mejor amigo olvidó su dinero para el almuerzo. Tienes justo lo que te sobra.",
+    options: [
+      { text: "Le invito el almuerzo 🥪", s: -10, h: 25, msg: "¡Qué gran corazón! El dinero también sirve para ayudar a quienes queremos." },
+      { text: "Me lo guardo para mí 🙅", s: 5, h: -15, msg: "Ahorraste, pero te sientes un poco mal por no ayudar a tu amigo." }
+    ]
+  },
+  { 
+    title: "🚀 La Gran Meta", 
+    text: "Has llegado lejos. Tienes suficientes ahorros para comprar esa consola que soñabas o invertir en un pequeño negocio escolar.",
+    options: [
+      { text: "Compro la consola 🎮", s: -30, h: 30, msg: "¡Disfruta tu recompensa! Ahorraste para esto y te lo mereces." },
+      { text: "Invierto en mercancía para vender 📈", s: 40, h: 10, msg: "¡Mentalidad de tiburón! Decidiste hacer crecer tu patrimonio aún más." }
+    ]
+  }
+];
+
+// Estado
+let currentScene = 0;
+let savings = 50;
+let happiness = 50;
+let isSoundEnabled = false;
+let audioCtx = null;
+
+// Elementos DOM
+const startScreen = document.getElementById('startScreen');
+const gameScreen = document.getElementById('gameScreen');
+const endScreen = document.getElementById('endScreen');
+const hud = document.getElementById('hud');
+const sceneTitle = document.getElementById('sceneTitle');
+const sceneText = document.getElementById('sceneText');
+const optionsDiv = document.getElementById('options');
+const feedbackBox = document.getElementById('feedback');
+const continueBtn = document.getElementById('continueBtn');
+const soundBtn = document.getElementById('soundBtn');
+
+// Iconos SVG
+const iconMute = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
+const iconSound = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+
+// Funciones
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function playSound(type) {
+  if (!isSoundEnabled || !audioCtx) return;
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  
+  const now = audioCtx.currentTime;
+  
+  if (type === 'good') {
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(500, now);
+    osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc.start(now);
+    osc.stop(now + 0.3);
+  } else if (type === 'bad') {
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(150, now);
+    osc.frequency.linearRampToValueAtTime(100, now + 0.2);
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+    osc.start(now);
+    osc.stop(now + 0.2);
+  } else { // click
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(400, now);
+    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+    osc.start(now);
+    osc.stop(now + 0.1);
+  }
+}
+
+function updateMeters() {
+  const s = Math.min(100, Math.max(0, savings));
+  const h = Math.min(100, Math.max(0, happiness));
+  
+  document.getElementById('savingsFill').style.width = `${s}%`;
+  document.getElementById('happyFill').style.width = `${h}%`;
+  
+  // Colores dinámicos si baja mucho
+  document.getElementById('savingsFill').style.background = s < 30 ? 'var(--peligro)' : 'var(--brand-blue)';
+  document.getElementById('happyFill').style.background = h < 30 ? 'var(--peligro)' : 'var(--acento)';
+}
+
+function spawnParticle(x, y, char) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.textContent = char;
+  p.style.left = x + 'px';
+  p.style.top = y + 'px';
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 1000);
+}
+
+function showScene() {
+  const s = scenes[currentScene];
+  sceneTitle.textContent = s.title;
+  sceneText.textContent = s.text;
+  
+  optionsDiv.innerHTML = '';
+  feedbackBox.className = 'hidden';
+  continueBtn.classList.add('hidden');
+  
+  // Reseteamos el scroll al cambiar de escena
+  gameScreen.scrollTop = 0; 
+  
+  s.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.textContent = opt.text;
+    btn.onclick = (e) => handleOptionClick(opt, e);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+function handleOptionClick(opt, event) {
+  // Desactivar botones
+  Array.from(optionsDiv.children).forEach(b => b.disabled = true);
+  
+  // Actualizar estado
+  savings += opt.s;
+  happiness += opt.h;
+  updateMeters();
+  
+  // Sonido y Feedback
+  const isGood = (opt.s + opt.h) >= 5;
+  playSound(isGood ? 'good' : 'bad');
+  
+  feedbackBox.textContent = opt.msg;
+  feedbackBox.className = ''; // Reset class
+  feedbackBox.classList.add(isGood ? 'feedback-good' : (opt.s + opt.h < 0 ? 'feedback-bad' : 'feedback-neutral'));
+  
+  continueBtn.classList.remove('hidden');
+  
+  // Scrollear hacia abajo para ver el feedback si es necesario
+  setTimeout(() => {
+    continueBtn.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, 100);
+  
+  // Partículas
+  const rect = event.target.getBoundingClientRect();
+  spawnParticle(rect.left + rect.width/2, rect.top, isGood ? '⭐' : '💸');
+}
+
+function endGame() {
+  gameScreen.classList.add('hidden');
+  hud.classList.add('hidden');
+  endScreen.classList.remove('hidden');
+  
+  let msg = "";
+  if (savings > 70 && happiness > 70) {
+    msg = "¡Increíble! Eres un maestro del equilibrio. Tienes dinero Y eres feliz. ¡El combo perfecto! 🏆";
+  } else if (savings > happiness) {
+    msg = "¡Gran ahorrador! Tienes un futuro seguro, pero no olvides divertirte un poco más en el camino. 🐷";
+  } else {
+    msg = "¡Qué vida tan divertida! Pero cuidado, tus ahorros quedaron bajos. Intenta guardar un poco más la próxima vez. ⭐";
+  }
+  
+  document.getElementById('finalText').innerHTML = `
+    <strong>Ahorros Finales:</strong> ${Math.max(0, savings)}% <br>
+    <strong>Felicidad Final:</strong> ${Math.max(0, happiness)}% <br><br>
+    ${msg}
+  `;
+}
+
+// Event Listeners
+document.getElementById('startBtn').onclick = () => {
+  playSound();
+  initAudio();
+  startScreen.classList.add('hidden');
+  gameScreen.classList.remove('hidden');
+  hud.classList.remove('hidden');
+  currentScene = 0;
+  savings = 50;
+  happiness = 50;
+  updateMeters();
+  showScene();
+};
+
+continueBtn.onclick = () => {
+  playSound();
+  currentScene++;
+  if (currentScene < scenes.length) {
+    showScene();
+  } else {
+    endGame();
+  }
+};
+
+document.getElementById('restartBtn').onclick = () => {
+  playSound();
+  endScreen.classList.add('hidden');
+  startScreen.classList.remove('hidden');
+};
+
+soundBtn.onclick = () => {
+  isSoundEnabled = !isSoundEnabled;
+  soundBtn.innerHTML = isSoundEnabled ? iconSound : iconMute;
+  if(isSoundEnabled) initAudio();
+};
+
+// Iniciar con icono de mute
+soundBtn.innerHTML = iconMute;
+
+</script>
+</body>
+</html>

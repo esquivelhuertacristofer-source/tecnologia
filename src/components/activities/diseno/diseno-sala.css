@@ -1,0 +1,91 @@
+/* Tecnia Diseño · portada de objetivos y tarjeta de paso (documento §54).
+   Color pleno sobre fondo oscuro con drama de luz, como el resto de la casa:
+   nada de pastel, nada de blanco sobre blanco, nada de bordes punteados. */
+
+.psn-portada {
+  --acento: #22d3ee;
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(circle at 30% 20%, rgba(34, 211, 238, 0.12), transparent 55%),
+    linear-gradient(165deg, #0a1626, #050b14);
+}
+
+.psn-caja {
+  width: min(560px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  border-radius: 20px;
+  padding: 28px 30px;
+  background: linear-gradient(165deg, #10273d, #0b1c2e);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px var(--acento) inset, 0 30px 70px rgba(0, 0, 0, 0.55);
+  color: #eaf4ff;
+}
+
+.psn-situacion { margin: 0 0 6px; font-size: 12.5px; font-weight: 800; color: var(--acento); text-transform: uppercase; letter-spacing: 0.04em; }
+.psn-tema { margin: 0 0 16px; font-size: 26px; font-weight: 900; line-height: 1.15; }
+
+.psn-objetivo {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 4px solid var(--acento);
+}
+.psn-etiqueta { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #7f9cc0; margin-bottom: 4px; }
+.psn-objetivo p { margin: 0; font-size: 14.5px; font-weight: 600; }
+
+.psn-cuerpo { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+.psn-lista ol { margin: 4px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+.psn-lista li { font-size: 13.5px; }
+
+.psn-datos { display: flex; gap: 16px; flex-wrap: wrap; }
+.psn-dato { font-size: 13px; font-weight: 700; color: #b9cbe4; }
+.psn-dato b { color: #fff; font-size: 15px; }
+
+.psn-empezar {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--acento), #2563eb);
+  color: #04121f;
+  font-weight: 900;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(34, 211, 238, 0.35);
+}
+.psn-empezar:hover { filter: brightness(1.08); }
+.psn-pie { margin: 8px 0 0; text-align: center; font-size: 11px; color: #6d84a3; }
+
+/* ── la tarjeta de paso, en el panel de la ventana ── */
+.dsg-tarjeta {
+  --acento: #22d3ee;
+  border-radius: 14px;
+  padding: 14px;
+  background: linear-gradient(165deg, rgba(34, 211, 238, 0.12), rgba(9, 24, 40, 0.4));
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  color: #eaf4ff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dsg-tarjeta-kicker { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--acento); }
+.dsg-tarjeta-titulo { margin: 0; font-size: 15px; font-weight: 900; }
+.dsg-tarjeta-instruccion { margin: 0; font-size: 13px; line-height: 1.45; color: #d7e6f7; }
+.dsg-tarjeta-pista { margin: 0; font-size: 12px; color: #93a9c6; font-style: italic; }
+.dsg-tarjeta-hecho {
+  border-radius: 14px;
+  padding: 14px;
+  background: linear-gradient(165deg, rgba(52, 211, 153, 0.16), rgba(9, 24, 40, 0.4));
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: #d7ffee;
+  font-size: 13px;
+  font-weight: 700;
+}
+.dsg-panel-extra { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }

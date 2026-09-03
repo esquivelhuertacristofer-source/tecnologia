@@ -1,0 +1,3483 @@
+/* El salón arcade de Bit (N1·U2) — escenografía compartida de las 5 máquinas.
+   Estética del port (documento §3): fondo profundo #050B14, color pleno, glow
+   cian/ámbar. Regla anti-genérico: marcadores, contadores y controles son
+   parte del gabinete (marquesina, base), nunca HUD flotante. */
+
+.arcade-n1 {
+  --fondo: #050b14;
+  --panel: #0d2033;
+  --panel-hondo: #071322;
+  --linea: rgba(92, 225, 230, 0.22);
+  --cian: #5ce1e6;
+  --azul: #32a8ff;
+  --ambar: #ffd25a;
+  --ambar-hondo: #ff9d2e;
+  --verde: #58e29c;
+  --rojo: #ff6d7c;
+  --texto: #eef8ff;
+  --apagado: #9eb5c8;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  overflow: hidden;
+  background:
+    radial-gradient(90% 70% at 50% -10%, rgba(50, 168, 255, 0.14), transparent 60%),
+    radial-gradient(60% 50% at 85% 110%, rgba(255, 157, 46, 0.1), transparent 65%),
+    var(--fondo);
+  color: var(--texto);
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.arcade-n1, .arcade-n1 * { box-sizing: border-box; }
+.arcade-n1 button { font: inherit; cursor: pointer; }
+
+.arcade-n1 .sala {
+  height: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  /* La topbar del hub (sticky, 72px, translúcida) queda dibujada encima de
+     este overlay fijo; la sala reserva ese alto para que la marquesina no
+     quede debajo de la barra. */
+  padding: 88px 22px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Marquesina: letrero luminoso del gabinete (título + rondas + marcador) ── */
+.arcade-n1 .marquesina {
+  flex: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 20px 12px;
+  border-radius: 18px;
+  background: linear-gradient(150deg, var(--panel), var(--panel-hondo));
+  border: 1px solid var(--linea);
+  box-shadow: 0 0 34px rgba(92, 225, 230, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+/* Tira de foquitos de feria en el borde superior de la marquesina. */
+.arcade-n1 .marquesina::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 18px;
+  right: 18px;
+  height: 4px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg, var(--ambar) 0 4px, transparent 4px 22px);
+  filter: drop-shadow(0 0 4px var(--ambar));
+  opacity: 0.85;
+  animation: arcade-parpadeo-foquitos 1.6s steps(2) infinite;
+}
+@keyframes arcade-parpadeo-foquitos { 50% { opacity: 0.35; } }
+.arcade-n1 .marquesina-titulo {
+  margin: 0;
+  font-size: clamp(19px, 2.6vw, 27px);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 0 0 18px rgba(92, 225, 230, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.arcade-n1 .marquesina-pasos {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+}
+.arcade-n1 .paso-foco {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cian);
+  margin-right: 4px;
+  white-space: nowrap;
+}
+.arcade-n1 .paso-pip {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #122436;
+  border: 1px solid rgba(92, 225, 230, 0.3);
+}
+.arcade-n1 .paso-pip.encendido {
+  background: var(--ambar);
+  border-color: transparent;
+  box-shadow: 0 0 12px var(--ambar);
+}
+.arcade-n1 .marcador-led {
+  flex: none;
+  min-width: 118px;
+  padding: 5px 14px 7px;
+  border-radius: 12px;
+  background: #020608;
+  border: 1px solid rgba(255, 210, 90, 0.35);
+  text-align: center;
+}
+.arcade-n1 .marcador-led span {
+  display: block;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--apagado);
+}
+.arcade-n1 .marcador-led strong {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 21px;
+  line-height: 1.1;
+  color: var(--ambar);
+  text-shadow: 0 0 14px rgba(255, 210, 90, 0.8);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* Letrero neón de salida, como el rótulo EXIT de un salón arcade real. */
+.arcade-n1 .letrero-salida {
+  flex: none;
+  padding: 9px 13px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 109, 124, 0.65);
+  background: rgba(255, 109, 124, 0.08);
+  color: #ffaeb8;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 10px rgba(255, 109, 124, 0.8);
+  box-shadow: 0 0 16px rgba(255, 109, 124, 0.22), inset 0 0 10px rgba(255, 109, 124, 0.1);
+}
+.arcade-n1 .letrero-salida:hover { background: rgba(255, 109, 124, 0.18); color: #ffd3d9; }
+
+/* La marquesina la comparten 107 archivos (`ArcadeSala`/`ArcadeSala3D`, casi
+   toda la plataforma, no sólo N1 arcade) y sus tres bloques de la derecha
+   —pasos, marcador y Salir— son todos `flex: none`: nada cede. En un
+   teléfono, cuando pasos+marcador(+Salir) suman más de lo que queda tras el
+   título, lo de más se recortaba en silencio contra el `overflow` de un
+   ancestro —el caso más grave, perder el botón Salir por completo. Envolver
+   es más seguro que encoger: nada se vuelve ilegible ni se pierde, sólo baja
+   a una segunda fila. El título ocupa su propia fila primero porque, a
+   diferencia de los otros tres, ya sabe achicarse solo (elipsis). */
+@media (max-width: 640px) {
+  .arcade-n1 .marquesina {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .arcade-n1 .marquesina-titulo {
+    flex: 1 1 100%;
+  }
+
+  .arcade-n1 .marquesina-pasos {
+    margin-left: 0;
+  }
+}
+
+/* ── Pantalla de la máquina (área de juego, con bisel y viñeta CRT) ── */
+.arcade-n1 .maquina-pantalla {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  border-radius: 24px;
+  border: 10px solid #0d1a2a;
+  outline: 1px solid var(--linea);
+  background: radial-gradient(120% 100% at 50% 0%, #0a2338, var(--fondo) 72%);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.55), 0 18px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+.arcade-n1 .maquina-pantalla::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.015) 0 2px, transparent 2px 5px),
+    radial-gradient(115% 115% at 50% 50%, transparent 62%, rgba(0, 0, 0, 0.4));
+  z-index: 5;
+}
+
+/* ── Base del gabinete: aquí viven los controles integrados de cada máquina ── */
+.arcade-n1 .gabinete-base {
+  flex: none;
+  min-height: 84px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px 18px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #0c1a2b, #060d18);
+  border: 1px solid rgba(92, 225, 230, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.arcade-n1 .gabinete-nota {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--apagado);
+}
+
+/* ── Bit, anfitrión dentro de la pantalla (esquina inferior izquierda) ── */
+.arcade-n1 .bit-puesto {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  z-index: 6;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: min(440px, 62%);
+  pointer-events: none;
+}
+.arcade-n1 .bit-retrato {
+  position: relative;
+  flex: none;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(92, 225, 230, 0.6);
+  box-shadow: 0 0 18px rgba(92, 225, 230, 0.4);
+  background: #08131f;
+}
+.arcade-n1 .bit-globo {
+  margin: 0 0 6px;
+  padding: 9px 13px;
+  border-radius: 16px 16px 16px 4px;
+  background: rgba(5, 17, 29, 0.94);
+  border: 1px solid rgba(92, 225, 230, 0.35);
+  color: #d8e9f7;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  animation: arcade-globo-entra 0.28s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.arcade-n1 .bit-globo strong {
+  display: block;
+  color: var(--cian);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  margin-bottom: 2px;
+}
+@keyframes arcade-globo-entra {
+  from { transform: translateY(8px) scale(0.94); opacity: 0; }
+}
+
+/* ── Aviso grande entre rondas (dentro de la pantalla, estilo attract mode) ── */
+.arcade-n1 .aviso-ronda {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 7;
+  pointer-events: none;
+}
+.arcade-n1 .aviso-ronda span {
+  font-size: clamp(30px, 5vw, 50px);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 0 26px var(--cian), 0 0 60px rgba(92, 225, 230, 0.5);
+  animation: arcade-aviso 1.5s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+}
+@keyframes arcade-aviso {
+  0% { transform: scale(0.4); opacity: 0; }
+  22% { transform: scale(1.06); opacity: 1; }
+  72% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+/* ── Pantalla final: insignia de la máquina ── */
+.arcade-n1 .pantalla-final {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: radial-gradient(closest-side, rgba(5, 20, 33, 0.96), rgba(3, 8, 14, 0.98));
+  animation: arcade-final-funde 0.4s ease;
+  overflow: auto;
+  padding: 20px;
+}
+@keyframes arcade-final-funde { from { opacity: 0; } }
+.arcade-n1 .final-insignia {
+  width: 138px;
+  height: 138px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 60px;
+  background: radial-gradient(circle at 35% 25%, #ffe9a8, #ffb84d 55%, #b96a00);
+  box-shadow: 0 0 44px rgba(255, 184, 77, 0.55), inset 0 4px 10px rgba(255, 255, 255, 0.5);
+  animation: arcade-insignia-pop 0.7s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+@keyframes arcade-insignia-pop {
+  0% { transform: scale(0.2) rotate(-14deg); }
+  60% { transform: scale(1.12) rotate(4deg); }
+}
+.arcade-n1 .final-insignia-nombre {
+  margin: 0;
+  color: var(--ambar);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.arcade-n1 .final-titulo { margin: 4px 0 0; font-size: clamp(26px, 4vw, 36px); font-weight: 900; }
+.arcade-n1 .final-detalle { margin: 6px auto 0; max-width: 460px; color: var(--apagado); font-size: 15px; line-height: 1.5; }
+.arcade-n1 .final-resumen { display: flex; justify-content: center; gap: 12px; margin: 18px 0 22px; flex-wrap: wrap; }
+.arcade-n1 .final-dato {
+  min-width: 108px;
+  padding: 8px 16px 10px;
+  border-radius: 12px;
+  background: #020608;
+  border: 1px solid rgba(92, 225, 230, 0.3);
+}
+.arcade-n1 .final-dato span {
+  display: block;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--apagado);
+}
+.arcade-n1 .final-dato strong {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 22px;
+  color: var(--cian);
+  text-shadow: 0 0 12px rgba(92, 225, 230, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+.arcade-n1 .final-botones { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.arcade-n1 .boton-arcade {
+  padding: 14px 26px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  font-weight: 900;
+  font-size: 15px;
+  color: #031323;
+  background: linear-gradient(135deg, var(--cian), var(--azul));
+  box-shadow: 0 10px 28px rgba(50, 168, 255, 0.25);
+}
+.arcade-n1 .boton-arcade:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.arcade-n1 .boton-arcade--fantasma {
+  color: var(--texto);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--linea);
+  box-shadow: none;
+}
+
+/* ═══ Máquina 1 · Caza clics ═══ */
+.arcade-n1 .caza-campo { position: absolute; inset: 0; z-index: 2; border: 0; background: transparent; padding: 0; cursor: crosshair; }
+.arcade-n1 .burbuja {
+  position: absolute;
+  z-index: 3;
+  border-radius: 50%;
+  padding: 0;
+  border: 2px solid rgba(92, 225, 230, 0.75);
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.85), rgba(92, 225, 230, 0.45) 30%, rgba(20, 120, 160, 0.4) 65%, rgba(10, 40, 70, 0.35));
+  box-shadow: 0 0 18px rgba(92, 225, 230, 0.45), inset 0 0 18px rgba(92, 225, 230, 0.3);
+  animation: arcade-burbuja-nace 0.3s cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+@keyframes arcade-burbuja-nace { from { transform: scale(0.2); opacity: 0; } }
+.arcade-n1 .burbuja--dorada {
+  border-color: rgba(255, 210, 90, 0.85);
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.9), rgba(255, 210, 90, 0.55) 30%, rgba(255, 157, 46, 0.45) 65%, rgba(120, 60, 0, 0.35));
+  box-shadow: 0 0 20px rgba(255, 210, 90, 0.55), inset 0 0 18px rgba(255, 184, 77, 0.4);
+}
+/* Doble cáscara: anillo interior visible; al agrietarse, punteado + temblor. */
+.arcade-n1 .burbuja--dorada::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 232, 160, 0.85);
+}
+.arcade-n1 .burbuja--agrietada { animation: arcade-tiembla 0.32s ease; }
+.arcade-n1 .burbuja--agrietada::before { border-style: dashed; opacity: 0.55; }
+.arcade-n1 .burbuja.deriva { animation: arcade-deriva var(--deriva-dur, 7s) ease-in-out var(--deriva-retraso, 0s) infinite alternate; }
+@keyframes arcade-deriva {
+  from { transform: translate(0, 0); }
+  to { transform: translate(var(--deriva-x, 22px), var(--deriva-y, -18px)); }
+}
+@keyframes arcade-tiembla {
+  0%, 100% { margin-left: 0; }
+  25% { margin-left: -4px; }
+  60% { margin-left: 4px; }
+}
+.arcade-n1 .burbuja-pop {
+  position: absolute;
+  z-index: 4;
+  border-radius: 50%;
+  border: 3px solid var(--cian);
+  pointer-events: none;
+  animation: arcade-pop 0.45s ease-out forwards;
+}
+.arcade-n1 .burbuja-pop--dorada { border-color: var(--ambar); }
+.arcade-n1 .burbuja-pop::after {
+  content: "✦ ✦ ✦";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  color: inherit;
+  border-color: inherit;
+}
+@keyframes arcade-pop {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+/* ═══ Máquina 2 · La mesa del laberinto ═══ */
+.arcade-n1 .mesa {
+  position: absolute;
+  inset: 20px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #123247, #0a1f31);
+  border: 6px solid #1d3f58;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.45), 0 0 24px rgba(92, 225, 230, 0.12);
+  touch-action: none;
+}
+.arcade-n1 .trazo-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.arcade-n1 .estrella-punto {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+  filter: grayscale(0.7) opacity(0.75);
+  user-select: none;
+}
+.arcade-n1 .estrella-punto .num {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 900;
+  color: #031323;
+  background: var(--cian);
+  box-shadow: 0 0 10px rgba(92, 225, 230, 0.7);
+}
+.arcade-n1 .estrella-punto.unida { filter: none; animation: arcade-estrella-brilla 0.4s ease; }
+.arcade-n1 .estrella-punto.unida .num { background: var(--ambar); box-shadow: 0 0 12px var(--ambar); }
+.arcade-n1 .estrella-punto.objetivo { filter: none; animation: arcade-pulso 1s ease infinite; }
+@keyframes arcade-estrella-brilla { 50% { transform: translate(-50%, -50%) scale(1.35); } }
+@keyframes arcade-pulso { 50% { transform: translate(-50%, -50%) scale(1.12); } }
+.arcade-n1 .laberinto-celda--pared {
+  position: absolute;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #2a6f8e, #174b63);
+  box-shadow: 0 0 10px rgba(92, 225, 230, 0.28);
+}
+.arcade-n1 .pixel-ficha {
+  position: absolute;
+  z-index: 4;
+  width: 46px;
+  height: 46px;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  touch-action: none;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5));
+  transition: left 0.05s linear, top 0.05s linear;
+}
+.arcade-n1 .pixel-ficha.arrastrando { cursor: grabbing; }
+.arcade-n1 .pixel-ficha.choque { animation: arcade-sacude 0.4s ease; }
+@keyframes arcade-sacude {
+  0%, 100% { rotate: 0deg; }
+  25% { rotate: -14deg; }
+  65% { rotate: 12deg; }
+}
+.arcade-n1 .queso-meta {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 38px;
+  filter: drop-shadow(0 0 14px rgba(255, 210, 90, 0.75));
+  animation: arcade-pulso-suave 1.4s ease infinite;
+  user-select: none;
+}
+@keyframes arcade-pulso-suave { 50% { transform: translate(-50%, -50%) scale(1.1); } }
+
+/* ═══ Máquina 3 · La lluvia de letras ═══ */
+.arcade-n1 .globo-letra {
+  position: absolute;
+  z-index: 3;
+  width: 72px;
+  height: 84px;
+  transform: translateX(-50%);
+  border-radius: 50% 50% 47% 47%;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  font-weight: 900;
+  color: #08131f;
+  background: radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.95), var(--globo-c, var(--cian)) 45%, var(--globo-hondo, #1b7d81) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 18px var(--globo-c, var(--cian));
+  user-select: none;
+}
+.arcade-n1 .globo-letra::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -15px;
+  width: 2px;
+  height: 15px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.arcade-n1 .globo-letra.rebota { animation: arcade-rebote-globo 0.5s ease; }
+@keyframes arcade-rebote-globo {
+  0%, 100% { scale: 1 1; }
+  40% { scale: 1.25 0.7; }
+}
+/* Medallón circular (mismo trato que .bit-retrato): la ilustración trae su
+   propio fondo estrellado y recortada en cuadro se le veía el borde. */
+.arcade-n1 .lluvia-bit {
+  position: absolute;
+  z-index: 4;
+  bottom: 6px;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(92, 225, 230, 0.6);
+  box-shadow: 0 0 18px rgba(92, 225, 230, 0.4), 0 8px 12px rgba(0, 0, 0, 0.5);
+  background: #08131f;
+  transform: translateX(-50%);
+  transition: left 0.3s cubic-bezier(0.3, 1.3, 0.5, 1);
+  pointer-events: none;
+}
+.arcade-n1 .lluvia-bit.salta { animation: arcade-bit-salta 0.5s ease; }
+@keyframes arcade-bit-salta {
+  0%, 100% { translate: 0 0; }
+  40% { translate: 0 -26px; }
+}
+.arcade-n1 .teclado-guia { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.arcade-n1 .teclado-fila { display: flex; gap: 4px; }
+.arcade-n1 .tecla-guia {
+  width: 29px;
+  height: 29px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--apagado);
+  background: #0e2135;
+  border: 1px solid rgba(92, 225, 230, 0.2);
+}
+.arcade-n1 .tecla-guia.objetivo {
+  color: #3a2600;
+  background: var(--ambar);
+  border-color: transparent;
+  box-shadow: 0 0 14px var(--ambar);
+  animation: arcade-parpadea 0.9s ease infinite;
+}
+@keyframes arcade-parpadea { 50% { box-shadow: 0 0 4px var(--ambar); } }
+
+/* ═══ Máquina 4 · El circuito de teclas gigantes ═══ */
+.arcade-n1 .tecla-replica {
+  position: relative;
+  padding: 15px 26px 17px;
+  border-radius: 14px 14px 18px 18px;
+  background: linear-gradient(180deg, #22415c, #12293e);
+  border: 1px solid rgba(92, 225, 230, 0.35);
+  box-shadow: 0 6px 0 #0a1a2a, 0 10px 24px rgba(0, 0, 0, 0.5);
+  color: var(--texto);
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.07s ease, box-shadow 0.07s ease, color 0.2s, border-color 0.2s;
+  user-select: none;
+}
+.arcade-n1 .tecla-replica--espacio { min-width: min(300px, 34vw); }
+.arcade-n1 .tecla-replica.activa { border-color: var(--ambar); color: var(--ambar); box-shadow: 0 6px 0 #0a1a2a, 0 0 20px rgba(255, 210, 90, 0.35); }
+.arcade-n1 .tecla-replica.hundida { transform: translateY(6px); box-shadow: 0 0 0 #0a1a2a, 0 4px 12px rgba(0, 0, 0, 0.5); }
+.arcade-n1 .cinta-piso {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 64px;
+  height: 16px;
+  border-radius: 9px;
+  background: repeating-linear-gradient(90deg, #16324a 0 26px, #0d2135 26px 52px);
+  border: 1px solid rgba(92, 225, 230, 0.25);
+  animation: arcade-cinta-corre 0.7s linear infinite;
+}
+@keyframes arcade-cinta-corre { to { background-position-x: -52px; } }
+.arcade-n1 .corredor {
+  position: absolute;
+  z-index: 4;
+  bottom: 78px;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(92, 225, 230, 0.6);
+  box-shadow: 0 0 18px rgba(92, 225, 230, 0.4);
+  background: #08131f;
+  animation: arcade-trote 0.4s ease-in-out infinite alternate;
+}
+@keyframes arcade-trote { to { translate: 0 -5px; } }
+.arcade-n1 .corredor.salta { animation: arcade-brinco 0.62s cubic-bezier(0.3, 0, 0.4, 1); }
+@keyframes arcade-brinco {
+  0%, 100% { translate: 0 0; }
+  45% { translate: 0 -128px; }
+  70% { translate: 0 -110px; }
+}
+.arcade-n1 .corredor.tropieza { animation: arcade-tropiezo 0.55s ease; }
+@keyframes arcade-tropiezo {
+  0%, 100% { translate: 0 0; rotate: 0deg; }
+  30% { translate: -22px 0; rotate: -18deg; }
+  60% { translate: -12px -10px; rotate: 10deg; }
+}
+.arcade-n1 .obstaculo {
+  position: absolute;
+  z-index: 3;
+  bottom: 80px;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  background: linear-gradient(180deg, #ff8f9c, #d63a52);
+  border: 1px solid rgba(255, 209, 215, 0.6);
+  box-shadow: 0 0 16px rgba(255, 109, 124, 0.45);
+  user-select: none;
+}
+.arcade-n1 .obstaculo.rebotado { animation: arcade-obstaculo-rebota 0.5s ease; }
+@keyframes arcade-obstaculo-rebota {
+  40% { translate: 26px -30px; rotate: 24deg; }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+.arcade-n1 .puerta-marco {
+  position: absolute;
+  left: 50%;
+  bottom: 60px;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 220px;
+  border-radius: 16px 16px 0 0;
+  border: 5px solid #1d3f58;
+  background: #0a1f31;
+  overflow: hidden;
+  box-shadow: 0 0 24px rgba(92, 225, 230, 0.15);
+}
+.arcade-n1 .puerta-hoja {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #21506e, #123249);
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  transition: translate 0.45s cubic-bezier(0.5, 0, 0.3, 1);
+}
+.arcade-n1 .puerta-marco.abierta .puerta-hoja { translate: 0 100%; }
+.arcade-n1 .puerta-marco.vibra { animation: arcade-vibra 0.3s ease; }
+@keyframes arcade-vibra {
+  0%, 100% { transform: translateX(-50%); }
+  25% { transform: translateX(calc(-50% - 6px)); }
+  65% { transform: translateX(calc(-50% + 6px)); }
+}
+.arcade-n1 .semaforo {
+  position: absolute;
+  left: 50%;
+  bottom: 296px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  padding: 9px 13px;
+  border-radius: 12px;
+  background: #071322;
+  border: 1px solid var(--linea);
+}
+.arcade-n1 .semaforo-luz { width: 26px; height: 26px; border-radius: 50%; background: #122436; }
+.arcade-n1 .semaforo-luz.roja { background: var(--rojo); box-shadow: 0 0 16px var(--rojo); }
+.arcade-n1 .semaforo-luz.verde { background: var(--verde); box-shadow: 0 0 16px var(--verde); }
+.arcade-n1 .palabra-tablero { display: flex; justify-content: center; gap: 10px; }
+.arcade-n1 .letra-ficha {
+  width: 62px;
+  height: 74px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 38px;
+  font-weight: 900;
+  background: linear-gradient(180deg, #14304a, #0b1f33);
+  border: 1px solid rgba(92, 225, 230, 0.3);
+}
+.arcade-n1 .letra-ficha--intrusa {
+  color: #ffb3bd;
+  background: rgba(255, 109, 124, 0.14);
+  border-color: var(--rojo);
+  box-shadow: 0 0 14px rgba(255, 109, 124, 0.4);
+  animation: arcade-parpadea-intrusa 0.9s ease infinite;
+}
+@keyframes arcade-parpadea-intrusa { 50% { box-shadow: 0 0 4px rgba(255, 109, 124, 0.2); } }
+.arcade-n1 .letra-ficha.borrada { animation: arcade-esfuma 0.3s ease forwards; }
+@keyframes arcade-esfuma {
+  to { opacity: 0; translate: 0 16px; scale: 0.5; }
+}
+.arcade-n1 .palabra-tablero.vibra { animation: arcade-sacude 0.3s ease; }
+@keyframes arcade-sacude {
+  25% { translate: -8px 0; }
+  65% { translate: 8px 0; }
+}
+.arcade-n1 .glitch-bicho {
+  position: absolute;
+  top: 26px;
+  right: 34px;
+  width: 84px;
+  height: 84px;
+  filter: drop-shadow(0 0 14px rgba(150, 90, 255, 0.55));
+  animation: arcade-glitch-flota 2.4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes arcade-glitch-flota { to { translate: -10px 12px; rotate: -8deg; } }
+
+/* ═══ Máquina 5 · El mapa de flechas ═══ */
+.arcade-n1 .tablero-mapa { position: absolute; inset: 16px; display: grid; place-content: center; }
+.arcade-n1 .tablero-cuadricula { position: relative; display: grid; gap: 6px; }
+.arcade-n1 .casilla {
+  width: var(--celda);
+  height: var(--celda);
+  border-radius: 12px;
+  background: #0e2740;
+  border: 1px solid rgba(92, 225, 230, 0.14);
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--celda) * 0.5);
+  user-select: none;
+}
+.arcade-n1 .casilla--bloqueada {
+  background: linear-gradient(180deg, #2a6f8e, #174b63);
+  border-color: transparent;
+  box-shadow: 0 0 10px rgba(92, 225, 230, 0.2);
+}
+.arcade-n1 .casilla--charco {
+  background: radial-gradient(circle at 40% 35%, #2b1a52, #140b2c 75%);
+  border-color: rgba(150, 90, 255, 0.35);
+  box-shadow: inset 0 0 12px rgba(150, 90, 255, 0.3);
+}
+.arcade-n1 .estrella-mapa { filter: drop-shadow(0 0 10px rgba(255, 210, 90, 0.8)); animation: arcade-pulso-casilla 1.3s ease infinite; }
+@keyframes arcade-pulso-casilla { 50% { scale: 1.15; } }
+.arcade-n1 .cofre-celda { position: relative; width: 100%; height: 100%; filter: grayscale(0.8) opacity(0.7); }
+.arcade-n1 .cofre-celda.activo { filter: drop-shadow(0 0 14px rgba(255, 210, 90, 0.8)); animation: arcade-pulso-casilla 1.3s ease infinite; }
+.arcade-n1 .ficha-bit {
+  position: absolute;
+  z-index: 4;
+  width: calc(var(--celda) - 12px);
+  height: calc(var(--celda) - 12px);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(92, 225, 230, 0.7);
+  box-shadow: 0 0 16px rgba(92, 225, 230, 0.5);
+  background: #08131f;
+  transition: left 0.22s ease, top 0.22s ease;
+  pointer-events: none;
+}
+.arcade-n1 .ficha-bit.resbala { animation: arcade-resbalon 0.6s ease; }
+@keyframes arcade-resbalon {
+  0% { rotate: 0deg; }
+  35% { rotate: 200deg; scale: 1.1; }
+  70% { rotate: 340deg; }
+  100% { rotate: 360deg; }
+}
+.arcade-n1 .ficha-bit.negacion { animation: arcade-niega 0.4s ease; }
+@keyframes arcade-niega {
+  25% { translate: -6px 0; }
+  70% { translate: 6px 0; }
+}
+.arcade-n1 .dpad { display: grid; grid-template-columns: repeat(3, 54px); grid-auto-rows: 46px; gap: 6px; }
+.arcade-n1 .dpad .tecla-replica { padding: 0; font-size: 18px; border-radius: 12px; }
+.arcade-n1 .brujula-caja { display: flex; align-items: center; gap: 10px; }
+.arcade-n1 .brujula-img {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+  filter: drop-shadow(0 0 12px rgba(92, 225, 230, 0.35));
+}
+
+/* ===== M6 · La máquina de los pasos (Ordena los pasos) ===== */
+.arcade-n1 .pasos-tablero,
+.arcade-n1 .patron-tablero,
+.arcade-n1 .oficios-tablero,
+.arcade-n1 .pinta-tablero,
+.arcade-n1 .guarda-tablero,
+.arcade-n1 .semaforo-tablero,
+.arcade-n1 .avisos-tablero,
+.arcade-n1 .cofre-tablero,
+.arcade-n1 .safari-tablero,
+.arcade-n1 .banda-tablero,
+.arcade-n1 .librero-tablero,
+.arcade-n1 .robot-tablero-raiz,
+.arcade-n1 .maquina-tablero,
+.arcade-n1 .ropero-tablero,
+.arcade-n1 .prensa-tablero {
+  width: min(880px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 16px;
+  padding: 8px 4px 18px;
+}
+/* El robot-tablero-raiz apila consigna + tablero + riel + tira: más filas que
+   los demás gabinetes, así que usa un espaciado más ajustado para que la tira
+   nunca crezca hasta la zona de Bit (bit-puesto flota sobre la pantalla). */
+.arcade-n1 .robot-tablero-raiz { gap: 8px; }
+.arcade-n1 .pasos-consigna { display: grid; gap: 4px; text-align: center; }
+.arcade-n1 .pasos-consigna strong { font-size: 20px; color: var(--ambar); letter-spacing: 0.5px; }
+.arcade-n1 .pasos-consigna span { font-size: 14.5px; color: rgba(238, 248, 255, 0.82); }
+.arcade-n1 .pasos-escena {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  min-height: 180px;
+}
+.arcade-n1 .pasos-receta-colgada {
+  position: relative;
+  width: 216px;
+  padding: 14px 14px 12px;
+  border-radius: 10px;
+  background: #fff7df;
+  color: #35240a;
+  border: 2px solid #e8c46a;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+}
+.arcade-n1 .pasos-receta-colgada::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  translate: -50% 0;
+  width: 48px;
+  height: 13px;
+  border-radius: 3px;
+  background: rgba(92, 225, 230, 0.55);
+}
+.arcade-n1 .pasos-receta-titulo {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #a8600b;
+}
+.arcade-n1 .pasos-receta-colgada ol {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.arcade-n1 .pasos-receta-colgada li { display: flex; align-items: center; gap: 6px; }
+.arcade-n1 .pasos-receta-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #e8a416;
+  color: #fff7df;
+  font-size: 11px;
+  font-weight: 900;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+}
+.arcade-n1 .pasos-pila { position: relative; width: 150px; height: 210px; }
+.arcade-n1 .pasos-pila.desastre { animation: pila-desastre 0.6s ease both; }
+@keyframes pila-desastre {
+  30% { rotate: -9deg; translate: -8px 0; }
+  60% { rotate: 12deg; translate: 10px 2px; }
+  100% { rotate: 7deg; }
+}
+.arcade-n1 .pasos-pila-plato {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  font-size: 46px;
+}
+.arcade-n1 .pasos-capa {
+  position: absolute;
+  bottom: calc(16px + var(--i) * 26px);
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 40px;
+  line-height: 1;
+  animation: pasos-capa-cae 0.35s ease both;
+}
+@keyframes pasos-capa-cae {
+  from { transform: translate(-50%, -46px); opacity: 0; }
+}
+.arcade-n1 .pasos-capa.mala { transform: translate(-50%, 0) rotate(24deg); filter: saturate(0.7); }
+.arcade-n1 .pasos-actua {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 128px;
+  padding: 24px 30px;
+  border-radius: 18px;
+  background: rgba(8, 19, 31, 0.6);
+  border: 2px solid rgba(92, 225, 230, 0.22);
+  animation: arcade-pop 0.3s ease;
+}
+.arcade-n1 .pasos-actua.mala {
+  border-color: rgba(255, 109, 124, 0.55);
+  background: rgba(64, 14, 26, 0.45);
+}
+.arcade-n1 .pasos-actua.vacia { opacity: 0.75; animation: none; }
+.arcade-n1 .pasos-actua-emoji { font-size: 56px; line-height: 1; }
+.arcade-n1 .pasos-actua-texto { max-width: 230px; font-size: 17px; font-weight: 800; }
+.arcade-n1 .pasos-actua-risa { font-size: 30px; animation: arcade-brinco 0.7s ease; }
+@keyframes arcade-pop {
+  0% { scale: 0.4; opacity: 0; }
+  70% { scale: 1.1; }
+  100% { scale: 1; opacity: 1; }
+}
+@keyframes arcade-brinco {
+  30% { translate: 0 -12px; }
+  60% { translate: 0 -4px; }
+}
+.arcade-n1 .pasos-bandeja {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 60px;
+}
+/* El riel solo muestra piezas por colocar (vista previa) — más compactas que
+   las de la tira para dejar más aire vertical antes del diálogo de Bit. */
+.arcade-n1 .pasos-bandeja .tarjeta-paso { width: 92px; padding: 8px 6px; gap: 4px; }
+.arcade-n1 .pasos-bandeja .tarjeta-emoji { font-size: 24px; }
+.arcade-n1 .pasos-bandeja .tarjeta-texto { font-size: 11px; }
+.arcade-n1 .pasos-banda {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 8px 14px 8px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(13, 32, 51, 0.85), rgba(8, 19, 31, 0.9));
+  border: 2px solid rgba(92, 225, 230, 0.2);
+}
+.arcade-n1 .ranura {
+  position: relative;
+  min-width: 128px;
+  min-height: 92px;
+  padding: 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: rgba(5, 11, 20, 0.85);
+  border: 2px solid rgba(92, 225, 230, 0.2);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+.arcade-n1 .ranura.ocupada { border-color: rgba(92, 225, 230, 0.55); }
+.arcade-n1 .ranura-num {
+  position: absolute;
+  top: -10px;
+  left: -8px;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ambar);
+  color: #35240a;
+  font-size: 13px;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+.arcade-n1 .tarjeta-paso {
+  position: relative;
+  width: 112px;
+  padding: 12px 8px;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #1c4a74, #123252);
+  border: 2px solid rgba(92, 225, 230, 0.4);
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.2s ease;
+}
+.arcade-n1 .tarjeta-paso:hover { transform: translateY(-3px); }
+.arcade-n1 .tarjeta-paso.hecha {
+  background: linear-gradient(180deg, #1a5a44, #0f3a2c);
+  border-color: var(--verde);
+}
+.arcade-n1 .tarjeta-paso.sacudida { animation: arcade-sacude 0.4s ease; }
+.arcade-n1 .tarjeta-paso.arrastrable { cursor: grab; touch-action: none; }
+.arcade-n1 .tarjeta-paso.arrastrando {
+  cursor: grabbing;
+  z-index: 40;
+  border-color: var(--ambar);
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.55);
+  transition: none;
+}
+.arcade-n1 .tarjeta-emoji { font-size: 30px; line-height: 1; }
+.arcade-n1 .tarjeta-texto { font-size: 12.5px; font-weight: 800; line-height: 1.15; text-align: center; }
+.arcade-n1 .tarjeta-palomita {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--verde);
+  color: #06281a;
+  font-size: 12px;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  animation: arcade-pop 0.3s ease;
+}
+.arcade-n1 .palanca-probar {
+  position: relative;
+  padding: 14px 22px 14px 44px;
+  border-radius: 14px;
+  border: 0;
+  background: linear-gradient(180deg, #ffd25a, #e8a416);
+  color: #35240a;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #a86f0a, 0 10px 16px rgba(0, 0, 0, 0.4);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.2s ease;
+}
+.arcade-n1 .palanca-probar:active { transform: translateY(4px); box-shadow: 0 2px 0 #a86f0a; }
+.arcade-n1 .palanca-probar.apagada { filter: grayscale(0.6) opacity(0.55); cursor: default; }
+.arcade-n1 .palanca-tirador {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  translate: 0 -50%;
+  width: 11px;
+  height: 34px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #7c4d0b, #35240a);
+}
+.arcade-n1 .palanca-tirador::after {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  translate: -50% 0;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff6d7c, #d63a52);
+  box-shadow: 0 0 8px rgba(255, 109, 124, 0.6);
+}
+.arcade-n1 .gabinete-nota.acento {
+  color: var(--ambar);
+  border-color: rgba(255, 210, 90, 0.45);
+  text-shadow: 0 0 10px rgba(255, 210, 90, 0.45);
+}
+
+/* ===== M7 · El tren de los patrones (Sigue el patrón) ===== */
+.arcade-n1 .tren-zona { padding: 18px 8px 4px; overflow: hidden; }
+.arcade-n1 .tren {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+  animation: tren-entra 0.7s ease both;
+}
+@keyframes tren-entra {
+  from { transform: translateX(90px); opacity: 0; }
+}
+.arcade-n1 .tren.celebra { animation: arcade-brinco 0.55s ease; }
+.arcade-n1 .tren.duda { animation: arcade-sacude 0.4s ease; }
+.arcade-n1 .locomotora { font-size: 54px; line-height: 1; transform: scaleX(-1); }
+.arcade-n1 .vagon {
+  position: relative;
+  width: 56px;
+  height: 44px;
+  border-radius: 10px 10px 6px 6px;
+  background: linear-gradient(180deg, var(--bc), var(--bc-hondo));
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  display: grid;
+  place-items: center;
+}
+.arcade-n1 .vagon::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 9px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #08131f;
+  box-shadow: 24px 0 0 #08131f;
+}
+.arcade-n1 .vagon.vacio {
+  background: rgba(8, 19, 31, 0.85);
+  border: 2px solid var(--ambar);
+  color: var(--ambar);
+  font-size: 22px;
+  font-weight: 900;
+  animation: vagon-pulso 1.2s ease infinite;
+}
+@keyframes vagon-pulso {
+  50% { box-shadow: 0 0 22px rgba(255, 210, 90, 0.75); }
+}
+.arcade-n1 .vagon.recien { animation: arcade-pop 0.35s ease; }
+.arcade-n1 .tren-via {
+  margin: 12px auto 0;
+  width: min(560px, 90%);
+  height: 6px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, rgba(92, 225, 230, 0.35) 0 26px, transparent 26px 40px);
+}
+.arcade-n1 .ritmo-zona {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 24px 8px;
+}
+.arcade-n1 .ritmo-luces { display: flex; gap: 20px; }
+.arcade-n1 .ritmo-luz {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #0e2740;
+  border: 3px solid var(--bc);
+  opacity: 0.55;
+  transition: opacity 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+.arcade-n1 .ritmo-luz.encendida {
+  background: var(--bc);
+  opacity: 1;
+  box-shadow: 0 0 28px var(--bc);
+}
+.arcade-n1 .ritmo-pips { display: flex; gap: 10px; }
+.arcade-n1 .pip-ritmo {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #0e2740;
+  border: 2px solid rgba(92, 225, 230, 0.4);
+}
+.arcade-n1 .pip-ritmo.lleno {
+  background: var(--verde);
+  border-color: transparent;
+  box-shadow: 0 0 10px rgba(88, 226, 156, 0.7);
+}
+.arcade-n1 .ritmo-nota { margin: 0; font-size: 14px; color: rgba(238, 248, 255, 0.75); font-weight: 700; }
+.arcade-n1 .tesoro-banda {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  min-height: 120px;
+  padding: 18px 8px;
+}
+.arcade-n1 .tesoro {
+  width: 74px;
+  height: 74px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #14324e, #0d2033);
+  border: 2px solid rgba(92, 225, 230, 0.35);
+  cursor: grab;
+  touch-action: none;
+  padding: 0;
+}
+.arcade-n1 .tesoro.arrastrando {
+  cursor: grabbing;
+  position: relative;
+  z-index: 40;
+  border-color: var(--ambar);
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.55);
+}
+.arcade-n1 .tesoro.rebote { animation: arcade-sacude 0.4s ease; }
+.arcade-n1 .tesoro-forma.circulo {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--bc), var(--bc-hondo));
+  box-shadow: 0 0 14px var(--bc);
+}
+.arcade-n1 .tesoro-forma.estrella {
+  font-size: 38px;
+  line-height: 1;
+  color: var(--bc);
+  text-shadow: 0 0 14px var(--bc);
+}
+.arcade-n1 .tesoro-vacio { font-size: 34px; }
+.arcade-n1 .botonera-colores { display: flex; align-items: center; gap: 16px; }
+.arcade-n1 .boton-color {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 0, 0, 0.3);
+  background: radial-gradient(circle at 35% 30%, var(--bc), var(--bc-hondo));
+  cursor: pointer;
+  box-shadow: 0 6px 0 var(--bc-hondo), 0 9px 14px rgba(0, 0, 0, 0.4);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.12s ease;
+}
+.arcade-n1 .boton-color.hundido {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 var(--bc-hondo), 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+.arcade-n1 .boton-color.encendido {
+  filter: brightness(1.5) saturate(1.2);
+  box-shadow: 0 6px 0 var(--bc-hondo), 0 0 28px var(--bc);
+}
+.arcade-n1 .repite-ritmo { margin-left: 8px; }
+.arcade-n1 .bandeja-caja {
+  position: relative;
+  min-width: 134px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 18px 12px;
+  border-radius: 14px 14px 6px 6px;
+  background: linear-gradient(180deg, #1c4a74, #123252);
+  border: 2px solid rgba(92, 225, 230, 0.4);
+  border-top-width: 6px;
+  box-shadow: inset 0 10px 18px rgba(0, 0, 0, 0.45);
+}
+.arcade-n1 .bandeja-icono {
+  font-size: 26px;
+  line-height: 1;
+  color: var(--bc, var(--cian));
+  text-shadow: 0 0 12px var(--bc, rgba(92, 225, 230, 0.6));
+}
+.arcade-n1 .bandeja-titulo { font-size: 14px; font-weight: 800; }
+.arcade-n1 .bandeja-cuenta {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ambar);
+  background: rgba(8, 19, 31, 0.7);
+  padding: 2px 9px;
+  border-radius: 999px;
+}
+
+/* ===== M8 · El taller de los oficios (¿Quién usa qué?) ===== */
+.arcade-n1 .oficios-fila {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  padding-top: 6px;
+}
+.arcade-n1 .oficio-puesto {
+  position: relative;
+  width: 168px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 14px 12px 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #14324e, #0d2033);
+  border: 2px solid rgba(92, 225, 230, 0.28);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.arcade-n1 .oficios-fila.pide .oficio-puesto { width: 208px; }
+.arcade-n1 .oficio-puesto.lista {
+  border-color: var(--verde);
+  box-shadow: 0 0 18px rgba(88, 226, 156, 0.25);
+}
+.arcade-n1 .oficio-puesto.celebra { animation: arcade-brinco 0.55s ease; }
+.arcade-n1 .oficio-puesto.no { animation: arcade-sacude 0.4s ease; }
+.arcade-n1 .oficio-emoji { font-size: 52px; line-height: 1; }
+.arcade-n1 .oficio-nombre { font-size: 14px; font-weight: 800; letter-spacing: 0.5px; }
+.arcade-n1 .oficio-slot {
+  min-height: 62px;
+  min-width: 122px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(8, 19, 31, 0.7);
+  border: 2px solid rgba(92, 225, 230, 0.18);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.5);
+  padding: 4px;
+}
+.arcade-n1 .oficio-slot.vacia span {
+  color: var(--ambar);
+  font-size: 20px;
+  font-weight: 900;
+  opacity: 0.8;
+}
+.arcade-n1 .oficio-palomita {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--verde);
+  color: #06281a;
+  font-size: 15px;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  animation: arcade-pop 0.3s ease;
+}
+.arcade-n1 .oficio-burbuja {
+  position: relative;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  background: #eef8ff;
+  color: #0d2033;
+  padding: 8px 10px;
+  border-radius: 12px;
+  margin-bottom: 4px;
+}
+.arcade-n1 .oficio-burbuja::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  translate: -50% 0;
+  border: 8px solid transparent;
+  border-top-color: #eef8ff;
+  border-bottom: 0;
+}
+.arcade-n1 .herr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #1c4a74, #123252);
+  border: 2px solid rgba(255, 210, 90, 0.5);
+  color: var(--texto);
+  font: inherit;
+  cursor: grab;
+  touch-action: none;
+}
+.arcade-n1 .herr-chip.arrastrando {
+  cursor: grabbing;
+  position: relative;
+  z-index: 40;
+  border-color: var(--ambar);
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.55);
+}
+.arcade-n1 .herr-chip.rebote { animation: arcade-sacude 0.4s ease; }
+.arcade-n1 .herr-chip.fija { border-color: var(--verde); cursor: default; animation: arcade-pop 0.3s ease; }
+.arcade-n1 .herr-emoji { font-size: 24px; line-height: 1; }
+.arcade-n1 .herr-nombre { font-size: 12.5px; font-weight: 800; }
+.arcade-n1 .repisa-herr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(8, 19, 31, 0.9), rgba(13, 32, 51, 0.9));
+  border: 2px solid rgba(92, 225, 230, 0.25);
+  border-bottom-width: 6px;
+}
+.arcade-n1 .repisa-vacia { color: rgba(238, 248, 255, 0.4); letter-spacing: 4px; font-weight: 900; }
+
+/* ===== M9 · La cabina de pintar (Pinta con la compu) ===== */
+.arcade-n1 .lienzo-pinta {
+  position: relative;
+  width: min(760px, 100%);
+  margin: 0 auto;
+  min-height: 320px;
+  border-radius: 18px;
+  border: 8px solid #0d1a2a;
+  outline: 1px solid var(--linea);
+  background: radial-gradient(120% 100% at 50% 0%, #ffffff, #dfe9f2 78%);
+  box-shadow: inset 0 0 44px rgba(13, 26, 42, 0.18), 0 14px 40px rgba(0, 0, 0, 0.45);
+  touch-action: none;
+  cursor: crosshair;
+}
+.arcade-n1 .guia-punto {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(92, 225, 230, 0.55), rgba(50, 168, 255, 0.25));
+  border: 2px solid rgba(50, 168, 255, 0.55);
+  box-shadow: 0 0 12px rgba(92, 225, 230, 0.55);
+  animation: arcade-guia-late 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+.arcade-n1 .guia-punto.pintado {
+  width: 34px;
+  height: 34px;
+  background: radial-gradient(circle at 32% 28%, var(--bc), var(--bc-hondo));
+  border-color: var(--bc-hondo);
+  box-shadow: 0 0 14px var(--bc), inset 0 -3px 0 rgba(0, 0, 0, 0.18);
+  animation: arcade-pop 0.3s ease;
+}
+@keyframes arcade-guia-late {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.arcade-n1 .escena-estampas {
+  cursor: pointer;
+  background: linear-gradient(180deg, #7ec9ff 0%, #b8e3ff 52%, #6fd398 52%, #3fa668 100%);
+}
+.arcade-n1 .hueco {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.75), inset 0 0 10px rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  color: transparent;
+  font-size: 30px;
+  line-height: 1;
+  animation: arcade-guia-late 1.6s ease-in-out infinite;
+}
+.arcade-n1 .hueco-circulo { border-radius: 50%; }
+.arcade-n1 .hueco-cuadrado { border-radius: 12px; }
+.arcade-n1 .hueco-estrella {
+  border: none;
+  background: none;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.85);
+  font-size: 38px;
+}
+.arcade-n1 .hueco.estampado {
+  border-color: var(--bc-hondo);
+  background: radial-gradient(circle at 32% 28%, var(--bc), var(--bc-hondo));
+  box-shadow: 0 6px 0 var(--bc-hondo), 0 0 16px var(--bc);
+  color: transparent;
+  cursor: default;
+  animation: arcade-cae 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.arcade-n1 .hueco-estrella.estampado {
+  border: none;
+  background: none;
+  box-shadow: none;
+  color: var(--bc);
+  text-shadow: 0 4px 0 var(--bc-hondo), 0 0 16px var(--bc);
+}
+.arcade-n1 .hueco.sacude { animation: arcade-sacude 0.4s ease; }
+@keyframes arcade-cae {
+  0% { transform: translate(-50%, -130%) scale(0.6); opacity: 0; }
+  60% { transform: translate(-50%, -44%) scale(1.08); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+.arcade-n1 .lienzo-obra {
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+.arcade-n1 .lienzo-obra.enmarcada {
+  border-color: #d99a00;
+  outline: 3px solid var(--ambar);
+  box-shadow: 0 0 34px rgba(255, 210, 90, 0.5), inset 0 0 44px rgba(13, 26, 42, 0.12);
+  animation: arcade-pop 0.35s ease;
+}
+.arcade-n1 .obra-zonas { position: relative; width: 240px; height: 268px; }
+.arcade-n1 .zona {
+  position: absolute;
+  padding: 0;
+  border: 3px solid #94a9bd;
+  background: #f6fbff;
+  box-shadow: 0 0 10px rgba(50, 168, 255, 0.35);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.arcade-n1 .zona:hover { transform: scale(1.03); }
+.arcade-n1 .zona.rellena {
+  background: radial-gradient(circle at 32% 28%, var(--bc), var(--bc-hondo));
+  border-color: var(--bc-hondo);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.15), 0 0 12px var(--bc);
+  animation: arcade-pop 0.3s ease;
+}
+.arcade-n1 .zona-antena { left: 50%; top: 0; width: 46px; height: 46px; margin-left: -23px; border-radius: 50%; }
+.arcade-n1 .zona-mastil {
+  position: absolute;
+  left: 50%;
+  top: 44px;
+  width: 8px;
+  height: 22px;
+  margin-left: -4px;
+  border-radius: 4px;
+  background: #94a9bd;
+}
+.arcade-n1 .zona-cabeza { left: 50%; top: 64px; width: 160px; height: 92px; margin-left: -80px; border-radius: 26px; }
+.arcade-n1 .zona-visor {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 104px;
+  height: 44px;
+  border-radius: 14px;
+  background: #0d1a2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  pointer-events: none;
+}
+.arcade-n1 .zona-ojo {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--cian);
+  box-shadow: 0 0 8px var(--cian);
+}
+.arcade-n1 .zona-cuerpo { left: 50%; top: 164px; width: 190px; height: 96px; margin-left: -95px; border-radius: 22px; }
+.arcade-n1 .zona-panza { left: 50%; top: 184px; width: 56px; height: 56px; margin-left: -28px; border-radius: 50%; z-index: 2; }
+.arcade-n1 .herr-activa {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--linea);
+  background: rgba(92, 225, 230, 0.08);
+  color: var(--cian);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.arcade-n1 .frascos-grupo,
+.arcade-n1 .sellos-grupo {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+.arcade-n1 .frascos-grupo.pide,
+.arcade-n1 .sellos-grupo.pide { animation: arcade-sacude 0.4s ease; }
+.arcade-n1 .frasco {
+  position: relative;
+  width: 46px;
+  height: 54px;
+  padding: 0;
+  border-radius: 10px 10px 14px 14px;
+  border: 2px solid var(--bc-hondo);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0 26%, var(--bc) 26%);
+  box-shadow: 0 5px 0 var(--bc-hondo);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+.arcade-n1 .frasco::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -10px;
+  width: 26px;
+  height: 10px;
+  margin-left: -13px;
+  border-radius: 5px 5px 0 0;
+  background: #22384f;
+  border: 2px solid #0d1a2a;
+}
+.arcade-n1 .frasco.elegido {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 var(--bc-hondo), 0 0 18px var(--bc);
+  filter: brightness(1.25);
+}
+.arcade-n1 .sello-herr {
+  min-width: 54px;
+  height: 54px;
+  padding: 0 10px;
+  border-radius: 12px;
+  border: 2px solid #35577c;
+  background: linear-gradient(180deg, #1c4a74, #123252);
+  color: var(--texto);
+  font-size: 24px;
+  line-height: 1;
+  box-shadow: 0 5px 0 #0a1c30;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.arcade-n1 .sello-herr.elegido {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 #0a1c30, 0 0 16px var(--cian);
+  border-color: var(--cian);
+  color: var(--cian);
+}
+.arcade-n1 .boton-deshacer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 210, 90, 0.6);
+  background: linear-gradient(180deg, #3a2c10, #241a08);
+  color: var(--ambar);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 5px 0 #120d04;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.arcade-n1 .boton-deshacer:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #120d04;
+}
+.arcade-n1 .deshacer-glifo { font-size: 18px; line-height: 1; }
+
+/* ===== M10 · La bóveda de las obras (Guarda tu obra de arte) ===== */
+.arcade-n1 .obra-puesto {
+  display: grid;
+  place-items: center;
+  gap: 22px;
+  padding: 10px 0 16px;
+}
+.arcade-n1 .obra-cuadro {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 22px 28px;
+  border-radius: 16px;
+  border: 6px solid #d99a00;
+  outline: 2px solid var(--ambar);
+  background: radial-gradient(120% 100% at 50% 0%, #ffffff, #dfe9f2 80%);
+  box-shadow: 0 0 24px rgba(255, 210, 90, 0.35), 0 12px 34px rgba(0, 0, 0, 0.45);
+}
+.arcade-n1 button.obra-cuadro {
+  cursor: grab;
+  touch-action: none;
+  transition: box-shadow 0.15s ease;
+}
+.arcade-n1 .obra-cuadro.arrastrando {
+  cursor: grabbing;
+  z-index: 40;
+  box-shadow: 0 0 34px rgba(255, 210, 90, 0.65), 0 18px 44px rgba(0, 0, 0, 0.55);
+}
+.arcade-n1 .obra-cuadro.abierta { animation: arcade-pop 0.35s ease; }
+.arcade-n1 .obra-etiqueta-mini {
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  transform: translateX(-50%);
+  padding: 3px 12px;
+  border-radius: 8px;
+  background: var(--ambar);
+  color: #241a08;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  box-shadow: 0 3px 0 #d99a00;
+}
+.arcade-n1 .obra-bit { position: relative; display: block; width: 120px; height: 134px; }
+.arcade-n1 .ob-antena {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  margin-left: -11px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, var(--ambar), #d99a00);
+  box-shadow: 0 0 8px rgba(255, 210, 90, 0.6);
+}
+.arcade-n1 .ob-antena::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  width: 5px;
+  height: 12px;
+  margin-left: -2.5px;
+  background: #94a9bd;
+  border-radius: 3px;
+}
+.arcade-n1 .ob-cabeza {
+  position: absolute;
+  left: 50%;
+  top: 32px;
+  width: 84px;
+  height: 48px;
+  margin-left: -42px;
+  border-radius: 14px;
+  background: radial-gradient(circle at 32% 28%, #56b8ff, #1e63c4);
+  display: grid;
+  place-items: center;
+}
+.arcade-n1 .ob-visor {
+  width: 54px;
+  height: 24px;
+  border-radius: 8px;
+  background: #0d1a2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.arcade-n1 .ob-ojo {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cian);
+  box-shadow: 0 0 6px var(--cian);
+}
+.arcade-n1 .ob-cuerpo {
+  position: absolute;
+  left: 50%;
+  top: 86px;
+  width: 96px;
+  height: 48px;
+  margin-left: -48px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 32% 28%, #62e6a5, #1e8a5a);
+  display: grid;
+  place-items: center;
+}
+.arcade-n1 .ob-panza {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #ff6d7c, #d63a52);
+}
+.arcade-n1 .etiqueta-obra {
+  display: flex;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #1c4a74, #123252);
+  border: 1px solid rgba(92, 225, 230, 0.25);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.arcade-n1 .letra-slot {
+  width: 46px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 2px solid rgba(92, 225, 230, 0.35);
+  background: rgba(5, 11, 20, 0.7);
+  color: var(--ambar);
+  font-size: 26px;
+  font-weight: 900;
+}
+.arcade-n1 .letra-slot.llena {
+  border-color: var(--ambar);
+  box-shadow: 0 0 12px rgba(255, 210, 90, 0.45);
+  animation: arcade-pop 0.3s ease;
+}
+.arcade-n1 .tablero-teclas {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.arcade-n1 .tecla-letra {
+  min-width: 54px;
+  padding: 15px 18px 17px;
+  font-size: 22px;
+}
+.arcade-n1 .tecla-letra.mal {
+  animation: arcade-sacude 0.4s ease;
+  border-color: var(--rojo);
+  color: var(--rojo);
+}
+.arcade-n1 .ranura-guardado {
+  position: relative;
+  min-width: 150px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 2px solid #35577c;
+  background: linear-gradient(180deg, #1c4a74, #123252);
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.5);
+}
+.arcade-n1 .ranura-guardado.llena {
+  border-color: var(--cian);
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.5), 0 0 16px rgba(92, 225, 230, 0.4);
+}
+.arcade-n1 .ranura-boca {
+  width: 96px;
+  height: 10px;
+  border-radius: 5px;
+  background: #050b14;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(92, 225, 230, 0.35);
+}
+.arcade-n1 .capsula {
+  position: relative;
+  width: 66px;
+  height: 56px;
+  border-radius: 999px;
+  border: 2px solid var(--cian);
+  background: rgba(92, 225, 230, 0.12);
+  box-shadow: 0 0 14px rgba(92, 225, 230, 0.5);
+  overflow: hidden;
+  animation: arcade-pop 0.3s ease;
+}
+.arcade-n1 .capsula .obra-bit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.36);
+}
+.arcade-n1 .ranura-luz { font-size: 26px; line-height: 1; animation: arcade-pop 0.35s ease; }
+.arcade-n1 .palanca {
+  position: relative;
+  width: 58px;
+  height: 84px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  justify-items: center;
+  align-items: end;
+}
+.arcade-n1 .palanca-base {
+  width: 46px;
+  height: 18px;
+  border-radius: 8px 8px 4px 4px;
+  background: linear-gradient(180deg, #35577c, #12253c);
+  box-shadow: 0 4px 0 #0a1c30;
+}
+.arcade-n1 .palanca-brazo {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  width: 10px;
+  height: 56px;
+  margin-left: -5px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #94a9bd, #56647e);
+  transform-origin: 50% 100%;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.arcade-n1 .palanca-bola {
+  position: absolute;
+  left: 50%;
+  top: -16px;
+  width: 26px;
+  height: 26px;
+  margin-left: -13px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, var(--rojo), #d63a52);
+  box-shadow: 0 0 10px rgba(255, 109, 124, 0.5);
+}
+.arcade-n1 .palanca.lista .palanca-bola { animation: arcade-guia-late 1.2s ease-in-out infinite; }
+.arcade-n1 .palanca.bajada .palanca-brazo { transform: rotate(118deg); }
+.arcade-n1 .palanca.tiembla { animation: arcade-sacude 0.4s ease; }
+.arcade-n1 .cajonera {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.arcade-n1 .cajon {
+  position: relative;
+  min-width: 112px;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  padding: 8px 12px 12px;
+  border-radius: 12px;
+  border: 2px solid #35577c;
+  background: linear-gradient(180deg, #1c4a74, #123252);
+  box-shadow: 0 6px 0 #0a1c30, inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.arcade-n1 .cajon:hover { transform: translateY(-3px); }
+.arcade-n1 .cajon.abierto {
+  transform: translateY(8px);
+  border-color: var(--verde);
+  box-shadow: 0 1px 0 #0a1c30, 0 0 20px rgba(88, 226, 156, 0.5);
+}
+.arcade-n1 .cajon.mirado {
+  transform: translateY(-3px);
+  border-color: var(--amarillo, #ffcf4a);
+  box-shadow: 0 1px 0 #0a1c30, 0 0 18px rgba(255, 207, 74, 0.55);
+}
+.arcade-n1 .cajon.mal {
+  animation: arcade-sacude 0.4s ease;
+  border-color: var(--rojo);
+}
+.arcade-n1 .cajon-mini {
+  position: relative;
+  width: 64px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  line-height: 1;
+}
+.arcade-n1 .cajon-mini .obra-bit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.36);
+}
+.arcade-n1 .cajon-etiqueta {
+  padding: 2px 10px;
+  border-radius: 6px;
+  background: var(--ambar);
+  color: #241a08;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+.arcade-n1 .cajon-jalador {
+  width: 34px;
+  height: 8px;
+  border-radius: 4px;
+  background: #94a9bd;
+  box-shadow: 0 2px 0 #56647e;
+}
+.arcade-n1 .guarda-nota {
+  text-align: center;
+  font-size: 15px;
+  color: rgba(238, 248, 255, 0.85);
+  max-width: 420px;
+}
+.arcade-n1 .guarda-nota strong { color: var(--ambar); }
+
+/* ===== M11 · La torre del semáforo (El semáforo de la pantalla) ===== */
+.arcade-n1 .semaforo-escenario {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 28px;
+  min-height: 200px;
+}
+.arcade-n1 .semaforo-torre {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  padding: 16px 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #16283f, #0c1626);
+  border: 3px solid #2c4a6a;
+  box-shadow: 0 8px 0 #0a1c30, inset 0 2px 0 rgba(238, 248, 255, 0.08);
+}
+.arcade-n1 .torre-lampara {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #223349;
+  border: 3px solid #101d30;
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.5);
+  transition: background 0.25s, box-shadow 0.25s;
+}
+.arcade-n1 .torre-lampara.enciende.verde {
+  background: var(--verde);
+  border-color: #0f5c39;
+  box-shadow: 0 0 22px rgba(88, 226, 156, 0.65), inset 0 2px 0 rgba(255, 255, 255, 0.35);
+}
+.arcade-n1 .torre-lampara.enciende.amarillo {
+  background: var(--ambar);
+  border-color: #8a6200;
+  box-shadow: 0 0 22px rgba(255, 196, 87, 0.65), inset 0 2px 0 rgba(255, 255, 255, 0.35);
+}
+.arcade-n1 .torre-lampara.enciende.rojo {
+  background: var(--rojo);
+  border-color: #7e1f31;
+  box-shadow: 0 0 22px rgba(255, 93, 120, 0.65), inset 0 2px 0 rgba(255, 255, 255, 0.35);
+}
+.arcade-n1 .escena-dia {
+  display: grid;
+  gap: 10px;
+  place-items: center;
+  text-align: center;
+  min-width: 250px;
+  max-width: 340px;
+  padding: 20px 22px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #14243c, #0e1b2d);
+  border: 2px solid var(--linea);
+  box-shadow: inset 0 2px 0 rgba(238, 248, 255, 0.06);
+}
+.arcade-n1 .escena-dia.cambia { animation: arcade-pop 0.35s ease-out; }
+.arcade-n1 .escena-emoji { font-size: 64px; line-height: 1; }
+.arcade-n1 .escena-texto {
+  font-size: 17px;
+  font-weight: 700;
+  color: rgba(238, 248, 255, 0.92);
+}
+.arcade-n1 .fichas-dia {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  min-height: 130px;
+}
+.arcade-n1 .botonera-semaforo {
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+  padding: 4px 0 2px;
+}
+.arcade-n1 .boton-luz-caja {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+}
+.arcade-n1 .boton-luz {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 3px solid;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.12s, box-shadow 0.12s, filter 0.2s;
+}
+.arcade-n1 .boton-luz.verde {
+  background: radial-gradient(circle at 32% 28%, #8df2bd, var(--verde) 62%);
+  border-color: #0f5c39;
+  box-shadow: 0 7px 0 #1e8a5a;
+}
+.arcade-n1 .boton-luz.amarillo {
+  background: radial-gradient(circle at 32% 28%, #ffe1a1, var(--ambar) 62%);
+  border-color: #8a6200;
+  box-shadow: 0 7px 0 #b97e00;
+}
+.arcade-n1 .boton-luz.rojo {
+  background: radial-gradient(circle at 32% 28%, #ff9cae, var(--rojo) 62%);
+  border-color: #7e1f31;
+  box-shadow: 0 7px 0 #99243a;
+}
+.arcade-n1 .boton-luz.verde.hundido {
+  transform: translateY(6px);
+  box-shadow: 0 1px 0 #1e8a5a, 0 0 22px rgba(88, 226, 156, 0.7);
+  filter: brightness(1.15);
+}
+.arcade-n1 .boton-luz.amarillo.hundido {
+  transform: translateY(6px);
+  box-shadow: 0 1px 0 #b97e00, 0 0 22px rgba(255, 196, 87, 0.7);
+  filter: brightness(1.15);
+}
+.arcade-n1 .boton-luz.rojo.hundido {
+  transform: translateY(6px);
+  box-shadow: 0 1px 0 #99243a, 0 0 22px rgba(255, 93, 120, 0.7);
+  filter: brightness(1.15);
+}
+.arcade-n1 .boton-luz.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .boton-luz-nombre {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--texto);
+}
+.arcade-n1 .repisa-dia {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 4px 0 2px;
+}
+.arcade-n1 .hueco-dia {
+  width: 104px;
+  min-height: 88px;
+  border-radius: 14px;
+  background: #0a1626;
+  border: 2px solid #29425f;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  padding: 8px 6px;
+}
+.arcade-n1 .hueco-dia.libre { animation: arcade-guia-late 1.6s ease-in-out infinite; }
+.arcade-n1 .hueco-dia.lleno {
+  border-color: var(--verde);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.35), 0 0 14px rgba(88, 226, 156, 0.4);
+  animation: arcade-pop 0.35s ease-out;
+}
+.arcade-n1 .hueco-dia.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .hueco-momento {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ambar);
+}
+.arcade-n1 .tablero-pausas {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 4px 0 2px;
+}
+.arcade-n1 .boton-pausa {
+  min-width: 122px;
+  padding: 12px 16px 14px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid #2c4a6a;
+  box-shadow: 0 6px 0 #0a1c30;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  cursor: pointer;
+  color: var(--texto);
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.2s;
+}
+.arcade-n1 .boton-pausa.hecho {
+  transform: translateY(4px);
+  border-color: var(--verde);
+  box-shadow: 0 1px 0 #0a1c30, 0 0 16px rgba(88, 226, 156, 0.45);
+}
+.arcade-n1 .boton-pausa.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .pausa-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--ambar);
+  color: #241a08;
+  font-size: 12px;
+  font-weight: 900;
+}
+.arcade-n1 .boton-pausa.hecho .pausa-num { background: var(--verde); color: #06281a; }
+.arcade-n1 .pausa-emoji { font-size: 30px; line-height: 1; }
+.arcade-n1 .pausa-nombre {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ===== M12 · La cabina de avisos (Pido ayuda a un adulto) ===== */
+.arcade-n1 .escena-avisos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  min-height: 200px;
+}
+.arcade-n1 .galeria-retratos {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.arcade-n1 .retrato {
+  width: 96px;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  padding: 12px 8px 14px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid #2c4a6a;
+  box-shadow: 0 5px 0 #0a1c30;
+  cursor: pointer;
+  color: var(--texto);
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.2s, filter 0.2s;
+}
+.arcade-n1 .retrato.elegido {
+  transform: translateY(3px);
+  border-color: var(--verde);
+  box-shadow: 0 2px 0 #0a1c30, 0 0 16px rgba(88, 226, 156, 0.45);
+}
+.arcade-n1 .retrato.apagado {
+  filter: grayscale(0.9) brightness(0.6);
+  border-color: #1d2f44;
+}
+.arcade-n1 .retrato.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .retrato-emoji { font-size: 40px; line-height: 1; }
+.arcade-n1 .retrato-nombre {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.arcade-n1 .galeria-nota {
+  min-height: 22px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ambar);
+  text-align: center;
+}
+.arcade-n1 .situacion-rara {
+  display: grid;
+  gap: 10px;
+  place-items: center;
+  text-align: center;
+  min-width: 250px;
+  max-width: 360px;
+  padding: 20px 22px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #14243c, #0e1b2d);
+  border: 2px solid var(--linea);
+  box-shadow: inset 0 2px 0 rgba(238, 248, 255, 0.06);
+  color: var(--texto);
+  cursor: pointer;
+}
+.arcade-n1 .situacion-rara.cambia { animation: arcade-pop 0.35s ease-out; }
+.arcade-n1 .situacion-rara.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .situacion-rara.resuelta {
+  border-color: var(--verde);
+  box-shadow: inset 0 2px 0 rgba(238, 248, 255, 0.06), 0 0 16px rgba(88, 226, 156, 0.4);
+  cursor: default;
+}
+.arcade-n1 .zona-aviso {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 28px;
+  padding: 4px 0 2px;
+}
+.arcade-n1 .domo-ayuda {
+  width: 118px;
+  height: 84px;
+  border-radius: 999px 999px 14px 14px;
+  background: radial-gradient(circle at 38% 26%, #ffe1a1, var(--ambar) 64%);
+  border: 3px solid #8a6200;
+  box-shadow: 0 8px 0 #b97e00;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.12s, box-shadow 0.12s, filter 0.2s;
+}
+.arcade-n1 .domo-ayuda.late { animation: arcade-guia-late 1.6s ease-in-out infinite; }
+.arcade-n1 .domo-ayuda.hundido {
+  transform: translateY(6px);
+  box-shadow: 0 1px 0 #b97e00, 0 0 24px rgba(255, 196, 87, 0.75);
+  filter: brightness(1.12);
+}
+.arcade-n1 .domo-texto {
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: #241a08;
+}
+.arcade-n1 .repisa-equipo {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.arcade-n1 .hueco-equipo {
+  width: 84px;
+  min-height: 70px;
+  border-radius: 12px;
+  background: #0a1626;
+  border: 2px solid #29425f;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.5);
+  display: grid;
+  gap: 4px;
+  place-items: center;
+  padding: 8px 6px;
+}
+.arcade-n1 .hueco-equipo.lleno {
+  border-color: var(--verde);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.35), 0 0 14px rgba(88, 226, 156, 0.4);
+  animation: arcade-pop 0.35s ease-out;
+}
+.arcade-n1 .chip-equipo {
+  min-width: 84px;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  padding: 10px 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid #2c4a6a;
+  box-shadow: 0 5px 0 #0a1c30;
+  cursor: pointer;
+  color: var(--texto);
+  transition: transform 0.12s, box-shadow 0.12s, opacity 0.2s;
+}
+.arcade-n1 .chip-equipo:active { transform: translateY(3px); box-shadow: 0 2px 0 #0a1c30; }
+.arcade-n1 .chip-equipo.apagado { opacity: 0.5; }
+.arcade-n1 .chip-equipo.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .equipo-emoji { font-size: 30px; line-height: 1; }
+.arcade-n1 .equipo-nombre {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.arcade-n1 .ranuras-plan {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 4px 0 2px;
+}
+.arcade-n1 .ranura-plan {
+  width: 112px;
+  min-height: 88px;
+  border-radius: 14px;
+  background: #0a1626;
+  border: 2px solid #29425f;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  padding: 8px 6px;
+}
+.arcade-n1 .ranura-plan.libre { animation: arcade-guia-late 1.6s ease-in-out infinite; }
+.arcade-n1 .ranura-plan.llena {
+  border-color: var(--verde);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.35), 0 0 14px rgba(88, 226, 156, 0.4);
+  animation: arcade-pop 0.35s ease-out;
+}
+.arcade-n1 .ranura-plan.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .plan-pasos {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+.arcade-n1 .paso-plan {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  min-width: 92px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid #2c4a6a;
+  box-shadow: 0 4px 0 #0a1c30;
+  color: var(--texto);
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.2s;
+}
+.arcade-n1 .paso-plan.activo {
+  transform: translateY(-4px) scale(1.06);
+  border-color: var(--ambar);
+  box-shadow: 0 6px 0 #0a1c30, 0 0 18px rgba(255, 196, 87, 0.55);
+}
+.arcade-n1 .paso-plan.hecho {
+  border-color: var(--verde);
+  box-shadow: 0 4px 0 #0a1c30, 0 0 12px rgba(88, 226, 156, 0.35);
+}
+
+/* ===== M13 · El cofre de los tesoros (Mis datos son un tesoro) ===== */
+.arcade-n1 .zona-cofre {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 26px;
+  padding: 4px 0 2px;
+}
+.arcade-n1 .cofre-fisico {
+  width: 150px;
+  display: grid;
+  justify-items: center;
+  transition: filter 0.2s;
+}
+.arcade-n1 .cofre-tapa {
+  width: 132px;
+  height: 32px;
+  border-radius: 16px 16px 4px 4px;
+  background: linear-gradient(180deg, #b5811f, #8a5a1e);
+  border: 3px solid #3f250a;
+  box-shadow: inset 0 3px 0 rgba(255, 224, 130, 0.35);
+  transform-origin: 10% 100%;
+  transition: transform 0.35s;
+}
+.arcade-n1 .cofre-fisico.abierto .cofre-tapa { transform: translateY(-6px) rotate(-6deg); }
+.arcade-n1 .cofre-fisico.cerrado .cofre-tapa { transform: none; }
+.arcade-n1 .cofre-cuerpo {
+  width: 140px;
+  height: 72px;
+  border-radius: 6px 6px 14px 14px;
+  background: linear-gradient(180deg, #8a5a1e, #6b3f10);
+  border: 3px solid #3f250a;
+  box-shadow: 0 6px 0 #2a1806, inset 0 -4px 0 rgba(0, 0, 0, 0.25);
+  display: grid;
+  place-items: center;
+  transition: box-shadow 0.3s;
+}
+.arcade-n1 .cofre-conteo {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #ffe6b0;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
+}
+.arcade-n1 .cofre-fisico.destello .cofre-cuerpo {
+  animation: arcade-pop 0.45s ease-out;
+  box-shadow: 0 6px 0 #2a1806, 0 0 22px rgba(255, 196, 87, 0.65);
+}
+.arcade-n1 .cofre-fisico.cerrado .cofre-cuerpo {
+  box-shadow: 0 6px 0 #2a1806, 0 0 26px rgba(255, 196, 87, 0.75);
+}
+.arcade-n1 .cofre-fisico.mal .cofre-cuerpo { animation: arcade-sacude 0.4s; }
+.arcade-n1 .cofre-etiqueta,
+.arcade-n1 .bandeja-etiqueta {
+  padding-top: 6px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(238, 248, 255, 0.7);
+}
+.arcade-n1 .bandeja-compartir {
+  width: 150px;
+  min-height: 96px;
+  border-radius: 14px;
+  background: #08131f;
+  border: 2px solid #1f6f86;
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.55), 0 0 12px rgba(66, 210, 233, 0.18);
+  display: grid;
+  gap: 4px;
+  align-content: center;
+  justify-items: center;
+  padding: 10px 8px;
+}
+.arcade-n1 .bandeja-compartir.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .bandeja-fichas {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 24px;
+  align-items: center;
+}
+.arcade-n1 .mini-emoji { font-size: 20px; line-height: 1; }
+.arcade-n1 .botonera-cerradura {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.arcade-n1 .tecla-simbolo {
+  width: 64px;
+  height: 60px;
+  border-radius: 14px;
+  font-size: 26px;
+  line-height: 1;
+  background: linear-gradient(180deg, #24395a, #142640);
+  border: 3px solid #0d1a2c;
+  box-shadow: 0 6px 0 #0a1c30;
+  cursor: pointer;
+  color: var(--texto);
+  transition: transform 0.1s, box-shadow 0.1s, filter 0.15s;
+}
+.arcade-n1 .tecla-simbolo:active { transform: translateY(4px); box-shadow: 0 2px 0 #0a1c30; }
+.arcade-n1 .tecla-simbolo.brilla {
+  transform: translateY(4px);
+  border-color: var(--ambar);
+  box-shadow: 0 2px 0 #0a1c30, 0 0 18px rgba(255, 196, 87, 0.6);
+  filter: brightness(1.15);
+}
+.arcade-n1 .tecla-simbolo.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .cerradura-guia {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 10px;
+}
+.arcade-n1 .punto-llave {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #0a1626;
+  border: 2px solid #29425f;
+}
+.arcade-n1 .punto-llave.lleno {
+  background: var(--ambar);
+  border-color: #8a6200;
+  box-shadow: 0 0 10px rgba(255, 196, 87, 0.6);
+}
+.arcade-n1 .dato-zona {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 12px;
+}
+.arcade-n1 .dato-etiqueta {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(238, 248, 255, 0.75);
+}
+.arcade-n1 .situacion-rara.quieta { cursor: default; }
+.arcade-n1 .domo-ayuda.mal { animation: arcade-sacude 0.4s; }
+
+/* ===== M14 · La pared de siluetas (Safari de dispositivos) ===== */
+.arcade-n1 .pista-visor {
+  width: min(520px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+  padding: 22px 18px 20px;
+  border-radius: 22px;
+  background: radial-gradient(120% 140% at 50% -10%, #163150, #0a1626 70%);
+  border: 2px solid var(--linea);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.35), 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+.arcade-n1 .pista-visor-icono {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 40px;
+  background: radial-gradient(circle at 35% 30%, #16324a, #060d16 75%);
+  border: 3px solid rgba(92, 225, 230, 0.4);
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.6), 0 0 16px rgba(92, 225, 230, 0.25);
+}
+.arcade-n1 .pista-visor-icono.revelado {
+  border-color: var(--verde);
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.4), 0 0 20px rgba(88, 226, 156, 0.5);
+  animation: arcade-pop 0.35s ease-out;
+}
+.arcade-n1 .pista-visor-texto {
+  font-size: 15px;
+  text-align: center;
+  color: rgba(238, 248, 255, 0.88);
+  max-width: 46ch;
+}
+.arcade-n1 .safari-opciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.arcade-n1 .safari-opcion {
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid #2c4a6a;
+  box-shadow: 0 6px 0 #0a1c30;
+  color: var(--texto);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.2s;
+}
+.arcade-n1 .safari-opcion:hover { border-color: var(--cian); }
+.arcade-n1 .safari-opcion.mal { animation: arcade-sacude 0.4s; border-color: var(--rojo); }
+.arcade-n1 .safari-repisas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+.arcade-n1 .safari-repisa {
+  flex: 1 1 160px;
+  max-width: 220px;
+  display: grid;
+  gap: 8px;
+  padding: 12px 10px 14px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(8, 19, 31, 0.9), rgba(13, 32, 51, 0.9));
+  border: 2px solid rgba(92, 225, 230, 0.25);
+  border-bottom-width: 6px;
+}
+.arcade-n1 .safari-repisa.celebra { border-color: var(--verde); animation: arcade-pop 0.3s ease; }
+.arcade-n1 .safari-repisa.no { animation: arcade-sacude 0.4s; border-color: var(--rojo); }
+.arcade-n1 .safari-repisa-titulo {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ambar);
+  text-align: center;
+}
+.arcade-n1 .safari-hueco {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: 8px;
+  min-height: 58px;
+}
+.arcade-n1 .safari-hueco.vacia {
+  display: grid;
+  place-items: center;
+  color: rgba(238, 248, 255, 0.4);
+  font-size: 20px;
+}
+
+/* ===== M15 · La banda de clasificación (¿Entrada o salida?) ===== */
+.arcade-n1 .banda-cinta {
+  position: relative;
+  width: min(420px, 100%);
+  margin: 0 auto;
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #0d1c2e, #0a1626);
+  border: 2px solid var(--linea);
+  overflow: hidden;
+  padding: 20px 16px 36px;
+}
+.arcade-n1 .banda-cinta::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 18px;
+  background: repeating-linear-gradient(90deg, #1c4a74 0 26px, #123252 26px 52px);
+  border-top: 1px solid rgba(92, 225, 230, 0.3);
+  animation: arcade-cinta-corre 0.7s linear infinite;
+}
+.arcade-n1 .banda-objeto {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  transition: translate 0.7s ease, opacity 0.7s ease;
+}
+.arcade-n1 .banda-objeto.saliendo { translate: 140px 0; opacity: 0; }
+.arcade-n1 .banda-objeto-emoji { font-size: 52px; line-height: 1; }
+.arcade-n1 .banda-objeto-nombre { font-size: 15px; font-weight: 800; color: var(--texto); }
+.arcade-n1 .banda-charolas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+.arcade-n1 .banda-charola {
+  min-width: 140px;
+  padding: 14px 20px 16px;
+  border-radius: 14px;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid #2c4a6a;
+  box-shadow: 0 6px 0 #0a1c30;
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.2s;
+}
+.arcade-n1 .banda-charola:hover { transform: translateY(-2px); }
+.arcade-n1 .banda-charola.entrada { border-color: rgba(50, 168, 255, 0.5); }
+.arcade-n1 .banda-charola.salida { border-color: rgba(255, 210, 90, 0.5); }
+.arcade-n1 .banda-charola.presionada {
+  transform: translateY(4px);
+  border-color: var(--verde);
+  box-shadow: 0 1px 0 #0a1c30, 0 0 16px rgba(88, 226, 156, 0.45);
+}
+.arcade-n1 .banda-charola.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .banda-charola-icono { font-size: 26px; line-height: 1; }
+.arcade-n1 .banda-charola-etiqueta {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ===== M16 · El librero de las casas (¿Dónde viven mis archivos?) ===== */
+.arcade-n1 .librero-casas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+.arcade-n1 .librero-casita {
+  flex: 1 1 150px;
+  max-width: 220px;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  padding: 14px 10px 16px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid #2c4a6a;
+  box-shadow: 0 6px 0 #0a1c30;
+}
+.arcade-n1 .librero-casita.celebra { border-color: var(--verde); animation: arcade-pop 0.3s ease; }
+.arcade-n1 .librero-casita.no { animation: arcade-sacude 0.4s; border-color: var(--rojo); }
+.arcade-n1 .librero-casita-emoji { font-size: 34px; line-height: 1; }
+.arcade-n1 .librero-casita-titulo {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ambar);
+}
+.arcade-n1 .librero-hueco {
+  position: relative;
+  overflow: hidden;
+  min-height: 64px;
+  width: 100%;
+  border-radius: 10px;
+  background: #08131f;
+  border: 2px solid #29425f;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: 6px;
+  padding: 8px;
+}
+.arcade-n1 .librero-hueco::before,
+.arcade-n1 .librero-hueco::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 52%;
+  background: linear-gradient(180deg, #1c4a74, #123252);
+  border: 2px solid rgba(255, 210, 90, 0.4);
+  z-index: 2;
+  transition: translate 0.4s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.arcade-n1 .librero-hueco::before { left: -2px; border-radius: 8px 0 0 8px; }
+.arcade-n1 .librero-hueco::after { right: -2px; border-radius: 0 8px 8px 0; }
+.arcade-n1 .librero-casita.abierta .librero-hueco::before { translate: -100% 0; }
+.arcade-n1 .librero-casita.abierta .librero-hueco::after { translate: 100% 0; }
+.arcade-n1 .librero-hueco.vacia { color: rgba(238, 248, 255, 0.4); font-size: 18px; }
+.arcade-n1 .librero-hueco-item { position: relative; z-index: 1; font-size: 26px; line-height: 1; }
+.arcade-n1 .archivos-pool {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 4px 0 2px;
+}
+.arcade-n1 .archivo-chip {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  width: 148px;
+  padding: 10px 12px 12px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #1c4a74, #123252);
+  border: 2px solid rgba(255, 210, 90, 0.5);
+  color: var(--texto);
+  font: inherit;
+  cursor: grab;
+  touch-action: none;
+  text-align: center;
+}
+.arcade-n1 .archivo-chip.arrastrando {
+  cursor: grabbing;
+  position: relative;
+  z-index: 40;
+  border-color: var(--ambar);
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.55);
+}
+.arcade-n1 .archivo-chip.rebote { animation: arcade-sacude 0.4s ease; }
+.arcade-n1 .archivo-chip-emoji { font-size: 24px; line-height: 1; }
+.arcade-n1 .archivo-chip-nombre { font-size: 12.5px; font-weight: 800; }
+.arcade-n1 .archivo-chip-pista { font-size: 10.5px; font-weight: 500; color: rgba(238, 248, 255, 0.72); line-height: 1.25; }
+
+/* ===== M17 · El mapa del teclado (Explora tu teclado / Escribe a dos manos) ===== */
+.arcade-n1 .teclado-mapa {
+  position: relative;
+  width: min(640px, 100%);
+  margin: 0 auto;
+  padding: 20px 16px 18px;
+  border-radius: 20px;
+  background: radial-gradient(120% 140% at 50% -10%, #163150, #0a1626 70%);
+  border: 2px solid var(--linea);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.35), 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+.arcade-n1 .teclado-mapa-divisor {
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: 50%;
+  width: 2px;
+  background: repeating-linear-gradient(180deg, rgba(238, 248, 255, 0.35) 0 6px, transparent 6px 12px);
+  z-index: 2;
+  pointer-events: none;
+}
+.arcade-n1 .teclado-mapa-filas { display: grid; gap: 6px; }
+.arcade-n1 .teclado-fila { display: flex; gap: 5px; justify-content: center; }
+.arcade-n1 .teclado-tecla {
+  flex: 1 1 0;
+  min-width: 24px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  padding: 0 2px;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--texto);
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid #2c4a6a;
+  box-shadow: 0 4px 0 #0a1c30;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.2s;
+}
+.arcade-n1 .teclado-tecla:disabled { cursor: default; }
+.arcade-n1 .teclado-tecla:not(:disabled):hover { transform: translateY(-1px); }
+.arcade-n1 .teclado-tecla.divisor-fila { margin-right: 16px; }
+.arcade-n1 .teclado-tecla.familia-letras { border-color: rgba(50, 168, 255, 0.55); }
+.arcade-n1 .teclado-tecla.familia-numeros { border-color: rgba(255, 210, 90, 0.6); }
+.arcade-n1 .teclado-tecla.familia-flechas { border-color: rgba(92, 225, 230, 0.6); }
+.arcade-n1 .teclado-tecla.familia-especiales { border-color: rgba(185, 140, 255, 0.6); font-size: 10.5px; }
+.arcade-n1 .teclado-tecla.objetivo {
+  border-color: var(--ambar);
+  box-shadow: 0 4px 0 #0a1c30, 0 0 18px rgba(255, 210, 90, 0.6);
+  animation: teclado-pulso 1s ease-in-out infinite;
+}
+.arcade-n1 .teclado-tecla.correcta {
+  border-color: var(--verde);
+  animation: arcade-pop 0.35s ease-out;
+  box-shadow: 0 4px 0 #0a1c30, 0 0 18px rgba(88, 226, 156, 0.55);
+}
+.arcade-n1 .teclado-tecla.incorrecta { animation: arcade-sacude 0.4s; border-color: var(--rojo); }
+@keyframes teclado-pulso { 50% { transform: scale(1.08); } }
+.arcade-n1 .teclado-flechas {
+  flex: 1 1 0;
+  height: 84px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas: ". arriba ." "izquierda abajo derecha";
+  gap: 4px;
+}
+.arcade-n1 .teclado-flechas .teclado-tecla { height: auto; }
+.arcade-n1 .teclado-flechas.divisor-fila { margin-right: 16px; }
+.arcade-n1 .teclado-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 18px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--linea);
+}
+.arcade-n1 .teclado-leyenda-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(238, 248, 255, 0.8);
+}
+.arcade-n1 .teclado-leyenda-punto { width: 11px; height: 11px; border-radius: 50%; }
+.arcade-n1 .teclado-leyenda-item.familia-letras .teclado-leyenda-punto { background: #32a8ff; }
+.arcade-n1 .teclado-leyenda-item.familia-numeros .teclado-leyenda-punto { background: #ffd25a; }
+.arcade-n1 .teclado-leyenda-item.familia-flechas .teclado-leyenda-punto { background: #5ce1e6; }
+.arcade-n1 .teclado-leyenda-item.familia-especiales .teclado-leyenda-punto { background: #b98cff; }
+
+/* ===== M18 · El escritorio de las ventanas (Abre y cierra ventanas) ===== */
+.arcade-n1 .ventana-mock {
+  width: min(420px, 100%);
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  background: radial-gradient(120% 140% at 50% -10%, #163150, #0a1626 70%);
+  border: 2px solid var(--linea);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.35), 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+.arcade-n1 .ventana-mock-barra {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, #1c3550, #142842);
+  border-bottom: 2px solid var(--linea);
+}
+.arcade-n1 .ventana-mock-icono { font-size: 18px; line-height: 1; }
+.arcade-n1 .ventana-mock-titulo {
+  flex: 1;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: rgba(238, 248, 255, 0.85);
+  letter-spacing: 0.02em;
+}
+.arcade-n1 .ventana-mock-botones { display: flex; gap: 8px; }
+.arcade-n1 .ventana-mock-boton {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--texto);
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid #2c4a6a;
+  box-shadow: 0 4px 0 #0a1c30;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.2s;
+}
+.arcade-n1 .ventana-mock-boton:hover { transform: translateY(-1px); }
+.arcade-n1 .ventana-mock-boton--minimizar { border-color: rgba(255, 210, 90, 0.6); }
+.arcade-n1 .ventana-mock-boton--maximizar { border-color: rgba(92, 225, 230, 0.6); }
+.arcade-n1 .ventana-mock-boton--cerrar { border-color: rgba(255, 109, 124, 0.6); }
+.arcade-n1 .ventana-mock-boton.correcta {
+  border-color: var(--verde);
+  animation: arcade-pop 0.35s ease-out;
+  box-shadow: 0 4px 0 #0a1c30, 0 0 18px rgba(88, 226, 156, 0.55);
+}
+.arcade-n1 .ventana-mock-boton.mal { animation: arcade-sacude 0.4s; border-color: var(--rojo); }
+.arcade-n1 .ventana-mock-cuerpo {
+  padding: 26px 18px;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  min-height: 96px;
+}
+.arcade-n1 .taskbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.arcade-n1 .taskbar-icono {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid #2c4a6a;
+  box-shadow: 0 6px 0 #0a1c30;
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.2s;
+}
+.arcade-n1 .taskbar-icono:hover { border-color: var(--cian); }
+.arcade-n1 .taskbar-icono-emoji { font-size: 22px; line-height: 1; }
+.arcade-n1 .taskbar-icono-nombre { font-size: 11px; font-weight: 800; letter-spacing: 0.04em; }
+.arcade-n1 .taskbar-icono.mal { animation: arcade-sacude 0.4s; border-color: var(--rojo); }
+
+/* ═══ N2·U4 · El robot programable (Laberinto de bloques / Caza el error / ¡Repite, repite!) ═══ */
+.arcade-n1 .robot-tablero { margin: 0 auto; }
+.arcade-n1 .meta-casilla { font-size: calc(var(--celda) * 0.46); filter: drop-shadow(0 0 8px rgba(255, 210, 90, 0.6)); }
+.arcade-n1 .ficha-robot {
+  position: absolute;
+  z-index: 4;
+  width: calc(var(--celda) - 10px);
+  height: calc(var(--celda) - 10px);
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: radial-gradient(circle at 35% 30%, #1c4a74, #0b2036);
+  border: 3px solid rgba(92, 225, 230, 0.7);
+  box-shadow: 0 0 16px rgba(92, 225, 230, 0.5);
+  transition: left 0.28s ease, top 0.28s ease;
+  pointer-events: none;
+}
+.arcade-n1 .ficha-robot-emoji { font-size: calc(var(--celda) * 0.5); line-height: 1; }
+.arcade-n1 .ficha-robot-flecha {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  translate: -50% 0;
+  font-size: 15px;
+  color: var(--ambar);
+  text-shadow: 0 0 8px rgba(255, 210, 90, 0.8);
+  transition: transform 0.28s ease;
+}
+.arcade-n1 .ficha-robot.choque { animation: arcade-sacude 0.4s ease; border-color: var(--rojo); box-shadow: 0 0 16px rgba(255, 109, 124, 0.6); }
+.arcade-n1 .ficha-robot.festejo { animation: arcade-brinco 0.7s ease; border-color: var(--verde); box-shadow: 0 0 18px rgba(88, 226, 156, 0.6); }
+.arcade-n1 .tarjeta-paso.culpable {
+  background: linear-gradient(180deg, #6b1c2c, #3a0f18);
+  border-color: var(--rojo);
+  box-shadow: 0 0 16px rgba(255, 109, 124, 0.55);
+}
+.arcade-n1 .tarjeta-paso.bucle {
+  width: 132px;
+  padding: 8px 8px;
+  gap: 4px;
+  background: linear-gradient(180deg, #3f2a74, #241748);
+  border-color: #a78bfa;
+  box-shadow: 0 0 18px rgba(139, 92, 246, 0.55);
+}
+.arcade-n1 .tarjeta-paso .bucle-contador {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.arcade-n1 .bucle-contador-boton {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(92, 225, 230, 0.5);
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  color: var(--texto);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.arcade-n1 .bucle-contador-boton:hover { border-color: var(--cian); }
+.arcade-n1 .bucle-contador-boton:disabled { opacity: 0.4; cursor: default; }
+.arcade-n1 .bucle-contador-valor { min-width: 18px; text-align: center; font-size: 14px; font-weight: 900; color: var(--ambar); }
+
+/* Movimiento reducido: sin derivas ni brincos decorativos. */
+@media (prefers-reduced-motion: reduce) {
+  .arcade-n1 .burbuja.deriva,
+  .arcade-n1 .marquesina::before,
+  .arcade-n1 .cinta-piso,
+  .arcade-n1 .corredor,
+  .arcade-n1 .glitch-bicho,
+  .arcade-n1 .vagon.vacio,
+  .arcade-n1 .tren,
+  .arcade-n1 .estrella-mapa,
+  .arcade-n1 .cofre-celda.activo,
+  .arcade-n1 .guia-punto,
+  .arcade-n1 .hueco,
+  .arcade-n1 .hueco-dia.libre,
+  .arcade-n1 .domo-ayuda.late,
+  .arcade-n1 .ranura-plan.libre,
+  .arcade-n1 .banda-cinta::after,
+  .arcade-n1 .ficha-robot.choque,
+  .arcade-n1 .ficha-robot.festejo,
+  .arcade-n1 .palanca.lista .palanca-bola,
+  .arcade-n1 .maquina-tira-cursor { animation: none; }
+}
+
+/* ═══ N2·U5 · Escribo y dibujo (La máquina de oraciones) ═══ */
+.arcade-n1 .maquina-tablero { gap: 14px; }
+.arcade-n1 .maquina-tira-papel {
+  position: relative;
+  width: min(440px, 100%);
+  margin: 4px auto 0;
+  padding: 16px 22px 14px;
+  border-radius: 8px;
+  background: #fff7df;
+  color: #35240a;
+  border: 2px solid #e8c46a;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+  text-align: center;
+}
+.arcade-n1 .maquina-tira-papel::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  translate: -50% 0;
+  width: 48px;
+  height: 13px;
+  border-radius: 3px;
+  background: rgba(92, 225, 230, 0.55);
+}
+.arcade-n1 .maquina-tira-texto {
+  display: block;
+  min-height: 1.3em;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.arcade-n1 .maquina-tira-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  background: #35240a;
+  vertical-align: -0.15em;
+  animation: arcade-parpadeo 1s step-end infinite;
+}
+@keyframes arcade-parpadeo {
+  50% { opacity: 0; }
+}
+.arcade-n1 .safari-opcion:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.4); }
+.arcade-n1 .safari-opcion.hecha { background: linear-gradient(180deg, #1a5a44, #0f3a2c); border-color: var(--verde); }
+
+/* ═══ N2·U5 Parada 2 · El ropero de letras ═══ */
+.arcade-n1 .ropero-espejo {
+  position: relative;
+  width: min(420px, 100%);
+  min-height: 150px;
+  margin: 4px auto 0;
+  padding: 18px 22px;
+  border-radius: 16px;
+  border: 8px solid #0d1a2a;
+  outline: 1px solid var(--linea);
+  background: radial-gradient(120% 130% at 50% 20%, #eaf6ff 0%, #b8d4ea 60%, #92b3cf 100%);
+  box-shadow: inset 0 0 30px rgba(13, 26, 42, 0.25), 0 14px 40px rgba(0, 0, 0, 0.45);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.arcade-n1 .ropero-espejo::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 9px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+.arcade-n1 .ropero-palabra {
+  display: inline-block;
+  color: #1a3050;
+  font-weight: 900;
+  font-size: 30px;
+  letter-spacing: 0.01em;
+  transform: scale(var(--escala, 1));
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
+}
+.arcade-n1 .ropero-palabra.vestida {
+  color: var(--bc, #1a3050);
+  text-shadow: 0 0 18px var(--bc, transparent);
+}
+.arcade-n1 .ropero-palabra.sacude { animation: arcade-sacude 0.4s ease; }
+.arcade-n1 .ropero-controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  margin-top: 6px;
+}
+.arcade-n1 .dial-tamano {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.arcade-n1 .dial-cuerpo {
+  position: relative;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, #3a5b82, #16283f 70%);
+  border: 4px solid #0a1c30;
+  box-shadow: 0 6px 0 #0a1c30, inset 0 0 14px rgba(0, 0, 0, 0.4);
+}
+.arcade-n1 .dial-aguja {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 42px;
+  margin-left: -3px;
+  margin-top: -42px;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, var(--ambar), #d99a00);
+  box-shadow: 0 0 10px var(--ambar);
+  transform-origin: 50% 42px;
+  transform: rotate(var(--ang, -35deg));
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.arcade-n1 .dial-eje {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe6a8, #a86f0a);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+}
+.arcade-n1 .dial-ticks { display: flex; gap: 10px; }
+.arcade-n1 .dial-tick {
+  min-width: 74px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 2px solid #35577c;
+  background: linear-gradient(180deg, #1c4a74, #123252);
+  color: var(--texto);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 5px 0 #0a1c30;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.arcade-n1 .dial-tick.elegido {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 #0a1c30, 0 0 16px var(--ambar);
+  border-color: var(--ambar);
+  color: var(--ambar);
+}
+.arcade-n1 .perchero-rail {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  padding: 26px 18px 6px;
+}
+.arcade-n1 .perchero-rail::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 8px;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #6b7d95, #3d4d63);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+}
+.arcade-n1 .percha {
+  position: relative;
+  width: 46px;
+  height: 50px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.arcade-n1 .percha::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 3px;
+  height: 14px;
+  margin-left: -1.5px;
+  background: #8c99ab;
+}
+.arcade-n1 .percha-cuerpo {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  width: 40px;
+  height: 34px;
+  margin-left: -20px;
+  border-radius: 8px 8px 12px 12px;
+  border: 2px solid var(--bc-hondo);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0 24%, var(--bc) 24%);
+  box-shadow: 0 5px 0 var(--bc-hondo);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+.arcade-n1 .percha.elegida .percha-cuerpo {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 var(--bc-hondo), 0 0 16px var(--bc);
+  filter: brightness(1.25);
+}
+
+/* ═══ N2·U5 Parada 3 · La prensa de cuentos ═══ */
+.arcade-n1 .prensa-tablero { gap: 14px; }
+.arcade-n1 .mini-lienzo {
+  position: relative;
+  width: min(360px, 100%);
+  aspect-ratio: 4 / 3;
+  margin: 4px auto 0;
+  border-radius: 16px;
+  border: 8px solid #0d1a2a;
+  outline: 1px solid var(--linea);
+  box-shadow: inset 0 0 30px rgba(13, 26, 42, 0.22), 0 12px 32px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+/* Zona genérica del mini-lienzo: posición y tamaño en % vienen del dato
+   (ZonaDibujo), el marcador visual solo decide la forma del recorte. */
+.arcade-n1 .zona-generica {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.arcade-n1 .zona-generica:hover { transform: translate(-50%, -50%) scale(1.05); }
+.arcade-n1 .zona-generica.forma-circulo { border-radius: 50%; }
+.arcade-n1 .zona-generica.forma-rect { border-radius: 10px; }
+.arcade-n1 .zona-generica.forma-triangulo {
+  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: none;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+.arcade-n1 .zona-generica.rellena {
+  background: radial-gradient(circle at 32% 28%, var(--bc), var(--bc-hondo));
+  border-color: var(--bc-hondo);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.15), 0 0 12px var(--bc);
+  cursor: default;
+  animation: arcade-pop 0.3s ease;
+}
+.arcade-n1 .zona-generica.forma-triangulo.rellena {
+  background: var(--bc);
+  box-shadow: none;
+  filter: drop-shadow(0 0 10px var(--bc));
+}
+.arcade-n1 .zona-generica.sacude { animation: arcade-sacude 0.4s ease; }
+
+/* ═══ N2·U6 Parada 1 · El clasificador de secretos ═══ */
+/* Reusa .banda-charola de N2·U1; solo añade dos acentos de color nuevos. */
+.arcade-n1 .banda-charola.secreto { border-color: rgba(124, 108, 255, 0.55); }
+.arcade-n1 .banda-charola.publico { border-color: rgba(52, 211, 153, 0.55); }
+
+/* ═══ N2·U6 Parada 2 · La centralita de contactos ═══ */
+.arcade-n1 .centralita-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+.arcade-n1 .centralita-clavija {
+  min-width: 160px;
+  padding: 14px 22px 16px;
+  border-radius: 14px;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid rgba(52, 211, 153, 0.5);
+  box-shadow: 0 6px 0 #0a1c30;
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.arcade-n1 .centralita-clavija:hover { transform: translateY(-2px); }
+.arcade-n1 .centralita-clavija.presionada {
+  transform: translateY(4px);
+  border-color: var(--verde);
+  box-shadow: 0 1px 0 #0a1c30, 0 0 16px rgba(88, 226, 156, 0.45);
+}
+.arcade-n1 .centralita-clavija.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .centralita-clavija-icono { font-size: 26px; line-height: 1; }
+.arcade-n1 .centralita-clavija-etiqueta {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ═══ N2·U6 Parada 3 · El escenario del buen trato ═══ */
+.arcade-n1 .telon-marco {
+  position: relative;
+  width: min(460px, 100%);
+  margin: 0 auto;
+  min-height: 168px;
+  border-radius: 18px;
+  background: radial-gradient(120% 140% at 50% -10%, rgba(255, 210, 90, 0.14), transparent 60%), linear-gradient(180deg, #0d1c2e, #0a1626);
+  border: 2px solid var(--linea);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 22px 18px;
+}
+.arcade-n1 .telon-reflector {
+  position: absolute;
+  top: -40%;
+  left: 50%;
+  width: 70%;
+  height: 140%;
+  translate: -50% 0;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.16), transparent 70%);
+  pointer-events: none;
+}
+.arcade-n1 .telon-cortina {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 22%;
+  background: linear-gradient(90deg, #7a1f2b, #4a0f18);
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.4);
+  transition: translate 0.5s ease;
+  z-index: 2;
+}
+.arcade-n1 .telon-cortina.izq { left: 0; border-radius: 0 10px 10px 0; }
+.arcade-n1 .telon-cortina.der { right: 0; border-radius: 10px 0 0 10px; }
+.arcade-n1 .telon-marco.abierto .telon-cortina.izq { translate: -100% 0; }
+.arcade-n1 .telon-marco.abierto .telon-cortina.der { translate: 100% 0; }
+.arcade-n1 .telon-escena {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  text-align: center;
+}
+.arcade-n1 .telon-escena-emoji { font-size: 44px; line-height: 1; }
+.arcade-n1 .telon-escena-texto { font-size: 15px; font-weight: 700; color: var(--texto); max-width: 320px; }
+.arcade-n1 .telon-palanca {
+  min-width: 150px;
+  padding: 14px 20px 16px;
+  border-radius: 14px;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  background: linear-gradient(180deg, #7a1f2b, #4a0f18);
+  border: 2px solid rgba(255, 138, 138, 0.55);
+  box-shadow: 0 6px 0 #2c0910;
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.arcade-n1 .telon-palanca:hover { transform: translateY(-2px); }
+.arcade-n1 .telon-palanca.presionada {
+  transform: translateY(4px);
+  border-color: var(--verde);
+  box-shadow: 0 1px 0 #2c0910, 0 0 16px rgba(88, 226, 156, 0.45);
+}
+.arcade-n1 .telon-palanca.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .mascaras-fila {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+.arcade-n1 .mascara-boton {
+  min-width: 128px;
+  padding: 14px 18px 16px;
+  border-radius: 14px;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  background: linear-gradient(180deg, #16283f, #0e1c2f);
+  border: 2px solid #2c4a6a;
+  box-shadow: 0 6px 0 #0a1c30;
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.2s, opacity 0.2s;
+}
+.arcade-n1 .mascara-boton:hover { transform: translateY(-2px); }
+.arcade-n1 .mascara-boton.elegida {
+  transform: translateY(4px);
+  border-color: var(--verde);
+  box-shadow: 0 1px 0 #0a1c30, 0 0 16px rgba(88, 226, 156, 0.45);
+}
+.arcade-n1 .mascara-boton.mal { animation: arcade-sacude 0.4s; }
+.arcade-n1 .mascara-boton.apagada { opacity: 0.4; cursor: not-allowed; }
+.arcade-n1 .mascara-boton-emoji { font-size: 30px; line-height: 1; }
+.arcade-n1 .mascara-boton-nombre {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

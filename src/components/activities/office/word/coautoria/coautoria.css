@@ -1,0 +1,566 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `of-word-coautoria` · los paneles de trabajar entre varios.
+
+   Todo va con la ropa del programa y no con la de la plataforma: chrome claro,
+   azul #185ABD, bordes finos y tipografía de sistema. La regla de §36.2 vale
+   igual aquí — dentro de la ventana manda la fidelidad con Word, y el color
+   pleno vive en la entrada y en el panel del maestro.
+
+   Todas las clases llevan el prefijo `coa-` porque hay nueve clases de Word
+   construyéndose a la vez y una hoja global sin prefijo se las lleva por
+   delante.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.coa-panel,
+.coa-dialogo,
+.coa-comparacion {
+  position: absolute;
+  background: #fff;
+  color: #201f1e;
+  font-family: 'Segoe UI', 'Selawik', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+}
+
+/* ─────────────────────────── paneles ─────────────────────────── */
+
+.coa-panel {
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #d2d0ce;
+  overflow: hidden;
+}
+
+/* La variante horizontal del panel de revisiones de Word: acoplada abajo, a lo
+   ancho del documento y sin tapar el panel del maestro. */
+.coa-panel.es-abajo {
+  border-left: 0;
+  border-bottom: 0;
+  box-shadow: 0 -8px 22px rgba(0, 0, 0, 0.16);
+}
+
+.coa-panel.es-flotante {
+  border-radius: 4px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.3);
+}
+
+.coa-panel-cab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: 7px 8px 7px 11px;
+  background: #f3f2f1;
+  border-bottom: 1px solid #e1dfdd;
+  color: #323130;
+}
+
+.coa-panel-cab h3 {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.coa-panel-cuenta {
+  margin-left: auto;
+  color: #605e5c;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.coa-cerrar {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #605e5c;
+  cursor: pointer;
+}
+
+.coa-cerrar:hover {
+  background: #e1dfdd;
+  color: #201f1e;
+}
+
+.coa-panel-cuenta + .coa-cerrar {
+  margin-left: 0;
+}
+
+.coa-panel-cuerpo {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 9px 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+  gap: 8px;
+  align-content: start;
+  background: #faf9f8;
+}
+
+/* ─────────────────────────── comentarios ─────────────────────────── */
+
+.coa-com {
+  padding: 7px 9px 8px;
+  border: 1px solid #e1dfdd;
+  border-left: 3px solid #8764b8;
+  border-radius: 3px;
+  background: #fff;
+}
+
+.coa-com.es-mio,
+.coa-com.es-nuevo {
+  border-left-color: #185abd;
+}
+
+.coa-com.es-resuelto {
+  border-left-color: #107c10;
+  background: #f6f9f5;
+  opacity: 0.78;
+}
+
+.coa-com-cab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.coa-com-avatar {
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  flex: none;
+  border-radius: 50%;
+  background: #8764b8;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.coa-com.es-mio .coa-com-avatar,
+.coa-com.es-nuevo .coa-com-avatar {
+  background: #185abd;
+}
+
+.coa-com.es-resuelto .coa-com-avatar {
+  background: #107c10;
+}
+
+.coa-com-quien {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.coa-com-quien b {
+  font-size: 11.5px;
+}
+
+.coa-com-quien i {
+  color: #605e5c;
+  font-size: 10.5px;
+  font-style: normal;
+}
+
+.coa-com-cab .coa-boton {
+  margin-left: auto;
+}
+
+.coa-com-sobre {
+  margin: 7px 0 4px;
+  color: #605e5c;
+  font-size: 10.5px;
+}
+
+.coa-com-sobre span {
+  font-style: italic;
+}
+
+.coa-com-texto {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.38;
+}
+
+.coa-com-quien i.es-resuelto {
+  color: #107c10;
+  font-weight: 700;
+}
+
+.coa-com-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 7px;
+}
+
+/* ─────────────────────────── botones y campos ─────────────────────────── */
+
+.coa-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: #185abd;
+  color: #fff;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.coa-boton:hover {
+  background: #103f91;
+}
+
+.coa-boton.es-suave {
+  background: #fff;
+  color: #201f1e;
+  border-color: #c8c6c4;
+}
+
+.coa-boton.es-suave:hover {
+  background: #f3f2f1;
+}
+
+.coa-boton:focus-visible,
+.coa-entrada:focus-visible,
+.coa-campo:focus-visible,
+.coa-select:focus-visible {
+  outline: 2px solid #185abd;
+  outline-offset: 1px;
+}
+
+.coa-entrada,
+.coa-campo,
+.coa-select {
+  width: 100%;
+  padding: 5px 7px;
+  border: 1px solid #c8c6c4;
+  border-radius: 2px;
+  background: #fff;
+  color: #201f1e;
+  font: inherit;
+  font-size: 12px;
+}
+
+.coa-campo {
+  margin-top: 7px;
+  resize: none;
+}
+
+/* ─────────────────────────── historial ─────────────────────────── */
+
+.coa-guardar {
+  flex: none;
+  padding: 9px 11px 10px;
+  background: #faf9f8;
+  border-bottom: 1px solid #e1dfdd;
+}
+
+.coa-guardar label {
+  display: block;
+  margin-bottom: 5px;
+  color: #605e5c;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.coa-guardar-fila {
+  display: flex;
+  gap: 6px;
+}
+
+.coa-vers {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  margin: 0;
+  padding: 10px 11px 12px;
+  list-style: none;
+}
+
+/* El hilo de la línea de tiempo, detrás de los puntos. */
+.coa-vers::before {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  bottom: 18px;
+  width: 1px;
+  background: #e1dfdd;
+}
+
+.coa-ver {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+.coa-ver-punto {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  margin-left: 3px;
+  border-radius: 50%;
+  background: #c8c6c4;
+}
+
+.coa-ver.es-mia .coa-ver-punto {
+  background: #185abd;
+}
+
+.coa-ver.es-ahora .coa-ver-punto {
+  background: #fff;
+  border: 2px solid #185abd;
+}
+
+.coa-ver-datos {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.coa-ver-datos b {
+  font-size: 12px;
+}
+
+.coa-ver-datos i {
+  color: #605e5c;
+  font-size: 10.5px;
+  font-style: normal;
+}
+
+.coa-recado {
+  flex: none;
+  margin: 0;
+  padding: 8px 11px;
+  background: #eff6fc;
+  border-top: 1px solid #cfe3f7;
+  color: #103f91;
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.coa-error {
+  margin: 9px 0 0;
+  padding: 6px 8px;
+  border-radius: 3px;
+  background: #fde7e9;
+  color: #a4262c;
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+/* ─────────────────────────── diálogo de comparar ─────────────────────────── */
+
+.coa-dialogo {
+  z-index: 50;
+  border: 1px solid #b3b0ad;
+  border-radius: 4px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.34);
+  overflow: hidden;
+}
+
+.coa-dialogo-cuerpo {
+  padding: 13px 15px 15px;
+}
+
+.coa-etiqueta {
+  display: block;
+  margin-bottom: 5px;
+  color: #323130;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.coa-dialogo-flecha {
+  margin: 9px 0;
+  text-align: center;
+  color: #605e5c;
+  font-size: 15px;
+}
+
+.coa-dialogo-pie {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 15px;
+  background: #faf9f8;
+  border-top: 1px solid #e1dfdd;
+}
+
+/* ─────────────────────────── pantalla de comparación ─────────────────────────── */
+
+.coa-comparacion {
+  z-index: 52;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #d2d0ce;
+}
+
+.coa-comp-cab {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: none;
+  padding: 10px 14px;
+  background: #f3f2f1;
+  border-bottom: 1px solid #e1dfdd;
+}
+
+.coa-comp-cab h3 {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.coa-comp-quienes {
+  margin: 3px 0 0;
+  color: #605e5c;
+  font-size: 11.5px;
+}
+
+.coa-comp-quienes b {
+  color: #201f1e;
+}
+
+.coa-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.coa-chip {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #edebe9;
+  color: #605e5c;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.coa-chip.es-anadido {
+  background: #dff6dd;
+  color: #0b6a0b;
+}
+
+.coa-chip.es-quitado {
+  background: #fde7e9;
+  color: #a4262c;
+}
+
+.coa-chip.es-cambiado {
+  background: #fff4ce;
+  color: #8a5300;
+}
+
+.coa-cols {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Una rejilla POR FILA. Con una sola rejilla de 2 × N, las filas salían todas
+   de 30 px y el texto de dos renglones se pintaba encima de la fila siguiente
+   (medido a 1024×768; ver el comentario de `FilaComparada`). */
+.coa-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.coa-fila > *:first-child {
+  border-right: 1px solid #e1dfdd;
+}
+
+.coa-fila.es-cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.coa-col-cab {
+  padding: 8px 13px;
+  background: #faf9f8;
+  border-bottom: 1px solid #e1dfdd;
+  color: #605e5c;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.coa-celda {
+  padding: 7px 13px;
+  border-bottom: 1px solid #f3f2f1;
+  font-size: 12px;
+  line-height: 1.4;
+  min-height: 30px;
+}
+
+.coa-celda.es-igual {
+  color: #605e5c;
+}
+
+.coa-celda.es-anadido {
+  background: #eefbec;
+}
+
+.coa-celda.es-quitado {
+  background: #fdf1f2;
+}
+
+.coa-celda.es-cambiado {
+  background: #fffbe8;
+}
+
+/* El lado que no tiene nada: rayado, para que se vea que ahí NO hay renglón y
+   no que el renglón está en blanco. */
+.coa-celda.es-vacio {
+  background: repeating-linear-gradient(45deg, #fafafa 0 7px, #f3f2f1 7px 14px);
+}
+
+.coa-w {
+  border-radius: 2px;
+}
+
+.coa-w.es-anadido {
+  background: #b9edb3;
+}
+
+.coa-w.es-quitado {
+  background: #ffcfd4;
+  text-decoration: line-through;
+}
+
+.coa-r.es-titulo1 {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #2f5496;
+}
+
+.coa-r.es-titulo2 {
+  font-weight: 700;
+  color: #2f5496;
+}
+
+.coa-r.es-item::before {
+  content: '•  ';
+  color: #605e5c;
+}

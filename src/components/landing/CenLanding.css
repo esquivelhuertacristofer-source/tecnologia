@@ -1,0 +1,1190 @@
+/* ==========================================================================
+   Landing CEN v4 — «sala oscura, pantallas encendidas»
+   Documento de diseño: LANDING-V4-DISENO.md (raíz del proyecto)
+   Todo va acotado bajo .cen-landing para no filtrar estilos al resto de la app.
+   ========================================================================== */
+
+.cen-landing {
+    /* Suelo */
+    --navy: #04122a;
+    --navy-2: #07203f;
+    --navy-3: #0a2c52;
+    --paper: #f2f7fd;
+    --paper-2: #e3edf9;
+
+    /* Marca */
+    --blue: #1463ff;
+    --blue-deep: #0a44c0;
+    --sky: #63c7ff;
+    --ember: #ff6a3d;
+    --white: #ffffff;
+
+    /* Texto y líneas (se redefinen dentro de la banda clara) */
+    --text: #eaf2ff;
+    --text-soft: rgba(213, 231, 255, .74);
+    --text-dim: rgba(196, 218, 247, .55);
+    --line: rgba(120, 178, 255, .18);
+    --line-strong: rgba(120, 178, 255, .36);
+    --panel: rgba(255, 255, 255, .045);
+
+    --radius-sm: 14px;
+    --radius-md: 22px;
+    --radius-lg: 34px;
+    --max: 1220px;
+
+    --shadow-soft: 0 26px 70px rgba(2, 10, 24, .5);
+    --shadow-hard: 0 40px 110px rgba(1, 7, 18, .66);
+
+    position: relative;
+    background: var(--navy);
+    color: var(--text);
+    font-family: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.62;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Compensación de la preflight de Tailwind: aquí sí queremos ritmo tipográfico. */
+.cen-landing p { margin: 0 0 1em; }
+
+.cen-landing h1,
+.cen-landing h2,
+.cen-landing h3 {
+    margin: 0;
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -.035em;
+    text-wrap: balance;
+}
+
+.cen-landing ul { margin: 0; padding: 0; list-style: none; }
+.cen-landing figure { margin: 0; }
+.cen-landing a { color: inherit; text-decoration: none; }
+.cen-landing img { display: block; }
+
+.cen-landing :focus-visible {
+    outline: 2px solid var(--sky);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+.cen-landing .container {
+    width: min(calc(100% - 48px), var(--max));
+    margin-inline: auto;
+}
+
+.cen-landing .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--sky);
+}
+
+.cen-landing .eyebrow::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--sky);
+    box-shadow: 0 0 12px var(--sky);
+}
+
+/* ---------- Reveal ---------- */
+.cen-landing .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity .7s cubic-bezier(.2, .7, .2, 1), transform .7s cubic-bezier(.2, .7, .2, 1);
+}
+
+.cen-landing .reveal.in-view {
+    opacity: 1;
+    transform: none;
+}
+
+/* ==========================================================================
+   Cabecera
+   ========================================================================== */
+.cen-landing .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 60;
+    background: transparent;
+    transition: background .35s ease, backdrop-filter .35s ease, box-shadow .35s ease;
+}
+
+.cen-landing.is-scrolled .site-header {
+    background: rgba(4, 18, 42, .86);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 1px 0 var(--line);
+}
+
+.cen-landing .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 22px 0;
+    transition: padding .35s ease;
+}
+
+.cen-landing.is-scrolled .nav { padding: 14px 0; }
+
+.cen-landing .brand {
+    font-family: var(--font-manrope), "Manrope", sans-serif;
+    font-weight: 800;
+    font-size: 27px;
+    letter-spacing: .16em;
+    color: var(--white);
+}
+
+.cen-landing .brand::after {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-left: 3px;
+    border-radius: 50%;
+    background: var(--ember);
+    box-shadow: 0 0 14px rgba(255, 106, 61, .85);
+}
+
+.cen-landing .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-soft);
+}
+
+.cen-landing .nav-links a { transition: color .2s ease; }
+.cen-landing .nav-links a:hover { color: var(--white); }
+
+.cen-landing .nav-cta {
+    padding: 11px 22px;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    color: var(--white);
+    font-weight: 700;
+    transition: background .25s ease, border-color .25s ease;
+}
+
+.cen-landing .nav-cta:hover {
+    background: var(--blue);
+    border-color: var(--blue);
+}
+
+.cen-landing .menu-toggle {
+    position: relative;
+    display: none;
+    width: 46px;
+    height: 40px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.cen-landing .menu-toggle span,
+.cen-landing .menu-toggle span::before,
+.cen-landing .menu-toggle span::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 20px;
+    height: 2px;
+    background: var(--white);
+    border-radius: 2px;
+    transform: translateX(-50%);
+}
+
+.cen-landing .menu-toggle span { top: 50%; margin-top: -1px; }
+.cen-landing .menu-toggle span::before { top: -6px; }
+.cen-landing .menu-toggle span::after { top: 6px; }
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.cen-landing .hero {
+    position: relative;
+    padding: 172px 0 96px;
+    background: radial-gradient(120% 90% at 12% 0%, #0a2a55 0%, var(--navy) 58%);
+    overflow: hidden;
+}
+
+.cen-landing .hero-glow {
+    position: absolute;
+    inset: -20% -10% auto;
+    height: 900px;
+    pointer-events: none;
+    background:
+        radial-gradient(46% 46% at 22% 30%, rgba(20, 99, 255, .34), transparent 70%),
+        radial-gradient(38% 38% at 78% 18%, rgba(99, 199, 255, .22), transparent 72%),
+        radial-gradient(30% 30% at 62% 62%, rgba(255, 106, 61, .14), transparent 72%);
+    filter: blur(6px);
+}
+
+.cen-landing .hero-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.12fr .88fr;
+    gap: 56px;
+    align-items: center;
+}
+
+/* El tamaño está calculado para que «Una generación que» quepa en una sola
+   línea dentro de la columna izquierda: dos líneas en total, no cuatro. */
+.cen-landing .hero h1 {
+    margin: 20px 0 24px;
+    font-size: clamp(2.6rem, 4.35vw, 4.05rem);
+    line-height: 1.02;
+    letter-spacing: -.045em;
+    color: var(--white);
+}
+
+.cen-landing .hero h1 span {
+    display: block;
+    color: var(--ember);
+}
+
+.cen-landing .hero-copy {
+    max-width: 34em;
+    font-size: 1.08rem;
+    color: var(--text-soft);
+}
+
+.cen-landing .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 34px;
+}
+
+.cen-landing .button-primary,
+.cen-landing .button-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 30px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .01em;
+    transition: transform .22s ease, box-shadow .22s ease, background .22s ease, border-color .22s ease, color .22s ease;
+}
+
+.cen-landing .button-primary {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-deep) 100%);
+    color: var(--white);
+    box-shadow: 0 18px 44px rgba(20, 99, 255, .42);
+}
+
+.cen-landing .button-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 26px 60px rgba(20, 99, 255, .55);
+}
+
+.cen-landing .button-ghost {
+    border: 1px solid var(--line-strong);
+    color: var(--text);
+}
+
+.cen-landing .button-ghost:hover {
+    border-color: var(--sky);
+    color: var(--white);
+    transform: translateY(-3px);
+}
+
+.cen-landing .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 34px;
+}
+
+.cen-landing .hero-meta span {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+}
+
+/* ---------- Mosaico de fotografías ----------
+   Las tarjetas flotantes son ítems de la rejilla, no absolutos: así se sitúan
+   sobre la foto grande (fila 1) y nunca tapan las dos pequeñas (fila 2). Cada
+   ítem lleva fila y columna explícitas porque el auto-emplazamiento coloca
+   primero lo que tiene posición definida y empujaría el resto una fila abajo. */
+.cen-landing .hero-art {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 14px;
+}
+
+.cen-landing .shot {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+    background: var(--navy-2);
+    box-shadow: var(--shadow-hard);
+}
+
+.cen-landing .shot img {
+    object-fit: cover;
+    transition: transform .9s cubic-bezier(.2, .7, .2, 1);
+}
+
+.cen-landing .shot:hover img { transform: scale(1.05); }
+
+.cen-landing .shot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(4, 18, 42, 0) 38%, rgba(4, 18, 42, .86) 100%);
+    pointer-events: none;
+}
+
+.cen-landing .shot-main {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-lg);
+}
+
+.cen-landing .shot-a {
+    grid-row: 2;
+    grid-column: 1;
+}
+
+.cen-landing .shot-b {
+    grid-row: 2;
+    grid-column: 2;
+}
+
+.cen-landing .shot-a,
+.cen-landing .shot-b { aspect-ratio: 5 / 4; }
+
+/* A la derecha: la tarjeta de progreso ocupa la esquina inferior izquierda. */
+.cen-landing .shot figcaption {
+    position: absolute;
+    right: 24px;
+    bottom: 20px;
+    z-index: 2;
+    font-size: 13px;
+    text-align: right;
+    color: var(--text-soft);
+}
+
+.cen-landing .shot figcaption b {
+    display: block;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--white);
+}
+
+.cen-landing .progress-chip,
+.cen-landing .badge-chip {
+    position: relative;
+    grid-row: 1;
+    z-index: 3;
+    border-radius: 18px;
+    border: 1px solid var(--line-strong);
+    background: rgba(7, 32, 63, .92);
+    backdrop-filter: blur(14px);
+    box-shadow: var(--shadow-soft);
+}
+
+.cen-landing .progress-chip {
+    grid-column: 1;
+    align-self: end;
+    justify-self: start;
+    width: 250px;
+    margin: 0 0 24px -34px;
+    padding: 16px 18px;
+}
+
+.cen-landing .progress-chip small,
+.cen-landing .badge-chip small {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--sky);
+}
+
+.cen-landing .progress-chip strong {
+    display: block;
+    margin: 4px 0 12px;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 17px;
+    color: var(--white);
+}
+
+.cen-landing .progress-track {
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .12);
+    overflow: hidden;
+}
+
+.cen-landing .progress-track i {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--blue), var(--sky));
+    box-shadow: 0 0 18px rgba(99, 199, 255, .7);
+}
+
+.cen-landing .progress-chip > span {
+    display: block;
+    margin-top: 9px;
+    font-size: 11.5px;
+    color: var(--text-dim);
+}
+
+.cen-landing .badge-chip {
+    grid-column: 2;
+    align-self: start;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px -26px 0 0;
+    padding: 13px 18px 13px 14px;
+}
+
+.cen-landing .badge-chip > span {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(140deg, var(--ember), #ffb03d);
+    color: #2a0c00;
+    font-size: 19px;
+    box-shadow: 0 10px 26px rgba(255, 106, 61, .5);
+}
+
+.cen-landing .badge-chip b {
+    display: block;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 14.5px;
+    color: var(--white);
+}
+
+/* ==========================================================================
+   Franja de cifras
+   ========================================================================== */
+.cen-landing .numbers-strip {
+    position: relative;
+    padding: 0 0 26px;
+    background: var(--navy);
+}
+
+.cen-landing .numbers-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    padding: 6px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(20, 99, 255, .13), rgba(7, 32, 63, .6));
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+}
+
+.cen-landing .number-item {
+    padding: 30px 26px;
+    background: rgba(4, 18, 42, .55);
+}
+
+.cen-landing .number-item strong {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: clamp(2.3rem, 3.4vw, 3.3rem);
+    font-weight: 800;
+    letter-spacing: -.04em;
+    font-variant-numeric: tabular-nums;
+    color: var(--white);
+}
+
+.cen-landing .number-item strong em {
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--sky);
+}
+
+.cen-landing .number-item p {
+    margin: 8px 0 0;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--text-dim);
+}
+
+/* ==========================================================================
+   Secciones
+   ========================================================================== */
+.cen-landing .section { padding: 118px 0; }
+
+.cen-landing .section.light {
+    background: var(--paper);
+    --text: #08182f;
+    --text-soft: rgba(11, 31, 58, .74);
+    --text-dim: rgba(11, 31, 58, .52);
+    --line: rgba(11, 31, 58, .12);
+    --line-strong: rgba(11, 31, 58, .22);
+    --panel: rgba(11, 31, 58, .04);
+    color: var(--text);
+}
+
+.cen-landing .section.light .eyebrow { color: var(--blue); }
+
+.cen-landing .section.light .eyebrow::before {
+    background: var(--blue);
+    box-shadow: none;
+}
+
+.cen-landing .section-head {
+    display: grid;
+    grid-template-columns: 1.08fr .72fr;
+    gap: 66px;
+    align-items: end;
+    margin-bottom: 62px;
+}
+
+.cen-landing .section-head h2 {
+    margin-top: 18px;
+    font-size: clamp(2.3rem, 4.1vw, 3.9rem);
+    color: var(--text);
+}
+
+.cen-landing .section-head p {
+    margin: 0;
+    font-size: 1.03rem;
+    color: var(--text-soft);
+}
+
+/* ---------- Trayectoria ---------- */
+.cen-landing .journey { background: linear-gradient(180deg, var(--navy) 0%, #061a35 100%); }
+
+.cen-landing .stage-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.cen-landing .stage-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 560px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--line);
+    background: var(--navy-2);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: transform .4s cubic-bezier(.2, .7, .2, 1), border-color .4s ease, box-shadow .4s ease;
+}
+
+.cen-landing .stage-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-hard);
+}
+
+.cen-landing .stage-photo {
+    position: absolute;
+    inset: 0;
+}
+
+.cen-landing .stage-photo img {
+    object-fit: cover;
+    transition: transform 1s cubic-bezier(.2, .7, .2, 1);
+}
+
+.cen-landing .stage-card:hover .stage-photo img { transform: scale(1.06); }
+
+.cen-landing .stage-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(4, 18, 42, .2) 0%, rgba(4, 18, 42, .78) 46%, #04122a 86%);
+}
+
+.cen-landing .stage-body {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    padding: 30px 28px 32px;
+}
+
+.cen-landing .stage-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.cen-landing .stage-index {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    color: var(--ember);
+}
+
+.cen-landing .stage-name {
+    padding: 5px 13px;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    background: rgba(255, 255, 255, .06);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--white);
+}
+
+.cen-landing .stage-card h3 {
+    font-size: 1.72rem;
+    color: var(--white);
+}
+
+.cen-landing .stage-card p {
+    margin: 12px 0 18px;
+    font-size: .97rem;
+    color: var(--text-soft);
+}
+
+.cen-landing .stage-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+}
+
+.cen-landing .stage-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-soft);
+}
+
+.cen-landing .stage-list li::before {
+    content: "";
+    flex: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sky);
+    box-shadow: 0 0 10px var(--sky);
+}
+
+/* ---------- Aprendizaje (banda clara, tarjetas oscuras) ---------- */
+.cen-landing .bento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.cen-landing .bento-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 320px;
+    grid-column: span 1;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--navy-2);
+    color: #eaf2ff;
+    box-shadow: 0 24px 60px rgba(11, 31, 58, .2);
+    transition: transform .4s cubic-bezier(.2, .7, .2, 1), box-shadow .4s ease;
+}
+
+.cen-landing .bento-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 34px 80px rgba(11, 31, 58, .3);
+}
+
+.cen-landing .bento-card.large {
+    grid-column: span 2;
+    grid-row: span 2;
+    min-height: 500px;
+}
+
+.cen-landing .bento-card.wide { grid-column: span 2; }
+
+.cen-landing .bento-photo {
+    position: absolute;
+    inset: 0;
+}
+
+.cen-landing .bento-photo img {
+    object-fit: cover;
+    transition: transform 1s cubic-bezier(.2, .7, .2, 1);
+}
+
+.cen-landing .bento-card:hover .bento-photo img { transform: scale(1.06); }
+
+.cen-landing .bento-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(4, 18, 42, .18) 0%, rgba(4, 18, 42, .8) 52%, rgba(3, 14, 33, .96) 100%);
+}
+
+/* Las dos tarjetas pequeñas son bajas: con el velo de las grandes la foto
+   desaparecía. Aquí el degradado arranca más tarde y más claro, pero nunca
+   transparente: con el 0 % en .04 el borde superior quedaba a la luz cruda de
+   la foto y rompía el piso oscuro de la sección. */
+.cen-landing .bento-card:not(.large):not(.wide) .bento-photo::after {
+    background: linear-gradient(180deg, rgba(4, 18, 42, .22) 0%, rgba(4, 18, 42, .5) 48%, rgba(3, 14, 33, .93) 100%);
+}
+
+.cen-landing .bento-text {
+    position: relative;
+    z-index: 2;
+    padding: 28px 28px 30px;
+}
+
+.cen-landing .bento-chip {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(120, 178, 255, .34);
+    background: rgba(20, 99, 255, .22);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: #cfe6ff;
+}
+
+.cen-landing .bento-card h3 {
+    font-size: 1.5rem;
+    color: var(--white);
+}
+
+.cen-landing .bento-card.large h3 { font-size: 2.05rem; }
+
+.cen-landing .bento-card p {
+    margin: 12px 0 0;
+    font-size: .95rem;
+    color: rgba(213, 231, 255, .76);
+}
+
+/* ---------- Escuelas ---------- */
+.cen-landing .schools { background: linear-gradient(180deg, #061a35 0%, var(--navy) 100%); }
+
+.cen-landing .school-grid {
+    display: grid;
+    grid-template-columns: 1.12fr .88fr;
+    gap: 34px;
+    align-items: start;
+}
+
+.cen-landing .school-visual {
+    position: relative;
+    padding-bottom: 92px;
+}
+
+.cen-landing .school-photo {
+    position: relative;
+    aspect-ratio: 16 / 11;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    box-shadow: var(--shadow-hard);
+}
+
+.cen-landing .school-photo img { object-fit: cover; }
+
+/* El aula de esta foto tiene cortinas cálidas y una pantalla de proyección
+   encendida: medida, su banda superior daba L=116 cuando las otras cuatro
+   tarjetas con foto de la landing están entre 21 y 73, y era la única con
+   r-b ≈ 0 (ni fría ni oscura). El velo arranca alto para bajarla a ~74 y
+   teñirla de azul marino como el resto de la página. */
+.cen-landing .school-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(4, 18, 42, .52) 0%, rgba(4, 18, 42, .64) 42%, rgba(3, 14, 33, .9) 100%);
+}
+
+.cen-landing .dashboard {
+    position: absolute;
+    right: 26px;
+    bottom: 0;
+    width: min(360px, 76%);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line-strong);
+    background: rgba(7, 32, 63, .94);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-hard);
+}
+
+.cen-landing .dashboard-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.cen-landing .dashboard-head strong {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 15px;
+    color: var(--white);
+}
+
+.cen-landing .dashboard-head span {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--sky);
+}
+
+.cen-landing .dash-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.cen-landing .dash-card {
+    padding: 13px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, .05);
+}
+
+.cen-landing .dash-card small {
+    display: block;
+    font-size: 10.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.cen-landing .dash-card strong {
+    display: block;
+    margin-top: 5px;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 22px;
+    font-variant-numeric: tabular-nums;
+    color: var(--white);
+}
+
+/* Doce barras delgadas, una por semana. Las alturas vienen del arreglo SEMANAS
+   en el TSX: aquí sólo va la geometría y la línea de base sobre la que se apoyan. */
+.cen-landing .dashboard-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 66px;
+    margin-top: 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+}
+
+.cen-landing .dashboard-chart i {
+    flex: 1;
+    min-width: 0;
+    border-radius: 3px 3px 0 0;
+    background: linear-gradient(180deg, var(--sky), var(--blue));
+    box-shadow: 0 0 14px rgba(99, 199, 255, .3);
+}
+
+/* La última semana es la que se está cursando: se marca con la luz de acento. */
+.cen-landing .dashboard-chart i:last-child {
+    background: linear-gradient(180deg, #ffb38a, var(--ember));
+    box-shadow: 0 0 18px rgba(255, 106, 61, .45);
+}
+
+.cen-landing .school-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.cen-landing .benefit-card {
+    display: flex;
+    gap: 18px;
+    padding: 24px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+    background: var(--panel);
+    transition: border-color .3s ease, background .3s ease, transform .3s ease;
+}
+
+.cen-landing .benefit-card:hover {
+    border-color: var(--line-strong);
+    background: rgba(20, 99, 255, .09);
+    transform: translateX(5px);
+}
+
+.cen-landing .benefit-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    border: 1px solid var(--line-strong);
+    background: rgba(20, 99, 255, .16);
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--sky);
+}
+
+.cen-landing .benefit-card h3 {
+    font-size: 1.12rem;
+    color: var(--white);
+}
+
+.cen-landing .benefit-card p {
+    margin: 7px 0 0;
+    font-size: .93rem;
+    color: var(--text-soft);
+}
+
+/* ---------- CTA con fotografía a sangre ---------- */
+.cen-landing .cta-section {
+    position: relative;
+    padding: 130px 0;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.cen-landing .cta-photo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.cen-landing .cta-photo img { object-fit: cover; }
+
+/* Dos capas: el velo azul de marca en diagonal y, debajo, un piso navy. Con una
+   sola capa la ropa clara de la derecha quedaba más luminosa que el titular. */
+.cen-landing .cta-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(105deg, rgba(4, 18, 42, .95) 12%, rgba(6, 28, 66, .78) 52%, rgba(20, 99, 255, .34) 100%),
+        linear-gradient(180deg, rgba(4, 18, 42, .34) 0%, rgba(4, 18, 42, .62) 100%);
+}
+
+.cen-landing .cta-inner { max-width: 720px; }
+
+.cen-landing .cta-inner h2 {
+    margin: 18px 0;
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    color: var(--white);
+}
+
+.cen-landing .cta-inner p {
+    font-size: 1.06rem;
+    color: var(--text-soft);
+}
+
+.cen-landing .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 30px;
+}
+
+/* ---------- Pie ---------- */
+.cen-landing footer {
+    padding: 72px 0 40px;
+    background: #030d1e;
+    border-top: 1px solid var(--line);
+}
+
+.cen-landing .footer-grid {
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 44px;
+    align-items: start;
+}
+
+.cen-landing .footer-brand strong {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    color: var(--white);
+}
+
+.cen-landing .footer-grid p {
+    max-width: 40ch;
+    margin: 12px 0 0;
+    font-size: .94rem;
+    color: var(--text-dim);
+}
+
+.cen-landing .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    justify-content: flex-end;
+    font-size: .95rem;
+    color: var(--text-soft);
+}
+
+.cen-landing .footer-links a:hover { color: var(--white); }
+
+.cen-landing .footer-bottom {
+    margin-top: 42px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-size: .85rem;
+    color: var(--text-dim);
+}
+
+/* ==========================================================================
+   Adaptaciones
+   ========================================================================== */
+@media (max-width: 1150px) {
+    .cen-landing .hero-grid { gap: 44px; }
+    .cen-landing .progress-chip { margin-left: 0; }
+    .cen-landing .badge-chip { margin-right: 0; }
+}
+
+@media (max-width: 1050px) {
+    .cen-landing .hero { padding-top: 148px; }
+    .cen-landing .hero-grid { grid-template-columns: 1fr; }
+
+    .cen-landing .section-head {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        align-items: start;
+        margin-bottom: 46px;
+    }
+
+    .cen-landing .stage-grid { grid-template-columns: 1fr; }
+    .cen-landing .stage-card { min-height: 480px; }
+
+    .cen-landing .bento { grid-template-columns: repeat(2, 1fr); }
+    .cen-landing .bento-card.large,
+    .cen-landing .bento-card.wide { grid-column: span 2; }
+    .cen-landing .bento-card.large { grid-row: auto; min-height: 420px; }
+
+    .cen-landing .school-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 860px) {
+    .cen-landing .menu-toggle { display: block; }
+
+    .cen-landing .nav-links {
+        position: fixed;
+        inset: 78px 18px auto;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 18px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--line-strong);
+        background: rgba(4, 18, 42, .97);
+        backdrop-filter: blur(20px);
+        box-shadow: var(--shadow-hard);
+        opacity: 0;
+        transform: translateY(-12px);
+        pointer-events: none;
+        transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .cen-landing .nav-links.is-open {
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+    }
+
+    .cen-landing .nav-links a { padding: 12px 6px; }
+    .cen-landing .nav-cta { margin-top: 6px; text-align: center; }
+
+    .cen-landing .numbers-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* En móvil las tarjetas dejan de sobreponerse y se apilan bajo el mosaico. */
+    .cen-landing .progress-chip,
+    .cen-landing .badge-chip {
+        grid-row: auto;
+        grid-column: 1 / -1;
+        align-self: auto;
+        justify-self: stretch;
+        width: auto;
+        margin: 0;
+    }
+
+    .cen-landing .bento { grid-template-columns: 1fr; }
+    .cen-landing .bento-card.large,
+    .cen-landing .bento-card.wide { grid-column: span 1; }
+
+    .cen-landing .school-visual { padding-bottom: 0; }
+
+    .cen-landing .dashboard {
+        position: static;
+        width: auto;
+        margin: -60px 16px 0;
+    }
+
+    .cen-landing .footer-grid { grid-template-columns: 1fr; }
+    .cen-landing .footer-links { justify-content: flex-start; }
+}
+
+@media (max-width: 620px) {
+    .cen-landing .container { width: calc(100% - 32px); }
+    .cen-landing .section { padding: 84px 0; }
+    .cen-landing .hero { padding: 132px 0 72px; }
+    .cen-landing .numbers-grid { grid-template-columns: 1fr; }
+    .cen-landing .stage-card { min-height: 430px; }
+    .cen-landing .stage-body { padding: 24px 20px 26px; }
+    .cen-landing .bento-text { padding: 22px 20px 24px; }
+    .cen-landing .cta-section { padding: 96px 0; }
+    .cen-landing .benefit-card { padding: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cen-landing *,
+    .cen-landing *::before,
+    .cen-landing *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .cen-landing .reveal {
+        opacity: 1;
+        transform: none;
+    }
+}

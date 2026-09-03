@@ -1,0 +1,855 @@
+/*
+ * Tecnia Código — el editor.
+ *
+ * Fondo oscuro con color pleno encima, que además es lo que parece de verdad:
+ * ningún editor de código del mundo es blanco pastel. Los controles van
+ * integrados en la barra del programa, no flotando por encima de la escena.
+ *
+ * ── LO QUE NO ESTÁ AQUÍ, Y ES A PROPÓSITO ──────────────────────────────────
+ *
+ * La **geometría del editor** —tipografía, tamaño, interlineado, espaciado,
+ * relleno, borde y `white-space`— NO se declara en este archivo. Vive en
+ * `METRICA_EDITOR` (tiposCodigo.ts) y se le pone en línea al `<textarea>` y a
+ * la capa de colores a la vez. Si alguien la escribiera aquí habría dos
+ * declaraciones que pueden separarse, y en cuanto se separan un milímetro el
+ * texto de la capa deja de caer debajo del texto que se teclea. Hay una prueba
+ * que compara el atributo `style` de los dos elementos y exige que salga
+ * idéntico letra por letra.
+ *
+ * Regla para quien venga después: **en `.cod-capa` y `.cod-area` no se toca
+ * nada que mueva un carácter.** Colores, fondos, cursor y sombras, sí.
+ *
+ * El marco de la ventana (barra de título, botón de cerrar) tampoco está aquí:
+ * llega con `VentanaBase`.
+ */
+
+.cod {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: radial-gradient(120% 100% at 50% 0%, #1a1f4d 0%, #0d1230 55%, #060a1c 100%);
+  color: #e8f0ff;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+/* ── La barra de controles ───────────────────────────────────────────────── */
+
+.cod-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #0a0f28;
+  border-bottom: 2px solid #2b3a7a;
+}
+
+.cod-archivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px 6px 10px;
+  border-radius: 10px 10px 0 0;
+  background: linear-gradient(180deg, #1b2a5e, #12204a);
+  border: 2px solid #3d55b0;
+  border-bottom-color: transparent;
+  color: #cfe0ff;
+  font-weight: 900;
+  font-size: 13px;
+}
+.cod-archivo-glifo {
+  font-size: 15px;
+}
+
+.cod-controles {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cod-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 12px;
+  border: 2px solid;
+  padding: 9px 15px;
+  font: inherit;
+  font-weight: 900;
+  font-size: 14px;
+  cursor: pointer;
+  color: #fff;
+}
+.cod-boton:disabled {
+  opacity: 0.4;
+  cursor: default;
+  box-shadow: none;
+}
+.cod-boton:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+.cod-boton.es-ejecutar {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  border-color: #4ade80;
+  box-shadow: 0 8px 22px rgba(34, 197, 94, 0.42);
+}
+.cod-boton.es-parar {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  border-color: #fca5a5;
+  box-shadow: 0 8px 22px rgba(239, 68, 68, 0.4);
+}
+.cod-boton.es-paso {
+  background: linear-gradient(135deg, #38bdf8, #0369a1);
+  border-color: #7dd3fc;
+  box-shadow: 0 8px 22px rgba(56, 189, 248, 0.4);
+}
+.cod-boton.es-reiniciar {
+  background: transparent;
+  border-color: #3d55b0;
+  color: #a9bdf0;
+  font-size: 17px;
+  padding: 8px 13px;
+}
+
+.cod-velocidad {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 12px;
+  background: #0d1436;
+  border: 2px solid #2b3a7a;
+}
+.cod-vel {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: #8fa6e0;
+  font: inherit;
+  font-weight: 800;
+  font-size: 12px;
+  padding: 5px 9px;
+  cursor: pointer;
+}
+.cod-vel:hover {
+  background: rgba(61, 85, 176, 0.35);
+  color: #dce7ff;
+}
+.cod-vel.es-activa {
+  background: linear-gradient(135deg, #6366f1, #4338ca);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(99, 102, 241, 0.6);
+}
+.cod-vel-nombre {
+  display: none;
+}
+.cod-vel.es-activa .cod-vel-nombre {
+  display: inline;
+}
+
+.cod-herramientas {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+.cod-herramienta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: #a5f3fc;
+  border: 2px solid #0e7490;
+  border-radius: 11px;
+  padding: 8px 13px;
+  font: inherit;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+}
+.cod-herramienta.es-principal {
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  border-color: #fde047;
+  color: #3a2606;
+  box-shadow: 0 8px 20px rgba(250, 204, 21, 0.38);
+}
+.cod-herramienta.es-activa {
+  background: rgba(34, 211, 238, 0.25);
+  color: #e0fbff;
+}
+.cod-herramienta:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ── El aviso ────────────────────────────────────────────────────────────── */
+
+.cod-aviso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  font-weight: 800;
+  font-size: 13.5px;
+  border-bottom: 2px solid;
+}
+.cod-aviso.es-aviso {
+  background: #1e2a6b;
+  border-bottom-color: #6366f1;
+  color: #dbe4ff;
+}
+.cod-aviso.es-candado {
+  background: #4a2c05;
+  border-bottom-color: #f59e0b;
+  color: #ffedd5;
+}
+.cod-aviso-cerrar {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+/* ── El cuerpo ───────────────────────────────────────────────────────────── */
+
+.cod-cuerpo {
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+  min-height: 0;
+  padding: 14px;
+}
+
+.cod-izquierda {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── El editor: las dos capas ────────────────────────────────────────────── */
+
+.cod-editor {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  flex: 1 1 auto;
+  min-height: 260px;
+  border-radius: 14px;
+  border: 2px solid #2b3a7a;
+  background: #070c22;
+  box-shadow: 0 14px 34px rgba(2, 6, 20, 0.6), inset 0 0 60px rgba(56, 89, 220, 0.09);
+  overflow: hidden;
+}
+
+.cod-numeros {
+  overflow: hidden;
+  background: #0a1130;
+  border-right: 2px solid #1d2a5e;
+  color: #56699f;
+  text-align: right;
+  user-select: none;
+}
+.cod-num {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  height: var(--cod-alto-linea);
+}
+.cod-num-marca {
+  font-size: 11px;
+  line-height: 1;
+  width: 14px;
+  text-align: center;
+}
+.cod-num.es-curso {
+  color: #7dd3fc;
+  background: rgba(56, 189, 248, 0.16);
+}
+.cod-num.es-error {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.24);
+}
+.cod-num.es-candado {
+  color: #c48b2e;
+}
+
+.cod-lienzo {
+  position: relative;
+  min-width: 0;
+}
+
+/*
+ * Lo único compartido que sí vive en CSS: que ninguno de los dos tenga margen
+ * y que ocupen exactamente la misma caja. Va en UNA regla para los dos, no en
+ * dos reglas, por la misma razón que la métrica va en una constante.
+ */
+.cod-capa,
+.cod-area {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+
+.cod-capa {
+  overflow: hidden;
+  color: #dce7ff;
+  z-index: 0;
+}
+
+.cod-area {
+  z-index: 1;
+  overflow: auto;
+  resize: none;
+  background: transparent;
+  color: transparent;
+  caret-color: #22d3ee;
+  outline: none;
+}
+.cod-area::selection {
+  background: rgba(99, 102, 241, 0.55);
+}
+.cod-area:focus {
+  box-shadow: inset 0 0 0 2px rgba(56, 189, 248, 0.55);
+}
+.cod-area:read-only {
+  caret-color: transparent;
+}
+
+.cod-linea {
+  height: var(--cod-alto-linea);
+}
+.cod-linea.es-curso {
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.24), rgba(56, 189, 248, 0.05));
+  box-shadow: inset 3px 0 0 #38bdf8;
+}
+.cod-linea.es-error {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.28), rgba(239, 68, 68, 0.06));
+  box-shadow: inset 3px 0 0 #ef4444;
+}
+.cod-linea.es-senalada {
+  background: rgba(250, 204, 21, 0.16);
+  box-shadow: inset 3px 0 0 #facc15;
+}
+.cod-linea.es-candado {
+  background: rgba(148, 163, 184, 0.09);
+}
+
+/* Los colores. Plenos: esto es un editor, no una hoja de estilo corporativa. */
+.cod-t-palabra {
+  color: #ff4d9d;
+  font-weight: 700;
+}
+.cod-t-nativa {
+  color: #22d3ee;
+}
+.cod-t-definicion {
+  color: #fbbf24;
+  font-weight: 700;
+}
+.cod-t-nombre {
+  color: #dce7ff;
+}
+.cod-t-numero {
+  color: #ffa94d;
+}
+.cod-t-cadena {
+  color: #4ade80;
+}
+.cod-t-operador {
+  color: #a78bfa;
+}
+.cod-t-comentario {
+  color: #6a86bd;
+  font-style: italic;
+}
+.cod-t-prohibida {
+  color: #ff6b6b;
+  text-decoration: underline wavy #ff6b6b;
+}
+.cod-t-llano {
+  color: inherit;
+}
+
+.cod-pista-teclado {
+  margin: 0;
+  color: #8fa6e0;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.cod-pista-teclado kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #16205a;
+  border: 1px solid #3d55b0;
+  color: #cfe0ff;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+/* ── La consola ──────────────────────────────────────────────────────────── */
+
+.cod-consola {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 130px;
+  max-height: 40vh;
+  border-radius: 14px;
+  border: 2px solid #2b3a7a;
+  background: #05091c;
+  overflow: hidden;
+}
+.cod-consola-cabeza {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  background: #0a1130;
+  border-bottom: 2px solid #1d2a5e;
+}
+.cod-consola-titulo {
+  color: #7f96d4;
+  font-weight: 900;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.cod-consola-estado {
+  font-weight: 800;
+  font-size: 12px;
+  color: #8fa6e0;
+}
+.cod-consola-estado[data-fase='corriendo'] {
+  color: #4ade80;
+}
+.cod-consola-estado[data-fase='esperando'] {
+  color: #facc15;
+}
+.cod-consola-estado[data-fase='error'] {
+  color: #fca5a5;
+}
+.cod-consola-limpiar {
+  margin-left: auto;
+  background: transparent;
+  border: 2px solid #2b3a7a;
+  border-radius: 8px;
+  color: #8fa6e0;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.cod-consola-limpiar:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.cod-consola-cuerpo {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 10px 14px;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SF Mono', Menlo, monospace;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #b9f5cf;
+}
+.cod-consola-linea {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.cod-consola-vacia,
+.cod-consola-recorte {
+  margin: 0;
+  color: #5f76b5;
+  font-style: italic;
+}
+
+.cod-consola-pregunta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.cod-consola-cursor {
+  color: #facc15;
+}
+.cod-consola-entrada {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: #0d1436;
+  border: 2px solid #facc15;
+  border-radius: 9px;
+  padding: 6px 12px;
+  color: #fff8dc;
+  font: inherit;
+  font-weight: 700;
+  box-shadow: 0 0 16px rgba(250, 204, 21, 0.28);
+}
+.cod-consola-entrada:focus {
+  outline: none;
+  border-color: #fde047;
+}
+.cod-consola-enviar {
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  border: 2px solid #fde047;
+  border-radius: 9px;
+  color: #3a2606;
+  font: inherit;
+  font-weight: 900;
+  font-size: 13px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+
+/* ── El error ────────────────────────────────────────────────────────────── */
+
+.cod-error {
+  flex: 0 0 auto;
+  border-radius: 14px;
+  border: 2px solid #ef4444;
+  background: linear-gradient(180deg, #3b0d12, #250a10);
+  box-shadow: 0 0 26px rgba(239, 68, 68, 0.3);
+  padding: 12px 14px;
+}
+.cod-error-cabeza {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.cod-error-glifo {
+  font-size: 17px;
+}
+.cod-error-linea {
+  background: #ef4444;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font: inherit;
+  font-weight: 900;
+  font-size: 12.5px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.cod-error-linea:hover {
+  background: #f87171;
+}
+.cod-error-mensaje {
+  color: #ffe4e6;
+  font-weight: 800;
+  font-size: 15px;
+}
+.cod-error-eco {
+  margin: 9px 0 0;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: #17060a;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #fecdd3;
+  overflow-x: auto;
+  white-space: pre;
+}
+.cod-error-dedo {
+  color: #fb7185;
+  font-weight: 900;
+}
+.cod-error-pista {
+  margin: 9px 0 0;
+  color: #fed7aa;
+  font-weight: 600;
+}
+.cod-error-pista strong {
+  color: #fdba74;
+}
+.cod-error-familia {
+  margin: 7px 0 0;
+  color: #b98a92;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ── El lateral ──────────────────────────────────────────────────────────── */
+
+.cod-lateral {
+  flex: 0 0 clamp(250px, 30%, 360px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.cod-lateral-titulo {
+  margin: 0 0 7px;
+  color: #7f96d4;
+  font-weight: 900;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cod-vars,
+.cod-panel,
+.cod-encargo {
+  background: #0a1130;
+  border: 2px solid #2b3a7a;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.cod-vars-vacio {
+  margin: 0;
+  color: #5f76b5;
+  font-size: 13px;
+  font-style: italic;
+}
+.cod-vars-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.cod-var {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding: 5px 9px;
+  border-radius: 9px;
+  background: #10184a;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, Menlo, monospace;
+  font-size: 13px;
+}
+.cod-var[data-ambito='local'] {
+  background: #16205a;
+  box-shadow: inset 3px 0 0 #a78bfa;
+}
+.cod-var-nombre {
+  color: #22d3ee;
+  font-weight: 700;
+}
+.cod-var-valor {
+  color: #ffd9a0;
+  overflow-wrap: anywhere;
+}
+
+.cod-pila {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cod-pila-marco {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: #10184a;
+  font-size: 12.5px;
+}
+.cod-pila-fn {
+  color: #fbbf24;
+  font-weight: 800;
+}
+.cod-pila-linea {
+  color: #7f96d4;
+}
+
+/* ── El encargo ──────────────────────────────────────────────────────────── */
+
+.cod-encargo {
+  border-color: #6366f1;
+  box-shadow: 0 0 22px rgba(99, 102, 241, 0.25);
+}
+.cod-encargo.es-hecho {
+  border-color: #22c55e;
+  box-shadow: 0 0 22px rgba(34, 197, 94, 0.28);
+}
+.cod-encargo-cuenta {
+  color: #8fa6e0;
+  font-weight: 900;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.cod-encargo-titulo {
+  margin: 4px 0 6px;
+  font-size: 17px;
+  font-weight: 900;
+  color: #fff;
+}
+.cod-encargo-instruccion {
+  margin: 0;
+  color: #cfe0ff;
+  font-weight: 600;
+}
+.cod-encargo-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 10px;
+}
+.cod-opcion {
+  background: #10184a;
+  border: 2px solid #3d55b0;
+  border-radius: 10px;
+  color: #dce7ff;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.cod-opcion:hover:not(:disabled) {
+  border-color: #818cf8;
+  background: #16205a;
+}
+.cod-opcion.es-elegida {
+  border-color: #facc15;
+  background: rgba(250, 204, 21, 0.16);
+}
+.cod-opcion:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+.cod-encargo-confirma,
+.cod-encargo-siguiente {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #6366f1, #4338ca);
+  border: 2px solid #818cf8;
+  border-radius: 11px;
+  color: #fff;
+  font: inherit;
+  font-weight: 900;
+  padding: 8px 15px;
+  cursor: pointer;
+}
+.cod-encargo-pista {
+  margin: 10px 0 0;
+  padding: 8px 11px;
+  border-radius: 10px;
+  background: #4a2c05;
+  border: 2px solid #f59e0b;
+  color: #ffedd5;
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.cod-encargo-logrado {
+  margin-top: 10px;
+}
+.cod-encargo-aprendido {
+  margin: 0;
+  color: #86efac;
+  font-weight: 800;
+}
+.cod-encargo-siguiente {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  border-color: #4ade80;
+}
+
+/* ── Las acciones de la clase ────────────────────────────────────────────── */
+
+.cod-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 14px 14px;
+}
+.cod-accion {
+  background: transparent;
+  color: #a5b4fc;
+  border: 2px solid #4338ca;
+  border-radius: 12px;
+  padding: 9px 16px;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+.cod-accion.es-principal {
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  border-color: #fde047;
+  color: #3a2606;
+  box-shadow: 0 8px 22px rgba(250, 204, 21, 0.4);
+}
+.cod-accion:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.cod-salida-propia {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 860px) {
+  .cod-cuerpo {
+    flex-direction: column;
+  }
+  .cod-lateral {
+    flex: 1 1 auto;
+  }
+  .cod-vel-nombre {
+    display: none;
+  }
+  .cod-vel.es-activa .cod-vel-nombre {
+    display: none;
+  }
+}
+
+/* ── El aro del encargo sobre un control ──────────────────────────────────── */
+
+/*
+ * `SenalCodigo.control` prometía desde el primer día que «el botón se ilumina»
+ * y no había ni una regla que lo pintara (arreglado el 15-ago-2026 al montar
+ * las tres primeras clases). El aro va con `outline`, que se dibuja FUERA de
+ * la caja y por lo tanto no mueve un solo píxel de nada — importante aquí, con
+ * dos capas de texto que tienen que caer una sobre la otra al carácter.
+ */
+@keyframes cod-aro-late {
+  0%,
+  100% {
+    outline-color: rgba(251, 191, 36, 0.95);
+  }
+  50% {
+    outline-color: rgba(251, 191, 36, 0.28);
+  }
+}
+
+.cod[data-senal='ejecutar'] .cod-boton.es-ejecutar,
+.cod[data-senal='parar'] .cod-boton.es-parar,
+.cod[data-senal='paso'] .cod-boton.es-paso,
+.cod[data-senal='velocidad'] .cod-velocidad,
+.cod[data-senal='consola'] .cod-consola,
+.cod[data-senal='variables'] .cod-vars,
+.cod[data-senal='editor'] .cod-editor {
+  outline: 3px solid rgba(251, 191, 36, 0.95);
+  outline-offset: 3px;
+  animation: cod-aro-late 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cod[data-senal] .cod-boton,
+  .cod[data-senal] .cod-velocidad,
+  .cod[data-senal] .cod-consola,
+  .cod[data-senal] .cod-vars,
+  .cod[data-senal] .cod-editor {
+    animation: none;
+  }
+}

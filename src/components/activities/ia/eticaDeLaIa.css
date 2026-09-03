@@ -1,0 +1,396 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `n8-etica-de-la-ia` — Tecnia Auditoría (N8 · U «IA II» · parada 3, cierra la unidad)
+
+   Hereda el chasis de `salaIA.css` (`.tia-sala`, `.tia-lienzo`, `.tia-marco`,
+   `.tia-mesa`, `.tia-boton`, `.tia-nota`) y NO lo toca. Aquí sólo va lo que
+   esta clase tiene y ninguna otra: las tarjetas de caso de plagio, la lista
+   de señales de verificación, los dos videos que se comparan, las
+   declaraciones candidatas, el constructor de piezas y las tarjetas de
+   auditoría del cierre.
+
+   El acento líder de esta clase es el rosa (`--tia-rosa`): es la clase del
+   riesgo a una persona real —reputación, identidad—, no el ámbar de la
+   alarma de datos de su hermana. Color pleno sobre fondo oscuro, sin pastel
+   y sin controles flotando fuera de su panel (regla de la casa).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.eti-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.8fr);
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+}
+@media (max-width: 980px) {
+  .eti-cuerpo {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+}
+
+/* ── El costado: los tres criterios fijos + la bitácora que crece ───────── */
+
+.eti-costado {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.eti-panel {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid #1c4b76;
+  background: linear-gradient(168deg, #0a2b48, #061a2e);
+  color: var(--tia-texto);
+}
+
+.eti-panel-titulo {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tia-rosa);
+  text-shadow: 0 0 16px rgba(251, 113, 133, 0.55);
+}
+
+.eti-criterios {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.eti-criterio {
+  padding: 8px 10px;
+  border-radius: 11px;
+  border-left: 4px solid #2a6a9c;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tia-texto-suave);
+}
+.eti-criterio b {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.eti-bitacora {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.eti-entrada {
+  padding: 7px 10px;
+  border-radius: 11px;
+  border-left: 4px solid var(--tia-rosa);
+  background: rgba(251, 113, 133, 0.11);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tia-texto);
+}
+.eti-vacio {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tia-texto-suave);
+}
+
+/* ── La consigna y el veredicto del encargo ──────────────────────────────── */
+
+.eti-consigna {
+  margin: 0;
+  padding: 10px 13px;
+  border-radius: 13px;
+  border-left: 5px solid var(--tia-rosa);
+  background: rgba(251, 113, 133, 0.13);
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.eti-veredicto {
+  margin: 0;
+  padding: 10px 13px;
+  border-radius: 13px;
+  font-size: 13px;
+  font-weight: 750;
+  color: var(--tia-texto);
+  background: rgba(52, 211, 153, 0.15);
+  border-left: 5px solid var(--tia-verde);
+}
+.eti-veredicto.es-mal {
+  background: rgba(251, 191, 36, 0.15);
+  border-left-color: var(--tia-ambar);
+}
+
+/* ── Opciones genéricas de respuesta (criterios, causas, Sí/No) ──────────── */
+
+.eti-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.eti-opcion {
+  padding: 11px 14px;
+  border: 2px solid #17456e;
+  border-radius: 13px;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 750;
+  text-align: left;
+  color: var(--tia-texto);
+  background: linear-gradient(170deg, #0a2740, #071f34);
+  cursor: pointer;
+}
+.eti-opcion:hover:not(:disabled) {
+  border-color: var(--tia-rosa);
+  color: #ffffff;
+}
+.eti-opcion:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.eti-opcion:disabled {
+  cursor: default;
+}
+.eti-opcion.es-senalada {
+  border-color: var(--tia-verde);
+  color: #ffffff;
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-verde) 40%, transparent);
+}
+
+/* ── E1/E9 · tarjetas de caso con botones de categoría ───────────────────── */
+
+.eti-casos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+.eti-caso {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 2px solid #17456e;
+  border-radius: 15px;
+  background: linear-gradient(170deg, #0b2c48, #061c30);
+  color: var(--tia-texto);
+}
+.eti-caso.es-resuelto {
+  border-color: var(--tia-verde);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-verde) 30%, transparent);
+}
+.eti-caso-quien {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 900;
+  color: #ffffff;
+}
+.eti-caso-situacion {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--tia-texto-suave);
+}
+.eti-caso-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+}
+.eti-caso-opcion {
+  padding: 7px 10px;
+  border: 2px solid #2a6a9c;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  text-align: left;
+  color: #cfe4ff;
+  background: #0b2c47;
+  cursor: pointer;
+}
+.eti-caso-opcion:hover:not(:disabled) {
+  border-color: var(--tia-rosa);
+  color: #ffffff;
+}
+.eti-caso-opcion:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.eti-caso-opcion:disabled {
+  cursor: default;
+}
+.eti-caso-resuelto {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 2px solid var(--tia-verde);
+  background: rgba(52, 211, 153, 0.15);
+  font-size: 12px;
+  font-weight: 800;
+  color: #d8fff0;
+}
+.eti-caso-porque {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--tia-texto-suave);
+}
+
+/* ── E3 · las señales de verificación, casillas propias ──────────────────── */
+
+.eti-rumor {
+  margin: 0;
+  padding: 11px 13px;
+  border-radius: 14px;
+  border: 2px solid var(--tia-morado);
+  background: linear-gradient(165deg, #1b1246, #0a0a24);
+  font-size: 13px;
+  font-weight: 700;
+  color: #eaf4ff;
+}
+
+.eti-senales {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.eti-senal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 2px solid #17456e;
+  border-radius: 13px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  color: var(--tia-texto);
+  background: linear-gradient(170deg, #0a2740, #071f34);
+  cursor: pointer;
+}
+.eti-senal:hover:not(:disabled) {
+  border-color: var(--tia-rosa);
+}
+.eti-senal:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.eti-senal.es-marcada {
+  border-color: var(--tia-cian);
+  background: linear-gradient(165deg, #0e5a75, #073a4d);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--tia-cian) 30%, transparent);
+}
+.eti-senal-casilla {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 2px solid #2a6a9c;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 900;
+  color: transparent;
+}
+.eti-senal.es-marcada .eti-senal-casilla {
+  border-color: var(--tia-cian);
+  background: var(--tia-cian);
+  color: #04121f;
+}
+
+.eti-verificar {
+  align-self: flex-start;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 13px;
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 900;
+  color: #04121f;
+  cursor: pointer;
+  background: linear-gradient(165deg, var(--tia-rosa), var(--tia-rosa-honda));
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--tia-rosa) 38%, transparent);
+}
+.eti-verificar:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+.eti-verificar:disabled {
+  cursor: not-allowed;
+  background: #123a5b;
+  color: #6d92b4;
+  box-shadow: none;
+}
+.eti-verificar:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* ── E8 · el constructor de la declaración, pieza por pieza ──────────────── */
+
+.eti-piezas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eti-pieza-grupo-titulo {
+  margin: 0 0 6px;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tia-texto-suave);
+}
+.eti-pieza-botones {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.eti-pieza-boton {
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  color: #eaf4ff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.eti-pieza-boton:hover:not(:disabled) {
+  border-color: var(--tia-rosa);
+}
+.eti-pieza-boton.es-elegida {
+  border-color: var(--tia-rosa);
+  background: linear-gradient(165deg, #5a1524, #2a0910);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--tia-rosa) 34%, transparent);
+}
+.eti-pieza-boton:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.eti-declaracion-armada {
+  margin: 0;
+  padding: 10px 13px;
+  border-radius: 13px;
+  border: 2px dashed #2a6a9c;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tia-texto-suave);
+  font-style: italic;
+}

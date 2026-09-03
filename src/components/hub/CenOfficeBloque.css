@@ -1,0 +1,233 @@
+/*
+ * BLOQUE OFFICE DEL HUB — la puerta a /hub/office/[app] (doc §33)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Sólo toca `.section-office` y lo que vive dentro. Nada de aquí alcanza a la
+ * trayectoria, a la vitrina de insignias ni al hub de nivel, aunque compartan
+ * fichero de tokens.
+ *
+ * Por qué se rehízo (10-ago-2026, mirado en navegador antes de tocar nada):
+ *
+ *  1. BLANCO SOBRE BLANCO. El cuerpo de las cuatro tarjetas era `--white` puro
+ *     sobre el `--paper-2` (#e8f1fa) de la sección: dos blancos separados por
+ *     una línea de 1 px. Es el defecto que Cristofer ha rechazado tres veces.
+ *     Ahora el bloque es la ANTESALA de la sala —que va sobre navy— y comparte
+ *     su noche: la puerta se parece al cuarto al que lleva.
+ *  2. LAS CUATRO PARECÍAN IGUAL DE LISTAS. Word tiene 9 clases construidas;
+ *     Excel y PowerPoint, cero. Las tres decían lo mismo con el mismo tono.
+ *  3. «ENTRAR ↗» AL 55 % DE OPACIDAD. La tarjeta entera es un enlace desde §33
+ *     y su única señal de serlo era un texto medio borrado.
+ */
+
+/* ─── La sección entera, de noche ────────────────────────────────────────── */
+
+.cen-hub .section-office {
+    position: relative;
+    background:
+        radial-gradient(900px 460px at 6% 0%, rgba(24, 90, 189, 0.4), transparent 62%),
+        radial-gradient(760px 460px at 96% 96%, rgba(16, 124, 65, 0.24), transparent 60%),
+        linear-gradient(180deg, #07203f, #04142b);
+    color: #eaf3ff;
+    overflow: hidden;
+}
+
+.cen-hub .section-office .section-head h2 {
+    color: #ffffff;
+}
+
+.cen-hub .section-office .section-head > p,
+.cen-hub .section-office .section-head p {
+    color: rgba(198, 220, 246, 0.76);
+}
+
+.cen-hub .section-office .section-tag {
+    color: #63c7ff;
+}
+
+/* ─── La tarjeta de cada programa ────────────────────────────────────────── */
+
+.cen-hub .section-office .office-card {
+    background: linear-gradient(170deg, rgba(13, 43, 82, 0.94), rgba(6, 22, 44, 0.94));
+    border: 1px solid rgba(120, 180, 255, 0.2);
+    box-shadow: 0 26px 64px rgba(2, 10, 24, 0.5);
+}
+
+.cen-hub .section-office .office-card:hover {
+    transform: translateY(-8px);
+    border-color: color-mix(in srgb, var(--office) 60%, transparent);
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--office) 40%, transparent),
+        0 36px 76px -22px color-mix(in srgb, var(--office) 60%, transparent),
+        0 30px 70px rgba(2, 10, 24, 0.55);
+}
+
+.cen-hub .section-office .office-cuerpo {
+    padding: 16px 26px 24px;
+}
+
+.cen-hub .section-office .office-titulo h3 {
+    color: #ffffff;
+}
+
+.cen-hub .section-office .office-tagline {
+    color: color-mix(in srgb, var(--office) 45%, #9fd0ff);
+}
+
+.cen-hub .section-office .office-cuerpo > p {
+    color: rgba(198, 220, 246, 0.8);
+    margin-bottom: 18px;
+}
+
+/* La escalera de grados. Antes el último punto iba relleno y los tres se leían
+   como una barra de progreso con el alumno «en avanzado»; no es progreso, es el
+   rango de edad de cada grado. Los tres puntos van iguales. */
+.cen-hub .section-office .office-ruta li::before {
+    border-color: color-mix(in srgb, var(--office) 55%, #8fc4ff);
+    background: #0a2244;
+}
+
+.cen-hub .section-office .office-ruta li:last-child::before {
+    background: #0a2244;
+}
+
+.cen-hub .section-office .office-ruta li:not(:last-child)::after {
+    background: #8fc4ff;
+    opacity: 0.3;
+}
+
+.cen-hub .section-office .office-ruta .ruta-nivel,
+.cen-hub .section-office .office-ruta li:last-child .ruta-nivel {
+    color: color-mix(in srgb, var(--office) 34%, #b7dcff);
+}
+
+.cen-hub .section-office .office-ruta .ruta-rango {
+    color: rgba(186, 211, 240, 0.72);
+}
+
+/* ─── El pie: lo que decide si entras ────────────────────────────────────── */
+
+.cen-hub .section-office .office-pie {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+.cen-hub .section-office .office-pie > span {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+}
+
+.cen-hub .section-office .office-pie b {
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1;
+    color: #ffffff;
+}
+
+.cen-hub .section-office .office-cuenta {
+    color: rgba(214, 232, 252, 0.86);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* La cifra que de verdad importa: cuántas se pueden jugar hoy. Es la única del
+   pie en color pleno. */
+.cen-hub .section-office .office-listas {
+    color: #ffffff;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--office) 80%, #ffffff 20%), var(--office-deep));
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 22px color-mix(in srgb, var(--office) 50%, transparent);
+}
+
+/* Sala sin una sola clase construida: se dice, no se disimula. */
+.cen-hub .section-office .office-listas.es-pronto {
+    color: rgba(206, 226, 248, 0.82);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    box-shadow: none;
+}
+
+.cen-hub .section-office .office-hechas {
+    color: #08351a;
+    background: #3ddc84;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.cen-hub .section-office .office-entrar {
+    margin-left: auto;
+    padding: 7px 4px 7px 10px;
+    color: color-mix(in srgb, var(--office) 30%, #bfe0ff);
+    opacity: 1;
+    transition: transform 0.18s ease, color 0.18s ease;
+}
+
+.cen-hub .section-office .office-card:hover .office-entrar,
+.cen-hub .section-office .office-card:focus-visible .office-entrar {
+    color: #ffffff;
+    transform: translateX(3px);
+}
+
+/* Barra de dos capas, igual que la de la sala: oro = terminado, claro = lo que
+   hoy está abierto, oscuro = lo que falta por construir. La misma pieza en las
+   dos pantallas se lee una sola vez. */
+.cen-hub .section-office .office-barra {
+    position: relative;
+    display: block;
+    height: 8px;
+    margin-top: 14px;
+    border-radius: 999px;
+    background: rgba(3, 14, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.cen-hub .section-office .office-barra b {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.cen-hub .section-office .office-barra i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    z-index: 1;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #d98b00, #ffc02e);
+    box-shadow: 0 0 16px rgba(255, 192, 46, 0.6);
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* La sala que todavía no tiene nada se retira del primer plano sin esconderse:
+   la escena pierde saturación y el logo baja el brillo. Sigue siendo un enlace
+   y sigue llevando a su temario. */
+.cen-hub .section-office .office-card[data-sala="pronto"] .office-visual {
+    filter: saturate(0.5) brightness(0.72);
+}
+
+.cen-hub .section-office .office-card[data-sala="pronto"]:hover .office-visual {
+    filter: saturate(0.85) brightness(0.9);
+}
+
+.cen-hub .section-office .office-card[data-sala="pronto"] .office-logo {
+    filter: saturate(0.7);
+}
+
+/* El logo flotante entre la escena y el cuerpo llevaba un anillo blanco que
+   sobre el cuerpo oscuro se veía como un recorte. */
+.cen-hub .section-office .office-logo {
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow:
+        0 0 0 5px rgba(10, 34, 68, 0.9),
+        0 14px 30px rgba(2, 10, 24, 0.6);
+}

@@ -1,0 +1,423 @@
+/* `n7-sistemas-operativos` — El Banco de Sistemas (N7·U1, parada 3).
+   Software ultra-LITE: lo que se toca son pantallas de sistema operativo, no
+   metáforas físicas. El único elemento "de objeto" es el marco del aparato —
+   que en la vida real es lo que sostiene la pantalla, no una metáfora de nada.
+
+   Color pleno y saturado sobre fondo oscuro, con luz: cada piel trae su propio
+   --so-acento y su --so-fondo, y el resplandor sale del acento. Nada pastel,
+   nada blanco sobre blanco, ningún borde punteado, ningún botón flotando
+   suelto: los controles viven dentro de la pantalla o dentro de su panel. */
+
+.so-lab {
+  --so-tinta: #eaf4ff;
+  --so-apagado: #8ba3c7;
+  --so-panel: #0b1628;
+  --so-panel-alto: #122340;
+  --so-borde: rgba(120, 190, 255, 0.22);
+  --so-cian: #22d3ee;
+  --so-ambar: #fbbf24;
+  --so-verde: #34d399;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  gap: 18px;
+  padding: 18px;
+  min-height: 560px;
+  border-radius: 24px;
+  color: var(--so-tinta);
+  background:
+    radial-gradient(900px 500px at 15% -10%, rgba(34, 211, 238, 0.16), transparent 60%),
+    radial-gradient(700px 420px at 100% 110%, rgba(168, 85, 247, 0.14), transparent 60%),
+    linear-gradient(165deg, #071426 0%, #030a14 100%);
+  box-shadow: inset 0 0 0 1px rgba(120, 190, 255, 0.14);
+}
+
+@media (max-width: 900px) {
+  .so-lab { grid-template-columns: minmax(0, 1fr); }
+}
+
+.so-lab--portada,
+.so-lab--final { grid-template-columns: minmax(0, 1fr); place-items: center; }
+
+/* ── botones de la casa ──────────────────────────────────────────────── */
+
+.so-boton {
+  padding: 12px 22px;
+  border: 0;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 900;
+  color: #04121f;
+  background: linear-gradient(135deg, #4de3ff, #16a9d4);
+  box-shadow: 0 10px 26px rgba(34, 211, 238, 0.38);
+  cursor: pointer;
+}
+.so-boton:hover { filter: brightness(1.1); }
+.so-boton--grande { padding: 16px 32px; font-size: 17px; }
+.so-boton--suave {
+  color: var(--so-tinta);
+  background: linear-gradient(135deg, #1d3a5f, #12253f);
+  box-shadow: 0 8px 22px rgba(4, 12, 24, 0.6);
+}
+
+/* ── portada de objetivos ────────────────────────────────────────────── */
+
+.so-portada {
+  max-width: 720px;
+  padding: 34px 30px;
+  text-align: center;
+  border-radius: 22px;
+  background: linear-gradient(165deg, rgba(18, 35, 64, 0.92), rgba(6, 16, 30, 0.94));
+  box-shadow: inset 0 0 0 1px var(--so-borde), 0 24px 60px rgba(2, 8, 18, 0.6);
+}
+.so-portada-tag {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #04121f;
+  background: var(--so-cian);
+}
+.so-portada-titulo {
+  margin: 0 0 14px;
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 900;
+  background: linear-gradient(100deg, #7ef2ff, #c4b5fd);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.so-portada-globo { margin: 0 auto 20px; max-width: 56ch; font-size: 15.5px; line-height: 1.65; color: #cfe2fb; }
+.so-portada-objetivos { margin: 0 auto 20px; padding: 0; max-width: 56ch; list-style: none; display: grid; gap: 10px; text-align: left; }
+.so-portada-objetivos li {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: #dceafd;
+  background: rgba(34, 211, 238, 0.09);
+  box-shadow: inset 0 0 0 1px var(--so-borde);
+}
+.so-portada-pie { margin: 0 0 20px; font-size: 12.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--so-apagado); }
+
+/* ── acto 1: la mesa de encargos ─────────────────────────────────────── */
+
+.so-mesa {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  border-radius: 20px;
+  background: linear-gradient(165deg, rgba(18, 35, 64, 0.9), rgba(6, 16, 30, 0.92));
+  box-shadow: inset 0 0 0 1px var(--so-borde);
+}
+.so-mesa-tag { margin: 0; font-size: 11.5px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: var(--so-cian); }
+.so-mesa-texto {
+  margin: 0;
+  padding: 18px 20px;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #fff;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(34, 211, 238, 0.06));
+  border-left: 5px solid var(--so-cian);
+}
+.so-mesa-pregunta { margin: 0; font-size: 14px; font-weight: 800; color: var(--so-apagado); }
+
+.so-oficios { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.so-oficio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px;
+  border: 0;
+  border-radius: 14px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--so-tinta);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--so-acento) 26%, #0a1830), #0a1830);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--so-acento) 55%, transparent);
+  cursor: pointer;
+}
+.so-oficio:hover { box-shadow: inset 0 0 0 2px var(--so-acento), 0 8px 22px color-mix(in srgb, var(--so-acento) 35%, transparent); }
+.so-oficio--fuera { grid-column: 1 / -1; justify-content: center; }
+.so-oficio-emoji { font-size: 20px; }
+
+.so-mesa-resuelto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.24), rgba(52, 211, 153, 0.06));
+  box-shadow: inset 0 0 0 1.5px rgba(52, 211, 153, 0.55);
+}
+.so-mesa-resuelto-titulo { margin: 0; flex: 1; font-size: 16px; font-weight: 900; color: #b8ffe4; }
+
+/* ── acto 2 y 3: el banco de aparatos ────────────────────────────────── */
+
+.so-escenario { display: flex; flex-direction: column; justify-content: center; gap: 14px; min-width: 0; }
+.so-banco { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+.so-encargo-tarea {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: #eaf4ff;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.18), rgba(251, 191, 36, 0.04));
+  border-left: 5px solid var(--so-ambar);
+}
+.so-encargo-tarea-emoji { font-size: 22px; line-height: 1; }
+
+/* el aparato: marco físico mínimo, la pantalla es el software */
+.so-aparato { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; min-width: 0; }
+.so-pantalla {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--so-fondo);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 10px #0a1220,
+    0 0 0 12px color-mix(in srgb, var(--so-acento) 45%, #0a1220),
+    0 26px 60px color-mix(in srgb, var(--so-acento) 22%, transparent);
+}
+.so-aparato--escritorio .so-pantalla,
+.so-aparato--laptop .so-pantalla { aspect-ratio: 16 / 10; max-width: 640px; }
+.so-aparato--todo-en-uno .so-pantalla { aspect-ratio: 16 / 11; max-width: 620px; }
+.so-aparato--telefono .so-pantalla { aspect-ratio: 10 / 17; max-width: 290px; border-radius: 26px; }
+.so-aparato--tablet .so-pantalla { aspect-ratio: 4 / 5; max-width: 400px; border-radius: 20px; }
+
+.so-aparato-pie { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.so-aparato-nombre { font-size: 15px; font-weight: 900; color: var(--so-acento); }
+.so-aparato-tipo { font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--so-apagado); }
+
+.so-cuerpo { flex: 1; min-height: 0; display: flex; }
+.so-lienzo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 10px;
+  padding: 12px;
+}
+
+/* -- las barras -- */
+.so-barra {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: color-mix(in srgb, var(--so-acento-hondo) 60%, #030910);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--so-acento) 26%, transparent);
+}
+.so-barra--arriba { flex: none; }
+.so-barra--abajo { flex: none; }
+.so-barra--muelle { flex: none; flex-direction: column; align-items: stretch; padding: 10px 8px; }
+.so-barra--derecha { flex: none; flex-direction: column; align-items: stretch; padding: 10px 8px; min-width: 128px; }
+.so-barra-marca { font-size: 16px; padding: 0 4px; }
+.so-barra-grupo { display: flex; align-items: center; gap: 8px; }
+.so-barra-grupo--fin { margin-left: auto; }
+.so-barra--muelle .so-barra-grupo,
+.so-barra--derecha .so-barra-grupo { flex-direction: column; align-items: stretch; }
+.so-barra--derecha .so-barra-grupo--fin { margin-left: 0; margin-top: auto; }
+
+/* la barra de estado de un táctil es fina y su punto ocupa todo el ancho */
+.so-pantalla--tactil-cajon .so-barra--arriba,
+.so-pantalla--tactil-plana .so-barra--arriba { padding: 3px 8px; }
+.so-pantalla--tactil-cajon .so-barra--arriba .so-punto,
+.so-pantalla--tactil-plana .so-barra--arriba .so-punto { flex: 1; justify-content: center; }
+.so-pantalla--tactil-cajon .so-barra--abajo { justify-content: space-around; }
+.so-pantalla--tactil-cajon .so-barra--abajo .so-barra-grupo { flex: 1; justify-content: space-around; }
+.so-pantalla--tactil-plana .so-barra--abajo { justify-content: center; }
+
+/* -- los puntos: lo que el alumno toca -- */
+.so-punto {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: left;
+  color: #f2f9ff;
+  background: color-mix(in srgb, var(--so-acento) 20%, rgba(4, 12, 24, 0.7));
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--so-acento) 45%, transparent);
+  cursor: pointer;
+}
+.so-punto:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--so-acento) 38%, rgba(4, 12, 24, 0.7));
+  box-shadow: inset 0 0 0 2px var(--so-acento), 0 6px 18px color-mix(in srgb, var(--so-acento) 40%, transparent);
+}
+.so-punto:disabled { opacity: 0.55; cursor: default; }
+.so-punto-emoji { font-size: 16px; line-height: 1; }
+
+.so-punto--icono {
+  flex-direction: column;
+  gap: 5px;
+  width: 84px;
+  padding: 10px 6px;
+  text-align: center;
+  font-size: 11.5px;
+}
+.so-punto--icono .so-punto-emoji { font-size: 26px; }
+.so-punto--muelle { justify-content: flex-start; }
+
+/* -- lo que se abrió al acertar -- */
+.so-abierto {
+  position: absolute;
+  inset: auto 10px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--so-acento) 30%, #050d1a), #050d1a);
+  box-shadow: inset 0 0 0 2px var(--so-acento), 0 -12px 40px rgba(2, 8, 18, 0.75);
+}
+.so-abierto-titulo { margin: 0; font-size: 15px; font-weight: 900; color: var(--so-acento); }
+.so-abierto-texto { margin: 0; font-size: 13.5px; line-height: 1.55; color: #eaf4ff; }
+.so-abierto-boton {
+  align-self: flex-start;
+  padding: 9px 20px;
+  border: 0;
+  border-radius: 11px;
+  font-size: 13.5px;
+  font-weight: 900;
+  color: #050d1a;
+  background: var(--so-acento);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--so-acento) 45%, transparent);
+  cursor: pointer;
+}
+.so-abierto-boton:hover { filter: brightness(1.12); }
+
+/* ── el remate del acto 3 ────────────────────────────────────────────── */
+
+.so-remate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 30px 26px;
+  text-align: center;
+  border-radius: 20px;
+  background: linear-gradient(165deg, rgba(18, 35, 64, 0.92), rgba(6, 16, 30, 0.94));
+  box-shadow: inset 0 0 0 1px var(--so-borde);
+}
+.so-remate-emoji { margin: 0; font-size: 30px; letter-spacing: 6px; }
+.so-remate-titulo { margin: 0; font-size: 24px; font-weight: 900; color: #7ef2ff; }
+.so-remate-texto { margin: 0; max-width: 52ch; font-size: 14.5px; line-height: 1.6; color: #cfe2fb; }
+
+/* ── la consola del costado ──────────────────────────────────────────── */
+
+.so-consola { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+.so-bit {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgba(34, 211, 238, 0.16), rgba(6, 16, 30, 0.9));
+  box-shadow: inset 0 0 0 1.5px rgba(34, 211, 238, 0.4);
+}
+.so-bit-cara {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  border-radius: 12px;
+  background: linear-gradient(150deg, #22d3ee, #0e7490);
+  box-shadow: 0 8px 20px rgba(34, 211, 238, 0.4);
+}
+.so-bit-globo { margin: 0; font-size: 14px; line-height: 1.55; color: #eaf4ff; }
+
+.so-marcador {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--so-apagado);
+  background: rgba(8, 20, 38, 0.8);
+  box-shadow: inset 0 0 0 1px var(--so-borde);
+}
+.so-marcador strong { color: var(--so-ambar); font-size: 14px; }
+
+.so-tabla-caja {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(8, 20, 38, 0.85);
+  box-shadow: inset 0 0 0 1px var(--so-borde);
+  overflow-x: auto;
+}
+.so-tabla-titulo { margin: 0 0 10px; font-size: 11.5px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: var(--so-cian); }
+.so-tabla { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.so-tabla th,
+.so-tabla td { padding: 7px 6px; text-align: left; vertical-align: top; }
+.so-tabla thead th {
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--so-acento, #7ef2ff);
+  border-bottom: 2px solid color-mix(in srgb, var(--so-acento, #7ef2ff) 55%, transparent);
+}
+.so-tabla tbody th { font-weight: 800; color: #cfe2fb; white-space: nowrap; }
+.so-tabla tbody tr + tr th,
+.so-tabla tbody tr + tr td { border-top: 1px solid rgba(120, 190, 255, 0.14); }
+.so-celda { color: #55688a; font-weight: 700; }
+.so-celda--llena {
+  color: #04121f;
+  font-weight: 900;
+  border-radius: 7px;
+  background: linear-gradient(135deg, #7ef2ff, #34d399);
+}
+
+/* ── pantalla final ──────────────────────────────────────────────────── */
+
+.so-final {
+  max-width: 680px;
+  padding: 36px 30px;
+  text-align: center;
+  border-radius: 22px;
+  background: linear-gradient(165deg, rgba(18, 35, 64, 0.92), rgba(6, 16, 30, 0.94));
+  box-shadow: inset 0 0 0 1px var(--so-borde), 0 24px 60px rgba(2, 8, 18, 0.6);
+}
+.so-final-emoji { margin: 0 0 6px; font-size: 52px; }
+.so-final-kicker { margin: 0 0 4px; font-size: 11.5px; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; color: var(--so-verde); }
+.so-final-titulo {
+  margin: 0 0 16px;
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  background: linear-gradient(100deg, #fbbf24, #34d399);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.so-final-texto { margin: 0 auto 18px; max-width: 58ch; font-size: 15px; line-height: 1.65; color: #cfe2fb; }
+.so-final-texto strong { color: #7ef2ff; }
+.so-final-marcador { margin: 0 0 20px; font-size: 12.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--so-apagado); }
+.so-final-botones { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }

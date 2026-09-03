@@ -1,0 +1,70 @@
+/* El escenario de «Automatiza tareas repetitivas»: la bandeja y su último resultado. */
+
+.at-bandeja {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  padding: 18px;
+  border-radius: 20px;
+  border: 3px solid #2b3a7a;
+  background:
+    radial-gradient(140% 90% at 50% 0%, rgba(167, 139, 250, 0.16), transparent 60%),
+    linear-gradient(170deg, #0d1436, #070c22);
+  overflow-y: auto;
+}
+
+.at-correos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.at-correo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  border: 2px solid #3d55b0;
+  background: #0a1130;
+  padding: 12px 14px;
+  color: #dce6ff;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.at-correo:hover {
+  border-color: #7ee0ff;
+}
+.at-correo-glifo {
+  font-size: 20px;
+}
+
+.at-resultado {
+  margin-top: auto;
+  border-radius: 14px;
+  border: 2px solid #22c55e;
+  background: linear-gradient(120deg, rgba(34, 197, 94, 0.16), rgba(34, 197, 94, 0.04));
+  padding: 12px 14px;
+}
+.at-resultado-etiqueta {
+  display: block;
+  margin-bottom: 6px;
+  color: #9fe8bf;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.at-resultado p {
+  margin: 0;
+  color: #e8fff2;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.at-resultado-vacio {
+  color: #8fa6e0 !important;
+  font-weight: 600 !important;
+}

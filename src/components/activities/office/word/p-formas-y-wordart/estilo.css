@@ -1,0 +1,199 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `p-formas-y-wordart` · lo que esta clase le añade a la ventana
+
+   Todo lo que toca una clase del motor —`.txtw-boton`, `.txt-img`,
+   `.txtw-flujo`— va colgado de `.txtw:has(.fw-marca)`, y `.fw-marca` es la
+   etiqueta de estilo que monta el accesorio de esta clase. Mientras este
+   laboratorio no esté en pantalla, estas reglas no encuentran a quién
+   aplicarse: aunque el navegador tenga la hoja cargada no pueden mover una
+   sola caja de otra clase de Word. Es la misma salida que usa el panel de
+   navegación de `estilos-e-indice`.
+
+   Colores: los del programa (#185ABD y los grises de Office). Dentro de la
+   ventana manda la fidelidad con Word (§36.2); el color pleno de la plataforma
+   vive en la entrada y en el panel del maestro.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── las galerías de la cinta ────────────────────────────────────────────── */
+
+/*
+   Word no pone las formas y las imágenes detrás de un botón con menú: en la
+   cinta hay galerías —Estilos, Estilos de forma, Estilos de imagen— que enseñan
+   directamente lo que aplican. Aquí pasa lo mismo, y además es lo que hace que
+   elegir mal pase por donde pasan los botones y saque la pista del maestro.
+*/
+.txtw:has(.fw-marca) .txtw-boton[data-control^='forma-'],
+.txtw:has(.fw-marca) .txtw-boton[data-control^='foto-'] {
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 2px;
+  min-width: 56px;
+  min-height: 46px;
+  padding: 3px 4px 2px;
+  border-color: #e3e1df;
+  background: #fff;
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.txtw:has(.fw-marca) .txtw-boton[data-control^='forma-']:hover,
+.txtw:has(.fw-marca) .txtw-boton[data-control^='foto-']:hover {
+  border-color: var(--w-azul);
+  background: #f3f9ff;
+}
+
+/*
+   La miniatura es el MISMO dibujo que va a caer en la hoja, servido por el
+   accesorio como `background-image`. `font-size: 0` esconde el glifo de
+   reserva; si esa hoja no llegara, el glifo vuelve a verse y el botón sigue
+   siendo usable en vez de quedarse en blanco.
+*/
+.txtw:has(.fw-marca) .txtw-boton[data-control^='forma-'] .txtw-glifo,
+.txtw:has(.fw-marca) .txtw-boton[data-control^='foto-'] .txtw-glifo {
+  width: 46px;
+  height: 28px;
+  min-width: 46px;
+  border-radius: 2px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  font-size: 0;
+}
+
+.txtw:has(.fw-marca) .txtw-boton[data-control^='foto-'] .txtw-glifo {
+  background-size: cover;
+  border: 1px solid #d6d4d2;
+}
+
+.txtw:has(.fw-marca) .txtw-boton[data-control^='forma-'] .txtw-nombre,
+.txtw:has(.fw-marca) .txtw-boton[data-control^='foto-'] .txtw-nombre {
+  color: var(--w-gris);
+  font-size: 9.5px;
+}
+
+/* ── el objeto seleccionado ──────────────────────────────────────────────── */
+
+/*
+   Sin esto no se ve NADA al hacer clic en una imagen, y el encargo del ajuste
+   de texto empieza con «selecciona la foto». ProseMirror ya le pone la clase al
+   nodo; lo que falta es el marco con tiradores de Word, que es la señal de que
+   el objeto está listo para que le den formato. Los tiradores son de adorno
+   —el tamaño se cambia desde la pestaña Formato— pero tienen que estar: son lo
+   que un niño reconoce de haber visto una imagen seleccionada.
+*/
+.txtw:has(.fw-marca) .txtw-flujo .txt-img.ProseMirror-selectednode {
+  position: relative;
+  overflow: visible;
+  outline: 1.5px solid var(--w-azul);
+  outline-offset: 3px;
+}
+
+.txtw:has(.fw-marca) .txtw-flujo .txt-img.ProseMirror-selectednode::after {
+  --fw-tirador: radial-gradient(circle at center, #ffffff 0 1.6px, #185abd 1.6px 3.2px, transparent 3.4px);
+
+  content: '';
+  position: absolute;
+  inset: -7px;
+  pointer-events: none;
+  background-image: var(--fw-tirador), var(--fw-tirador), var(--fw-tirador), var(--fw-tirador),
+    var(--fw-tirador), var(--fw-tirador), var(--fw-tirador), var(--fw-tirador);
+  background-repeat: no-repeat;
+  background-size: 8px 8px;
+  background-position: left top, center top, right top, left center, right center, left bottom,
+    center bottom, right bottom;
+}
+
+/*
+   La foto empieza su propio renglón, la forma no. Y la diferencia está medida:
+   una foto de trescientos puntos todavía cabe al lado de la flecha que marca el
+   renglón de arriba, así que sin esto se sentaba junto a ella y el folleto
+   quedaba con un margen izquierdo de collage. Las formas, en cambio, SÍ tienen
+   que poder ir una al lado de otra: si el alumno probó primero con el globo y
+   luego puso la flecha, las dos marcan el mismo renglón, que es lo que el
+   documento dice y lo que tiene que verse. Con `clear` en las dos, la flecha
+   caía un renglón más abajo y acababa señalando otra cosa.
+*/
+.txtw:has(.fw-marca) .txtw-flujo .txt-img.es-cuadrado:has(img[alt^='Foto']) {
+  clear: left;
+}
+
+/* ── la vista de una página ──────────────────────────────────────────────── */
+
+.fw-previa {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  background: #3b3a39;
+}
+
+.fw-previa-barra {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px;
+  background: #f3f2f1;
+  border-bottom: 1px solid #d6d4d2;
+}
+
+.fw-previa-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  color: #201f1e;
+}
+
+.fw-previa-nota {
+  flex: 1;
+  font-size: 12.5px;
+  color: #605e5c;
+}
+
+.fw-previa-cerrar {
+  padding: 5px 14px;
+  border: 1px solid #c8c6c4;
+  border-radius: 3px;
+  background: #fff;
+  color: #201f1e;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fw-previa-cerrar:hover {
+  border-color: #185abd;
+  color: #185abd;
+}
+
+.fw-previa-lienzo {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  overflow: auto;
+}
+
+.fw-previa-marco {
+  position: relative;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
+}
+
+.fw-previa-hoja {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* El texto de la hoja, en el mismo sitio en el que está en el documento: a un
+   margen de pulgada de cada canto. Se hereda el aspecto de `.txtw-flujo`, así
+   que lo que se ve pequeño es exactamente lo que hay escrito. */
+.fw-previa-flujo {
+  position: absolute;
+  top: 96px;
+  left: 96px;
+}

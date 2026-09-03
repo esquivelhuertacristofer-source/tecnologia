@@ -1,0 +1,156 @@
+/**
+ * El mapa del quiosco (§43.5).
+ *
+ * Vive dentro del panel acoplado de la ventana y hereda su ancho y su fondo.
+ * El color del panel es el del semáforo y nada más: **rojo es un callejón,
+ * verde es que de ahí se sale**. Sin más colores, porque el panel contesta una
+ * sola pregunta y meterle un tercer color sería inventarle un tercer estado.
+ */
+
+.mqk {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  font-size: 12px;
+  color: #1f2937;
+}
+
+/* ── la cuenta, arriba del todo ── */
+
+.mqk-cuenta {
+  margin: 0;
+  padding: 11px 10px;
+  border-bottom: 1px solid #e6eaf0;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.mqk-cuenta.es-mal {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.mqk-cuenta.es-bien {
+  background: #ecfdf5;
+  color: #14532d;
+}
+
+/* ── las siete ── */
+
+.mqk-lista {
+  margin: 0;
+  padding: 7px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  border-bottom: 1px solid #e6eaf0;
+}
+
+.mqk-fila {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) 12px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mqk-fila:hover {
+  background: #f1f5f9;
+}
+
+.mqk-fila.es-viendo {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+/* El callejón se ve distinto SIN leer nada: raya roja a la izquierda, igual
+   que la anulada de §43.4. Dos paneles hermanos hablan el mismo idioma. */
+.mqk-fila.es-callejon {
+  border-left: 3px solid #b91c1c;
+  border-radius: 3px 6px 6px 3px;
+}
+
+.mqk-num {
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.mqk-que {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mqk-que b {
+  font-size: 12px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mqk-que small {
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A dónde lleva: la flecha se pinta en CSS para que no viaje en el texto y el
+   lector de pantalla no lea «flecha derecha» siete veces. */
+.mqk-salidas {
+  color: #15803d;
+  font-weight: 700;
+}
+
+.mqk-salidas::before {
+  content: '→ ';
+}
+
+.mqk-sin-salida {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+.mqk-suelta {
+  color: #94a3b8;
+}
+
+.mqk-punto {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.18);
+}
+
+.mqk-punto.es-verde {
+  background: #15803d;
+}
+
+.mqk-punto.es-rojo {
+  background: #b91c1c;
+}
+
+/* ── la regla, abajo ── */
+
+.mqk-regla {
+  margin: 0;
+  padding: 10px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #475569;
+}

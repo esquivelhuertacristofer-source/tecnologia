@@ -1,0 +1,804 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Sala de IA — el vestido de las clases de inteligencia artificial (§52).
+
+   Color pleno y saturado sobre fondo oscuro, con drama de luz: cada pieza que
+   importa lleva su halo del color de la clase. Nada de pastel, nada de blanco
+   sobre blanco, nada de bordes punteados.
+
+   Y ni un control flotante: el botón de cada paso vive dentro de la BANDA de
+   la mesa (`.tia-banda`), que es parte del mueble; las candidatas son fichas
+   de una bandeja, no botones sueltos encima de la escena.
+
+   Tokens propios en `.tia-sala` y `.tia-portada`, como hace `.car-app`: esta
+   hoja no depende de que `CenHub.css` esté cargado, porque el arnés de pruebas
+   monta el laboratorio suelto.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.tia-sala {
+  --tia-fondo: #061a2e;
+  --tia-fondo-2: #0a2b48;
+  --tia-cian: #22d3ee;
+  --tia-cian-honda: #0e7490;
+  --tia-ambar: #fbbf24;
+  --tia-ambar-honda: #b45309;
+  --tia-verde: #34d399;
+  --tia-verde-honda: #0f766e;
+  --tia-rosa: #fb7185;
+  --tia-rosa-honda: #9f1239;
+  --tia-morado: #a78bfa;
+  --tia-morado-honda: #5b21b6;
+  --tia-texto: #eaf4ff;
+  --tia-texto-suave: #9dc0e2;
+
+  height: 100%;
+}
+
+.tia-sala *,
+.tia-sala *::before,
+.tia-sala *::after {
+  box-sizing: border-box;
+}
+
+/* El lienzo es el ancla de la portada, que se pinta encima de todo. */
+.tia-lienzo {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tia-marco {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ── La portada de objetivos ─────────────────────────────────────────────── */
+
+.tia-portada {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background:
+    radial-gradient(90% 70% at 50% -10%, rgba(34, 211, 238, 0.24), transparent 62%),
+    linear-gradient(165deg, #06203a 0%, #051225 60%, #030811 100%);
+}
+
+.tia-portada-caja {
+  width: min(760px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  padding: 26px 28px 24px;
+  border-radius: 22px;
+  border: 2px solid var(--acento, #22d3ee);
+  background: linear-gradient(160deg, #0c2b4b, #071a30);
+  box-shadow:
+    0 0 46px color-mix(in srgb, var(--acento, #22d3ee) 34%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  color: #eaf4ff;
+}
+
+.tia-portada-situacion {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--acento, #22d3ee);
+}
+
+.tia-portada-tema {
+  margin: 0 0 14px;
+  font-size: clamp(22px, 3.4vw, 32px);
+  font-weight: 900;
+  line-height: 1.12;
+  color: #ffffff;
+  text-shadow: 0 0 28px color-mix(in srgb, var(--acento, #22d3ee) 48%, transparent);
+}
+
+.tia-portada-objetivo {
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  border-radius: 14px;
+  border-left: 6px solid var(--acento, #22d3ee);
+  background: color-mix(in srgb, var(--acento, #22d3ee) 12%, transparent);
+}
+.tia-portada-objetivo p {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tia-portada-etiqueta {
+  display: block;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #8fb6dd;
+}
+
+.tia-portada-cuerpo {
+  display: grid;
+  grid-template-columns: 1.35fr 0.85fr;
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 720px) {
+  .tia-portada-cuerpo {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tia-portada-lista ol {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tia-portada-lista li {
+  font-size: 14px;
+  font-weight: 650;
+  color: #d3e6ff;
+}
+.tia-portada-lista li::marker {
+  color: var(--acento, #22d3ee);
+  font-weight: 900;
+}
+
+.tia-portada-datos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tia-portada-dato {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 2px solid #1f4d78;
+  background: #0a2440;
+  font-size: 13px;
+  font-weight: 700;
+  color: #cfe4ff;
+}
+.tia-portada-dato b {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--acento, #22d3ee);
+}
+
+.tia-portada-empezar {
+  margin-top: 18px;
+  width: 100%;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 16px;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 900;
+  color: #04121f;
+  cursor: pointer;
+  background: linear-gradient(165deg, var(--acento, #22d3ee), color-mix(in srgb, var(--acento, #22d3ee) 55%, #000));
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--acento, #22d3ee) 40%, transparent);
+}
+.tia-portada-empezar:hover {
+  filter: brightness(1.1);
+}
+.tia-portada-empezar:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.tia-portada-pie {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #7fa6cd;
+}
+
+/* ── El cuerpo del programa: mesa a la izquierda, chat a la derecha ──────── */
+
+.tia-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+  align-items: stretch;
+}
+@media (max-width: 900px) {
+  .tia-cuerpo {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tia-mesa {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px;
+  border-radius: 18px;
+  border: 2px solid #1c4b76;
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(34, 211, 238, 0.12), transparent 60%),
+    linear-gradient(170deg, var(--tia-fondo-2), var(--tia-fondo));
+  color: var(--tia-texto);
+}
+
+.tia-mesa-cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tia-mesa-titulo {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 0 22px rgba(34, 211, 238, 0.45);
+}
+.tia-mesa-encargo {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tia-texto-suave);
+}
+
+/* ── Las fichas del banco ────────────────────────────────────────────────── */
+
+.tia-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 10px;
+}
+
+.tia-ficha {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 14px;
+  border: 2px solid #1f5580;
+  background: #082238;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.tia-ficha.es-puesta {
+  border-color: var(--tia-verde);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--tia-verde) 30%, transparent);
+}
+
+.tia-ficha-dibujo {
+  font-size: 30px;
+  line-height: 1;
+}
+.tia-ficha-nombre {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 900;
+  color: #ffffff;
+}
+.tia-ficha-rasgos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.tia-ficha-rasgos li {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #0f3a5c;
+  border: 1px solid #2a6a9c;
+  font-size: 11px;
+  font-weight: 800;
+  color: #bfe3ff;
+}
+
+.tia-etiquetadores {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+}
+.tia-etiquetador {
+  flex: 1;
+  padding: 7px 6px;
+  border-radius: 10px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  color: #cfe6ff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.tia-etiquetador:hover {
+  border-color: var(--tia-cian);
+}
+.tia-etiquetador.es-gato.es-elegida {
+  background: linear-gradient(165deg, var(--tia-ambar), var(--tia-ambar-honda));
+  border-color: var(--tia-ambar);
+  color: #2a1400;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--tia-ambar) 45%, transparent);
+}
+.tia-etiquetador.es-perro.es-elegida {
+  background: linear-gradient(165deg, var(--tia-morado), var(--tia-morado-honda));
+  border-color: var(--tia-morado);
+  color: #ffffff;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--tia-morado) 45%, transparent);
+}
+.tia-etiquetador:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* ── La banda de mando: parte del mueble, no un botón flotante ──────────── */
+
+.tia-banda {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 2px solid #17456e;
+  background: linear-gradient(180deg, #0a2740, #061c30);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.tia-banda-cuenta {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--tia-texto-suave);
+}
+
+.tia-boton {
+  margin-left: auto;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 13px;
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 900;
+  color: #04121f;
+  cursor: pointer;
+  background: linear-gradient(165deg, var(--tia-cian), var(--tia-cian-honda));
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--tia-cian) 38%, transparent);
+}
+.tia-boton:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+.tia-boton:disabled {
+  cursor: not-allowed;
+  background: #123a5b;
+  color: #6d92b4;
+  box-shadow: none;
+}
+.tia-boton:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.tia-boton.es-aviso {
+  background: linear-gradient(165deg, var(--tia-ambar), var(--tia-ambar-honda));
+  color: #2a1400;
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--tia-ambar) 42%, transparent);
+}
+.tia-boton.es-fantasma {
+  background: transparent;
+  border: 2px solid var(--tia-cian-honda);
+  color: #a5f3fc;
+  box-shadow: none;
+}
+
+/* ── El árbol en palabras ────────────────────────────────────────────────── */
+
+.tia-arbol {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid var(--tia-cian-honda);
+  background: #05192b;
+  box-shadow: inset 0 0 30px rgba(34, 211, 238, 0.09);
+}
+.tia-arbol-cabeza {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tia-cian);
+}
+.tia-arbol-pregunta,
+.tia-arbol-rama,
+.tia-arbol-hoja,
+.tia-arbol-sinrama {
+  margin: 3px 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.tia-arbol-pregunta {
+  color: #ffffff;
+}
+.tia-arbol-pregunta b {
+  color: var(--tia-cian);
+}
+.tia-arbol-rama {
+  color: var(--tia-texto-suave);
+}
+.tia-arbol-rama b {
+  color: #ffffff;
+}
+.tia-arbol-hoja {
+  color: var(--tia-verde);
+}
+.tia-arbol-hoja b {
+  color: #ffffff;
+}
+.tia-arbol-flecha {
+  margin-right: 6px;
+  font-weight: 900;
+}
+.tia-arbol-apoyo {
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #0f3a5c;
+  font-size: 11px;
+  font-weight: 800;
+  color: #bfe3ff;
+}
+.tia-arbol-sinrama {
+  color: var(--tia-rosa);
+}
+.tia-arbol-sinrama b {
+  color: #ffffff;
+}
+
+.tia-nota {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 750;
+  color: var(--tia-texto-suave);
+}
+.tia-nota b {
+  color: #ffffff;
+}
+
+/* ── Una ficha de prueba y su veredicto ──────────────────────────────────── */
+
+.tia-prueba {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 14px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid var(--tia-morado);
+  background: linear-gradient(165deg, #1b1246, #0a0a24);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-morado) 26%, transparent);
+}
+.tia-prueba-porque {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #d8ccff;
+}
+
+.tia-veredicto {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tia-veredicto.es-bien {
+  border-color: var(--tia-verde);
+  background: linear-gradient(165deg, #06301f, #041c14);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-verde) 28%, transparent);
+}
+.tia-veredicto.es-mal {
+  border-color: var(--tia-rosa);
+  background: linear-gradient(165deg, #3a0b1c, #1e0410);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-rosa) 30%, transparent);
+}
+.tia-veredicto p {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 750;
+  color: #eaf4ff;
+}
+.tia-veredicto-dijo b {
+  font-size: 17px;
+  color: #ffffff;
+}
+.tia-veredicto-verdad {
+  font-weight: 900;
+}
+.tia-seguridad b {
+  color: var(--tia-ambar);
+  font-size: 15px;
+}
+.tia-atasco {
+  color: var(--tia-rosa);
+  font-weight: 900;
+}
+.tia-apoyo {
+  color: #b9d4ef;
+  font-size: 12.5px;
+}
+
+/* ── El boletín por colores: donde se ve el sesgo ────────────────────────── */
+
+.tia-boletin {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.tia-boletin-fila {
+  display: grid;
+  grid-template-columns: 84px 1fr 52px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #eaf4ff;
+}
+.tia-boletin-color {
+  text-transform: capitalize;
+}
+.tia-boletin-barra {
+  height: 14px;
+  border-radius: 999px;
+  background: #0c2e4a;
+  border: 1px solid #205a86;
+  overflow: hidden;
+}
+.tia-boletin-barra i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--tia-verde), var(--tia-cian));
+}
+.tia-boletin-fila.es-cero .tia-boletin-barra {
+  border-color: var(--tia-rosa);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--tia-rosa) 45%, transparent);
+}
+.tia-boletin-fila.es-cero b {
+  color: var(--tia-rosa);
+}
+
+/* ── La bandeja de fichas candidatas ─────────────────────────────────────── */
+
+.tia-bandeja {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+  padding: 10px;
+  border-radius: 16px;
+  border: 2px solid #17456e;
+  background: linear-gradient(180deg, #082036, #05172a);
+}
+
+.tia-candidata {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  border-radius: 13px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  color: #eaf4ff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.tia-candidata:hover {
+  border-color: var(--tia-ambar);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--tia-ambar) 30%, transparent);
+}
+.tia-candidata:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.tia-candidata-dibujo {
+  font-size: 26px;
+  line-height: 1;
+}
+.tia-candidata-nombre {
+  font-size: 13.5px;
+  font-weight: 900;
+}
+.tia-candidata-rasgos {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #9dc0e2;
+}
+
+/* ── El chat, en su columna ──────────────────────────────────────────────── */
+
+.tia-chat {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 18px;
+  border: 2px solid #1c4b76;
+  overflow: hidden;
+}
+.tia-chat > .asis {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ── La ficha de identidad de `n5-uso-responsable-de-ia` ─────────────────── */
+
+.tia-expediente {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid var(--tia-rosa);
+  background: linear-gradient(165deg, #35091a, #1a040d);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-rosa) 26%, transparent);
+}
+.tia-expediente.es-limpio {
+  border-color: var(--tia-verde);
+  background: linear-gradient(165deg, #06301f, #041c14);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-verde) 26%, transparent);
+}
+.tia-expediente-titulo {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #ffd9e2;
+}
+.tia-expediente.es-limpio .tia-expediente-titulo {
+  color: #b6f5da;
+}
+.tia-expediente-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tia-expediente-lista li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #7a2440;
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffe4ec;
+}
+.tia-expediente-candado {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--tia-rosa);
+}
+.tia-expediente-vacio {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #b6f5da;
+}
+
+/* ── Las piezas del mensaje (bandejas de `n5-uso-responsable-de-ia`) ─────── */
+
+.tia-piezas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.tia-bandeja-titulo {
+  margin: 0 0 6px;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tia-cian);
+}
+.tia-pieza {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  color: #eaf4ff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+}
+.tia-pieza:hover {
+  border-color: var(--tia-cian);
+}
+.tia-pieza.es-elegida {
+  border-color: var(--tia-cian);
+  background: linear-gradient(165deg, #0e5a75, #073a4d);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--tia-cian) 38%, transparent);
+}
+.tia-pieza:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* ── El cuaderno de prompts de `n7-buenos-prompts` ───────────────────────── */
+
+.tia-rubrica {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tia-criterio {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #9dc0e2;
+}
+.tia-criterio.es-cumplido {
+  border-color: var(--tia-verde);
+  background: linear-gradient(165deg, #0b5137, #063526);
+  color: #d8fff0;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--tia-verde) 35%, transparent);
+}
+
+.tia-cuaderno {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tia-cuaderno li {
+  padding: 9px 12px;
+  border-radius: 12px;
+  border-left: 6px solid #2a6a9c;
+  background: #082238;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #cfe4ff;
+}
+.tia-cuaderno li.es-bueno {
+  border-left-color: var(--tia-verde);
+}
+.tia-cuaderno li.es-mejorable {
+  border-left-color: var(--tia-ambar);
+}
+.tia-cuaderno li.es-pobre {
+  border-left-color: var(--tia-rosa);
+}
+.tia-cuaderno-nivel {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9dc0e2;
+}

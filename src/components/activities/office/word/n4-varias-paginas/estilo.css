@@ -1,0 +1,255 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `n4-documento-de-varias-paginas` · lo que esta clase dibuja sobre el papel
+
+   Todo lo de aquí vive DENTRO de la hoja: la línea de puntos del salto, las
+   franjas de encabezado y pie, el número de página y la marca de los renglones
+   vacíos. Por eso sigue el lenguaje del programa —chrome claro, azul #185ABD,
+   gris de Word— y no el color pleno de la plataforma: dentro de Tecnia Textos
+   manda la fidelidad, y el color de la plataforma vive en la entrada.
+
+   La única excepción es la marca de los renglones vacíos, en ámbar: es el aviso
+   del maestro y tiene que verse, igual que el halo naranja de la cinta.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────── el salto de página ─────────────────────────── */
+
+/*
+   Se dibuja como en Word: una raya de puntos de canto a canto con el letrero
+   «Salto de página» encima. El bloque es alto —lo que le falta a la hoja para
+   acabarse, que es lo que empuja— pero de esa altura no se ve nada: la raya y
+   el letrero se pintan arriba del todo y el resto es papel en blanco, igual que
+   en una hoja de verdad a la que le sobra sitio.
+*/
+.txtw-flujo .txt-img.es-salto-pagina {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: hidden;
+  user-select: none;
+}
+
+.txtw-flujo .txt-img.es-salto-pagina img {
+  display: none;
+}
+
+.txtw-flujo .txt-img.es-salto-pagina::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7px;
+  border-top: 1px dotted #7a7a7a;
+}
+
+.txtw-flujo .txt-img.es-salto-pagina::after {
+  content: 'Salto de página';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  padding: 0 8px;
+  background: #fff;
+  color: #6b6b6b;
+  font-family: 'Carlito', 'Calibri', 'Segoe UI', sans-serif;
+  font-size: 8pt;
+  letter-spacing: 0.2px;
+  line-height: 15px;
+}
+
+/* Seleccionado —clic encima— se marca como cualquier objeto de Word, para que
+   se entienda que es UNA COSA que se puede borrar de un tecleo. */
+.txtw-flujo .txt-img.es-salto-pagina.ProseMirror-selectednode::before {
+  border-top-color: var(--w-azul, #185abd);
+}
+
+.txtw-flujo .txt-img.es-salto-pagina.ProseMirror-selectednode::after {
+  color: var(--w-azul, #185abd);
+  box-shadow: 0 0 0 1px var(--w-azul, #185abd);
+  border-radius: 2px;
+}
+
+/* ─────────────────────── encabezado y pie de página ─────────────────────── */
+
+.n4pg-franja {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Carlito', 'Calibri', 'Segoe UI', sans-serif;
+  font-size: 11pt;
+  line-height: 1.15;
+  color: #000;
+  cursor: text;
+}
+
+/* Sin abrir y sin nada escrito, el encabezado no se ve —como en Word—, pero el
+   sitio sigue estando: al posar el ratón aparece su raya y su nombre, que es lo
+   que enseña que ahí se puede escribir. */
+.n4pg-franja::after {
+  content: '';
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  top: -3px;
+  bottom: -3px;
+  border: 1px dashed transparent;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.n4pg-franja:hover::after {
+  border-color: #c8c6c4;
+}
+
+.n4pg-franja.es-editando::after {
+  border-color: var(--w-azul, #185abd);
+  border-style: dashed;
+}
+
+.n4pg-chapa {
+  position: absolute;
+  left: -6px;
+  top: -19px;
+  padding: 1px 7px 2px;
+  border-radius: 3px 3px 0 0;
+  background: #c8c6c4;
+  color: #201f1e;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2px;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  pointer-events: none;
+}
+
+.n4pg-franja.es-pie .n4pg-chapa {
+  top: auto;
+  bottom: -19px;
+  border-radius: 0 0 3px 3px;
+}
+
+.n4pg-franja:hover .n4pg-chapa,
+.n4pg-franja.es-editando .n4pg-chapa {
+  opacity: 1;
+}
+
+.n4pg-franja.es-editando .n4pg-chapa {
+  background: var(--w-azul, #185abd);
+  color: #fff;
+}
+
+.n4pg-escrito {
+  flex: 1 1 auto;
+  min-width: 0;
+  outline: none;
+  white-space: pre;
+  overflow: hidden;
+}
+
+.n4pg-franja.es-editando .n4pg-escrito {
+  cursor: text;
+}
+
+/* El hueco de la derecha es lo que deja el número EXACTAMENTE en el centro de
+   la hoja aunque el texto del pie sea largo: mismo ancho a los dos lados. */
+.n4pg-hueco {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/*
+   El número de página no se teclea.
+
+   Se pinta como un campo del programa —sombreado gris al posar el ratón, igual
+   que en Word— y no admite el cursor: intentar escribirlo y que no se deje es
+   parte de la lección. Lo pone el programa y lo mantiene el programa.
+*/
+.n4pg-numero {
+  flex: 0 0 auto;
+  padding: 0 6px;
+  border-radius: 2px;
+  font-variant-numeric: tabular-nums;
+  cursor: default;
+  user-select: none;
+}
+
+.n4pg-numero:hover {
+  background: #dcdcdc;
+  box-shadow: inset 0 0 0 1px #bdbdbd;
+}
+
+/* ─────────────────────── el modo de edición ─────────────────────── */
+
+/* El cuerpo se atenúa mientras se edita la franja: se sigue leyendo, pero se ve
+   que ahora mismo no es donde se escribe. */
+.n4pg-velo {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.66);
+  cursor: default;
+}
+
+.n4pg-cerrar {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 12px;
+  border: 1px solid var(--w-azul, #185abd);
+  border-radius: 3px;
+  background: var(--w-azul, #185abd);
+  color: #fff;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.n4pg-cerrar:hover {
+  background: var(--w-azul-honda, #103f91);
+}
+
+/* ─────────────────────── el aviso de los renglones vacíos ─────────────────────── */
+
+/*
+   Vive en el margen izquierdo de la hoja, como una marca de revisión, y no como
+   un globo flotando encima del documento: señala el sitio exacto donde está el
+   error y se apaga solo en cuanto se borran los renglones.
+*/
+.n4pg-vacios {
+  position: absolute;
+  left: 8px;
+  width: 84px;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  pointer-events: none;
+}
+
+.n4pg-vacios-barra {
+  flex: 0 0 auto;
+  align-self: stretch;
+  width: 4px;
+  margin-left: auto;
+  border-radius: 2px;
+  background: #f5a524;
+  box-shadow: 0 0 0 1px rgba(180, 83, 9, 0.35);
+}
+
+.n4pg-vacios-nota {
+  position: absolute;
+  right: 12px;
+  top: -2px;
+  width: 78px;
+  color: #92400e;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 9px;
+  line-height: 1.25;
+  text-align: right;
+}
+
+.n4pg-vacios-nota b {
+  display: block;
+  font-weight: 700;
+  color: #b45309;
+}

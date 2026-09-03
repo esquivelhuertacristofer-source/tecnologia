@@ -1,0 +1,420 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   of-m365-copiloto · «Tecnia Documentos» + «Tecnia Copiloto»
+
+   Dos ventanas simuladas lado a lado, color pleno y saturado, fondo oscuro
+   con drama de luz — nunca pastel. Tokens propios en `.mcp-lienzo`, como hace
+   `.tia-sala`/`.car-app`: esta hoja no depende de que otra ya esté cargada.
+
+   El documento es el panel PRINCIPAL (columna ancha); el copiloto vive en un
+   costado (columna angosta), tal como lo describe el pliego. La ventana del
+   copiloto es `VentanaAsistente` del armazón `simuladores/asistente`, sin
+   tocar ni una línea de su hoja de estilos: las dos reglas de más abajo con
+   selector `.mcp-marco .asis…` sólo AÑADEN cómo se acomoda dentro de esta
+   clase, igual que ya hace `.tva-asistente .asis-panel` en
+   `n7-verifica-a-la-ia`.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.mcp-lienzo {
+  --mcp-navy: #061a35;
+  --mcp-navy-2: #0b2d5b;
+  --mcp-ink: #0b1f3a;
+  --mcp-cian: #22d3ee;
+  --mcp-cian-honda: #0e7490;
+  --mcp-ambar: #fbbf24;
+  --mcp-ambar-honda: #b45309;
+  --mcp-verde: #34d399;
+  --mcp-verde-honda: #0f766e;
+  --mcp-rosa: #fb7185;
+  --mcp-rosa-honda: #9f1239;
+  --mcp-texto: #eaf2ff;
+  --mcp-texto-suave: #a9c0e0;
+
+  height: 100%;
+  min-height: 620px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 16px;
+  color: var(--mcp-texto);
+}
+
+@media (max-width: 900px) {
+  .mcp-lienzo {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+}
+
+.mcp-caja-ventana {
+  position: relative;
+  min-height: 460px;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+/* La ventana de chat necesita llenar el alto entero del marco. */
+.mcp-marco .asis {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ── La barra de herramientas decorativa (no interactiva a propósito) ────── */
+
+.mcp-toolbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--mcp-navy-2) 70%, transparent);
+  border-bottom: 1.5px solid color-mix(in srgb, #ffffff 10%, transparent);
+}
+
+.mcp-toolbar-icono {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 24px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 900;
+  color: var(--mcp-texto-suave);
+  background: color-mix(in srgb, #ffffff 6%, transparent);
+}
+.mcp-toolbar-icono--italic {
+  font-style: italic;
+}
+.mcp-toolbar-icono--underline {
+  text-decoration: underline;
+}
+.mcp-toolbar-sep {
+  width: 1.5px;
+  height: 18px;
+  margin: 0 4px;
+  background: color-mix(in srgb, #ffffff 14%, transparent);
+}
+
+/* ── Las pestañas del documento ───────────────────────────────────────────── */
+
+.mcp-tabs {
+  flex: none;
+  display: flex;
+  gap: 2px;
+  padding: 6px 8px 0;
+  background: color-mix(in srgb, var(--mcp-navy-2) 55%, transparent);
+}
+
+.mcp-tab {
+  border: none;
+  border-radius: 10px 10px 0 0;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  background: transparent;
+  color: var(--mcp-texto-suave);
+  cursor: pointer;
+}
+.mcp-tab.es-activa {
+  background: var(--mcp-ink);
+  color: var(--mcp-texto);
+}
+.mcp-tab.es-vista::after {
+  content: ' ✓';
+  color: var(--mcp-verde);
+}
+
+/* ── El cuerpo del documento ──────────────────────────────────────────────── */
+
+.mcp-doc-cuerpo {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--mcp-ink);
+}
+
+.mcp-doc-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 22px 24px;
+}
+
+.mcp-doc-titulo {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 0 22px rgba(34, 211, 238, 0.35);
+}
+
+.mcp-seccion {
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1.5px dashed color-mix(in srgb, #ffffff 12%, transparent);
+}
+.mcp-seccion:last-child {
+  border-bottom: none;
+}
+
+.mcp-seccion-titulo {
+  margin: 0 0 8px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mcp-cian);
+}
+
+.mcp-parrafo {
+  margin: 0 0 10px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--mcp-texto);
+}
+.mcp-parrafo--propia {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in srgb, var(--mcp-verde) 45%, transparent);
+  background: color-mix(in srgb, var(--mcp-verde-honda) 30%, var(--mcp-navy-2));
+}
+
+.mcp-resumen {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.mcp-vacio {
+  margin: 0;
+  color: var(--mcp-texto-suave);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.mcp-insertar {
+  border: 1.5px dashed color-mix(in srgb, var(--mcp-cian) 55%, transparent);
+  background: color-mix(in srgb, var(--mcp-cian-honda) 30%, var(--mcp-navy-2));
+  color: var(--mcp-texto);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.mcp-insertar:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+.mcp-insertar:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ── La cifra editable: el corazón de la clase ────────────────────────────── */
+
+.mcp-cifra-envoltura {
+  position: relative;
+  display: inline-block;
+}
+
+.mcp-cifra {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  border: none;
+  border-radius: 6px;
+  padding: 1px 6px;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+.mcp-cifra.es-riesgo {
+  background: color-mix(in srgb, var(--mcp-rosa) 24%, transparent);
+  color: #ffd7de;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--mcp-rosa) 55%, transparent);
+}
+.mcp-cifra.es-corregida {
+  background: color-mix(in srgb, var(--mcp-verde) 22%, transparent);
+  color: #d9fff0;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--mcp-verde) 55%, transparent);
+  cursor: default;
+}
+.mcp-cifra-editar,
+.mcp-cifra-check {
+  font-size: 0.78em;
+}
+
+.mcp-cifra-popover {
+  position: absolute;
+  z-index: 4;
+  top: calc(100% + 8px);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--mcp-navy-2);
+  border: 1.5px solid color-mix(in srgb, var(--mcp-cian) 45%, transparent);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+}
+.mcp-cifra-popover-titulo {
+  margin: 0 0 2px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--mcp-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.mcp-cifra-op {
+  border: 1.5px solid color-mix(in srgb, #ffffff 16%, transparent);
+  background: color-mix(in srgb, var(--mcp-ink) 70%, transparent);
+  color: var(--mcp-texto);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: left;
+}
+.mcp-cifra-op:hover {
+  border-color: var(--mcp-cian);
+}
+
+/* ── La sugerencia imprudente y las conclusiones propias ──────────────────── */
+
+.mcp-sugerencia-riesgo {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in srgb, var(--mcp-rosa) 55%, transparent);
+  background: color-mix(in srgb, var(--mcp-rosa-honda) 35%, var(--mcp-navy-2));
+}
+.mcp-sugerencia-texto {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+.mcp-sugerencia-botones {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.mcp-boton-riesgo {
+  border: 1.5px solid color-mix(in srgb, #ffffff 20%, transparent);
+  background: transparent;
+  color: var(--mcp-texto-suave);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.mcp-boton-riesgo:hover {
+  background: color-mix(in srgb, #ffffff 8%, transparent);
+}
+.mcp-boton-rechazar {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 900;
+  cursor: pointer;
+  color: var(--mcp-ink);
+  background: linear-gradient(135deg, var(--mcp-verde), #6ee7b7);
+}
+.mcp-boton-rechazar:hover {
+  filter: brightness(1.08);
+}
+
+.mcp-opciones-conclusion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mcp-opcion {
+  text-align: left;
+  border: 1.5px solid color-mix(in srgb, #ffffff 14%, transparent);
+  background: color-mix(in srgb, var(--mcp-navy-2) 55%, transparent);
+  color: var(--mcp-texto);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+.mcp-opcion:hover {
+  border-color: var(--mcp-verde);
+}
+
+/* ── La pestaña de referencia ─────────────────────────────────────────────── */
+
+.mcp-fuente {
+  padding: 4px;
+}
+.mcp-fuente-titulo {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--mcp-ambar);
+}
+.mcp-fuente-texto {
+  margin: 0;
+  padding: 14px;
+  border-radius: 10px;
+  background: color-mix(in srgb, #ffffff 5%, transparent);
+  border: 1.5px dashed color-mix(in srgb, var(--mcp-ambar) 45%, transparent);
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--mcp-texto);
+}
+
+/* ── El muelle de publicar ────────────────────────────────────────────────── */
+
+.mcp-dock {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.mcp-checklist {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--mcp-texto-suave);
+}
+.mcp-checklist li.es-lista {
+  color: var(--mcp-verde);
+}
+
+.mcp-publicar {
+  margin-left: auto;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-size: 0.85rem;
+  font-weight: 900;
+  cursor: pointer;
+  color: var(--mcp-ink);
+  background: linear-gradient(135deg, var(--mcp-ambar), #fde047);
+  box-shadow: 0 8px 20px rgba(251, 191, 36, 0.35);
+}
+.mcp-publicar:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+.mcp-publicar:disabled {
+  cursor: default;
+  color: var(--mcp-texto-suave);
+  background: color-mix(in srgb, #ffffff 12%, transparent);
+  box-shadow: none;
+}

@@ -1,0 +1,200 @@
+/*
+ * Tecnia Nube — el servicio de almacenamiento y trabajo en la nube.
+ *
+ * Color pleno y saturado sobre fondo oscuro con drama de luz (misma familia
+ * que `ventanaExplorador.css`/`ventanaMuro.css`), con su propia paleta —azul
+ * y cian, no el ámbar de Tecnia Sistema— para que se lea como OTRO programa,
+ * no como el mismo explorador con otro nombre. El conflicto y "sin conexión"
+ * usan rojo/ámbar de alerta a propósito: son los dos momentos en los que el
+ * armazón quiere que la mirada se detenga.
+ *
+ * El marco (barra de título, botón de encender) llega con `VentanaBase`;
+ * todo aquí vive dentro de su hueco de contenido.
+ */
+
+.tnb {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  height: 100%;
+  padding: 12px;
+  background: radial-gradient(120% 100% at 50% 0%, #08192b 0%, #050f1c 60%, #030810 100%);
+  color: #eaf6ff;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* ── barra superior: conexión, cola, espacio ──────────────────────────── */
+
+.tnb-barra {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  background: #0c2440;
+  border: 2px solid #14477e;
+  border-radius: 14px;
+}
+
+.tnb-conexion { font-weight: 800; font-size: 12.5px; padding: 4px 10px; border-radius: 999px; }
+.tnb-conexion.es-en-linea { background: rgba(45, 212, 191, 0.16); color: #5eead4; }
+.tnb-conexion.es-sin-conexion { background: rgba(248, 113, 113, 0.18); color: #fca5a5; }
+
+.tnb-cola {
+  font-weight: 800;
+  font-size: 12px;
+  color: #fcd34d;
+  background: rgba(252, 211, 77, 0.14);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.tnb-espacio { flex: 1 1 160px; display: flex; align-items: center; gap: 10px; min-width: 140px; }
+.tnb-espacio-barra { flex: 1; height: 10px; border-radius: 6px; background: #071a2e; border: 1px solid #14477e; overflow: hidden; }
+.tnb-espacio-relleno { display: block; height: 100%; background: linear-gradient(90deg, #38bdf8, #2563eb); }
+.tnb-espacio-texto { flex: none; font-size: 11.5px; font-weight: 700; color: #93c5fd; }
+
+/* ── avisos ─────────────────────────────────────────────────────────────── */
+
+.tnb-aviso {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #0c2440;
+  border: 2px solid #14477e;
+  color: #bfe3ff;
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+/* ── cuerpo: lista + detalle ───────────────────────────────────────────── */
+
+.tnb-cuerpo { flex: 1; min-height: 0; display: flex; gap: 12px; }
+.tnb-vacio { margin: auto; text-align: center; color: #6ea8db; font-weight: 700; max-width: 32ch; }
+.tnb-vacio-mini { color: #6ea8db; font-weight: 600; font-size: 12.5px; margin: 4px 0; }
+
+.tnb-lista {
+  flex: 0 0 240px;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tnb-fila {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #0c2440;
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+.tnb-fila:hover { border-color: #14477e; }
+.tnb-fila.es-seleccionada { background: #143a63; border-color: #38bdf8; }
+
+.tnb-fila-nombre { font-weight: 800; }
+.tnb-fila-estado { font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.tnb-fila-estado.es-subido { background: rgba(45, 212, 191, 0.16); color: #5eead4; }
+.tnb-fila-estado.es-subiendo { background: rgba(56, 189, 248, 0.18); color: #7dd3fc; }
+.tnb-fila-estado.es-solo-local { background: rgba(148, 163, 184, 0.18); color: #cbd5e1; }
+.tnb-fila-estado.es-solo-nube { background: rgba(129, 140, 248, 0.18); color: #a5b4fc; }
+.tnb-fila-estado.es-conflicto { background: rgba(248, 113, 113, 0.2); color: #fca5a5; }
+.tnb-fila-pendiente { font-size: 10.5px; font-weight: 700; color: #fcd34d; }
+
+/* ── el panel de detalle ────────────────────────────────────────────────── */
+
+.tnb-detalle { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+
+.tnb-detalle-cabecera { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.tnb-detalle-nombre { margin: 0; font-size: 17px; }
+.tnb-detalle-dueno { color: #6ea8db; font-weight: 700; font-size: 12px; }
+
+.tnb-boton-subir,
+.tnb-detalle button,
+.tnb-form-compartir button,
+.tnb-enlace-acciones button {
+  border: 0;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-weight: 800;
+  font-size: 12px;
+  color: #041224;
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  cursor: pointer;
+}
+.tnb-detalle button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.tnb-seccion {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #0c2440;
+  border: 2px solid #14477e;
+}
+.tnb-seccion h4 { margin: 0 0 8px; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.04em; color: #93c5fd; }
+
+/* ── coautoría ──────────────────────────────────────────────────────────── */
+
+.tnb-editores { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.tnb-editores li { display: flex; align-items: center; gap: 6px; font-weight: 700; }
+.tnb-editores button { background: transparent; color: #fca5a5; border: 0; cursor: pointer; font-weight: 800; }
+.tnb-acciones-mini { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── conflicto ──────────────────────────────────────────────────────────── */
+
+.tnb-conflicto { border-color: #b91c1c; background: rgba(185, 28, 28, 0.12); }
+.tnb-conflicto-columnas { display: flex; gap: 10px; }
+.tnb-conflicto-col {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #0c2440;
+  border: 2px solid #7f1d1d;
+}
+.tnb-conflicto-autor { margin: 0; font-weight: 800; }
+.tnb-conflicto-fecha { margin: 0 0 6px; color: #fca5a5; font-size: 11.5px; font-weight: 700; }
+.tnb-conflicto-ambas { margin-top: 8px; background: linear-gradient(135deg, #fca5a5, #ef4444) !important; }
+
+/* ── compartir ──────────────────────────────────────────────────────────── */
+
+.tnb-accesos { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.tnb-accesos li { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tnb-accesos select { background: #071a2e; color: #eaf6ff; border: 2px solid #14477e; border-radius: 8px; padding: 2px 6px; }
+.tnb-form-compartir { display: flex; gap: 6px; flex-wrap: wrap; }
+.tnb-form-compartir select { background: #071a2e; color: #eaf6ff; border: 2px solid #14477e; border-radius: 8px; padding: 4px 6px; }
+
+/* ── enlace público ─────────────────────────────────────────────────────── */
+
+.tnb-enlace-estado { font-weight: 700; margin: 0 0 6px; }
+.tnb-enlace-acciones { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.tnb-enlace-acciones select { background: #071a2e; color: #eaf6ff; border: 2px solid #14477e; border-radius: 8px; padding: 4px 6px; }
+.tnb-enlace-vistos { margin-top: 8px; font-size: 12px; color: #93c5fd; }
+.tnb-enlace-vistos ul { margin: 4px 0 0; padding-left: 18px; }
+
+/* ── historial ──────────────────────────────────────────────────────────── */
+
+.tnb-historial { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.tnb-historial li { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 8px; border-radius: 8px; }
+.tnb-historial li.es-actual { background: rgba(56, 189, 248, 0.14); }
+.tnb-version-autor { font-weight: 800; }
+.tnb-version-fecha { color: #6ea8db; font-size: 11.5px; font-weight: 700; }
+.tnb-version-resumen { color: #bfe3ff; font-size: 12px; flex: 1; }
+.tnb-version-actual { font-size: 10.5px; font-weight: 800; color: #7dd3fc; }
+.tnb-historial li button {
+  border: 0;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-weight: 800;
+  font-size: 11px;
+  color: #041224;
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  cursor: pointer;
+}

@@ -1,0 +1,195 @@
+/**
+ * La ficha de revisión (§42.3).
+ *
+ * Vive dentro del panel acoplado de la ventana, así que hereda su ancho y su
+ * fondo blanco: aquí sólo va lo que es de la ficha.
+ */
+
+.fdr {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  font-size: 12px;
+  color: #1f2937;
+}
+
+/* ── la lista de diapositivas, con su semáforo ── */
+
+.fdr-mazo {
+  margin: 0;
+  padding: 7px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-bottom: 1px solid #e6eaf0;
+}
+
+.fdr-diapo {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 5px 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.fdr-diapo:hover {
+  background: #f1f5f9;
+}
+
+.fdr-diapo.es-aqui {
+  border-color: #c43e1c;
+  background: #fff4ef;
+}
+
+.fdr-num {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 10.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.fdr-titulo {
+  min-width: 0;
+  font-size: 11.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fdr-fallos {
+  font-size: 11px;
+  font-weight: 800;
+  color: #15803d;
+  font-variant-numeric: tabular-nums;
+}
+
+.fdr-diapo.es-falla .fdr-fallos {
+  color: #b45309;
+}
+
+.fdr-diapo.es-falla .fdr-num {
+  background: #fde68a;
+  color: #78350f;
+}
+
+/* ── las siete reglas de la diapositiva vigente ── */
+
+.fdr-reglas {
+  padding: 8px 7px 10px;
+  overflow: auto;
+}
+
+.fdr-cabecera {
+  margin: 0 0 6px;
+  font-size: 11px;
+  color: #5b6678;
+}
+
+.fdr-reglas ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fdr-regla {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  gap: 7px;
+  padding: 5px 6px;
+  border: 1px solid #e6eaf0;
+  border-radius: 6px;
+  background: #fbfcfe;
+}
+
+.fdr-regla.es-mal {
+  border-color: #f0c07a;
+  background: #fffaf0;
+}
+
+.fdr-marca {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.fdr-marca.es-bien {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.fdr-marca.es-mal {
+  background: #fde68a;
+  color: #92400e;
+}
+
+.fdr-casilla {
+  width: 16px;
+  height: 16px;
+  margin: 1px 0 0;
+  accent-color: #c43e1c;
+  cursor: pointer;
+}
+
+.fdr-que b {
+  display: block;
+  font-size: 11.5px;
+}
+
+.fdr-que small {
+  display: block;
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: #67707f;
+}
+
+.fdr-tuyo {
+  grid-column: 2;
+  justify-self: start;
+  margin-top: 2px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fdr-nota {
+  margin: 0 0 8px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: #46505f;
+}
+
+.fdr-vacio {
+  margin: 0;
+  font-size: 11.5px;
+  color: #67707f;
+}

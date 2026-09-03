@@ -1,0 +1,374 @@
+/*
+ * Las clases de Tecnia Código — la portada de objetivos y el encaje del
+ * programa dentro de la pantalla del gabinete.
+ *
+ * Dos cosas, y sólo dos:
+ *
+ *  1. **La portada** (`.pyc-portada*`), que es un cartel: fondo oscuro y color
+ *     pleno encima, chapas saturadas, un solo botón grande. Ni pastel, ni
+ *     blanco sobre blanco, ni bordes punteados.
+ *  2. **El encaje** (`.pyc-marco .cod*`), que son cuatro reglas de layout para
+ *     que el editor llene la pantalla del gabinete en vez de crecer hasta
+ *     salirse por debajo del bisel.
+ *
+ * Lo que NO está aquí: nada del editor. `VentanaCodigo` trae su hoja
+ * (`ventanaCodigo.css`) y su métrica va en línea desde `METRICA_EDITOR`. En
+ * `.cod-capa` y `.cod-area` no se toca **nada** que mueva un carácter: las dos
+ * capas van una encima de la otra y un píxel de relleno de más las separa.
+ * Por eso las reglas de abajo sólo tocan `flex`, `min-height` y `overflow` de
+ * los contenedores, y ni siquiera nombran esas dos clases.
+ */
+
+/* ─────────────────────────── la portada de objetivos ─────────────────────── */
+
+.pyc-portada {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  justify-items: center;
+  /* `safe` y no `center` a secas: en una pantalla baja, una portada más alta
+     que el bisel se recorta POR ARRIBA con el centrado normal, y lo primero
+     que se pierde es el tema de la clase. Con `safe` se alinea al principio en
+     cuanto no cabe, y entonces el scroll sirve de algo. */
+  align-content: safe center;
+  padding: 20px;
+  overflow-y: auto;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(56, 89, 220, 0.32), transparent 62%),
+    linear-gradient(165deg, #131a46, #070c1e 70%);
+}
+
+.pyc-portada-caja {
+  width: min(760px, 100%);
+  border-radius: 22px;
+  border: 3px solid #3d55b0;
+  background: linear-gradient(170deg, #131c4c, #0a1030);
+  box-shadow: 0 26px 70px rgba(2, 6, 20, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  padding: 22px 24px 24px;
+  color: #e8f0ff;
+}
+
+.pyc-portada-situacion {
+  margin: 0 0 6px;
+  color: #7ee0ff;
+  font-size: 12.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pyc-portada-tema {
+  margin: 0 0 16px;
+  font-size: clamp(23px, 3.4vw, 33px);
+  font-weight: 900;
+  line-height: 1.12;
+  color: #fff;
+  text-shadow: 0 0 26px rgba(99, 102, 241, 0.55);
+}
+
+.pyc-portada-etiqueta {
+  display: block;
+  margin-bottom: 6px;
+  color: #8fa6e0;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pyc-portada-objetivo {
+  border-radius: 14px;
+  border: 2px solid #22d3ee;
+  background: linear-gradient(120deg, rgba(34, 211, 238, 0.16), rgba(34, 211, 238, 0.04));
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+.pyc-portada-objetivo p {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.42;
+  color: #eaf6ff;
+}
+
+.pyc-portada-cuerpo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.pyc-portada-lista {
+  flex: 1 1 340px;
+  min-width: 0;
+}
+.pyc-portada-lista ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: pyc-paso;
+}
+.pyc-portada-lista li {
+  counter-increment: pyc-paso;
+  position: relative;
+  padding: 7px 0 7px 36px;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #cfe0ff;
+}
+.pyc-portada-lista li::before {
+  content: counter(pyc-paso);
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 12.5px;
+  font-weight: 900;
+  color: #07122c;
+  background: linear-gradient(140deg, #fbbf24, #f59e0b);
+  box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);
+}
+
+.pyc-portada-lado {
+  flex: 0 0 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pyc-portada-datos {
+  display: flex;
+  gap: 10px;
+}
+.pyc-portada-datos span {
+  flex: 1;
+  border-radius: 12px;
+  border: 2px solid #3d55b0;
+  background: #0a1130;
+  padding: 9px 6px;
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #8fa6e0;
+}
+.pyc-portada-datos b {
+  display: block;
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.pyc-portada-insignia {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  border: 2px solid #a78bfa;
+  background: linear-gradient(120deg, rgba(167, 139, 250, 0.22), rgba(167, 139, 250, 0.05));
+  padding: 10px 12px;
+}
+.pyc-portada-insignia-glifo {
+  font-size: 26px;
+  line-height: 1;
+}
+.pyc-portada-insignia-nombre {
+  font-size: 12px;
+  font-weight: 900;
+  color: #e5dcff;
+  line-height: 1.25;
+}
+
+.pyc-portada-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+  border: 0;
+  border-radius: 16px;
+  padding: 16px 26px;
+  font-size: 19px;
+  font-weight: 900;
+  color: #04122a;
+  background: linear-gradient(135deg, #22d3ee, #3b82f6);
+  box-shadow: 0 14px 36px rgba(59, 130, 246, 0.45);
+  cursor: pointer;
+}
+.pyc-portada-boton:hover {
+  filter: brightness(1.08);
+}
+.pyc-portada-boton:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 3px;
+}
+.pyc-portada-boton-glifo {
+  font-size: 23px;
+}
+
+/* ───────────────── el encaje del programa en la pantalla ─────────────────── */
+
+/*
+ * `.vtb-marco` ya es `position: absolute; inset: 0`, así que la ventana llena
+ * el bisel del gabinete. Lo que falta es que el editor **crezca** dentro de
+ * ella: `.cod` y `.cod-cuerpo` traen `min-height: 0` pero no `flex`, porque el
+ * armazón no decide dónde lo montan. Aquí sí se sabe: en una pantalla de alto
+ * fijo, y por eso el que reparte el alto es este archivo y no el suyo.
+ */
+.pyc-marco .cod {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.pyc-marco .cod-cuerpo {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.pyc-marco .cod-izquierda {
+  min-height: 0;
+}
+
+/* La consola tiene `max-height: 40vh` y el editor un mínimo de 260 px: en una
+   pantalla baja los dos juntos pasan del alto disponible. Que scrollee la
+   columna, y no que se salga por debajo del bisel. */
+.pyc-marco .cod-izquierda {
+  overflow-y: auto;
+}
+
+/* ───────────────────────── los paneles de cada clase ─────────────────────── */
+
+/*
+ * Los tres paneles fijos (las tres piezas, la mesa de tipos, el buzón) viven
+ * dentro de `.cod-panel`, que ya trae su caja. Esto es sólo lo de dentro.
+ */
+
+.pyc-filas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pyc-fila {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  border-radius: 11px;
+  border: 2px solid #2b3a7a;
+  background: #070c22;
+  padding: 8px 10px;
+  color: #9fb4ec;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+}
+button.pyc-fila {
+  cursor: pointer;
+}
+button.pyc-fila:hover {
+  border-color: #3d55b0;
+}
+.pyc-fila.es-hecha {
+  border-color: #22c55e;
+  background: linear-gradient(120deg, rgba(34, 197, 94, 0.18), rgba(34, 197, 94, 0.04));
+  color: #d7ffe9;
+}
+
+.pyc-fila-marca {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  background: #131c4c;
+  color: #6d81c4;
+}
+.pyc-fila.es-hecha .pyc-fila-marca {
+  background: #22c55e;
+  color: #05210f;
+}
+
+.pyc-fila-textos {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.pyc-fila-nombre {
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, monospace;
+  font-size: 13px;
+  font-weight: 900;
+  color: #eaf2ff;
+  overflow-wrap: anywhere;
+}
+.pyc-fila-detalle {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #8fa6e0;
+  overflow-wrap: anywhere;
+}
+
+.pyc-vacio {
+  margin: 0;
+  color: #5f76b5;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.pyc-nota {
+  margin: 10px 0 0;
+  border-radius: 10px;
+  border-left: 4px solid #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+  padding: 8px 10px;
+  color: #ffe9b8;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* La chapa de tipo de la Mesa de tipos: un color pleno por tipo. */
+.pyc-tipo {
+  flex: none;
+  margin-left: auto;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, monospace;
+  font-size: 11px;
+  font-weight: 900;
+  color: #04122a;
+  background: #64748b;
+}
+.pyc-tipo[data-tipo='int'] {
+  background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+}
+.pyc-tipo[data-tipo='float'] {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+.pyc-tipo[data-tipo='str'] {
+  background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
+  color: #150733;
+}
+.pyc-tipo[data-tipo='bool'] {
+  background: linear-gradient(135deg, #4ade80, #16a34a);
+}
+
+.pyc-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}

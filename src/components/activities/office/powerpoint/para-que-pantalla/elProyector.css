@@ -1,0 +1,139 @@
+/**
+ * El proyector del salón de actos (§44.3).
+ *
+ * Vive dentro del panel acoplado de la ventana, así que hereda su ancho y su
+ * fondo. Lo suyo son **dos rectángulos**: la pantalla del salón, que no cambia
+ * nunca —4:3—, y la imagen que el proyector mete dentro, que cambia según lo
+ * que el alumno haya hecho. Todo lo demás es texto.
+ */
+
+.prj {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 11px;
+  font-size: 12px;
+  color: #1f2937;
+}
+
+.prj-rotulo {
+  margin: 0;
+  color: #475569;
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.prj-nota {
+  margin: 0;
+  color: #475569;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* ── la pantalla del salón ── */
+
+/* 4:3 clavado con `aspect-ratio`, no con una altura a ojo: la proporción es el
+   dato de la clase y calcularla mal sería mentir en lo único que se enseña. El
+   negro es negro de verdad — es lo que se ve donde no llega la imagen. */
+.prj-pantalla {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 3px solid #1e293b;
+  border-radius: 3px;
+  background: #000;
+  overflow: hidden;
+}
+
+/* La imagen proyectada. Se dibuja al tamaño de maquetación de la presentación
+   —960 × 540 o 720 × 540— y se ESCALA: estirada, con un factor por eje, que es
+   lo que deforma las letras; encajada, con el mismo en los dos, y lo que sobra
+   se ve negro. Con la caja a porcentajes no deformaba nada: el texto se
+   reacomodaba solo y salía perfecto, sólo que más pequeño. */
+.prj-imagen {
+  position: absolute;
+  transform-origin: center;
+  container-type: size;
+}
+
+.prj-imagen > * {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── el interruptor y el veredicto ── */
+
+.prj-modos {
+  display: flex;
+  gap: 6px;
+}
+
+.prj-modos button {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid var(--w-borde, #d4d4d4);
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.prj-modos button.es-puesto {
+  border-color: #b7472a;
+  background: #fef2f2;
+  color: #b7472a;
+}
+
+.prj-veredicto {
+  margin: 0;
+  padding: 8px 10px;
+  border-left: 3px solid;
+  border-radius: 0 5px 5px 0;
+  font-size: 11px;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.prj-veredicto.es-mal {
+  border-color: #b91c1c;
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+
+.prj-veredicto.es-bien {
+  border-color: #15803d;
+  background: #ecfdf5;
+  color: #14532d;
+}
+
+/* ── apagado ── */
+
+.prj-apagado {
+  align-items: flex-start;
+}
+
+/* El botón grande, porque es un encargo entero: encenderlo ES el primer paso
+   de la clase y tiene que verse como lo que hay que hacer. */
+.prj-encender {
+  width: 100%;
+  padding: 11px;
+  border: 0;
+  border-radius: 8px;
+  background: #b7472a;
+  color: #fff;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.prj-encender:hover {
+  background: #9a3b23;
+}

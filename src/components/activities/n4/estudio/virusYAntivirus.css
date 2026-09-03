@@ -1,0 +1,159 @@
+/* `Tecnia Antivirus` — N4·U6 «Virus y antivirus».
+   Software de verdad, sin metáfora física y sin 3D: la mesa de triaje vive
+   dentro de la pantalla plana de `ArcadeSala` (n1/arcade/ArcadeSala.tsx), la
+   misma que usaban las cinco primeras máquinas de N1 antes de que N2 en
+   adelante migrara al gabinete WebGL. Aquí no hace falta ese gabinete —la
+   regla de la casa para esta actividad es «nada de 3D forzado»— así que el
+   propio programa antivirus, con su barra de título, su lista y su panel de
+   detalle, ES la pantalla completa. Reutiliza las variables de color de
+   `.arcade-n1` (--cian, --ambar, --verde, --rojo, --panel…) que ya cargó
+   arcade.css, y no redefine ninguna.
+
+   El marco, la barra de título y la pantalla de "encender" (`.av-marco`,
+   `.av-barra*`, `.av-espera*`, `.av-encender`) se extrajeron el 15-ago-2026 a
+   `VentanaBase` (src/components/simuladores/), compartida con «Tecnia
+   Archivos» de N5 — eran la misma ventana escrita dos veces, sólo cambiaba
+   el prefijo. `.av-marco` se conserva como clase adicional sobre el marco de
+   `VentanaBase` (ver `claseMarco`) únicamente para no romper el selector que
+   ya usaban las pruebas existentes; su estilo real vive ahora en
+   `ventana-base.css`. Ver CANON-ARMAZONES.md, «Pieza 0». */
+
+/* ── cuerpo: lista a la izquierda, panel de detalle a la derecha ── */
+.arcade-n1 .av-cuerpo {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) 1fr;
+}
+
+/* -- columna de la lista -- */
+.arcade-n1 .av-lista {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(92, 225, 230, 0.16);
+  background: rgba(5, 12, 22, 0.5);
+}
+.arcade-n1 .av-lista-header { flex: none; padding: 12px 12px 10px; display: grid; gap: 8px; }
+.arcade-n1 .av-lista-titulo { margin: 0; font-size: 11px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: var(--apagado); }
+.arcade-n1 .av-analizar {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px solid var(--ambar);
+  background: rgba(255, 210, 90, 0.12);
+  color: var(--ambar);
+  font-size: 12.5px;
+  font-weight: 900;
+  text-align: left;
+}
+.arcade-n1 .av-analizar:hover:not(:disabled) { background: rgba(255, 210, 90, 0.22); }
+.arcade-n1 .av-analizar:disabled { opacity: 0.7; cursor: default; }
+.arcade-n1 .av-lista-filas { flex: 1; min-height: 0; overflow-y: auto; padding: 0 8px 10px; display: grid; gap: 6px; }
+.arcade-n1 .av-fila {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  opacity: 0.55;
+}
+.arcade-n1 .av-fila.es-activa {
+  opacity: 1;
+  background: rgba(92, 225, 230, 0.1);
+  border-color: rgba(92, 225, 230, 0.5);
+  box-shadow: 0 0 16px rgba(92, 225, 230, 0.2);
+}
+.arcade-n1 .av-fila.es-resuelta { opacity: 0.85; }
+.arcade-n1 .av-fila-emoji { font-size: 18px; line-height: 1; }
+.arcade-n1 .av-fila-nombre { font-size: 12.5px; font-weight: 800; color: var(--texto); }
+.arcade-n1 .av-fila-veredicto {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--verde);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* -- chapas del antivirus (verdicto de la firma) -- */
+.arcade-n1 .av-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 9.5px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.arcade-n1 .av-badge.es-limpio { background: rgba(88, 226, 156, 0.16); color: var(--verde); border: 1px solid rgba(88, 226, 156, 0.5); }
+.arcade-n1 .av-badge.es-amenaza {
+  background: rgba(255, 109, 124, 0.18);
+  color: #ffb3bd;
+  border: 1px solid var(--rojo);
+  animation: av-parpadea-amenaza 1s ease infinite;
+}
+@keyframes av-parpadea-amenaza { 50% { box-shadow: 0 0 10px rgba(255, 109, 124, 0.6); } }
+.arcade-n1 .av-badge.es-desconocido { background: rgba(238, 248, 255, 0.08); color: var(--apagado); border: 1px solid rgba(238, 248, 255, 0.18); }
+
+/* -- panel de detalle -- */
+.arcade-n1 .av-panel { min-height: 0; display: flex; flex-direction: column; padding: 14px 18px 16px; overflow-y: auto; }
+.arcade-n1 .av-panel-vacio { margin: auto; max-width: 320px; text-align: center; color: var(--apagado); font-size: 13.5px; font-weight: 700; }
+.arcade-n1 .av-panel-header { flex: none; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.arcade-n1 .av-panel-emoji { font-size: 30px; line-height: 1; }
+.arcade-n1 .av-panel-nombre { font-size: 17px; font-weight: 900; color: #fff; }
+
+.arcade-n1 .av-tabs { flex: none; display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.arcade-n1 .av-tab {
+  padding: 8px 12px;
+  border-radius: 10px 10px 0 0;
+  border: 1px solid rgba(92, 225, 230, 0.2);
+  border-bottom: none;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--apagado);
+  font-size: 12px;
+  font-weight: 800;
+}
+.arcade-n1 .av-tab.es-activa {
+  color: #031323;
+  background: var(--cian);
+  border-color: var(--cian);
+}
+
+.arcade-n1 .av-tab-contenido {
+  flex: none;
+  min-height: 108px;
+  padding: 14px 16px;
+  border-radius: 4px 12px 12px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(92, 225, 230, 0.18);
+  margin-bottom: 14px;
+}
+.arcade-n1 .av-declara { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--texto); font-style: italic; }
+.arcade-n1 .av-permisos { margin: 0; padding: 0 0 0 18px; display: grid; gap: 6px; font-size: 13.5px; font-weight: 700; color: #ffcf9e; }
+.arcade-n1 .av-real { margin: 0; font-size: 14.5px; line-height: 1.55; color: #ffd9de; font-weight: 600; }
+
+.arcade-n1 .av-acciones { flex: none; display: flex; gap: 10px; flex-wrap: wrap; margin-top: auto; }
+.arcade-n1 .av-accion {
+  flex: 1 1 150px;
+  padding: 13px 12px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  font-size: 13.5px;
+  font-weight: 900;
+  color: #031323;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+.arcade-n1 .av-accion:hover { filter: brightness(1.07); transform: translateY(-1px); }
+.arcade-n1 .av-accion-dejar { background: linear-gradient(135deg, var(--verde), #2fae76); }
+.arcade-n1 .av-accion-revisar { background: linear-gradient(135deg, var(--ambar), var(--ambar-hondo)); }
+.arcade-n1 .av-accion-quitar { background: linear-gradient(135deg, #ff8f9c, var(--rojo)); color: #2a0308; }
+
+@media (max-width: 720px) {
+  .arcade-n1 .av-cuerpo { grid-template-columns: 1fr; grid-template-rows: minmax(140px, 34%) 1fr; }
+  .arcade-n1 .av-lista { border-right: none; border-bottom: 1px solid rgba(92, 225, 230, 0.16); }
+}

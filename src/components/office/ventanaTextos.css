@@ -1,0 +1,1654 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Tecnia Textos · la ventana entera (doc §36)
+
+   Dos lenguajes visuales conviven aquí a propósito.
+
+   El PROGRAMA imita a Word con fidelidad —chrome claro, azul #185ABD, cinta
+   blanca, hoja Carta sobre gris—. La regla de «color pleno y fondo oscuro» de
+   la plataforma gobierna la UI de los ejercicios, y aquí la fidelidad manda
+   sobre ella: el encargo era que la ventana FUERA Word, y un Word con fondo
+   oscuro y botones saturados no enseña a usar el Word que el alumno va a
+   encontrarse en la escuela.
+
+   El PANEL DEL MAESTRO —lo único que no existe en Word— sí lleva el color de la
+   plataforma. Va acoplado a la derecha como un panel de tareas de verdad, nunca
+   flotando encima del documento.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.txtw {
+  --w-azul: #185abd;
+  --w-azul-honda: #103f91;
+  --w-titulo-h: #2f5496;
+  --w-barra: #f3f2f1;
+  --w-borde: #e1dfdd;
+  --w-borde-suave: #edebe9;
+  --w-texto: #201f1e;
+  --w-gris: #605e5c;
+  --w-lienzo: #7c7a78;
+  --t-marca: #2b7fff;
+  --t-honda: #12448c;
+  --t-halo: #ffb020;
+  /* El ancho del panel del maestro. Es una variable y no un número repetido
+     desde el 11-ago-2026: el escenario de dos pantallas de §43.1 se para justo
+     donde el maestro empieza, y con el número escrito dos veces se habrían
+     separado en cuanto alguien tocara uno. */
+  --w-maestro: 340px;
+
+  position: fixed;
+  inset: 0;
+  /* Por encima de la barra superior del hub, que va en 50. La ventana además
+     se cuelga del `<body>` con un portal, porque dentro de la tarjeta del
+     anfitrión —que abre contexto de apilamiento con z-index 5— este número no
+     serviría de nada. */
+  z-index: 1000;
+  display: grid;
+  grid-template-rows: 38px 34px auto minmax(0, 1fr) 26px;
+  background: var(--w-barra);
+  color: var(--w-texto);
+  font-family: 'Segoe UI', 'Selawik', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.txtw *,
+.txtw *::before,
+.txtw *::after {
+  box-sizing: border-box;
+}
+
+/* ─────────────────────────── barra de título ─────────────────────────── */
+
+/* `.txtw` es un grid de una sola columna implícita (sólo define
+   `grid-template-rows`), así que las 5 filas —título, pestañas, cinta,
+   documento+panel, estado— comparten el mismo ancho de columna, y ese ancho
+   lo decide la fila que pida más. Medido en un teléfono a 390px: era ÉSTA
+   fila, no la cinta como parecía a simple vista — el logo + los 3 accesos
+   rápidos + el nombre del archivo + «Tecnia Textos» en una sola línea sin
+   wrap pedían 433px, y esos 43px de más se los llevaba la ventana entera
+   (confirmado apagando cada fila una por una). `min-width: 0` aquí es lo que
+   sostiene el arreglo; las otras 4 filas lo llevan por si acaso, no porque
+   se haya medido que ellas también empujan. */
+.txtw-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 0 6px 0 10px;
+  background: var(--w-barra);
+  border-bottom: 1px solid var(--w-borde);
+}
+
+.txtw-marca {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  background: var(--w-azul);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.5px;
+}
+
+.txtw-rapido {
+  display: flex;
+  gap: 1px;
+}
+
+.txtw-rapido-boton {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 24px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--w-gris);
+  cursor: pointer;
+}
+
+.txtw-rapido-boton:hover {
+  background: #e6e5e4;
+  color: var(--w-texto);
+}
+
+.txtw-archivo {
+  flex: 1;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--w-texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.txtw-guardado {
+  font-weight: 400;
+  color: var(--w-gris);
+}
+
+.txtw-programa {
+  font-size: 11.5px;
+  color: var(--w-gris);
+}
+
+.txtw-cerrar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 30px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--w-gris);
+  cursor: pointer;
+}
+
+.txtw-cerrar:hover {
+  background: #d13438;
+  color: #fff;
+}
+
+/* ─────────────────────────── pestañas ─────────────────────────── */
+
+.txtw-pestanas {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 0;
+  padding: 0 8px;
+  background: var(--w-barra);
+  /* `min-width: 0` por el motivo del comentario en `.txtw-titulo`. Rueda
+     sola en vez de recortarse en silencio si algún día hay más pestañas de
+     las que caben. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+.txtw-pestana {
+  position: relative;
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 4px 4px 0 0;
+  background: transparent;
+  color: var(--w-texto);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.txtw-pestana:hover {
+  background: #eaeaea;
+}
+
+.txtw-pestana.es-activa {
+  background: #fff;
+  font-weight: 600;
+}
+
+/* El subrayado azul de la pestaña activa: es la señal de Word de «estás aquí». */
+.txtw-pestana.es-activa::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 0;
+  height: 2px;
+  background: var(--w-azul);
+  border-radius: 2px 2px 0 0;
+}
+
+.txtw-pestana.es-archivo {
+  background: var(--w-azul);
+  color: #fff;
+  font-weight: 600;
+  margin-right: 4px;
+  cursor: default;
+}
+
+/* ─────────────────────────── la cinta ─────────────────────────── */
+
+.txtw-cinta {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-width: 0;
+  padding: 5px 10px 0;
+  background: #fff;
+  border-bottom: 1px solid var(--w-borde);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+.txtw-grupo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2px 9px 1px;
+  border-right: 1px solid var(--w-borde-suave);
+}
+
+.txtw-grupo:last-child {
+  border-right: 0;
+}
+
+.txtw-grupo-controles {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding-bottom: 3px;
+}
+
+/* En Word los desplegables de tipografía van ENCIMA de sus botones, no al
+   lado. Es el único grupo que apila, y por eso se dice aquí y no en la clase. */
+.txtw-grupo[data-grupo='fuente'] .txtw-grupo-controles {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.txtw-grupo-nombre {
+  padding-top: 2px;
+  color: var(--w-gris);
+  font-size: 10.5px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Dos disposiciones, las mismas que usa Word.
+
+   `fila` reparte los botones en filas de `--cols` columnas, que es lo que deja
+   las cuatro alineaciones juntas en el segundo renglón del grupo Párrafo.
+
+   `columna` es la del grupo con botón principal —Pegar, Tabla—: el primero
+   ocupa los dos renglones con el icono encima del nombre, y los demás se
+   apilan a su derecha. Con `flex-wrap` ninguna de las dos sale estable. */
+.txtw-botones {
+  display: grid;
+  gap: 1px;
+}
+
+.txtw-botones[data-flujo='fila'] {
+  grid-auto-flow: row;
+  grid-template-columns: repeat(var(--cols, 1), auto);
+  justify-content: start;
+}
+
+.txtw-botones[data-flujo='columna'] {
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, 25px);
+}
+
+.txtw-boton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 26px;
+  min-height: 25px;
+  padding: 0 4px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--w-texto);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.txtw-boton.es-ancho {
+  justify-content: flex-start;
+  padding: 0 8px 0 5px;
+  min-width: 96px;
+}
+
+.txtw-boton.es-grande {
+  grid-row: 1 / span 2;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 56px;
+  padding: 3px 7px;
+  font-size: 11px;
+  line-height: 1.1;
+}
+
+.txtw-boton:hover {
+  background: #f0f0f0;
+  border-color: #d6d4d2;
+}
+
+.txtw-boton:active {
+  background: #e3e3e3;
+}
+
+.txtw-boton.es-activo {
+  background: #cfe4fa;
+  border-color: #9ec7f0;
+}
+
+/*
+ * Apagado es apagado, y hundido es hundido. Un botón que YA tiene su formato
+ * puesto no puede vestirse igual que uno que no existe: el último encargo de la
+ * clase 1 consiste precisamente en mirar el botón de centrar hundido, y salía
+ * gris pálido con el globo diciendo «aún no disponible».
+ */
+.txtw-boton[aria-disabled='true']:not(.es-activo) {
+  color: #b6b4b2;
+  cursor: default;
+}
+
+.txtw-boton[aria-disabled='true']:not(.es-activo):hover {
+  background: transparent;
+  border-color: transparent;
+}
+
+/* Hundido: se queda azul aunque le pases el ratón por encima. */
+.txtw-boton.es-activo:hover {
+  background: #bfdaf7;
+  border-color: #7fb4e8;
+}
+
+/* La rayita de color del icono «A», del color que va a poner. */
+.txtw-glifo {
+  position: relative;
+}
+
+.txtw-tinta {
+  position: absolute;
+  bottom: 1px;
+  left: 50%;
+  width: 13px;
+  height: 3px;
+  border-radius: 1px;
+  background: #c2410c;
+  transform: translateX(-50%);
+}
+
+.txtw-glifo {
+  display: grid;
+  place-items: center;
+  min-width: 17px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.txtw-nombre {
+  white-space: nowrap;
+}
+
+/* ─── el combo de tipografía ─── */
+
+.txtw-fuente-combo {
+  display: grid;
+  grid-template-columns: 132px 46px;
+  gap: 3px;
+  align-self: flex-start;
+}
+
+.txtw-select {
+  height: 24px;
+  padding: 0 4px;
+  border: 1px solid #c8c6c4;
+  border-radius: 2px;
+  background: #fff;
+  color: var(--w-texto);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.txtw-select:hover {
+  border-color: var(--w-azul);
+}
+
+/* ─── la galería de estilos ─── */
+
+.txtw-galeria {
+  display: flex;
+  gap: 3px;
+}
+
+.txtw-estilo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 62px;
+  height: 53px;
+  padding: 2px;
+  border: 1px solid #d6d4d2;
+  border-radius: 2px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.txtw-estilo:hover {
+  border-color: var(--w-azul);
+  background: #f3f9ff;
+}
+
+.txtw-estilo.es-activo {
+  border-color: var(--w-azul);
+  border-width: 2px;
+  background: #eaf3fd;
+}
+
+.txtw-estilo-aa {
+  line-height: 1.1;
+}
+
+.txtw-estilo-aa.es-normal {
+  font-size: 14px;
+  color: var(--w-texto);
+}
+
+.txtw-estilo-aa.es-titulo1 {
+  font-size: 19px;
+  color: var(--w-titulo-h);
+  font-weight: 400;
+}
+
+.txtw-estilo-aa.es-titulo2 {
+  font-size: 16px;
+  color: var(--w-titulo-h);
+  font-weight: 400;
+}
+
+.txtw-estilo-aa.es-wordart {
+  font-size: 18px;
+  font-weight: 800;
+  background: linear-gradient(180deg, #4a8ef0, #12448c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.txtw-estilo-nombre {
+  font-size: 9.5px;
+  color: var(--w-gris);
+  white-space: nowrap;
+}
+
+/* ─────────────────────────── documento + panel ─────────────────────────── */
+
+.txtw-medio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--w-maestro);
+  min-height: 0;
+  min-width: 0;
+}
+
+/* A los 340px fijos del maestro, un teléfono en vertical (390px de viewport)
+   no le deja al documento ni 50px reales — medido con Playwright: la hoja
+   quedaba como una tira de recorte de 90px, ilegible. Mismo criterio que el
+   arreglo del panel a 1024×768 (arriba, doc §37): decidir QUÉ cede, no
+   encoger letra. Aquí lo que cede es el acomodo lado a lado — documento y
+   maestro se apilan, cada uno con su propio scroll ya construido
+   (`.txtw-lienzo` y `.txtw-panel-cuerpo`), y el documento (lo que señalan
+   los encargos) manda con más alto que el panel. */
+@media (max-width: 760px) {
+  .txtw-medio {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1.3fr) minmax(0, 1fr);
+  }
+
+  .txtw-panel {
+    border-left: 0;
+    border-top: 1px solid var(--w-borde);
+  }
+}
+
+.txtw-lienzo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  padding: 0 24px 80px;
+  background: var(--w-lienzo);
+  overflow: auto;
+}
+
+/* ─── regla ─── */
+
+.txtw-regla {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  height: 18px;
+  margin: 8px 0 10px;
+  border: 1px solid #a19f9d;
+  border-radius: 1px;
+  background: #c8c6c4;
+  flex: none;
+}
+
+/* Marcas cada media pulgada y sólo en la mitad inferior, como Word. Con la
+   marca de arriba abajo la regla parecía una valla y se comía la página. */
+.txtw-regla-texto {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 47px, #9a9896 47px 48px) bottom / 100% 6px no-repeat,
+    #fff;
+  border-left: 1px solid #8a8886;
+  border-right: 1px solid #8a8886;
+}
+
+/* ─── la pila de hojas ─── */
+
+.txtw-zoom {
+  position: relative;
+  flex: none;
+}
+
+.txtw-pila {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+
+.txtw-hoja {
+  position: absolute;
+  left: 0;
+  background: #fff;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.34);
+}
+
+.txtw-anfitrion {
+  position: absolute;
+}
+
+/* ─────────────────────────── el documento ─────────────────────────── */
+
+.txtw-flujo {
+  width: 624px;
+  outline: none;
+  /* Carlito mide exactamente igual que Calibri; en un equipo con Office la
+     segunda entra sola y el documento se ve idéntico al de Word. */
+  font-family: 'Carlito', 'Calibri', 'Segoe UI', sans-serif;
+  font-size: 11pt;
+  line-height: 1.08;
+  color: #000;
+  caret-color: #000;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.txtw-flujo .txt-p,
+.txtw-flujo li {
+  margin: 0 0 8pt;
+}
+
+.txtw-flujo .txt-h {
+  font-weight: 400;
+  color: var(--w-titulo-h);
+  line-height: 1.15;
+}
+
+.txtw-flujo .txt-h.es-h1 {
+  margin: 12pt 0 0;
+  font-size: 16pt;
+}
+
+.txtw-flujo .txt-h.es-h2 {
+  margin: 2pt 0 0;
+  font-size: 13pt;
+}
+
+.txtw-flujo .txt-titular {
+  margin: 0 0 10pt;
+  font-size: 32pt;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+  background: linear-gradient(180deg, #5aa0f2 0%, #1d5fbf 55%, #0d3574 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 0.4px rgba(8, 32, 74, 0.35);
+}
+
+.txtw-flujo .es-izquierda { text-align: left; }
+.txtw-flujo .es-centro { text-align: center; }
+.txtw-flujo .es-derecha { text-align: right; }
+.txtw-flujo .es-justificado { text-align: justify; }
+
+.txtw-flujo .es-sangria-1 { margin-left: 47px; }
+.txtw-flujo .es-sangria-2 { margin-left: 94px; }
+.txtw-flujo .es-sangria-3 { margin-left: 141px; }
+.txtw-flujo .es-sangria-4 { margin-left: 188px; }
+
+.txtw-flujo .es-inter-15 { line-height: 1.5; }
+.txtw-flujo .es-inter-2 { line-height: 2; }
+
+/* El `list-style: none` de la base de la plataforma deja las listas sin marca;
+   aquí se repone a mano, porque una lista sin viñeta no es una lista. */
+.txtw-flujo ul.txt-ul {
+  margin: 0 0 8pt;
+  padding-left: 30px;
+  list-style: disc outside;
+}
+
+.txtw-flujo ol.txt-ol {
+  margin: 0 0 8pt;
+  padding-left: 30px;
+  list-style: decimal outside;
+}
+
+.txtw-flujo li {
+  display: list-item;
+}
+
+.txtw-flujo li::marker {
+  color: #000;
+}
+
+.txtw-flujo li > .txt-p {
+  margin-bottom: 0;
+}
+
+.txtw-flujo table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0 0 8pt;
+  overflow: hidden;
+}
+
+.txtw-flujo td,
+.txtw-flujo th {
+  border: 1px solid #000;
+  padding: 3px 6px;
+  vertical-align: top;
+  position: relative;
+}
+
+.txtw-flujo .selectedCell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(43, 127, 255, 0.18);
+  pointer-events: none;
+}
+
+.txtw-flujo .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--t-marca);
+  pointer-events: none;
+}
+
+.txtw-flujo .txt-img {
+  margin: 0 0 8pt;
+  display: block;
+  overflow: hidden;
+}
+
+.txtw-flujo .txt-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.txtw-flujo .txt-img.es-cuadrado {
+  float: left;
+  margin: 0 12px 6px 0;
+}
+
+/* El espaciador de la paginación. No es contenido: no se selecciona, no recibe
+   el ratón y no tiene texto, así que no cuenta para el número de palabras. */
+.txt-salto-hoja {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ─────────────────────────── panel del maestro ─────────────────────────── */
+
+.txtw-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  background: #fff;
+  border-left: 1px solid var(--w-borde);
+  overflow: auto;
+}
+
+.txtw-panel-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  background: linear-gradient(135deg, var(--t-honda) 0%, var(--t-marca) 100%);
+  color: #fff;
+}
+
+.txtw-panel-titulo {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.txtw-panel-cuenta {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 11.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.txtw-lista {
+  margin: 0;
+  padding: 10px 12px;
+  list-style: none;
+  border-bottom: 1px solid var(--w-borde);
+}
+
+.txtw-lista-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 5px;
+  color: var(--w-gris);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.txtw-lista-marca {
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  flex: none;
+  border-radius: 50%;
+  background: #e6e5e4;
+  color: var(--w-gris);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.txtw-lista-item.es-hecho {
+  color: #0f7b3f;
+}
+
+.txtw-lista-item.es-hecho .txtw-lista-marca {
+  background: #12a75a;
+  color: #fff;
+}
+
+.txtw-lista-item.es-ahora {
+  background: #eaf3fd;
+  color: var(--t-honda);
+  font-weight: 700;
+}
+
+.txtw-lista-item.es-ahora .txtw-lista-marca {
+  background: var(--t-marca);
+  color: #fff;
+}
+
+.txtw-encargo {
+  margin: 12px;
+  padding: 14px 15px 15px;
+  border-radius: 10px;
+  background: linear-gradient(160deg, var(--t-marca) 0%, var(--t-honda) 100%);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(18, 68, 140, 0.28);
+}
+
+.txtw-encargo h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.txtw-encargo p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.txtw-encargo.es-acierto {
+  background: linear-gradient(160deg, #17b45f 0%, #0a7a3c 100%);
+  box-shadow: 0 6px 18px rgba(10, 122, 60, 0.3);
+  text-align: center;
+}
+
+.txtw-encargo.es-final {
+  background: linear-gradient(160deg, #7a3ff2 0%, #3b1a8c 100%);
+}
+
+.txtw-palomita {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.txtw-opciones {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.txtw-opcion {
+  padding: 9px 12px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.txtw-opcion:hover {
+  background: #fff;
+  color: var(--t-honda);
+  border-color: #fff;
+}
+
+.txtw-confirmar {
+  margin-top: 12px;
+  padding: 10px 14px;
+  width: 100%;
+  border: 0;
+  border-radius: 7px;
+  background: #fff;
+  color: var(--t-honda);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.txtw-confirmar:hover {
+  background: #ffe9b8;
+}
+
+.txtw-pista {
+  margin-top: 11px !important;
+  padding: 9px 11px;
+  border-radius: 7px;
+  background: #ffd166;
+  color: #5a3c00 !important;
+  font-size: 12.5px !important;
+  font-weight: 600;
+}
+
+.txtw-error {
+  margin-top: 11px !important;
+  padding: 8px 11px;
+  border-radius: 7px;
+  background: #ff5a5a;
+  color: #fff !important;
+  font-size: 12.5px !important;
+  font-weight: 700;
+}
+
+/*
+ * El recado del programa. No es un error del alumno —pulsar un botón apagado no
+ * es equivocarse—, así que no puede vestir de rojo ni de amarillo de pista: es
+ * información, y va en gris azulado.
+ */
+.txtw-aviso {
+  margin-top: 11px !important;
+  padding: 8px 11px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #dfe7f5 !important;
+  font-size: 12.5px !important;
+  font-weight: 600;
+}
+
+/* «Sin guardar» tiene que verse, no ser un matiz de gris. */
+.txtw-guardado.es-pendiente {
+  color: #b45309;
+  font-weight: 700;
+}
+
+.txtw-portada-guardado {
+  margin: 0 0 10px;
+  color: #cfe0ff;
+  font-size: 13px;
+}
+
+.txtw-portada-cero {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: #ffd166;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ─────────────────────────── barra de estado ─────────────────────────── */
+
+.txtw-estado {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 0 12px;
+  background: var(--w-azul);
+  color: #fff;
+  font-size: 11.5px;
+}
+
+.txtw-estado-hueco {
+  flex: 1;
+}
+
+.txtw-zoom-mando {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.txtw-zoom-mando button {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.txtw-zoom-mando button:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.txtw-zoom-mando input {
+  width: 92px;
+  accent-color: #fff;
+  cursor: pointer;
+}
+
+.txtw-zoom-cifra {
+  min-width: 38px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─────────────────────────── el halo ─────────────────────────── */
+
+.txtw-halo {
+  position: absolute;
+  z-index: 60;
+  border-radius: 7px;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 3px var(--t-halo),
+    0 0 0 7px rgba(255, 176, 32, 0.34),
+    0 0 22px rgba(255, 176, 32, 0.55);
+  animation: txtw-latido 1.5s ease-in-out infinite;
+}
+
+@keyframes txtw-latido {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 3px var(--t-halo),
+      0 0 0 7px rgba(255, 176, 32, 0.34),
+      0 0 22px rgba(255, 176, 32, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px var(--t-halo),
+      0 0 0 12px rgba(255, 176, 32, 0.16),
+      0 0 30px rgba(255, 176, 32, 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .txtw-halo {
+    animation: none;
+  }
+}
+
+/* ─────────────────────────── portada de la práctica ───────────────────────────
+
+   Lo que se ve al entrar, antes del programa. Va con el color de la plataforma
+   y no con el de Word, porque no es Word quien habla: es la clase. El programa
+   se queda detrás desenfocado, a la vista, para que el alumno sepa dónde va a
+   aterrizar antes de aterrizar. */
+
+.txtw-portada {
+  position: absolute;
+  inset: 0;
+  z-index: 85;
+  display: grid;
+  place-items: center;
+  padding: 26px;
+  overflow: auto;
+  background: rgba(6, 18, 42, 0.72);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  animation: txtw-aparece 0.26s ease-out;
+}
+
+@keyframes txtw-aparece {
+  from {
+    opacity: 0;
+  }
+}
+
+.txtw-portada-caja {
+  width: min(940px, 100%);
+  padding: 30px 34px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(120, 170, 255, 0.28);
+  background:
+    radial-gradient(1100px 420px at 12% -10%, rgba(43, 127, 255, 0.34) 0%, transparent 62%),
+    linear-gradient(160deg, #13224f 0%, #0a1024 100%);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  color: #fff;
+}
+
+.txtw-portada-situacion {
+  margin: 0 0 6px;
+  color: #7fb2ff;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 1.7px;
+  text-transform: uppercase;
+}
+
+.txtw-portada-tema {
+  margin: 0 0 18px;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: -0.5px;
+  text-wrap: balance;
+}
+
+.txtw-portada-etiqueta {
+  display: block;
+  margin-bottom: 5px;
+  color: #ffd166;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.txtw-portada-objetivo {
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  border-left: 5px solid #ffd166;
+  background: rgba(255, 209, 102, 0.11);
+}
+
+.txtw-portada-objetivo p {
+  margin: 0;
+  font-size: 16.5px;
+  font-weight: 600;
+  line-height: 1.42;
+  color: #fff;
+  text-wrap: pretty;
+}
+
+.txtw-portada-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 860px) {
+  .txtw-portada-cuerpo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.txtw-portada-lista ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: txtw-portada;
+  display: grid;
+  gap: 9px;
+}
+
+.txtw-portada-lista li {
+  counter-increment: txtw-portada;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 11px;
+  align-items: start;
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.txtw-portada-lista li::before {
+  content: counter(txtw-portada);
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(150deg, #4a92ff, #1b4fb5);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.txtw-portada-lado {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.txtw-portada-datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.txtw-portada-datos span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.txtw-portada-datos b {
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.txtw-portada-nota {
+  padding: 12px 14px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.txtw-portada-nota.es-ayuda {
+  background: rgba(255, 176, 32, 0.13);
+}
+
+.txtw-portada-nota.es-ayuda .txtw-portada-etiqueta {
+  color: #ffb020;
+}
+
+.txtw-portada-nota p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.txtw-portada-boton {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 16px 22px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2b7fff 0%, #12448c 100%);
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(43, 127, 255, 0.36);
+}
+
+.txtw-portada-boton:hover {
+  filter: brightness(1.08);
+}
+
+.txtw-portada-boton:focus-visible {
+  outline: 3px solid #ffd166;
+  outline-offset: 3px;
+}
+
+.txtw-portada-boton-icono {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.txtw-portada-boton > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.txtw-portada-boton-titulo {
+  display: block;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.txtw-portada-boton-sub {
+  display: block;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.72);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── el botón para volver a leerla, en la cabecera del panel ─── */
+
+.txtw-panel-derecha {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.txtw-panel-objetivos {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  cursor: pointer;
+}
+
+.txtw-panel-objetivos:hover {
+  background: rgba(255, 255, 255, 0.36);
+}
+
+/* ─────────────────────────── insignia final ─────────────────────────── */
+
+.txtw-final {
+  position: absolute;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(8, 18, 40, 0.66);
+  backdrop-filter: blur(3px);
+}
+
+.txtw-final-caja {
+  width: min(480px, 100%);
+  padding: 28px 30px 26px;
+  border-radius: 18px;
+  background: linear-gradient(165deg, #14235c 0%, #0a1230 100%);
+  border: 2px solid rgba(255, 209, 102, 0.5);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  text-align: center;
+}
+
+.txtw-medalla {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, #ffe89a 0%, #ffb020 48%, #d97706 100%);
+  box-shadow:
+    0 0 0 6px rgba(255, 176, 32, 0.24),
+    0 12px 30px rgba(255, 176, 32, 0.4);
+  font-size: 46px;
+  line-height: 1;
+}
+
+.txtw-final-kicker {
+  margin: 0 0 2px;
+  color: #ffd166;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.txtw-final-caja h2 {
+  margin: 0 0 10px;
+  font-size: 27px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.txtw-final-titulo {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #9ec7f0;
+}
+
+.txtw-final-detalle {
+  margin: 0 0 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.txtw-final-cifras {
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+  margin-bottom: 18px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.txtw-final-cifras b {
+  display: block;
+  font-size: 22px;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.txtw-final-botones {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.txtw-final-boton {
+  padding: 13px 26px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffd166 0%, #ff9f1a 100%);
+  color: #3a2400;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(255, 159, 26, 0.4);
+}
+
+.txtw-final-boton:hover {
+  filter: brightness(1.07);
+}
+
+.txtw-final-boton.es-secundario {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  box-shadow: none;
+}
+
+.txtw-final-boton.es-secundario:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* ─────────────────── el modo guía (doc §37) ─────────────────── */
+
+/*
+ * El rótulo del señalador. Señalar sin nombrar no enseña: el aro dice DÓNDE y
+ * el rótulo dice QUÉ ES, que es la mitad de la lección. Va debajo del botón
+ * porque encima chocaría con la fila de pestañas.
+ */
+.txtw-halo-rotulo {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--t-halo, #ffb020);
+  color: #3a2600;
+  font-size: 11.5px;
+  font-weight: 800;
+  white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
+}
+
+.txtw-halo-rotulo::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: var(--t-halo, #ffb020);
+}
+
+/*
+ * Cuando el botón señalado está pegado al borde izquierdo, el rótulo deja de ir
+ * centrado y se alinea con él.
+ *
+ * Centrar un rótulo más ancho que su botón lo saca de la ventana: en la primera
+ * clase de PowerPoint el aro cae sobre «Nueva diapositiva», que es el primer
+ * botón de la cinta, y el rótulo salía cortado por la mitad —«ueva diapositiva»—
+ * y encima tapando la tira. Se vio en la captura, no en los números: el aro
+ * estaba exactamente donde tenía que estar.
+ */
+.txtw-halo.es-izq .txtw-halo-rotulo {
+  left: 0;
+  transform: none;
+}
+
+.txtw-halo.es-izq .txtw-halo-rotulo::before {
+  left: 18px;
+}
+
+/* «Enséñamelo»: el aro crece y late más fuerte unos segundos. */
+.txtw-halo.es-demo {
+  animation: txtw-demo 0.75s ease-in-out 3;
+}
+
+@keyframes txtw-demo {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 3px var(--t-halo),
+      0 0 0 8px rgba(255, 176, 32, 0.4),
+      0 0 26px rgba(255, 176, 32, 0.6);
+  }
+  50% {
+    box-shadow:
+      0 0 0 5px var(--t-halo),
+      0 0 0 20px rgba(255, 176, 32, 0.3),
+      0 0 44px rgba(255, 176, 32, 0.95);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .txtw-halo.es-demo {
+    animation: none;
+  }
+}
+
+/*
+ * La ficha de la herramienta. Es lo que el alumno lee ANTES de pulsar: el
+ * botón tal como se ve en la cinta, su nombre, su domicilio y para qué sirve.
+ * Ni el nombre ni el domicilio se escriben en la clase: salen de la cinta viva.
+ */
+.txtw-ficha {
+  margin-top: 12px;
+  padding: 10px 11px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.txtw-ficha-cab {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.txtw-ficha-glifo {
+  display: grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 5px;
+  border-radius: 6px;
+  background: #fff;
+  color: #185abd;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.txtw-ficha-nombre {
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.txtw-ficha-ruta {
+  color: #b9cdf0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.txtw-ficha-hace {
+  margin: 8px 0 0 !important;
+  color: #e4ecfb !important;
+  font-size: 12.5px !important;
+  line-height: 1.45;
+}
+
+.txtw-ensename {
+  margin-top: 9px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.txtw-ensename:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.txtw-ensename.es-activo {
+  background: var(--t-halo, #ffb020);
+  border-color: var(--t-halo, #ffb020);
+  color: #3a2600;
+}
+
+.txtw-ensename:focus-visible {
+  outline: 3px solid #ffd166;
+  outline-offset: 2px;
+}
+
+/* Las tres partes del recado del desvío. */
+.txtw-aviso-titulo {
+  margin: 0 !important;
+  font-weight: 800 !important;
+}
+
+.txtw-aviso-hace,
+.txtw-aviso-donde {
+  margin: 5px 0 0 !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+}
+
+.txtw-aviso-donde {
+  color: #ffd166 !important;
+}
+
+/*
+ * El panel a 1024×768, que es el portátil de un aula (doc §37).
+ *
+ * Medido jugando mal: cuando coinciden la ficha de la herramienta, el recado
+ * del desvío y la pista, el recado —la pieza que el cliente pidió— empezaba en
+ * el píxel 682 de 768 y quedaba cortado, y la pista caía entera bajo el pliegue.
+ * El panel entero rodaba, pero nada lo anunciaba: el alumno no sabía que había
+ * más abajo, así que para él simplemente no existía.
+ *
+ * El arreglo no es encoger letra: es decidir QUÉ cede cuando falta sitio. La
+ * lista de encargos es referencia y puede rodar dentro de su propia caja; el
+ * encargo de ahora, con su ficha y su recado, manda y se lleva el resto del
+ * alto. Así lo que el cliente compró nunca cae bajo el pliegue.
+ */
+.txtw-panel {
+  overflow: hidden;
+}
+
+.txtw-lista {
+  flex: 0 1 auto;
+  min-height: 76px;
+  max-height: 34%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.txtw-panel-cuerpo {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Que se vea que hay más abajo, en vez de que el contenido se corte a secas. */
+.txtw-lista::-webkit-scrollbar,
+.txtw-panel-cuerpo::-webkit-scrollbar {
+  width: 9px;
+}
+
+.txtw-lista::-webkit-scrollbar-thumb,
+.txtw-panel-cuerpo::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.txtw-lista::-webkit-scrollbar-thumb {
+  background: rgba(24, 90, 189, 0.3);
+}

@@ -1,0 +1,378 @@
+/*
+ * Tecnia Muro — el muro social.
+ *
+ * Color pleno y saturado sobre fondo oscuro con drama de luz (misma familia
+ * que `ventanaAsistente.css`): una red social real es oscura y de acentos
+ * intensos, no pastel. Los controles viven pegados a la tarjeta —el
+ * compositor, las acciones— y no flotan encima como overlays genéricos.
+ *
+ * El marco (barra de título, botón de encender) llega con `VentanaBase`;
+ * todo aquí vive dentro de su hueco de contenido.
+ */
+
+.tm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  padding: 14px;
+  overflow-y: auto;
+  background: radial-gradient(120% 100% at 50% 0%, #1a1440 0%, #0d0b26 60%, #070614 100%);
+  color: #f1ecff;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.tm-vacio {
+  margin: auto;
+  text-align: center;
+  color: #9c8fd6;
+  font-weight: 700;
+  max-width: 34ch;
+}
+
+/* ── El compositor ───────────────────────────────────────────────────────── */
+
+.tm-compositor {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 14px;
+  background: #140f38;
+  border: 2px solid #372a7a;
+  border-radius: 16px;
+}
+.tm-compositor-cuadro {
+  resize: none;
+  min-height: 64px;
+  background: #0e0a2a;
+  border: 2px solid #372a7a;
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #f1ecff;
+  font: inherit;
+  font-weight: 600;
+}
+.tm-compositor-cuadro::placeholder {
+  color: #7a6cb8;
+}
+.tm-compositor-cuadro:focus {
+  outline: none;
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.3);
+}
+.tm-compositor-enviar {
+  align-self: flex-end;
+  padding: 9px 22px;
+  border-radius: 999px;
+  border: 0;
+  font: inherit;
+  font-weight: 900;
+  color: #1c1032;
+  background: linear-gradient(135deg, #f472b6, #a78bfa);
+  box-shadow: 0 8px 22px rgba(167, 139, 250, 0.4);
+  cursor: pointer;
+}
+.tm-compositor-enviar:disabled {
+  cursor: default;
+  color: #6d63a0;
+  background: #211a4a;
+  box-shadow: none;
+}
+
+/* ── El muro ──────────────────────────────────────────────────────────────── */
+
+.tm-muro {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tm-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background: #140f38;
+  border: 2px solid #372a7a;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(4, 2, 20, 0.5);
+}
+
+.tm-cabecera {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.tm-avatar {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 0;
+  font-weight: 900;
+  font-size: 15px;
+  color: #1c1032;
+  background: linear-gradient(135deg, #22d3ee, #a78bfa);
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(167, 139, 250, 0.5);
+}
+.tm-avatar-grande {
+  width: 56px;
+  height: 56px;
+  font-size: 22px;
+  cursor: default;
+}
+.tm-cabecera-textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.tm-cabecera-nombre {
+  font-weight: 900;
+  color: #fff;
+}
+.tm-verificada {
+  margin-left: 4px;
+  font-size: 12px;
+}
+.tm-cabecera-meta {
+  font-size: 12px;
+  font-weight: 700;
+  color: #9c8fd6;
+}
+.tm-visibilidad {
+  font-weight: 800;
+}
+.tm-visibilidad.es-publico { color: #38bdf8; }
+.tm-visibilidad.es-amigos { color: #facc15; }
+.tm-visibilidad.es-solo-yo { color: #fb7185; }
+
+.tm-texto {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ── El marcador de imagen: nunca una captura real ───────────────────────── */
+
+.tm-imagen {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  padding: 24px 12px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #1c1550, #100c34);
+  border: 2px dashed #493a94;
+  text-align: center;
+}
+.tm-imagen-etiqueta {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #7a6cb8;
+}
+.tm-imagen-emoji {
+  font-size: 34px;
+}
+.tm-imagen-desc {
+  margin: 0;
+  max-width: 40ch;
+  color: #b9aeee;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+/* ── Métricas y acciones ──────────────────────────────────────────────────── */
+
+.tm-metricas {
+  display: flex;
+  gap: 16px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #9c8fd6;
+}
+
+.tm-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #372a7a;
+}
+.tm-accion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: #d7cffb;
+  border: 2px solid #372a7a;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font: inherit;
+  font-weight: 800;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.tm-accion:hover {
+  border-color: #a78bfa;
+}
+.tm-accion.es-me-gusta.es-activa {
+  background: rgba(244, 114, 182, 0.22);
+  border-color: #f472b6;
+  color: #fbcfe8;
+}
+.tm-accion.es-borrar:hover,
+.tm-accion.es-reportar:hover {
+  border-color: #fb7185;
+  color: #fecdd3;
+}
+
+/* ── Comentarios ──────────────────────────────────────────────────────────── */
+
+.tm-comentarios {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 8px 0 0;
+  list-style: none;
+}
+.tm-comentario {
+  display: flex;
+  gap: 6px;
+  font-size: 13px;
+  background: #0e0a2a;
+  border-radius: 10px;
+  padding: 7px 10px;
+}
+.tm-comentario-autor {
+  font-weight: 900;
+  color: #c4b5fd;
+  flex: 0 0 auto;
+}
+.tm-comentario-texto {
+  color: #ece7ff;
+}
+
+.tm-comentar {
+  display: flex;
+  gap: 8px;
+}
+.tm-comentar-cuadro {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: #0e0a2a;
+  border: 2px solid #372a7a;
+  border-radius: 999px;
+  padding: 8px 14px;
+  color: #f1ecff;
+  font: inherit;
+}
+.tm-comentar-enviar {
+  border-radius: 999px;
+  border: 2px solid #a78bfa;
+  background: transparent;
+  color: #c4b5fd;
+  font: inherit;
+  font-weight: 900;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+/* ── «Borrar no borra»: la tarjeta fantasma ──────────────────────────────── */
+
+.tm-tarjeta.es-borrada {
+  border-style: dashed;
+  border-color: #4c3f8f;
+  background: #100c2c;
+  opacity: 0.92;
+}
+.tm-borrada-aviso {
+  margin: 0;
+  color: #9c8fd6;
+  font-weight: 800;
+  font-style: italic;
+}
+.tm-copias {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(251, 113, 133, 0.12);
+  border: 2px solid rgba(251, 113, 133, 0.4);
+}
+.tm-copias-titulo {
+  margin: 0 0 6px;
+  color: #fda4af;
+  font-weight: 900;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.tm-copias ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #fecdd3;
+  font-size: 13px;
+}
+
+/* ── El perfil ────────────────────────────────────────────────────────────── */
+
+.tm-perfil {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tm-perfil-cabecera {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.tm-perfil-nombre {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+}
+.tm-perfil-usuario {
+  margin: 0;
+  color: #9c8fd6;
+  font-weight: 700;
+  font-size: 13px;
+}
+.tm-perfil-bio {
+  margin: 4px 0 0;
+  color: #d7cffb;
+  font-size: 13.5px;
+}
+.tm-perfil-pistas {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(250, 204, 21, 0.1);
+  border: 2px solid rgba(250, 204, 21, 0.35);
+}
+.tm-perfil-pistas-titulo {
+  margin: 0 0 6px;
+  color: #fde68a;
+  font-weight: 900;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.tm-perfil-pistas ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #fef3c7;
+  font-size: 13px;
+}
+.tm-perfil-publicaciones {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}

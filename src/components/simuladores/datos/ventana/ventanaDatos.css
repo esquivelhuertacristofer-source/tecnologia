@@ -1,0 +1,694 @@
+/*
+ * Tecnia Datos — la ventana del editor de consultas.
+ *
+ * Fondo oscuro con color pleno, igual de intención que `codigo/ventana/
+ * ventanaCodigo.css`: ningún DB Browser del mundo es blanco pastel, y los
+ * controles van integrados en la barra del programa, no flotando encima de
+ * la escena. El acento pasa de rosa/cian (Tecnia Código) a esmeralda/teal
+ * aquí, para que dentro del mismo escritorio simulado se distinga un
+ * programa de otro con sólo mirar la barra de título — pero la geometría de
+ * fondo y tarjetas es la misma familia visual.
+ *
+ * ── LO QUE NO ESTÁ AQUÍ, Y ES A PROPÓSITO ──────────────────────────────────
+ *
+ * El editor de la izquierda (`.cod-editor`, `.cod-numeros`, `.cod-capa`,
+ * `.cod-area`, `.cod-linea`, `.cod-t-*`…) es `EditorCodigo`, reutilizado tal
+ * cual (ver la cabecera de `VentanaDatos.tsx`). Sus clases y su CSS viven en
+ * `codigo/ventana/ventanaCodigo.css` — que este archivo NO duplica, sólo se
+ * importa junto a éste desde `VentanaDatos.tsx` — porque la regla de esa hoja
+ * sigue mandando: en `.cod-capa` y `.cod-area` no se toca nada que mueva un
+ * carácter, y la única manera de no tocarlo es no volver a escribirlo.
+ */
+
+.dat {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: radial-gradient(120% 100% at 50% 0%, #10233d 0%, #0a1a2e 55%, #050d18 100%);
+  color: #e6fbf5;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+/* ── La barra de controles ───────────────────────────────────────────────── */
+
+.dat-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #071c22;
+  border-bottom: 2px solid #155e56;
+}
+
+.dat-archivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px 6px 10px;
+  border-radius: 10px 10px 0 0;
+  background: linear-gradient(180deg, #0f3d38, #0a2b28);
+  border: 2px solid #1f8f7f;
+  border-bottom-color: transparent;
+  color: #b6f3e6;
+  font-weight: 900;
+  font-size: 13px;
+}
+.dat-archivo-glifo {
+  font-size: 15px;
+}
+
+.dat-controles {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.dat-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 12px;
+  border: 2px solid;
+  padding: 9px 15px;
+  font: inherit;
+  font-weight: 900;
+  font-size: 14px;
+  cursor: pointer;
+  color: #fff;
+}
+.dat-boton:disabled {
+  opacity: 0.4;
+  cursor: default;
+  box-shadow: none;
+}
+.dat-boton:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+.dat-boton.es-ejecutar {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  border-color: #4ade80;
+  box-shadow: 0 8px 22px rgba(34, 197, 94, 0.42);
+}
+.dat-boton.es-deshacer,
+.dat-boton.es-rehacer {
+  background: linear-gradient(135deg, #2dd4bf, #0f766e);
+  border-color: #5eead4;
+  box-shadow: 0 8px 22px rgba(45, 212, 191, 0.35);
+}
+.dat-boton.es-reiniciar {
+  background: transparent;
+  border-color: #1f8f7f;
+  color: #86ded0;
+  font-size: 17px;
+  padding: 8px 13px;
+}
+
+.dat-herramientas {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+.dat-herramienta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: #a5f3fc;
+  border: 2px solid #0e7490;
+  border-radius: 11px;
+  padding: 8px 13px;
+  font: inherit;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+}
+.dat-herramienta.es-principal {
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  border-color: #fde047;
+  color: #3a2606;
+  box-shadow: 0 8px 20px rgba(250, 204, 21, 0.38);
+}
+.dat-herramienta.es-activa {
+  background: rgba(45, 212, 191, 0.25);
+  color: #e0fffa;
+}
+.dat-herramienta:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ── El aviso ────────────────────────────────────────────────────────────── */
+
+.dat-aviso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  font-weight: 800;
+  font-size: 13.5px;
+  border-bottom: 2px solid;
+}
+.dat-aviso.es-aviso {
+  background: #0e2b3a;
+  border-bottom-color: #2dd4bf;
+  color: #d8fbf3;
+}
+.dat-aviso.es-candado {
+  background: #4a2c05;
+  border-bottom-color: #f59e0b;
+  color: #ffedd5;
+}
+.dat-aviso-cerrar {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+/* ── El cuerpo ───────────────────────────────────────────────────────────── */
+
+.dat-cuerpo {
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+  min-height: 0;
+  padding: 14px;
+}
+
+.dat-izquierda {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dat-pista-teclado {
+  margin: 0;
+  color: #7fc9bd;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.dat-pista-teclado kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #0d2f2a;
+  border: 1px solid #1f8f7f;
+  color: #cdfbf0;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+/* ── Los resultados ──────────────────────────────────────────────────────── */
+
+.dat-resultados-vacio {
+  border-radius: 14px;
+  border: 2px solid #0e3a44;
+  background: #051620;
+  padding: 16px;
+  color: #6fa79c;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.dat-resultados {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dat-resultados-viejo {
+  margin: 0;
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: #241a05;
+  border: 2px solid #a16207;
+  color: #fde68a;
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+.dat-tarjeta {
+  border-radius: 14px;
+  border: 2px solid #155e56;
+  background: #071c22;
+  box-shadow: 0 10px 26px rgba(2, 12, 12, 0.5);
+  padding: 12px 14px;
+}
+.dat-tarjeta[data-clase='consulta'] {
+  border-color: #0e7490;
+}
+.dat-tarjeta[data-clase='esquema'] {
+  border-color: #7c3aed;
+}
+.dat-tarjeta[data-clase='cambio'] {
+  border-color: #d97706;
+}
+.dat-tarjeta-cabeza {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-bottom: 8px;
+}
+.dat-tarjeta-titulo {
+  font-weight: 900;
+  font-size: 13.5px;
+  color: #fff;
+}
+.dat-tarjeta-indice {
+  margin-left: auto;
+  color: #7fc9bd;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.dat-tarjeta-resumen {
+  margin: 0;
+  color: #d8fbf3;
+  font-weight: 700;
+}
+
+.dat-avisos {
+  list-style: none;
+  margin: 9px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.dat-avisos-item {
+  padding: 7px 11px;
+  border-radius: 9px;
+  background: #241a05;
+  border: 2px solid #f59e0b;
+  color: #ffedd5;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+/* ── La rejilla de resultados ────────────────────────────────────────────── */
+
+.dat-tabla-envoltura {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 2px solid #0e3a44;
+}
+.dat-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+}
+.dat-tabla thead {
+  background: #0a2b33;
+}
+.dat-tabla th {
+  text-align: left;
+  padding: 8px 12px;
+  color: #7ee9d6;
+  font-weight: 900;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid #145a52;
+  white-space: nowrap;
+}
+.dat-tabla td {
+  padding: 7px 12px;
+  color: #dcfff6;
+  border-bottom: 1px solid #0d2b30;
+  white-space: nowrap;
+}
+.dat-tabla tbody tr:nth-child(even) td {
+  background: rgba(45, 212, 191, 0.05);
+}
+.dat-tabla td.es-null {
+  color: #8a93c9;
+  font-style: italic;
+  font-weight: 700;
+}
+.dat-tabla-pie {
+  margin: 0;
+  padding: 7px 12px;
+  color: #6fa79c;
+  font-size: 12px;
+  font-weight: 700;
+  background: #04141a;
+}
+
+/* ── El error ────────────────────────────────────────────────────────────── */
+
+.dat-error {
+  flex: 0 0 auto;
+  border-radius: 14px;
+  border: 2px solid #ef4444;
+  background: linear-gradient(180deg, #3b0d12, #250a10);
+  box-shadow: 0 0 26px rgba(239, 68, 68, 0.3);
+  padding: 12px 14px;
+}
+.dat-error-cabeza {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.dat-error-glifo {
+  font-size: 17px;
+}
+.dat-error-linea {
+  background: #ef4444;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font: inherit;
+  font-weight: 900;
+  font-size: 12.5px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.dat-error-linea:hover {
+  background: #f87171;
+}
+.dat-error-mensaje {
+  color: #ffe4e6;
+  font-weight: 800;
+  font-size: 15px;
+}
+.dat-error-eco {
+  margin: 9px 0 0;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: #17060a;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #fecdd3;
+  overflow-x: auto;
+  white-space: pre;
+}
+.dat-error-dedo {
+  color: #fb7185;
+  font-weight: 900;
+}
+.dat-error-pista {
+  margin: 9px 0 0;
+  color: #fed7aa;
+  font-weight: 600;
+}
+.dat-error-pista strong {
+  color: #fdba74;
+}
+.dat-error-familia {
+  margin: 7px 0 0;
+  color: #b98a92;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ── El lateral ──────────────────────────────────────────────────────────── */
+
+.dat-lateral {
+  flex: 0 0 clamp(260px, 32%, 380px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.dat-lateral-titulo {
+  margin: 0 0 7px;
+  color: #7ee9d6;
+  font-weight: 900;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dat-panel,
+.dat-esquema,
+.dat-encargo {
+  background: #071c22;
+  border: 2px solid #155e56;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+/* ── El esquema ──────────────────────────────────────────────────────────── */
+
+.dat-esquema-vacio {
+  margin: 0;
+  color: #6fa79c;
+  font-size: 13px;
+  font-style: italic;
+}
+.dat-tablas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dat-tabla-esquema {
+  border-radius: 10px;
+  background: #0a2b33;
+  padding: 9px 11px;
+}
+.dat-tabla-esquema-cabeza {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.dat-tabla-esquema-nombre {
+  color: #7ee9d6;
+  font-weight: 900;
+  font-size: 13.5px;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, Menlo, monospace;
+}
+.dat-tabla-esquema-filas {
+  margin-left: auto;
+  color: #6fa79c;
+  font-size: 11px;
+  font-weight: 700;
+}
+.dat-tabla-esquema-sin {
+  margin: 0;
+  color: #6fa79c;
+  font-size: 12px;
+  font-style: italic;
+}
+.dat-columnas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.dat-columna {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, Menlo, monospace;
+}
+.dat-columna-clave {
+  font-size: 12px;
+}
+.dat-columna-nombre {
+  color: #dcfff6;
+  font-weight: 700;
+}
+.dat-columna-tipo {
+  color: #6fa79c;
+  font-size: 11px;
+}
+.dat-columna-nn {
+  color: #fbbf24;
+  font-size: 10px;
+  font-weight: 800;
+  border: 1px solid #92610a;
+  border-radius: 5px;
+  padding: 0 4px;
+}
+.dat-columna-fk {
+  color: #c4b5fd;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ── El encargo ──────────────────────────────────────────────────────────── */
+
+.dat-encargo {
+  border-color: #6366f1;
+  box-shadow: 0 0 22px rgba(99, 102, 241, 0.25);
+}
+.dat-encargo.es-hecho {
+  border-color: #22c55e;
+  box-shadow: 0 0 22px rgba(34, 197, 94, 0.28);
+}
+.dat-encargo-cuenta {
+  color: #8fa6e0;
+  font-weight: 900;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.dat-encargo-titulo {
+  margin: 4px 0 6px;
+  font-size: 17px;
+  font-weight: 900;
+  color: #fff;
+}
+.dat-encargo-instruccion {
+  margin: 0;
+  color: #d8fbf3;
+  font-weight: 600;
+}
+.dat-encargo-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 10px;
+}
+.dat-opcion {
+  background: #0a2b33;
+  border: 2px solid #1f8f7f;
+  border-radius: 10px;
+  color: #dcfff6;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.dat-opcion:hover:not(:disabled) {
+  border-color: #5eead4;
+  background: #0d3a3a;
+}
+.dat-opcion.es-elegida {
+  border-color: #facc15;
+  background: rgba(250, 204, 21, 0.16);
+}
+.dat-opcion:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+.dat-encargo-confirma,
+.dat-encargo-siguiente {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #6366f1, #4338ca);
+  border: 2px solid #818cf8;
+  border-radius: 11px;
+  color: #fff;
+  font: inherit;
+  font-weight: 900;
+  padding: 8px 15px;
+  cursor: pointer;
+}
+.dat-encargo-pista {
+  margin: 10px 0 0;
+  padding: 8px 11px;
+  border-radius: 10px;
+  background: #4a2c05;
+  border: 2px solid #f59e0b;
+  color: #ffedd5;
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.dat-encargo-logrado {
+  margin-top: 10px;
+}
+.dat-encargo-aprendido {
+  margin: 0;
+  color: #86efac;
+  font-weight: 800;
+}
+.dat-encargo-siguiente {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  border-color: #4ade80;
+}
+
+/* ── Las acciones de la clase ────────────────────────────────────────────── */
+
+.dat-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 14px 14px;
+}
+.dat-accion {
+  background: transparent;
+  color: #7ee9d6;
+  border: 2px solid #0f766e;
+  border-radius: 12px;
+  padding: 9px 16px;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+.dat-accion.es-principal {
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  border-color: #fde047;
+  color: #3a2606;
+  box-shadow: 0 8px 22px rgba(250, 204, 21, 0.4);
+}
+.dat-accion:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+@media (max-width: 860px) {
+  .dat-cuerpo {
+    flex-direction: column;
+  }
+  .dat-lateral {
+    flex: 1 1 auto;
+  }
+}
+
+/* ── El aro del encargo sobre un control ─────────────────────────────────── */
+
+/*
+ * Mismo mecanismo que `.cod[data-senal]` en `ventanaCodigo.css`: `outline` se
+ * dibuja FUERA de la caja, así que no mueve un píxel del editor de dos capas
+ * ni de la rejilla de resultados.
+ */
+@keyframes dat-aro-late {
+  0%,
+  100% {
+    outline-color: rgba(251, 191, 36, 0.95);
+  }
+  50% {
+    outline-color: rgba(251, 191, 36, 0.28);
+  }
+}
+
+.dat[data-senal='ejecutar'] .dat-boton.es-ejecutar,
+.dat[data-senal='deshacer'] .dat-boton.es-deshacer,
+.dat[data-senal='rehacer'] .dat-boton.es-rehacer,
+.dat[data-senal='editor'] .cod-editor,
+.dat[data-senal='esquema'] .dat-esquema {
+  outline: 3px solid rgba(251, 191, 36, 0.95);
+  outline-offset: 3px;
+  animation: dat-aro-late 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dat[data-senal] .dat-boton,
+  .dat[data-senal] .cod-editor,
+  .dat[data-senal] .dat-esquema {
+    animation: none;
+  }
+}

@@ -1,0 +1,83 @@
+/*
+ * Lo que esta clase añade a la ventana de Tecnia Textos, y nada más.
+ *
+ * Dos cosas: cómo se ve un párrafo repartido en columnas dentro de la hoja, y
+ * cómo se ven los tres botones que lo reparten. Todo cuelga de `.txtw-flujo` o
+ * de `[data-grupo='columnas']`, que son sitios de esta clase: el archivo se
+ * carga sólo con el laboratorio y no puede ensuciar el de nadie más.
+ */
+
+/* ─────────────────── el párrafo repartido, en la hoja ─────────────────── */
+
+/*
+ * La separación entre columnas es la de Word: media pulgada. Con los 624 px de
+ * texto de una hoja Carta, dos columnas salen a 288 px —exactamente las tres
+ * pulgadas que da Word— y tres a 176, que son sus 1.83 pulgadas. Que el número
+ * coincida importa: el folleto que el alumno maqueta aquí tiene que verse igual
+ * si un día lo abre en el Word de la escuela.
+ */
+.txtw-flujo .tyc-columnas {
+  column-gap: 48px;
+}
+
+.txtw-flujo .tyc-columnas-2 {
+  column-count: 2;
+}
+
+.txtw-flujo .tyc-columnas-3 {
+  column-count: 3;
+}
+
+/* ─────────────────── los tres botones de la cinta ─────────────────── */
+
+/*
+ * En Word, «Columnas» es un desplegable y sus tres opciones se dibujan como una
+ * hoja partida en uno, dos o tres. Aquí van desplegadas en la cinta —una debajo
+ * de otra, como las opciones de aquel menú— porque a los diez años lo que hay
+ * que comparar no puede esconderse detrás de un clic.
+ */
+.txtw-grupo[data-grupo='columnas'] .txtw-botones {
+  grid-template-columns: auto;
+}
+
+.txtw-grupo[data-grupo='columnas'] .txtw-boton {
+  min-width: 104px;
+}
+
+/*
+ * El icono es un dibujo, no una letra: una hojita blanca con las divisiones que
+ * el botón va a poner. El glifo de texto sigue en el HTML por si esta hoja de
+ * estilo no llegara —se queda sin tamaño, no sin existir— y el nombre del botón
+ * lo dicen `title` y `aria-label`, que no dependen de ningún dibujo.
+ */
+.txtw-grupo[data-grupo='columnas'] .txtw-glifo {
+  display: inline-block;
+  flex: none;
+  width: 14px;
+  height: 17px;
+  border: 1px solid #6d6d6d;
+  border-radius: 1px;
+  background: #fff;
+  font-size: 0;
+  line-height: 0;
+}
+
+.txtw-boton[data-control='columnas-2'] .txtw-glifo {
+  background-image: linear-gradient(#6d6d6d, #6d6d6d);
+  background-size: 1px 100%;
+  background-position: 50% 0;
+  background-repeat: no-repeat;
+}
+
+.txtw-boton[data-control='columnas-3'] .txtw-glifo {
+  background-image: linear-gradient(#6d6d6d, #6d6d6d), linear-gradient(#6d6d6d, #6d6d6d);
+  background-size: 1px 100%, 1px 100%;
+  background-position: 33.3% 0, 66.6% 0;
+  background-repeat: no-repeat, no-repeat;
+}
+
+/* Con el botón hundido el dibujo también se hunde: papel azul claro, como Word. */
+.txtw-grupo[data-grupo='columnas'] .txtw-boton.es-activo .txtw-glifo {
+  background-color: #eaf3fd;
+  border-color: #3f77b5;
+}

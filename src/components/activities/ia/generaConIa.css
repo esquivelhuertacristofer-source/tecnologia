@@ -1,0 +1,403 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `n8-genera-con-ia` — el Estudio de la Semana de la Ciencia.
+
+   Se apoya en `salaIA.css` (variables --tia-*, `.tia-sala`, `.tia-portada`,
+   `.tia-boton`, `.tia-veredicto`, `.tia-nota`) y añade sólo lo propio: el
+   armazón invertido de `VentanaAsistente` (mismo truco que `.cia-asis` en
+   `creaConIa.css`, escrito aquí de nuevo porque esa hoja es de otra clase) y
+   las tres zonas del Estudio — texto, imagen, audio— más los dos paneles de
+   cierre (riesgo y revisión).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Invertir el armazón: hilo estrecho, panel ancho ─────────────────────── */
+
+.gia-asis .asis-cuerpo {
+  align-items: stretch;
+}
+.gia-asis .asis-hilo {
+  flex: 0 0 clamp(220px, 26%, 300px);
+  max-width: 300px;
+  border-right: 2px solid #16416a;
+  padding-right: 12px;
+}
+.gia-asis .asis-panel {
+  flex: 1 1 auto;
+  max-width: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+@media (max-width: 900px) {
+  .gia-asis .asis-cuerpo {
+    flex-direction: column;
+  }
+  .gia-asis .asis-hilo {
+    flex: 0 0 180px;
+    max-width: none;
+    border-right: none;
+    border-bottom: 2px solid #16416a;
+    padding-right: 0;
+    padding-bottom: 10px;
+  }
+}
+
+/* ── El Estudio ───────────────────────────────────────────────────────────── */
+
+.gia-estudio {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+  color: var(--tia-texto);
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.gia-encargo-cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 2px solid var(--tia-ambar);
+  background: linear-gradient(160deg, #2b2008, #17110a);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--tia-ambar) 26%, transparent);
+}
+.gia-encargo-numero {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffe6b3;
+}
+.gia-encargo-situacion {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 750;
+  color: #ffffff;
+}
+
+.gia-zona {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid #1c4b76;
+  background: radial-gradient(120% 90% at 50% -10%, rgba(251, 191, 36, 0.08), transparent 60%), linear-gradient(170deg, #0a2340, #061a2e);
+}
+.gia-zona-titulo {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tia-cian);
+}
+.gia-zona + .gia-zona {
+  margin-top: 12px;
+}
+
+/* ── Las filas de piezas — reusadas por texto, imagen y audio ────────────── */
+
+.gia-fila-pieza {
+  margin-bottom: 8px;
+}
+.gia-fila-pieza:last-of-type {
+  margin-bottom: 10px;
+}
+.gia-fila-pieza-etiqueta {
+  margin: 0 0 5px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--tia-texto-suave);
+}
+.gia-fila-pieza-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.gia-pieza-boton {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  color: var(--tia-texto);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.gia-pieza-boton:hover:not(:disabled) {
+  border-color: var(--tia-cian);
+}
+.gia-pieza-boton.es-elegida {
+  border-color: var(--tia-ambar);
+  background: linear-gradient(165deg, var(--tia-ambar), var(--tia-ambar-honda));
+  color: #2a1400;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--tia-ambar) 42%, transparent);
+}
+.gia-pieza-boton:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.gia-pieza-boton:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.gia-peticion-armada {
+  margin: 4px 0 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #050e1a;
+  border: 1px dashed #375f85;
+  color: #8fb0cf;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* ── El resultado de texto: los dos borradores, uno bajo el otro ─────────── */
+
+.gia-resultado-texto {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border-left: 6px solid #2a6a9c;
+  background: #082238;
+}
+.gia-resultado-texto.es-vago {
+  border-left-color: var(--tia-rosa);
+}
+.gia-resultado-texto.es-especifico {
+  border-left-color: var(--tia-verde);
+}
+.gia-resultado-etiqueta {
+  margin: 0 0 6px;
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tia-texto-suave);
+}
+.gia-resultado-texto p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.5;
+  color: #eaf4ff;
+}
+
+/* ── La bandeja de imágenes ───────────────────────────────────────────────── */
+
+.gia-bandeja {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+.gia-imagen {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 14px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+}
+.gia-imagen.es-elegida {
+  border-color: var(--tia-verde);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--tia-verde) 32%, transparent);
+}
+.gia-imagen.es-descartada {
+  opacity: 0.5;
+  border-color: #4a5b70;
+}
+.gia-imagen-glifo {
+  font-size: 32px;
+  line-height: 1;
+}
+.gia-imagen-nombre {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #ffffff;
+}
+.gia-imagen-motivo {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 750;
+  color: var(--tia-rosa);
+}
+.gia-imagen-botones {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+}
+.gia-imagen-boton {
+  flex: 1;
+  padding: 6px 8px;
+  border-radius: 9px;
+  border: 2px solid #2a6a9c;
+  background: #082238;
+  color: #cfe6ff;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.gia-imagen-boton:hover {
+  border-color: var(--tia-cian);
+}
+.gia-imagen-boton.es-elegir {
+  background: linear-gradient(165deg, var(--tia-verde), var(--tia-verde-honda));
+  border-color: var(--tia-verde);
+  color: #04241a;
+}
+.gia-imagen-boton:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* ── La tarjeta de audio: no hay reproductor, hay guion + calidad ────────── */
+
+.gia-audio-tarjeta {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border-left: 6px solid #2a6a9c;
+  background: #082238;
+}
+.gia-audio-tarjeta.es-plana {
+  border-left-color: var(--tia-rosa);
+}
+.gia-audio-tarjeta.es-lograda {
+  border-left-color: var(--tia-verde);
+}
+.gia-audio-onda {
+  flex: 0 0 auto;
+  font-size: 22px;
+  line-height: 1;
+  padding-top: 2px;
+}
+.gia-audio-cuerpo {
+  min-width: 0;
+}
+.gia-audio-transcripcion {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 700;
+  font-style: italic;
+  color: #eaf4ff;
+}
+.gia-audio-nota {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 750;
+  color: var(--tia-texto-suave);
+}
+
+/* ── El panel de riesgo y el de revisión: opciones en botones anchos ─────── */
+
+.gia-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.gia-opcion {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+  color: #eaf4ff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.gia-opcion:hover:not(:disabled) {
+  border-color: var(--tia-ambar);
+}
+.gia-opcion.es-correcta {
+  border-color: var(--tia-verde);
+  background: linear-gradient(165deg, #0b5137, #063526);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--tia-verde) 34%, transparent);
+}
+.gia-opcion.es-incorrecta {
+  border-color: var(--tia-rosa);
+  background: linear-gradient(165deg, #3a0b1c, #1e0410);
+}
+.gia-opcion:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.gia-revision-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gia-revision-item {
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 2px solid #2a6a9c;
+  background: #0b2c47;
+}
+.gia-revision-item.es-resuelto {
+  border-color: var(--tia-verde);
+}
+.gia-revision-descripcion {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 750;
+  color: #eaf4ff;
+}
+.gia-revision-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.gia-revision-boton {
+  padding: 7px 12px;
+  border-radius: 10px;
+  border: 2px solid #2a6a9c;
+  background: #082238;
+  color: #cfe6ff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.gia-revision-boton:hover:not(:disabled) {
+  border-color: var(--tia-cian);
+}
+.gia-revision-boton.es-elegida-bien {
+  background: linear-gradient(165deg, var(--tia-verde), var(--tia-verde-honda));
+  border-color: var(--tia-verde);
+  color: #04241a;
+}
+.gia-revision-boton.es-elegida-mal {
+  background: linear-gradient(165deg, var(--tia-rosa), var(--tia-rosa-honda));
+  border-color: var(--tia-rosa);
+  color: #2a0410;
+}
+.gia-revision-boton:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.gia-revision-boton:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.gia-revision-porque {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  font-weight: 750;
+  color: var(--tia-texto-suave);
+}

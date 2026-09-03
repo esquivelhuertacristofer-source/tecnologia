@@ -1,0 +1,378 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `n5-la-ia-en-mi-vida` — el vestido propio del RADAR DE IA.
+
+   Hoja aparte de `salaIA.css` a propósito: aquélla es el mueble común de las
+   clases de IA (mesa, banda, chat, portada) y la comparten tres clases más,
+   así que se toca lo menos posible. Aquí viven sólo las piezas que esta clase
+   estrena: la tarjeta del aparato, las dos apuestas, las cuatro preguntas
+   candidatas, las bandejas del radar y la pizarra del día.
+
+   Hereda los tokens de `.tia-sala` (`--tia-cian`, `--tia-ambar`…): esta hoja
+   nunca se carga sin aquélla.
+
+   Las dos familias de color de la clase, y no es decoración — es el contenido:
+     · CIAN  = aprendió mirando montones de ejemplos → es IA
+     · ÁMBAR = alguien le escribió los pasos          → no lo es
+   Color pleno sobre fondo oscuro, cada pieza con su halo. Ni un control
+   flotante: todo vive dentro de la mesa.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── El aparato en turno ─────────────────────────────────────────────────── */
+
+.tvida-caso {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 2px solid rgba(34, 211, 238, 0.55);
+  background: linear-gradient(150deg, #0d3355, #071d34);
+  box-shadow:
+    0 0 30px rgba(34, 211, 238, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.tvida-caso-icono {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  font-size: 30px;
+  line-height: 1;
+  background: radial-gradient(circle at 30% 25%, #10496f, #06182b);
+  box-shadow: 0 0 22px rgba(34, 211, 238, 0.35);
+}
+
+.tvida-caso-cuerpo {
+  min-width: 0;
+}
+
+.tvida-caso-momento {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tia-cian);
+  text-shadow: 0 0 12px rgba(34, 211, 238, 0.6);
+}
+
+.tvida-caso-nombre {
+  margin: 2px 0 4px;
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--tia-texto);
+}
+
+.tvida-caso-situacion {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--tia-texto-suave);
+}
+
+/* ── Acto 1 · las dos apuestas ───────────────────────────────────────────── */
+
+.tvida-apuestas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.tvida-apuesta {
+  padding: 14px 12px;
+  border-radius: 16px;
+  border: 2px solid rgba(157, 192, 226, 0.4);
+  background: linear-gradient(160deg, #0b2a47, #071c31);
+  color: var(--tia-texto);
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.tvida-apuesta:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(234, 244, 255, 0.75);
+}
+
+.tvida-apuesta.es-elegida.es-si {
+  border-color: var(--tia-cian);
+  background: linear-gradient(160deg, #0e5f7c, #0a3350);
+  box-shadow: 0 0 26px rgba(34, 211, 238, 0.5);
+}
+
+.tvida-apuesta.es-elegida.es-no {
+  border-color: var(--tia-ambar);
+  background: linear-gradient(160deg, #7c4a0d, #3a2308);
+  box-shadow: 0 0 26px rgba(251, 191, 36, 0.45);
+}
+
+.tvida-apuesta:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+/* ── Acto 2 · las cuatro preguntas candidatas ────────────────────────────── */
+
+.tvida-preguntas {
+  display: grid;
+  gap: 8px;
+}
+
+.tvida-pregunta {
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid rgba(167, 139, 250, 0.55);
+  background: linear-gradient(160deg, #241a4d, #120d2a);
+  color: var(--tia-texto);
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.16s ease;
+}
+
+.tvida-pregunta:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 0 26px rgba(167, 139, 250, 0.45);
+}
+
+.tvida-pregunta-texto {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.tvida-pregunta-motivo {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--tia-texto-suave);
+}
+
+/* La que se cayó no desaparece: se queda tachada con el porqué a la vista. */
+.tvida-pregunta.es-caida {
+  border-color: var(--tia-rosa);
+  background: linear-gradient(160deg, #4a1229, #240a16);
+}
+
+.tvida-pregunta.es-caida .tvida-pregunta-texto {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  color: #ffc8d2;
+}
+
+.tvida-pregunta.es-caida .tvida-pregunta-motivo {
+  color: #ffd9e0;
+}
+
+.tvida-pregunta.es-buena {
+  border-color: var(--tia-verde);
+  background: linear-gradient(160deg, #0d5744, #063027);
+  box-shadow: 0 0 30px rgba(52, 211, 153, 0.5);
+}
+
+.tvida-pregunta.es-buena .tvida-pregunta-motivo {
+  color: #b8f5e2;
+  font-weight: 800;
+}
+
+/* ── Acto 3 · el radar y sus dos bandejas ────────────────────────────────── */
+
+.tvida-radar {
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 2px solid var(--tia-verde);
+  background: linear-gradient(150deg, #0c5241, #062a22);
+  box-shadow: 0 0 26px rgba(52, 211, 153, 0.35);
+}
+
+.tvida-radar-etiqueta {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tia-verde);
+}
+
+.tvida-radar-pregunta {
+  margin: 3px 0 0;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--tia-texto);
+}
+
+.tvida-bandejas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.tvida-bandeja {
+  display: grid;
+  gap: 2px;
+  padding: 16px 12px;
+  border-radius: 18px;
+  border: 2px solid;
+  color: var(--tia-texto);
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.16s ease;
+}
+
+.tvida-bandeja:hover:not(:disabled) {
+  transform: translateY(-3px);
+}
+
+.tvida-bandeja:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.tvida-bandeja.es-ia {
+  border-color: var(--tia-cian);
+  background: linear-gradient(160deg, #0d4c68, #072338);
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.32);
+}
+
+.tvida-bandeja.es-regla {
+  border-color: var(--tia-ambar);
+  background: linear-gradient(160deg, #6b3f0b, #2e1c06);
+  box-shadow: 0 0 24px rgba(251, 191, 36, 0.3);
+}
+
+.tvida-bandeja-titulo {
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.tvida-bandeja-pie {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tia-texto-suave);
+}
+
+.tvida-pista {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 2px solid var(--tia-rosa);
+  background: linear-gradient(150deg, #4d1428, #260a15);
+  color: #ffdde3;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  box-shadow: 0 0 22px rgba(251, 113, 133, 0.35);
+}
+
+/* ── La pizarra del día: entra y no se mueve nunca más ───────────────────── */
+
+.tvida-pizarra {
+  margin-top: auto;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid rgba(157, 192, 226, 0.35);
+  background: linear-gradient(160deg, rgba(9, 34, 58, 0.9), rgba(4, 16, 29, 0.9));
+}
+
+.tvida-pizarra-titulo {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tia-texto-suave);
+}
+
+.tvida-pizarra-vacia {
+  margin: 0;
+  font-size: 13px;
+  color: var(--tia-texto-suave);
+}
+
+.tvida-pizarra-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.tvida-tarjeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border-left: 5px solid;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tvida-tarjeta.es-ia {
+  border-left-color: var(--tia-cian);
+  box-shadow: inset 0 0 22px rgba(34, 211, 238, 0.16);
+}
+
+.tvida-tarjeta.es-regla {
+  border-left-color: var(--tia-ambar);
+  box-shadow: inset 0 0 22px rgba(251, 191, 36, 0.14);
+}
+
+.tvida-tarjeta-icono {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.tvida-tarjeta-cuerpo {
+  display: grid;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.tvida-tarjeta-nombre {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--tia-texto);
+}
+
+.tvida-tarjeta-resumen {
+  font-size: 12px;
+  color: var(--tia-texto-suave);
+}
+
+.tvida-sello {
+  flex: 0 0 auto;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tvida-sello.es-bien {
+  color: #041e17;
+  background: var(--tia-verde);
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.55);
+}
+
+.tvida-sello.es-sorpresa {
+  color: #2b0713;
+  background: var(--tia-rosa);
+  box-shadow: 0 0 16px rgba(251, 113, 133, 0.55);
+}
+
+@media (max-width: 720px) {
+  .tvida-apuestas,
+  .tvida-bandejas {
+    grid-template-columns: 1fr;
+  }
+}

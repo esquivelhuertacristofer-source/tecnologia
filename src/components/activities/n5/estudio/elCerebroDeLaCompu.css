@@ -1,0 +1,192 @@
+/* `Tecnia Monitor` — N5·U1 «El cerebro de la compu».
+   Software de verdad, sin metáfora física y sin 3D: el administrador de
+   tareas vive dentro de la pantalla plana de `ArcadeSala`
+   (n1/arcade/ArcadeSala.tsx), igual que Tecnia Antivirus en N4. Reutiliza las
+   variables de color de `.arcade-n1` (--cian, --ambar, --verde, --rojo,
+   --panel…) que ya cargó arcade.css, y sólo añade el violeta del disco, que
+   no existía todavía en la paleta compartida. */
+
+.arcade-n1 .tm-marco {
+  --tm-violeta: #a78bfa;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(165deg, #0a1a2c, #050c16);
+}
+
+/* ── barra de título del programa ── */
+.arcade-n1 .tm-barra {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: linear-gradient(180deg, #123049, #0b1e33);
+  border-bottom: 1px solid rgba(92, 225, 230, 0.25);
+}
+.arcade-n1 .tm-barra-marca { font-weight: 900; font-size: 14px; letter-spacing: 0.02em; color: #fff; }
+.arcade-n1 .tm-barra-sub { margin-left: 6px; font-size: 11.5px; font-weight: 700; color: var(--apagado); }
+.arcade-n1 .tm-barra-botones { margin-left: auto; display: flex; gap: 6px; }
+.arcade-n1 .tm-barra-punto { width: 10px; height: 10px; border-radius: 50%; background: rgba(238, 248, 255, 0.16); }
+
+/* ── pantalla de espera: "encender" ── */
+.arcade-n1 .tm-espera { flex: 1; display: grid; place-items: center; gap: 10px; text-align: center; padding: 20px; }
+.arcade-n1 .tm-espera-marca { margin: 0; font-size: 15px; font-weight: 800; color: var(--apagado); letter-spacing: 0.08em; text-transform: uppercase; }
+.arcade-n1 .tm-encender {
+  padding: 16px 30px;
+  border-radius: 16px;
+  border: 0;
+  font-size: 18px;
+  font-weight: 900;
+  color: #031323;
+  background: linear-gradient(135deg, var(--cian), var(--azul));
+  box-shadow: 0 10px 30px rgba(50, 168, 255, 0.35);
+}
+.arcade-n1 .tm-encender:hover { filter: brightness(1.08); }
+.arcade-n1 .tm-espera-pie { margin: 0; font-size: 11.5px; font-weight: 700; color: var(--apagado); }
+
+/* ── cuerpo: lista a la izquierda, panel de trabajo a la derecha ── */
+.arcade-n1 .tm-cuerpo { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(200px, 280px) 1fr; }
+.arcade-n1 .tm-cuerpo-apagon { grid-template-columns: 1fr; }
+
+/* -- columna de la lista -- */
+.arcade-n1 .tm-lista {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 10px;
+  border-right: 1px solid rgba(92, 225, 230, 0.16);
+  background: rgba(5, 12, 22, 0.5);
+  overflow-y: auto;
+}
+.arcade-n1 .tm-lista-titulo { margin: 0 0 2px; font-size: 11px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: var(--apagado); }
+.arcade-n1 .tm-lista-filas { display: grid; gap: 6px; }
+.arcade-n1 .tm-lista-vacia { margin: 8px 2px; font-size: 12px; font-weight: 700; color: var(--apagado); }
+.arcade-n1 .tm-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  opacity: 0.6;
+}
+.arcade-n1 .tm-fila.es-activa {
+  opacity: 1;
+  background: rgba(92, 225, 230, 0.1);
+  border-color: rgba(92, 225, 230, 0.5);
+  box-shadow: 0 0 16px rgba(92, 225, 230, 0.2);
+}
+.arcade-n1 .tm-fila.es-resuelta { opacity: 0.85; }
+.arcade-n1 .tm-fila-emoji { font-size: 16px; line-height: 1; }
+.arcade-n1 .tm-fila-nombre { font-size: 12px; font-weight: 800; color: var(--texto); }
+.arcade-n1 .tm-fila-estado { margin-left: auto; font-size: 9.5px; font-weight: 900; color: var(--verde); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* -- panel de trabajo -- */
+.arcade-n1 .tm-panel { min-height: 0; display: flex; flex-direction: column; padding: 16px 20px; overflow-y: auto; gap: 12px; }
+.arcade-n1 .tm-panel-pedido { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--texto); font-weight: 700; }
+
+/* -- bandeja: la situación todavía no se manda -- */
+.arcade-n1 .tm-bandeja { margin: auto 0; display: grid; justify-items: center; gap: 8px; text-align: center; max-width: 420px; }
+.arcade-n1 .tm-bandeja-emoji { font-size: 40px; line-height: 1; }
+.arcade-n1 .tm-bandeja-programa { margin: 0; font-size: 16px; font-weight: 900; color: #fff; }
+.arcade-n1 .tm-bandeja-pedido { margin: 0 0 6px; font-size: 13.5px; line-height: 1.5; color: var(--apagado); font-weight: 600; }
+.arcade-n1 .tm-mandar {
+  margin-top: 6px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  border: 2px solid var(--cian);
+  background: rgba(92, 225, 230, 0.12);
+  color: var(--cian);
+  font-size: 13.5px;
+  font-weight: 900;
+}
+.arcade-n1 .tm-mandar:hover { background: rgba(92, 225, 230, 0.22); }
+
+/* -- los tres medidores -- */
+.arcade-n1 .tm-medidores { display: grid; gap: 10px; }
+.arcade-n1 .tm-medidor { display: grid; gap: 4px; }
+.arcade-n1 .tm-medidor-cabeza { display: flex; align-items: baseline; justify-content: space-between; }
+.arcade-n1 .tm-medidor-etiqueta { font-size: 11.5px; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; color: var(--apagado); }
+.arcade-n1 .tm-medidor-valor { font-size: 13.5px; font-weight: 900; color: var(--texto); }
+.arcade-n1 .tm-medidor-pista { height: 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); overflow: hidden; }
+.arcade-n1 .tm-medidor-relleno { height: 100%; border-radius: 999px; transition: width 0.5s ease; }
+.arcade-n1 .tm-medidor.es-procesador .tm-medidor-relleno { background: linear-gradient(90deg, var(--azul), var(--cian)); }
+.arcade-n1 .tm-medidor.es-memoria .tm-medidor-relleno { background: linear-gradient(90deg, var(--ambar-hondo), var(--ambar)); }
+.arcade-n1 .tm-medidor.es-disco .tm-medidor-relleno { background: linear-gradient(90deg, #7c5ce6, var(--tm-violeta)); }
+
+/* -- pregunta y opciones (diagnóstico, arreglo, apagón) -- */
+.arcade-n1 .tm-pregunta { margin: 4px 0 0; font-size: 13.5px; font-weight: 900; color: var(--texto); letter-spacing: 0.01em; }
+.arcade-n1 .tm-opciones { display: flex; flex-wrap: wrap; gap: 10px; }
+.arcade-n1 .tm-opcion {
+  flex: 1 1 150px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 2px solid rgba(92, 225, 230, 0.28);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--texto);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: left;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+.arcade-n1 .tm-opcion:hover { border-color: var(--cian); filter: brightness(1.08); transform: translateY(-1px); }
+.arcade-n1 .tm-opciones-arreglo .tm-opcion,
+.arcade-n1 .tm-opciones-apagon .tm-opcion { flex-basis: 100%; }
+
+/* ── el apagón ── */
+.arcade-n1 .tm-apagon { flex: 1; display: grid; align-content: center; justify-items: center; gap: 16px; text-align: center; padding: 24px; max-width: 560px; margin: 0 auto; }
+.arcade-n1 .tm-apagon .tm-medidores { width: 100%; }
+.arcade-n1 .tm-apagon-texto { margin: 0; font-size: 15px; line-height: 1.55; color: var(--texto); font-weight: 700; }
+.arcade-n1 .tm-apagon-boton {
+  padding: 14px 26px;
+  border-radius: 14px;
+  border: 0;
+  font-size: 14.5px;
+  font-weight: 900;
+  color: #2a0308;
+  background: linear-gradient(135deg, #ff8f9c, var(--rojo));
+  box-shadow: 0 10px 26px rgba(255, 109, 124, 0.3);
+}
+.arcade-n1 .tm-apagon-boton:hover { filter: brightness(1.08); }
+.arcade-n1 .tm-apagon-negro {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  background: #000;
+  color: var(--apagado);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  animation: tm-parpadeo 0.5s ease;
+}
+@keyframes tm-parpadeo { 0% { opacity: 0; } 100% { opacity: 1; } }
+
+.arcade-n1 .tm-archivos { display: grid; gap: 10px; width: 100%; }
+.arcade-n1 .tm-archivo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+.arcade-n1 .tm-archivo-nombre { color: var(--texto); }
+.arcade-n1 .tm-archivo.es-sigue { background: rgba(88, 226, 156, 0.12); border-color: var(--verde); }
+.arcade-n1 .tm-archivo.es-sigue .tm-archivo-estado { color: var(--verde); }
+.arcade-n1 .tm-archivo.es-perdido { background: rgba(255, 109, 124, 0.12); border-color: var(--rojo); }
+.arcade-n1 .tm-archivo.es-perdido .tm-archivo-estado { color: #ffb3bd; }
+
+@media (max-width: 720px) {
+  .arcade-n1 .tm-cuerpo { grid-template-columns: 1fr; grid-template-rows: minmax(120px, 30%) 1fr; }
+  .arcade-n1 .tm-lista { border-right: none; border-bottom: 1px solid rgba(92, 225, 230, 0.16); }
+}

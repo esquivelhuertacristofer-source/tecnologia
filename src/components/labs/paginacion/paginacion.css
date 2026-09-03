@@ -1,0 +1,250 @@
+/*
+ * Banco de la prueba de concepto de paginación.
+ *
+ * El lienzo va gris y la hoja blanca con sombra, que es lo que hace que una
+ * pantalla se lea como papel. Las medidas de la hoja NO viven aquí: vienen de
+ * `motorPaginacion.ts` por estilo en línea, porque el motor y el dibujo tienen
+ * que salir del mismo número o las hojas y los cortes se desalinean.
+ */
+
+.pag-banco {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #6b7683;
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+/* ── tablero de medidas ────────────────────────────────────────────────────── */
+
+.pag-hud {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 10px 18px 12px;
+    background: #0d1a26;
+    color: #dbe5ef;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.pag-hud h1 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: #f2f7fc;
+}
+
+.pag-cifras {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 9px;
+}
+
+.pag-cifra {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    padding: 5px 10px;
+    border: 1px solid #23384c;
+    border-radius: 5px;
+    background: #12222f;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #8ea3b8;
+}
+
+.pag-cifra b {
+    font-size: 16px;
+    font-weight: 800;
+    color: #f2f7fc;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Verde y rojo plenos: el veredicto tiene que leerse de un vistazo desde lejos. */
+.pag-cifra.es-bien {
+    border-color: #16a34a;
+    background: #0d2a1c;
+}
+.pag-cifra.es-bien b {
+    color: #4ade80;
+}
+
+.pag-cifra.es-mal {
+    border-color: #dc2626;
+    background: #2d1113;
+}
+.pag-cifra.es-mal b {
+    color: #fca5a5;
+}
+
+.pag-mandos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.pag-mandos button {
+    appearance: none;
+    border: 1px solid #274056;
+    border-radius: 5px;
+    background: #16283a;
+    color: #cfe0f0;
+    font: 700 12px/1 inherit;
+    padding: 7px 12px;
+    cursor: pointer;
+}
+
+.pag-mandos button:hover {
+    border-color: #3d6488;
+}
+
+.pag-mandos button.es-fuerte {
+    background: #2b7fff;
+    border-color: #2b7fff;
+    color: #fff;
+}
+
+.pag-fallos {
+    margin: 10px 0 0;
+    padding: 9px 12px 9px 28px;
+    max-height: 150px;
+    overflow: auto;
+    border-radius: 6px;
+    background: #2d1113;
+    color: #ffd9dc;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.pag-fallos b {
+    color: #fca5a5;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 10px;
+}
+
+/* ── lienzo y hojas ────────────────────────────────────────────────────────── */
+
+.pag-lienzo {
+    flex: 1;
+    overflow: auto;
+    padding: 26px 0 60px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.pag-pila {
+    position: relative;
+    flex: none;
+}
+
+.pag-hoja {
+    position: absolute;
+    left: 0;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.34);
+}
+
+.pag-encabezado,
+.pag-pie {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #9aa6b3;
+}
+
+.pag-encabezado {
+    top: 46px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.pag-pie {
+    bottom: 42px;
+    padding-top: 5px;
+    border-top: 1px solid #edf1f5;
+}
+
+.pag-pie i {
+    font-style: normal;
+}
+
+.pag-pie b {
+    font-size: 11px;
+    color: #5b6b7c;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── el flujo editable ─────────────────────────────────────────────────────── */
+
+.pag-flujo {
+    position: absolute;
+    outline: none;
+    /* Georgia mientras no estén Carlito y Caladea, que son las libres con las
+       métricas de Calibri y Cambria. La fidelidad tipográfica es otra tarea. */
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #1e2a36;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.pag-flujo h1 {
+    margin: 0 0 10px;
+    font-size: 26px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #14395f;
+    text-align: left;
+}
+
+.pag-flujo h2 {
+    margin: 18px 0 8px;
+    font-size: 19px;
+    line-height: 1.25;
+    font-weight: 700;
+    color: #2f6099;
+    text-align: left;
+}
+
+.pag-flujo p {
+    margin: 0 0 11px;
+}
+
+.pag-flujo table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 12px;
+    font-size: 13px;
+    text-align: left;
+}
+
+.pag-flujo td {
+    border: 1px solid #c3cedb;
+    padding: 5px 7px;
+}
+
+/*
+ * El espaciador: el empujón que manda un renglón a la hoja siguiente.
+ *
+ * Va marcado con un tinte apenas visible a propósito, para poder verlo durante
+ * la prueba. En producción esto es transparente. Lo importante es que NO es
+ * editable, no tiene texto y por eso no descuadra la cuenta de caracteres con
+ * la que se restaura el cursor.
+ */
+.pag-espacio {
+    display: block;
+    width: 100%;
+    user-select: none;
+    pointer-events: none;
+    background: rgba(43, 127, 255, 0.05);
+}

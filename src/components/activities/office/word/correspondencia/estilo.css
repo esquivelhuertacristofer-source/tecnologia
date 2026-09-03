@@ -1,0 +1,229 @@
+/*
+ * `of-word-correspondencia` · el diálogo de destinatarios.
+ *
+ * Clases con prefijo propio `corw-` para no chocar con el motor ni con las otras
+ * 153 clases del temario, y CSS plano —nada de módulos— porque así es como está
+ * escrito `ventanaTextos.css` y esto se pinta dentro de esa ventana.
+ *
+ * Se viste como un cuadro de diálogo de Word: gris de Office, bordes de un
+ * píxel, azul #185ABD y la tipografía de sistema que ya trae la ventana. Ningún
+ * color pleno de la plataforma entra aquí (regla 9).
+ */
+
+.corw-velo {
+  position: absolute;
+  inset: 0;
+  /* Por encima del halo (60) y por debajo de la portada (85) y de la insignia
+     (90): las dos tienen que poder taparlo si el alumno vuelve a abrirlas. */
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  /* El hueco de la derecha es el panel del maestro: el encargo se sigue leyendo
+     con el diálogo abierto. */
+  padding: 22px 362px 22px 22px;
+  background: rgba(10, 22, 44, 0.42);
+  animation: corw-aparece 0.16s ease-out;
+}
+
+@media (max-width: 900px) {
+  .corw-velo {
+    padding: 16px;
+  }
+}
+
+@keyframes corw-aparece {
+  from {
+    opacity: 0;
+  }
+}
+
+.corw-caja {
+  display: flex;
+  flex-direction: column;
+  width: min(660px, 100%);
+  max-height: 100%;
+  border: 1px solid #c8c6c4;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.38);
+  overflow: hidden;
+}
+
+.corw-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 10px 9px 14px;
+  background: #f3f2f1;
+  border-bottom: 1px solid #e1dfdd;
+}
+
+.corw-cab h2 {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #201f1e;
+}
+
+.corw-cerrar {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 22px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #605e5c;
+  cursor: pointer;
+}
+
+.corw-cerrar:hover {
+  background: #e1dfdd;
+  color: #201f1e;
+}
+
+.corw-intro {
+  margin: 0;
+  padding: 11px 16px 9px;
+  color: #605e5c;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ─── la tabla ─── */
+
+.corw-tabla {
+  flex: 1;
+  min-height: 0;
+  margin: 0 16px;
+  border: 1px solid #e1dfdd;
+  border-radius: 4px;
+  overflow: auto;
+}
+
+.corw-fila {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 74px 74px;
+  align-items: stretch;
+  border-bottom: 1px solid #edebe9;
+}
+
+.corw-fila:last-child {
+  border-bottom: 0;
+}
+
+.corw-fila.es-cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f3f2f1;
+  border-bottom: 1px solid #d6d4d2;
+}
+
+/* La fila que la vista previa está enseñando ahora mismo. Es el hilo que une la
+   lista con lo que se ve en la hoja. */
+.corw-fila.es-actual {
+  background: #eaf3fd;
+  box-shadow: inset 3px 0 0 #185abd;
+}
+
+.corw-num {
+  display: grid;
+  place-items: center;
+  color: #8a8886;
+  font-size: 11px;
+  border-right: 1px solid #edebe9;
+}
+
+.corw-col {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-right: 1px solid #edebe9;
+  color: #185abd;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.corw-col:last-child {
+  border-right: 0;
+}
+
+.corw-celda {
+  min-width: 0;
+  padding: 6px 8px;
+  border: 0;
+  border-right: 1px solid #edebe9;
+  background: transparent;
+  color: #201f1e;
+  font: inherit;
+  font-size: 12.5px;
+}
+
+.corw-celda:last-child {
+  border-right: 0;
+}
+
+.corw-celda.es-corta {
+  text-align: center;
+}
+
+.corw-celda:focus {
+  outline: 2px solid #185abd;
+  outline-offset: -2px;
+  background: #fff;
+}
+
+/* ─── el pie ─── */
+
+.corw-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 16px 14px;
+}
+
+.corw-cuenta {
+  margin: 0;
+  color: #605e5c;
+  font-size: 12px;
+}
+
+.corw-cuenta b {
+  color: #185abd;
+  font-size: 14px;
+}
+
+.corw-botones {
+  display: flex;
+  gap: 8px;
+}
+
+.corw-boton {
+  min-width: 106px;
+  padding: 6px 14px;
+  border: 1px solid #8a8886;
+  border-radius: 3px;
+  background: #fff;
+  color: #201f1e;
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.corw-boton:hover {
+  background: #f3f2f1;
+}
+
+.corw-boton.es-principal {
+  border-color: #185abd;
+  background: #185abd;
+  color: #fff;
+  font-weight: 600;
+}
+
+.corw-boton.es-principal:hover {
+  background: #103f91;
+}

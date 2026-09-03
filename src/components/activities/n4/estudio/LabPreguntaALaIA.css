@@ -1,0 +1,342 @@
+/*
+ * Tecnia Asistente — la ventana de N4 «Pregunta a la IA».
+ *
+ * Color pleno y saturado (nada de pastel), controles integrados en la propia
+ * ventana (el compositor de chips ES la barra de escritura, no un overlay
+ * flotante), y ni un robot, cerebro o foco a la vista: el asistente es un
+ * chat con un badge de chispas, igual que cualquier app de mensajes real.
+ */
+
+.pia-lienzo {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 16px 14px 40px;
+  color: #0c2338;
+}
+
+/* ── Barra superior ── */
+.pia-barra {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #0e2f52, #123b5e);
+  border-radius: 16px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 20px rgba(6, 26, 53, 0.25);
+}
+.pia-salir {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #e6f6ff;
+  border: none;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-weight: 800;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.pia-salir:hover { background: rgba(255, 255, 255, 0.22); }
+.pia-barra-titulo {
+  flex: 1;
+  color: #fff;
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+.pia-progreso {
+  background: #fbbf24;
+  color: #422006;
+  font-weight: 900;
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 6px 12px;
+  white-space: nowrap;
+}
+
+/* ── Cuerpo de la ronda ── */
+.pia-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pia-bit {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #fff7e6;
+  border: 3px solid #fbbf24;
+  border-radius: 18px;
+  padding: 12px 16px;
+}
+.pia-bit-retrato {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 3px solid #fbbf24;
+  background: #fde68a;
+}
+.pia-bit-globo p {
+  margin: 2px 0 0;
+  font-weight: 700;
+  font-size: 14.5px;
+  line-height: 1.4;
+  color: #422006;
+}
+.pia-bit-kicker {
+  display: inline-block;
+  background: #f59e0b;
+  color: #fff;
+  font-weight: 900;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+/* ── Ventana del asistente ── */
+.pia-ventana {
+  background: #0b2540;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 14px 34px rgba(6, 26, 53, 0.3);
+}
+.pia-ventana-barra {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #123b5e;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.pia-ventana-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #22d3ee, #a78bfa);
+  color: #fff;
+  flex: none;
+}
+.pia-ventana-nombre { color: #fff; font-weight: 900; font-size: 14px; }
+.pia-ventana-tema {
+  margin-left: auto;
+  color: #9fd8f0;
+  font-weight: 700;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.pia-hilo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  min-height: 96px;
+}
+.pia-hilo-vacio {
+  color: #7fa8c9;
+  font-weight: 600;
+  font-size: 13.5px;
+  text-align: center;
+  margin: 20px 0;
+}
+.pia-msg {
+  max-width: 88%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 600;
+  white-space: pre-line;
+}
+.pia-msg-tu {
+  align-self: flex-end;
+  background: #fbbf24;
+  color: #422006;
+  border-bottom-right-radius: 4px;
+  font-weight: 800;
+}
+.pia-msg-ia {
+  align-self: flex-start;
+  background: #f2f6f7;
+  color: #0c2338;
+  border-bottom-left-radius: 4px;
+}
+.pia-msg-aviso {
+  align-self: flex-start;
+  background: #fee2e2;
+  border: 2px solid #ef4444;
+  color: #7f1d1d;
+  border-bottom-left-radius: 4px;
+  font-weight: 800;
+}
+
+/* ── Compositor: la barra de chips ES la barra de escritura ── */
+.pia-compone {
+  background: #0e2f52;
+  padding: 12px 16px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.pia-compone-titulo {
+  color: #9fd8f0;
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 8px;
+}
+.pia-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pia-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #22d3ee;
+  color: #06283f;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.pia-chip:hover:not(:disabled) { transform: translateY(-1px); }
+.pia-chip:nth-child(2) { background: #34d399; }
+.pia-chip:nth-child(3) { background: #a78bfa; color: #fff; }
+.pia-chip:nth-child(4) { background: #fb923c; }
+.pia-chip.revelado {
+  opacity: 0.55;
+  cursor: default;
+  background: rgba(255, 255, 255, 0.14);
+  color: #cfe8f7;
+}
+.pia-chip-enviar { opacity: 0.7; }
+
+/* ── Reflexión ── */
+.pia-reflexion {
+  background: #fff;
+  border: 3px solid #123b5e;
+  border-radius: 18px;
+  padding: 16px;
+}
+.pia-reflexion-pregunta {
+  font-weight: 900;
+  font-size: 15px;
+  margin: 0 0 12px;
+  color: #0c2338;
+}
+.pia-reflexion-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pia-reflexion-opcion {
+  text-align: left;
+  background: #f2f6f7;
+  border: 3px solid transparent;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #0c2338;
+  cursor: pointer;
+}
+.pia-reflexion-opcion:hover:not(:disabled) { border-color: #22d3ee; }
+.pia-reflexion-opcion.correcta {
+  background: #d1fae5;
+  border-color: #10b981;
+  color: #065f46;
+}
+.pia-reflexion-opcion.fallida {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #7f1d1d;
+}
+.pia-reflexion-feedback {
+  margin: 12px 0 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.5;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.pia-reflexion-feedback.correcta { background: #ecfdf5; color: #065f46; }
+.pia-reflexion-feedback.fallida { background: #fef2f2; color: #7f1d1d; }
+
+.pia-revelacion {
+  margin: 12px 0 0;
+  background: linear-gradient(135deg, #fb923c, #ef4444);
+  color: #fff;
+  font-weight: 900;
+  font-size: 13.5px;
+  line-height: 1.5;
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.pia-siguiente {
+  margin-top: 14px;
+  width: 100%;
+  background: #123b5e;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 13px;
+  font-weight: 900;
+  font-size: 14.5px;
+  cursor: pointer;
+}
+.pia-siguiente:hover { background: #0b2540; }
+
+/* ── Cierre ── */
+.pia-cierre {
+  text-align: center;
+  background: linear-gradient(160deg, #123b5e, #0b2540);
+  color: #fff;
+  border-radius: 22px;
+  padding: 40px 24px;
+}
+.pia-cierre-icono { font-size: 52px; display: block; margin-bottom: 10px; }
+.pia-cierre-titulo { font-size: 22px; font-weight: 900; margin: 0 0 10px; }
+.pia-cierre-texto {
+  max-width: 480px;
+  margin: 0 auto 16px;
+  color: #cfe8f7;
+  font-weight: 600;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.pia-cierre-score { font-weight: 900; color: #fbbf24; font-size: 16px; margin: 0 0 18px; }
+.pia-terminar {
+  background: #fbbf24;
+  color: #422006;
+  border: none;
+  border-radius: 999px;
+  padding: 13px 28px;
+  font-weight: 900;
+  font-size: 15px;
+  cursor: pointer;
+}
+.pia-terminar:hover { background: #f59e0b; }
+
+@media (max-width: 640px) {
+  .pia-msg { max-width: 94%; }
+}

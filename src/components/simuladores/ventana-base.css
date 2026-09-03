@@ -1,0 +1,113 @@
+/* `VentanaBase` — el marco de ventana compartido por los programas simulados
+   que no son Office (hoy: «Tecnia Antivirus» y «Tecnia Archivos»). Extraído
+   el 15-ago-2026 de diffear `LabVirusYAntivirus.tsx` (av-*) contra
+   `LabNubeOLocal.tsx` (ex-*): estas reglas eran idénticas carácter por
+   carácter entre las dos hojas salvo el prefijo. Ver CANON-ARMAZONES.md,
+   «Pieza 0».
+
+   Reutiliza las variables de color de `.arcade-n1` (--cian, --azul,
+   --apagado…) que ya carga `arcade.css`, y no redefine ninguna: como estas
+   clases no llevan el prefijo `.arcade-n1`, un consumidor fuera de esa
+   pantalla debe traer esas variables (o las suyas) para que el botón de
+   encender y el texto atenuado tomen color. */
+
+.vtb-marco {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(165deg, #0a1a2c, #050c16);
+}
+
+/* Defecto real, no hipotético: cuando `VentanaBase` es la raíz de un
+   laboratorio (sin `ArcadeSala`/bezel propio que le dé una altura de verdad),
+   su único padre es `.act-frame--inmersivo` (CenHub.css) — que no tiene
+   altura explícita y sólo contiene este hijo absolutamente posicionado. Un
+   `position:absolute; inset:0` dentro de un padre `height:auto` sin más
+   contenido en flujo colapsa a 0px: el laboratorio existe en el DOM pero
+   nunca se ve. Confirmado en vivo (23-ago-2026, capturas de pantalla) en
+   `n8-malware-e-ingenieria-social` y `n6-contrasenas-fuertes`, entre otras
+   11 actividades ya publicadas que usan `VentanaBase` sin `ArcadeSala`.
+   El selector de hijo directo apunta sólo a ese caso —nunca a `VentanaBase`
+   anidado dentro de un bezel real como `.maquina-pantalla` (N4, funciona
+   bien)— así que no hay riesgo de romper el patrón que sí funciona: ahí
+   `.vtb-marco` no es hijo directo de `.act-frame--inmersivo`. */
+.cen-hub .act-frame--inmersivo > .vtb-marco {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+}
+
+/* ── barra de título del programa ── */
+.vtb-barra {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: linear-gradient(180deg, #123049, #0b1e33);
+  border-bottom: 1px solid rgba(92, 225, 230, 0.25);
+}
+.vtb-barra-marca { font-weight: 900; font-size: 14px; letter-spacing: 0.02em; color: #fff; }
+.vtb-barra-sub { margin-left: 6px; font-size: 11.5px; font-weight: 700; color: var(--apagado); }
+.vtb-barra-botones { margin-left: auto; display: flex; gap: 6px; }
+.vtb-barra-punto { width: 10px; height: 10px; border-radius: 50%; background: rgba(238, 248, 255, 0.16); }
+
+/* ── pantalla de arranque: "encender" ── */
+.vtb-espera { flex: 1; display: grid; place-items: center; gap: 10px; text-align: center; padding: 20px; }
+.vtb-espera-marca {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--apagado);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.vtb-encender {
+  padding: 16px 30px;
+  border-radius: 16px;
+  border: 0;
+  font-size: 18px;
+  font-weight: 900;
+  color: #031323;
+  background: linear-gradient(135deg, var(--cian), var(--azul));
+  box-shadow: 0 10px 30px rgba(50, 168, 255, 0.35);
+}
+.vtb-encender:hover { filter: brightness(1.08); }
+.vtb-espera-pie { margin: 0; font-size: 11.5px; font-weight: 700; color: var(--apagado); }
+
+/* ── hueco de contenido: cada programa dibuja lo suyo adentro ── */
+.vtb-cuerpo { flex: 1; min-height: 0; min-width: 0; display: flex; flex-direction: column; overflow-x: hidden; }
+
+/* ── el simulador de IDE de 3 columnas (n8-n10: SOC, SQL, editor de
+   videojuego, casa inteligente) ── cada uno fijaba sus 3 columnas con
+   `gridTemplateColumns` inline —y cada uno con su propio ancho de barra
+   lateral—, así que a 390px el editor central quedaba aplastado contra dos
+   barras de sobra 220-260px cada una. Los anchos de columna siguen viniendo
+   del propio archivo (son distintos en cada actividad) vía las variables
+   `--ide-col-izq`/`--ide-col-der`; lo que decide CUÁNTAS columnas hay —y que
+   se apilan en un teléfono— vive aquí, para que un `@media` pueda ganarle
+   sin pelear con la especificidad de un `style` inline. */
+.act-ide-grid {
+  display: grid;
+  grid-template-columns: var(--ide-col-izq, 220px) minmax(0, 1fr) var(--ide-col-der, 240px);
+}
+
+@media (max-width: 900px) {
+  .act-ide-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── barra de estado opcional: nadie la usa todavía ── */
+.vtb-estado {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 16px;
+  border-top: 1px solid rgba(92, 225, 230, 0.16);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--apagado);
+}

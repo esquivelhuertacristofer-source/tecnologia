@@ -1,0 +1,236 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Las clases de volumen: portada de objetivos, respaldo sin WebGL y el
+   re-encuadre del laboratorio de dos hojas (documento §53).
+
+   Es corto a propósito, y tiene que seguir siéndolo. Todo lo que el alumno
+   toca para jugar vive DENTRO del lienzo —piezas, aros, mandos, chapas—, así
+   que aquí sólo queda lo que es chasis: la portada que se lee antes de
+   empezar, la cara sin WebGL y las medidas del panel cuando la clase comparte
+   pantalla con su página educativa. Si este archivo empieza a llenarse de
+   paneles y botones de mecánica, es la señal de que la clase se está
+   convirtiendo en «3D con la interfaz pegada encima».
+
+   Color pleno sobre fondo oscuro, nunca pastel, nunca `dashed`.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Portada de objetivos ───────────────────────────────────────────────── */
+
+.lb3-portada {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  overflow: auto;
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(34, 211, 238, 0.12), transparent 66%),
+    rgba(3, 9, 16, 0.94);
+  backdrop-filter: blur(3px);
+}
+
+.lb3-portada-caja {
+  width: min(660px, 100%);
+  padding: clamp(20px, 3.4vw, 34px);
+  border-radius: 20px;
+  border: 2px solid var(--acento, #22d3ee);
+  background: linear-gradient(168deg, #0d2338, #061422 72%);
+  box-shadow:
+    0 0 0 1px rgba(6, 20, 34, 0.9),
+    0 28px 70px rgba(0, 0, 0, 0.62),
+    inset 0 1px 0 rgba(190, 226, 255, 0.14);
+}
+
+.lb3-portada-situacion {
+  margin: 0;
+  color: #9fd8ec;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.lb3-portada-tema {
+  margin: 8px 0 16px;
+  font-size: clamp(24px, 3.6vw, 33px);
+  font-weight: 900;
+  line-height: 1.14;
+  color: #f2fbff;
+}
+
+.lb3-portada-etiqueta {
+  display: inline-block;
+  margin-bottom: 6px;
+  color: var(--acento, #22d3ee);
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.lb3-portada-objetivo {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border-left: 5px solid var(--acento, #22d3ee);
+  background: rgba(34, 211, 238, 0.09);
+}
+.lb3-portada-objetivo p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #f2fbff;
+}
+
+.lb3-portada-cuerpo {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 640px) {
+  .lb3-portada-cuerpo { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+}
+
+.lb3-portada-lista ol {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+  color: #d6ecf7;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.lb3-portada-lista li::marker { color: var(--acento, #22d3ee); font-weight: 900; }
+
+.lb3-portada-datos {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.lb3-portada-dato {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(150, 200, 245, 0.24);
+  background: rgba(8, 24, 40, 0.8);
+  color: #9fd8ec;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.lb3-portada-dato b { color: #f2fbff; font-size: 17px; font-weight: 900; }
+
+.lb3-portada-empezar {
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px 22px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(160deg, var(--acento, #22d3ee), #0e7490);
+  color: #041018;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(34, 211, 238, 0.28);
+}
+.lb3-portada-empezar:hover { filter: brightness(1.08); }
+.lb3-portada-empezar:focus-visible { outline: 3px solid #f2fbff; outline-offset: 3px; }
+
+.lb3-portada-pie {
+  margin: 9px 0 0;
+  text-align: center;
+  color: #7fa2bd;
+  font-size: 12px;
+}
+
+/* ── Respaldo sin WebGL ─────────────────────────────────────────────────────
+   Es la única cara que jsdom llega a tocar, así que es también la cara que
+   juegan las pruebas de recorrido completo: tiene que ser una clase entera,
+   no un mensaje de disculpa. Y es la cara del teclado y del lector: cada
+   pieza y cada hueco es un botón con su nombre real. */
+
+.lab3d-sala .lb3-respaldo {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: #eaf6fb;
+}
+
+.lab3d-sala .lb3-respaldo-titulo {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #f2fbff;
+}
+.lab3d-sala .lb3-respaldo-nota {
+  margin: 0;
+  font-size: 13px;
+  color: #9fd8ec;
+}
+
+.lab3d-sala .lb3-respaldo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.lab3d-sala .lb3-respaldo-grupo > span {
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #22d3ee;
+}
+.lab3d-sala .lb3-respaldo-fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lab3d-sala .lb3-boton {
+  padding: 9px 14px;
+  border-radius: 11px;
+  border: 2px solid rgba(150, 200, 245, 0.3);
+  background: linear-gradient(170deg, #133257, #08182b);
+  color: #eaf6fb;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.lab3d-sala .lb3-boton[aria-pressed='true'] {
+  border-color: #22d3ee;
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.45);
+}
+.lab3d-sala .lb3-boton:disabled { opacity: 0.42; cursor: not-allowed; }
+.lab3d-sala .lb3-boton:focus-visible { outline: 3px solid #22d3ee; outline-offset: 2px; }
+
+/* ── El laboratorio de dos hojas ────────────────────────────────────────────
+   `n5-conecta-perifericos` se abre con su página educativa a la izquierda y
+   el simulador a la derecha, «a la vez», que es el encargo literal del
+   cliente. La sala nació `position: fixed` para adueñarse de la ventana; aquí
+   pasa a ser inquilina del panel, igual que se hizo con el simulador de N1.
+   Se le cambia el encuadre, no las tripas. */
+
+.lab2-sim .lab3d-sala {
+  position: absolute;
+  inset: 0;
+  z-index: auto;
+}
+/* Dentro del panel ya no hay barra de navegación que esquivar: los 88 px que
+   la sala reserva arriba serían un hueco muerto que le come el lienzo. */
+.lab2-sim .lab3d-sala .sala {
+  padding: 14px 14px 12px;
+  max-width: none;
+}
+/* En un panel angosto la marquesina envuelve y el marcador se va solo a otra
+   línea; con el título más corto y los pips más juntos cabe en una. */
+@container sim (max-width: 900px) {
+  .lab2-sim .lab3d-sala .marquesina-titulo { font-size: 17px; }
+  .lab2-sim .lab3d-sala .paso-pip { width: 8px; height: 8px; }
+  .lab2-sim .lab3d-sala .bit-puesto { max-width: 92%; }
+}

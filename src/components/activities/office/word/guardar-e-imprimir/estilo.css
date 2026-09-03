@@ -1,0 +1,693 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `of-word-guardar-e-imprimir` · los dos cuadros de diálogo de la clase.
+
+   Van con el chrome de Word y de Windows, no con el color pleno de la
+   plataforma: son parte del PROGRAMA. La regla de §36.2 vale igual aquí —el
+   color de la plataforma vive en la entrada y en el panel del maestro, y dentro
+   de la ventana manda la fidelidad—, porque un cuadro de «Guardar como» con
+   fondo oscuro y botones saturados no enseña a guardar en el Word que el alumno
+   va a encontrarse en la escuela.
+
+   Todas las clases llevan el prefijo `gi-` (guardar e imprimir) para que nueve
+   clases construidas a la vez no se pisen una hoja de estilos.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Los glifos del grupo Archivo son emoji y no iconos de trazo: el mapa de
+   iconos de la ventana es del motor y una clase no lo amplía. Se les baja el
+   tamaño para que no griten al lado de los de Lucide. */
+.txtw-boton[data-control^='gi-'] .txtw-glifo {
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* ─────────────────────────── el velo y la caja ─────────────────────────── */
+
+/* Entre el halo (60) y la portada de la práctica (85): un cuadro de diálogo
+   tapa la cinta, pero la portada de objetivos tapa el cuadro.
+
+   Y NO llega hasta el borde derecho. Los 340 px del panel del maestro se quedan
+   fuera a propósito: el encargo que hay que cumplir dentro del cuadro está
+   escrito ahí, y un velo que lo tapara obligaría a cerrar el cuadro para leer
+   qué había que hacer dentro del cuadro. */
+.gi-velo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 340px;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(32, 31, 30, 0.42);
+  animation: gi-aparece 0.14s ease-out;
+}
+
+/* Lo que el velo dejaba despierto: el trozo de CINTA que queda por encima del
+   panel, en esos mismos 340 px. La cinta llega hasta el borde de la ventana y el
+   panel no empieza hasta debajo de ella, así que ahí había botones vivos detrás
+   de un cuadro modal — a 1024×768, precisamente los tres de esta clase. Va
+   pegada al velo y sin solaparlo, con el mismo lavado: si se solaparan, la cinta
+   saldría de un gris distinto del resto. El alto lo mide `TapaDeLaCinta`. */
+.gi-tapa {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 340px;
+  z-index: 70;
+  background: rgba(32, 31, 30, 0.42);
+  animation: gi-aparece 0.14s ease-out;
+}
+
+@keyframes gi-aparece {
+  from {
+    opacity: 0;
+  }
+}
+
+.gi-caja {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  overflow: hidden;
+  border: 1px solid #8a8886;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 26px 64px rgba(0, 0, 0, 0.45);
+  color: #201f1e;
+  font-family: 'Segoe UI', 'Selawik', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+}
+
+.gi-caja.es-guardar {
+  width: min(760px, 100%);
+  height: min(540px, 100%);
+}
+
+.gi-caja.es-imprimir {
+  width: min(1000px, 100%);
+  height: min(660px, 100%);
+}
+
+.gi-cab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  padding: 9px 8px 9px 14px;
+  border-bottom: 1px solid #e1dfdd;
+  background: #f3f2f1;
+}
+
+.gi-cab-titulo {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.gi-cab-x {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 26px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #605e5c;
+  cursor: pointer;
+}
+
+.gi-cab-x:hover {
+  background: #e81123;
+  color: #fff;
+}
+
+/* ─────────────────────────── guardar como ─────────────────────────── */
+
+.gi-ruta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  padding: 8px 14px;
+  border-bottom: 1px solid #edebe9;
+  color: #605e5c;
+  font-size: 12px;
+}
+
+.gi-ruta b {
+  color: #201f1e;
+  font-weight: 600;
+}
+
+.gi-explorador {
+  display: grid;
+  grid-template-columns: 196px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+}
+
+.gi-carpetas {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 6px;
+  border-right: 1px solid #e1dfdd;
+  background: #faf9f8;
+  overflow: auto;
+}
+
+.gi-carpetas-tit {
+  padding: 2px 8px 6px;
+  color: #605e5c;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.gi-carpeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gi-carpeta:hover {
+  background: #efedeb;
+}
+
+.gi-carpeta.es-activa {
+  border-color: #c7dcf7;
+  background: #cfe4fa;
+  font-weight: 600;
+}
+
+.gi-carpeta-cuenta {
+  margin-left: auto;
+  color: #605e5c;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gi-carpeta.es-activa .gi-carpeta-cuenta {
+  color: #103f91;
+}
+
+.gi-lista {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.gi-lista-cab {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 168px;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  padding: 7px 14px;
+  border-bottom: 1px solid #e1dfdd;
+  background: #fff;
+  color: #605e5c;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.gi-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 168px;
+  gap: 10px;
+  align-items: center;
+  padding: 7px 14px;
+  border-bottom: 1px solid #f3f2f1;
+}
+
+/* El archivo con el que se está trabajando ahora mismo. Es lo que hace visible
+   que «Guardar como» cambió de archivo y no movió el de antes. */
+.gi-fila.es-actual {
+  background: #eff6fd;
+}
+
+.gi-fila-marca {
+  flex: none;
+  padding: 1px 7px;
+  border-radius: 9px;
+  background: #185abd;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.gi-fila-nombre {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.gi-fila-nombre span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gi-fila-tipo {
+  color: #605e5c;
+  font-size: 12px;
+}
+
+/* El cuadradito de tipo de archivo: azul el de Word, rojo el PDF. Es la única
+   pista de un vistazo de que son dos cosas distintas, y el encargo del PDF vive
+   justo de esa diferencia. */
+.gi-sello {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 26px;
+  border-radius: 2px;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.gi-sello.es-docx {
+  background: linear-gradient(160deg, #2b7cd3 0%, #185abd 100%);
+}
+
+.gi-sello.es-pdf {
+  background: linear-gradient(160deg, #e35c4a 0%, #c0392b 100%);
+}
+
+.gi-vacia {
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  padding: 34px 20px;
+  color: #605e5c;
+  text-align: center;
+}
+
+.gi-vacia b {
+  color: #201f1e;
+  font-size: 13px;
+}
+
+.gi-campos {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 8px 10px;
+  align-items: center;
+  flex: none;
+  padding: 12px 14px 4px;
+  border-top: 1px solid #e1dfdd;
+}
+
+.gi-campos label {
+  color: #201f1e;
+  font-size: 12.5px;
+}
+
+.gi-entrada,
+.gi-select {
+  width: 100%;
+  height: 27px;
+  padding: 0 8px;
+  border: 1px solid #8a8886;
+  border-radius: 2px;
+  background: #fff;
+  color: #201f1e;
+  font: inherit;
+  font-size: 13px;
+}
+
+.gi-entrada:focus,
+.gi-select:focus {
+  outline: 2px solid #185abd;
+  outline-offset: -2px;
+}
+
+.gi-resultado {
+  grid-column: 1 / -1;
+  padding: 2px 0 0;
+  color: #605e5c;
+  font-size: 12px;
+}
+
+.gi-resultado b {
+  color: #185abd;
+}
+
+.gi-aviso {
+  grid-column: 1 / -1;
+  color: #a4262c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.gi-pie {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: none;
+  padding: 12px 14px 14px;
+}
+
+.gi-boton {
+  min-width: 92px;
+  height: 30px;
+  padding: 0 16px;
+  border: 1px solid #8a8886;
+  border-radius: 2px;
+  background: #fff;
+  color: #201f1e;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.gi-boton:hover {
+  background: #f3f2f1;
+}
+
+.gi-boton.es-principal {
+  border-color: #185abd;
+  background: #185abd;
+  color: #fff;
+  font-weight: 600;
+}
+
+.gi-boton.es-principal:hover {
+  background: #103f91;
+}
+
+.gi-boton:focus-visible {
+  outline: 2px solid #103f91;
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────── imprimir ─────────────────────────── */
+
+.gi-imprimir {
+  display: grid;
+  grid-template-columns: 296px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+}
+
+.gi-ajustes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 16px 18px;
+  border-right: 1px solid #e1dfdd;
+  overflow: auto;
+}
+
+.gi-lanzar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gi-lanzar-boton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 94px;
+  padding: 10px 6px 8px;
+  border: 1px solid #185abd;
+  border-radius: 3px;
+  background: #185abd;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.gi-lanzar-boton:hover {
+  background: #103f91;
+}
+
+.gi-lanzar-boton:focus-visible {
+  outline: 2px solid #0b2c66;
+  outline-offset: 2px;
+}
+
+.gi-lanzar-icono {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.gi-copias {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gi-copias label {
+  color: #605e5c;
+  font-size: 12px;
+}
+
+.gi-copias input {
+  width: 84px;
+  height: 27px;
+  padding: 0 8px;
+  border: 1px solid #8a8886;
+  border-radius: 2px;
+  font: inherit;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gi-copias input:focus {
+  outline: 2px solid #185abd;
+  outline-offset: -2px;
+}
+
+.gi-bloque-tit {
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e1dfdd;
+  color: #185abd;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.gi-impresora {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid #e1dfdd;
+  border-radius: 3px;
+  background: #faf9f8;
+}
+
+.gi-impresora-icono {
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* Cada trozo con su clase, y no `.gi-impresora span`: ese selector tambien
+   pillaba al envoltorio, asi que el nombre de la impresora heredaba el verde de
+   «Lista» y parecia que el estado era el nombre. */
+.gi-impresora-nombre {
+  display: block;
+  color: #201f1e;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.gi-impresora-estado {
+  color: #107c10;
+  font-size: 11.5px;
+}
+
+/* Los ajustes de impresión NO son botones: son renglones que informan. Un botón
+   que no hace nada cobra tropiezos y delata el halo (§36.8 D), así que lo que
+   esta clase no enseña todavía se dice, y no se pulsa. */
+.gi-ajuste {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 2px;
+  border-bottom: 1px dotted #e1dfdd;
+  font-size: 12.5px;
+}
+
+.gi-ajuste span {
+  color: #605e5c;
+}
+
+.gi-ajuste b {
+  font-weight: 600;
+  text-align: right;
+}
+
+/* El renglón que hace la cuenta. Es el que el encargo manda mirar. */
+.gi-cuenta {
+  margin-top: auto;
+  padding: 10px 12px;
+  border: 1px solid #f2c94c;
+  border-radius: 4px;
+  background: #fff8e1;
+  color: #6b4c00;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.gi-cuenta b {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.gi-previa {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #808080;
+}
+
+.gi-previa-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex: none;
+  padding: 8px 14px;
+  background: #6d6d6d;
+  color: #fff;
+  font-size: 12px;
+}
+
+.gi-hojas {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  flex: 1;
+  padding: 18px;
+  overflow: auto;
+}
+
+/* Centrado que no se rompe al desbordar. Con `justify-content: center` y tres
+   hojas, la primera se queda fuera del alcance de la barra de desplazamiento;
+   con márgenes automáticos en los extremos, se centra cuando cabe y se pega a la
+   izquierda cuando no. */
+.gi-hojas > :first-child {
+  margin-left: auto;
+}
+
+.gi-hojas > :last-child {
+  margin-right: auto;
+}
+
+.gi-hoja {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+}
+
+.gi-mini {
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
+}
+
+.gi-mini-lupa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+
+/* La copia del documento dentro de la miniatura no se puede tocar ni
+   seleccionar: es un retrato del papel, no un segundo documento. */
+.gi-mini-flujo {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+
+.gi-hoja-pie {
+  color: #f3f2f1;
+  font-size: 11.5px;
+}
+
+/* ─────────────────────────── el recado ─────────────────────────── */
+
+/* Bajo el documento y a la izquierda del panel del maestro: donde Word pone sus
+   avisos de guardado. Se va solo y no tapa nada que haga falta. */
+.gi-recado {
+  position: absolute;
+  left: 0;
+  right: 340px;
+  bottom: 36px;
+  z-index: 55;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.gi-recado-caja {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(560px, 92%);
+  padding: 9px 15px;
+  border: 1px solid #d2d0ce;
+  border-left: 4px solid #107c10;
+  border-radius: 3px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+  color: #201f1e;
+  font-family: 'Segoe UI', 'Selawik', system-ui, sans-serif;
+  font-size: 12.5px;
+  line-height: 1.4;
+  animation: gi-sube 0.2s ease-out;
+}
+
+@keyframes gi-sube {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gi-velo,
+  .gi-recado-caja {
+    animation: none;
+  }
+}
+
+/* ─────────────────────────── pantallas cortas ─────────────────────────── */
+
+@media (max-height: 720px) {
+  .gi-caja.es-imprimir {
+    height: 100%;
+  }
+}
+
+@media (max-width: 1100px) {
+  .gi-imprimir {
+    grid-template-columns: 258px minmax(0, 1fr);
+  }
+}

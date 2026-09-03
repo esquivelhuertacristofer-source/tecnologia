@@ -1,0 +1,169 @@
+/*
+ * Login CEN — diseño original de Cristofer (cen-landing/login.html).
+ * Conversión 1:1 del <style> original, scoped bajo .cen-login; las reglas de
+ * html/body (fondo, grid, min-height) viven en el wrapper.
+ */
+
+.cen-login {
+  --navy-950: #031225;
+  --navy-900: #061a35;
+  --navy-850: #08213f;
+  --navy-800: #0a294e;
+  --blue: #176bff;
+  --blue-light: #70cfff;
+  --white: #ffffff;
+  --text: #dce9f8;
+  --muted: #91a7c1;
+  --line: rgba(255,255,255,.11);
+  --shadow: 0 40px 100px rgba(0,0,0,.34);
+}
+
+.cen-login,
+.cen-login *,
+.cen-login *::before,
+.cen-login *::after { box-sizing: border-box; }
+
+.cen-login {
+  margin: 0; min-width: 320px; min-height: 100vh; color: var(--text);
+  background:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(135deg, var(--navy-950), var(--navy-900) 52%, #082d5b);
+  background-size: 64px 64px, 64px 64px, auto;
+  font-family: var(--font-dm-sans), "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.55;
+}
+.cen-login::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at 78% 18%, rgba(23,107,255,.18), transparent 28%);
+}
+.cen-login button, .cen-login input { font: inherit; }
+.cen-login a { color: inherit; text-decoration: none; }
+.cen-login button, .cen-login a { -webkit-tap-highlight-color: transparent; }
+.cen-login :focus-visible { outline: 3px solid var(--blue-light); outline-offset: 4px; }
+.cen-login ::selection { background: var(--blue-light); color: var(--navy-950); }
+
+.cen-login p { margin: 1em 0; }
+
+.cen-login .topbar {
+  width: min(calc(100% - 40px), 1180px); min-height: 82px; margin: auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  border-bottom: 1px solid var(--line);
+  position: relative; z-index: 1;
+}
+.cen-login .brand {
+  display: inline-flex; align-items: center;
+  color: white; font: 800 29px/1 var(--font-manrope), "Manrope", sans-serif; letter-spacing: -.07em;
+}
+.cen-login .brand::after { content: ""; width: 7px; height: 7px; margin: 0 0 14px 5px; border-radius: 50%; background: var(--blue-light); }
+.cen-login .back {
+  display: inline-flex; align-items: center; gap: 9px; color: #b8c9dd;
+  font-size: 13px; font-weight: 700; transition: color .2s ease, transform .2s ease;
+}
+.cen-login .back:hover { color: white; transform: translateX(-3px); }
+
+.cen-login .page {
+  width: min(calc(100% - 40px), 1180px); min-height: calc(100vh - 82px); margin: auto;
+  display: grid; place-items: center; padding: 56px 0 70px;
+  position: relative; z-index: 1;
+}
+.cen-login .access-shell {
+  width: 100%; display: grid; grid-template-columns: minmax(0,.9fr) minmax(420px,.72fr);
+  overflow: hidden; border: 1px solid var(--line); border-radius: 32px;
+  background: rgba(6,26,53,.82); box-shadow: var(--shadow);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+}
+.cen-login .intro {
+  min-height: 600px; padding: clamp(38px,6vw,76px); position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between;
+  background: linear-gradient(145deg, rgba(10,41,78,.96), rgba(5,24,48,.98));
+  border-right: 1px solid var(--line);
+}
+.cen-login .intro::after {
+  content: ""; position: absolute; width: 340px; height: 340px; right: -170px; bottom: -170px;
+  border: 1px solid rgba(112,207,255,.22); border-radius: 50%;
+  box-shadow: 0 0 0 54px rgba(112,207,255,.025), 0 0 0 108px rgba(112,207,255,.02);
+}
+.cen-login .intro-mark { color: var(--blue-light); font-size: 12px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.cen-login .intro-copy { position: relative; z-index: 1; max-width: 610px; }
+.cen-login h1, .cen-login h2, .cen-login p { margin-top: 0; }
+.cen-login h1, .cen-login h2 { font-family: var(--font-manrope), "Manrope", sans-serif; letter-spacing: -.05em; }
+.cen-login h1 { margin: 0 0 24px; font-size: clamp(3.4rem,6vw,6rem); line-height: .94; color: white; }
+.cen-login h1 span { display: block; color: var(--blue-light); }
+.cen-login .intro-copy p { max-width: 520px; margin: 0; color: #b8c9dd; font-size: 1.05rem; }
+.cen-login .intro-footer { position: relative; z-index: 1; color: #6883a3; font-size: 11px; }
+
+.cen-login .form-side {
+  padding: clamp(34px,5vw,66px); display: grid; align-items: center;
+  background: rgba(3,18,37,.72);
+}
+.cen-login .login-card { width: min(100%,440px); margin: auto; }
+.cen-login .login-card h2 { margin-bottom: 12px; color: white; font-size: clamp(2.4rem,4vw,3.5rem); line-height: 1; }
+.cen-login .login-card > p { margin-bottom: 32px; color: var(--muted); }
+.cen-login .form { display: grid; gap: 19px; }
+.cen-login .field { display: grid; gap: 9px; }
+.cen-login .field label { color: #c6d6e8; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.cen-login .input-wrap { position: relative; }
+.cen-login .input-wrap input {
+  width: 100%; min-height: 58px; padding: 15px 50px 15px 17px;
+  color: white; border: 1px solid rgba(255,255,255,.12); border-radius: 14px;
+  background: #05172d; transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.cen-login .input-wrap input::placeholder { color: #607792; }
+.cen-login .input-wrap input:focus { outline: none; border-color: var(--blue); background: #071d38; box-shadow: 0 0 0 4px rgba(23,107,255,.14); }
+.cen-login .input-icon { position: absolute; right: 17px; top: 50%; translate: 0 -50%; color: #6e86a1; pointer-events: none; font-weight: 800; }
+.cen-login .password-toggle {
+  position: absolute; right: 9px; top: 50%; translate: 0 -50%; width: 42px; height: 40px;
+  border: 0; border-radius: 10px; background: transparent; color: #83a0bf; cursor: pointer; font-size: 11px; font-weight: 800;
+}
+.cen-login .password-toggle:hover { background: rgba(255,255,255,.06); color: white; }
+.cen-login .form-options { display: flex; align-items: center; justify-content: space-between; gap: 18px; color: #91a7c1; font-size: 12px; font-weight: 600; }
+.cen-login .remember { display: inline-flex; align-items: center; gap: 9px; cursor: pointer; }
+.cen-login .remember input { width: 17px; height: 17px; accent-color: var(--blue); }
+.cen-login .help-link { color: var(--blue-light); font-weight: 800; }
+.cen-login .help-link:hover { text-decoration: underline; }
+.cen-login .submit-button {
+  min-height: 58px; border: 0; border-radius: 14px; color: white; background: var(--blue);
+  box-shadow: 0 16px 36px rgba(23,107,255,.24); cursor: pointer; font-weight: 800;
+  transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.cen-login .submit-button:hover { transform: translateY(-2px); background: #2878ff; box-shadow: 0 20px 42px rgba(23,107,255,.3); }
+.cen-login .form-status { min-height: 22px; margin: -3px 0 0; color: var(--blue-light); font-size: 12px; font-weight: 700; }
+
+.cen-login .guest-divider {
+  display: flex; align-items: center; gap: 14px; margin: 22px 0 16px;
+  color: #56708f; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
+}
+.cen-login .guest-divider::before, .cen-login .guest-divider::after {
+  content: ""; flex: 1 1 auto; height: 1px; background: var(--line);
+}
+.cen-login .guest-button {
+  width: 100%; min-height: 54px; border: 1px solid rgba(255,255,255,.16); border-radius: 14px;
+  color: #d9e6f5; background: rgba(255,255,255,.03); cursor: pointer; font-weight: 800;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+.cen-login .guest-button:hover:not(:disabled) { transform: translateY(-2px); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.3); }
+.cen-login .guest-button:disabled { opacity: .55; cursor: default; transform: none; }
+
+.cen-login .access-note { margin: 26px 0 0; padding-top: 22px; border-top: 1px solid var(--line); color: #6f89a7; font-size: 11px; }
+
+@media (max-width: 900px) {
+  .cen-login .access-shell { grid-template-columns: 1fr; max-width: 620px; }
+  .cen-login .intro { min-height: auto; padding: 42px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .cen-login .intro-copy p, .cen-login .intro-footer, .cen-login .intro-mark { display: none; }
+  .cen-login h1 { font-size: clamp(2.5rem,10vw,4rem); margin: 0; }
+  .cen-login .form-side { padding: 42px; }
+}
+@media (max-width: 560px) {
+  .cen-login .topbar, .cen-login .page { width: min(calc(100% - 28px), 1180px); }
+  .cen-login .topbar { min-height: 70px; }
+  .cen-login .page { min-height: calc(100vh - 70px); padding: 28px 0; }
+  .cen-login .access-shell { border-radius: 23px; }
+  .cen-login .intro { padding: 28px; }
+  .cen-login .form-side { padding: 30px 24px; }
+  .cen-login .form-options { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .cen-login .login-card h2 { font-size: 2.45rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cen-login, .cen-login *, .cen-login *::before, .cen-login *::after { transition-duration: .001ms !important; }
+}

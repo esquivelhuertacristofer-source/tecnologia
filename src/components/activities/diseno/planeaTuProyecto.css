@@ -1,0 +1,198 @@
+/*
+ * `n5-planea-tu-proyecto` — el tablero del proyecto.
+ *
+ * Sólo presentación, y sólo dentro de esta clase: todo cuelga de `.plt-tablero`
+ * (la clase que se le pasa a `VentanaBase` por `claseMarco`) o de `.plt-*`, así
+ * que ni una regla de aquí toca a las otras tres clases del editor gráfico.
+ *
+ * Reglas de la casa: fondo tinta con drama de luz, color pleno y saturado,
+ * nada de pastel, nada de blanco sobre blanco, ningún borde punteado, y ni un
+ * botón flotante — los mandos viven en el panel de la propia ventana.
+ */
+
+/* ── las tarjetas de pieza, sobre el lienzo ── */
+
+.plt-tablero .dis-capa[data-capa^='pz-'] {
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: linear-gradient(160deg, rgba(8, 20, 38, 0.92), rgba(4, 12, 26, 0.96));
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.plt-tablero .dis-capa[data-capa^='pz-']:hover {
+  transform: translateY(-2px);
+}
+
+/* Las cuatro sin las que no hay juego: oro encendido. */
+.plt-tablero .dis-capa[data-capa^='pz-b-'] {
+  border-color: #facc15;
+  box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.35), 0 6px 18px rgba(250, 204, 21, 0.28),
+    inset 0 0 22px rgba(250, 204, 21, 0.14);
+}
+
+/* Los extras: cian. Se distinguen de un vistazo, que es de lo que va la clase. */
+.plt-tablero .dis-capa[data-capa^='pz-x-'] {
+  border-color: #22d3ee;
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.32), 0 6px 18px rgba(34, 211, 238, 0.24),
+    inset 0 0 22px rgba(34, 211, 238, 0.12);
+}
+
+/* Los rótulos y las bandas no se agarran: que no parezcan tarjetas. */
+.plt-tablero .dis-capa[data-capa^='banda-'],
+.plt-tablero .dis-capa[data-capa^='rot-'] {
+  filter: drop-shadow(0 0 14px rgba(37, 99, 235, 0.4));
+}
+
+/* ── el contador de semanas ── */
+
+.plt-presupuesto {
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: linear-gradient(150deg, rgba(34, 197, 94, 0.16), rgba(6, 16, 31, 0.9));
+  border: 1px solid rgba(34, 197, 94, 0.55);
+  box-shadow: inset 0 0 26px rgba(34, 197, 94, 0.12);
+}
+
+.plt-presupuesto[data-cabe='no'] {
+  background: linear-gradient(150deg, rgba(239, 68, 68, 0.22), rgba(31, 6, 10, 0.92));
+  border-color: rgba(239, 68, 68, 0.75);
+  box-shadow: inset 0 0 26px rgba(239, 68, 68, 0.18), 0 0 22px rgba(239, 68, 68, 0.35);
+  animation: plt-late 1.1s ease-in-out infinite;
+}
+
+@keyframes plt-late {
+  0%,
+  100% {
+    box-shadow: inset 0 0 26px rgba(239, 68, 68, 0.18), 0 0 14px rgba(239, 68, 68, 0.28);
+  }
+  50% {
+    box-shadow: inset 0 0 30px rgba(239, 68, 68, 0.3), 0 0 30px rgba(239, 68, 68, 0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plt-presupuesto[data-cabe='no'] {
+    animation: none;
+  }
+}
+
+.plt-pres-eti {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9fd8b4;
+}
+
+.plt-presupuesto[data-cabe='no'] .plt-pres-eti {
+  color: #fca5a5;
+}
+
+.plt-pres-num {
+  margin: 2px 0 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #e8f4ff;
+}
+
+.plt-pres-num b {
+  font-size: 30px;
+  font-weight: 900;
+  color: #4ade80;
+  line-height: 1;
+  margin-right: 4px;
+}
+
+.plt-presupuesto[data-cabe='no'] .plt-pres-num b {
+  color: #f87171;
+}
+
+.plt-barra {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.plt-barra i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #a3e635);
+}
+
+.plt-presupuesto[data-cabe='no'] .plt-barra i {
+  background: linear-gradient(90deg, #ef4444, #f97316);
+}
+
+.plt-alarma {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #fecaca;
+}
+
+/* ── el plan en orden ── */
+
+.plt-orden ol {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.plt-orden li {
+  font-size: 12.5px;
+  color: #dbeafe;
+  padding: 3px 7px;
+  border-radius: 7px;
+  background: rgba(37, 99, 235, 0.2);
+  border-left: 3px solid #2563eb;
+}
+
+.plt-orden li b {
+  color: #7dd3fc;
+  margin-right: 4px;
+}
+
+.plt-orden li[data-mal='si'] {
+  background: rgba(239, 68, 68, 0.24);
+  border-left-color: #ef4444;
+  color: #ffe4e6;
+}
+
+.plt-vacio {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-style: italic;
+  color: #7f9cc0;
+}
+
+.plt-aviso {
+  margin: 6px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #fca5a5;
+}
+
+/* ── la ficha de la pieza elegida ── */
+
+.plt-ficha {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(150deg, rgba(124, 58, 237, 0.24), rgba(6, 16, 31, 0.92));
+  border: 1px solid rgba(167, 139, 250, 0.6);
+  box-shadow: inset 0 0 24px rgba(124, 58, 237, 0.16);
+}
+
+.plt-ficha-nombre {
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+}

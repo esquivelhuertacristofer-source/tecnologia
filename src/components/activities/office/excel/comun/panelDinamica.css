@@ -1,0 +1,163 @@
+/**
+ * `PanelDinamica.tsx` — el panel de campos de una tabla dinámica (bloques 49,
+ * 50 y 51).
+ *
+ * Mismo molde que `panelYSi.css` y `panelTablas.css`: el panel entra por
+ * `panelFijo`, que ya envuelve el cuerpo en `.txtw-panel-cuerpo` —márgenes y
+ * fondo son de ahí—, así que aquí sólo se ordenan las secciones. Lo único que
+ * se sale del molde es el botón de Actualizar, que es grande y va arriba del
+ * todo porque la clase entera gira alrededor de él.
+ */
+
+.pdn {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.82rem;
+}
+
+.pdn-sel {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(31, 95, 184, 0.09);
+  color: inherit;
+}
+
+.pdn-actualizar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #1f5fb8;
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #17457f;
+}
+
+.pdn-actualizar:hover {
+  background: #2a6fcd;
+}
+
+.pdn-actualizar:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 #17457f;
+}
+
+.pdn-ayuda {
+  margin: 0;
+  font-size: 0.76rem;
+  opacity: 0.72;
+}
+
+.pdn-ayuda-actualizar {
+  margin-top: -8px;
+}
+
+.pdn-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.pdn-seccion:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.pdn-seccion h4 {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
+
+.pdn-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.pdn-fila button,
+.pdn-campo button {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: #fff;
+  padding: 4px 8px;
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+
+.pdn-fila button:hover,
+.pdn-campo button:hover {
+  background: rgba(31, 95, 184, 0.12);
+}
+
+.pdn-fila button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pdn-fila input[type='text'],
+.pdn-fila select {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.78rem;
+  min-width: 0;
+  flex: 1;
+  background: #fff;
+}
+
+.pdn-campos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pdn-campo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  padding: 5px 6px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Un campo que ya está puesto en algún sitio se ve puesto: sin esto, el panel
+   no dice en qué estado está la dinámica y el alumno tiene que deducirlo de la
+   hoja. */
+.pdn-campo.es-puesto {
+  background: rgba(31, 95, 184, 0.1);
+  box-shadow: inset 2px 0 0 #1f5fb8;
+}
+
+.pdn-campo-nombre {
+  flex: 1;
+  min-width: 90px;
+  font-weight: 600;
+}
+
+.pdn-campo-zona {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #1f5fb8;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}

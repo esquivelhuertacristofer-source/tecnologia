@@ -1,0 +1,272 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Laboratorio de dos hojas: la página educativa y el simulador 3D a la vez.
+
+   Encargo literal del cliente: «en cuanto le den a entrar laboratorio que los
+   reciba esa pagina nueva y el simulador 3d a la vez». Por eso son dos
+   paneles simultáneos y no dos pestañas: con pestañas el alumno vería una
+   cosa o la otra.
+
+   El simulador (.mision-n1) nació como `position: fixed; inset: 0` — se
+   apodera de la ventana entera. Aquí se le cambia el encuadre, no las
+   tripas: sigue siendo el mismo three.js con raycast real, solo que dentro
+   de un panel. Todo lo que dentro de mision.css medía en vw se vuelve a
+   medir contra el panel con consultas de contenedor, porque el panel es más
+   angosto que la ventana y las medias queries de viewport ya no dicen la
+   verdad.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Registrada para que el reparto de las hojas se deslice al mover el mando
+   en vez de saltar. Si el navegador no soporta @property, salta — no se
+   rompe nada. */
+@property --lab2-izq {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 44%;
+}
+
+.lab2 {
+  --lab2-izq: 44%;
+  --lab2-riel: 18px;
+  --lab2-bg: #06101c;
+  --lab2-line: rgba(150, 200, 245, 0.18);
+  --lab2-cyan: #5ce1e6;
+  /* Alto de la barra de navegación de la actividad (.topbar, sticky).
+     Lo mide el componente: si el laboratorio empezara en y=0 la barra le
+     comería los primeros 73 px a las dos hojas — se midió tapando el
+     antetítulo de la página y el HUD del simulador. */
+  --lab2-top: 0px;
+
+  position: fixed;
+  inset: var(--lab2-top) 0 0 0;
+  z-index: 80;
+  display: grid;
+  grid-template-columns: var(--lab2-izq) var(--lab2-riel) minmax(0, 1fr);
+  grid-template-areas: "pagina riel sim";
+  overflow: hidden;
+  background: var(--lab2-bg);
+  transition: --lab2-izq 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.lab2[data-reparto="lectura"] { --lab2-izq: 62%; }
+.lab2[data-reparto="mitad"] { --lab2-izq: 44%; }
+.lab2[data-reparto="laboratorio"] { --lab2-izq: 30%; }
+
+/* ── Hoja izquierda: la página, con su propio desplazamiento ── */
+.lab2-pagina {
+  grid-area: pagina;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  /* La página se mide contra este panel, no contra la ventana. */
+  container-name: hoja;
+  container-type: inline-size;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150, 200, 245, 0.3) transparent;
+}
+.lab2-pagina::-webkit-scrollbar { width: 10px; }
+.lab2-pagina::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: rgba(150, 200, 245, 0.28) padding-box;
+}
+.lab2-pagina::-webkit-scrollbar-thumb:hover { background: rgba(150, 200, 245, 0.46) padding-box; }
+
+/* ── El riel: el mueble que separa las dos hojas y lleva el mando ──
+   No es un botón flotando sobre la escena: es la moldura que hay entre los
+   dos paneles, con su ranura y sus topes, como el carril de un microscopio. */
+.lab2-riel {
+  grid-area: riel;
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(90deg, #05101c, #0d2138 42%, #0d2138 58%, #05101c);
+  border-inline: 1px solid rgba(150, 200, 245, 0.14);
+}
+/* Ranura vertical grabada a lo largo del riel. */
+.lab2-riel::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, transparent, rgba(150, 200, 245, 0.22) 12%, rgba(150, 200, 245, 0.22) 88%, transparent);
+}
+
+.lab2-mando {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 4px;
+  padding: 5px 3px;
+  border: 1px solid rgba(150, 200, 245, 0.24);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #133257, #08182b);
+  box-shadow:
+    inset 0 1px 0 rgba(190, 226, 255, 0.16),
+    0 10px 26px rgba(0, 0, 0, 0.55);
+}
+.lab2-mando button {
+  width: 26px;
+  height: 30px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #7fa2bd;
+  font-size: 13px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+.lab2-mando button:hover { color: #d8ecff; background: rgba(150, 200, 245, 0.12); }
+.lab2-mando button[aria-pressed="true"] {
+  color: #04121f;
+  background: linear-gradient(160deg, var(--lab2-cyan), #32a8ff);
+  box-shadow: 0 0 16px rgba(92, 225, 230, 0.5);
+}
+.lab2-mando button:focus-visible { outline: 2px solid var(--lab2-cyan); outline-offset: 2px; }
+
+/* ── Hoja derecha: el simulador ── */
+.lab2-sim {
+  grid-area: sim;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  container-name: sim;
+  /* `size` y no `inline-size`: dentro del simulador hay medidas verticales
+     (la ventana del EDU OS, los modales) que estaban en vh y también hay que
+     re-referenciarlas al panel. La celda de la rejilla le da altura definida,
+     que es lo que la contención por tamaño exige. */
+  container-type: size;
+}
+
+/* Re-encuadre del simulador: de dueño de la ventana a inquilino del panel. */
+.lab2-sim .mision-n1 {
+  position: absolute;
+  inset: 0;
+  z-index: auto;
+}
+/* Todo lo que se medía contra la ventana (100vw / 90vh) pasa a medirse contra
+   el panel, que es lo que de verdad lo contiene. Sin esto, el escritorio del
+   EDU OS y los modales se salen del panel por el borde derecho. */
+.lab2-sim .mision-n1 .byte-panel { width: min(410px, calc(100% - 48px)); }
+.lab2-sim .mision-n1 .interaction-card { width: min(360px, calc(100% - 48px)); }
+.lab2-sim .mision-n1 .app-window { width: min(720px, 84cqw); height: min(500px, 72cqh); }
+.lab2-sim .mision-n1 .modal-card { max-height: 88cqh; }
+.lab2-sim .mision-n1 .brand-lockup h1 { font-size: clamp(30px, 6cqw, 68px); }
+.lab2-sim .mision-n1 .desktop::after { right: 6cqw; bottom: 7cqh; font-size: 12cqw; }
+
+/* Panel medio: el HUD se comprime igual que hacía la media query de 900 px,
+   pero midiendo el panel. */
+@container sim (max-width: 900px) {
+  .lab2-sim .mision-n1 .hud {
+    grid-template-columns: 46px 1fr auto 46px;
+    min-height: 104px;
+    left: 14px;
+    right: 14px;
+    top: 14px;
+  }
+  .lab2-sim .mision-n1 .hud-progress { grid-column: 2 / span 2; grid-row: 2; }
+  .lab2-sim .mision-n1 .module-grid { grid-template-columns: repeat(2, 1fr); }
+  .lab2-sim .mision-n1 .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Panel angosto: Byte y la tarjeta de acción ya no caben lado a lado, así que
+   se apilan en la columna izquierda en vez de solaparse. */
+@container sim (max-width: 860px) {
+  .lab2-sim .mision-n1 .interaction-card {
+    left: 16px;
+    right: 16px;
+    width: auto;
+    top: auto;
+    bottom: 214px;
+    padding: 18px;
+  }
+  .lab2-sim .mision-n1 .interaction-card h2 { font-size: 23px; }
+  .lab2-sim .mision-n1 .interaction-card p { margin-bottom: 14px; }
+  .lab2-sim .mision-n1 .byte-panel {
+    left: 16px;
+    right: 16px;
+    width: auto;
+    bottom: 90px;
+  }
+}
+
+/* Panel muy angosto (el mando en 🔬 sobre una pantalla pequeña): port del
+   bloque @media 620 de mision.css, medido contra el panel. */
+@container sim (max-width: 620px) {
+  .lab2-sim .mision-n1 .hud { gap: 8px; }
+  .lab2-sim .mision-n1 .stars { display: none; }
+  .lab2-sim .mision-n1 .byte-panel { grid-template-columns: 58px 1fr; }
+  .lab2-sim .mision-n1 .byte-avatar { width: 56px; height: 56px; }
+  .lab2-sim .mision-n1 .bottom-bar { left: 16px; right: 16px; transform: none; justify-content: space-around; }
+  .lab2-sim .mision-n1 .bottom-bar button { padding: 9px; font-size: 0; }
+  .lab2-sim .mision-n1 .bottom-bar button span { font-size: 20px; }
+  .lab2-sim .mision-n1 .module-grid { grid-template-columns: 1fr; }
+  .lab2-sim .mision-n1 .start-card { padding: 24px 18px; }
+  .lab2-sim .mision-n1 .brand-mark { display: none; }
+  .lab2-sim .mision-n1 .start-actions { flex-direction: column; }
+  .lab2-sim .mision-n1 .feature-row { display: none; }
+  .lab2-sim .mision-n1 .desktop { grid-template-columns: repeat(3, 86px); }
+  .lab2-sim .mision-n1 .os-topbar span { display: none; }
+}
+
+/* Panel bajo: en el modo apilado el simulador se queda en ~340 px de alto y
+   el HUD, Byte y la barra inferior se pisan entre sí (medido: la tarjeta de
+   Byte cabalgaba sobre la barra de progreso). Aquí se comprime todo en
+   vertical para que las tres piezas convivan. Va después de las consultas de
+   anchura a propósito: tiene que ganar sobre el `min-height` del HUD. */
+@container sim (max-height: 470px) {
+  .lab2-sim .mision-n1 .hud {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    min-height: 0;
+    gap: 6px 12px;
+    padding: 8px 12px;
+  }
+  .lab2-sim .mision-n1 .mission-copy strong { font-size: 15px; }
+  .lab2-sim .mision-n1 .progress-label { margin-bottom: 4px; }
+  .lab2-sim .mision-n1 .icon-button { width: 38px; height: 38px; border-radius: 11px; font-size: 17px; }
+
+  .lab2-sim .mision-n1 .byte-panel {
+    bottom: 72px;
+    padding: 10px 12px;
+    grid-template-columns: 52px 1fr;
+    gap: 11px;
+  }
+  .lab2-sim .mision-n1 .byte-avatar { width: 50px; height: 50px; }
+  .lab2-sim .mision-n1 .robot-face { width: 32px; height: 21px; border-radius: 8px; }
+  .lab2-sim .mision-n1 .byte-panel p { font-size: 12.5px; margin-top: 3px; }
+
+  .lab2-sim .mision-n1 .interaction-card { bottom: 72px; padding: 14px; }
+  .lab2-sim .mision-n1 .interaction-card h2 { font-size: 20px; margin: 4px 0 6px; }
+  .lab2-sim .mision-n1 .interaction-card p { font-size: 13px; margin-bottom: 12px; }
+
+  .lab2-sim .mision-n1 .bottom-bar { bottom: 10px; padding: 5px; }
+  .lab2-sim .mision-n1 .bottom-bar button { padding: 8px 11px; font-size: 12px; }
+  .lab2-sim .mision-n1 .toast { top: 86px; }
+}
+
+/* ── Pantalla estrecha: dos bandas apiladas, cada una con su desplazamiento.
+   El simulador arriba y siempre visible; la página debajo. Sigue siendo «a
+   la vez», sin trucos de sticky que se despeguen al desplazar. ── */
+@media (max-width: 1180px) {
+  .lab2 {
+    grid-template-columns: minmax(0, 1fr);
+    /* 46% del laboratorio, no del viewport: el laboratorio ya arranca bajo la
+       barra, así que 46dvh dejaría a la página con menos sitio del que hay. */
+    grid-template-rows: 46% minmax(0, 1fr);
+    grid-template-areas: "sim" "pagina";
+  }
+  .lab2-riel { display: none; }
+  .lab2-sim { border-bottom: 1px solid var(--lab2-line); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab2 { transition: none; }
+}

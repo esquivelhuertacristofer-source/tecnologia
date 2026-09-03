@@ -1,0 +1,274 @@
+/*
+ * N6·U «Mi primera página web» — lo propio de las tres clases de páginas web
+ * (documento §51). Prefijo `pgw-`.
+ *
+ * Aquí NO se redibuja ningún chrome: la marquesina, el marcador, los pips, la
+ * pantalla final y Bit son de `ArcadeSala`; el marco de la ventana es de
+ * `VentanaBase`; el editor, la vista previa, la lista de problemas y el panel
+ * del encargo son de `EstudioWeb`. Lo que hay aquí es lo que ninguno de los
+ * tres trae: **la portada de objetivos** —que fuera de Office no existe— y los
+ * cuatro ajustes de encaje del estudio dentro de la pantalla del gabinete.
+ *
+ * Color pleno sobre fondo oscuro, con las variables del salón arcade
+ * (`--cian`, `--ambar`, `--verde`…), que `arcade.css` ya carga: así la portada
+ * y el aparato son el mismo mundo y no dos diseños pegados.
+ */
+
+/* ── El estudio dentro de la pantalla del gabinete ─────────────────────────── */
+
+.pgw-marco .vtb-cuerpo {
+  overflow: auto;
+}
+
+.pgw-marco .web {
+  flex: 1;
+  min-height: 0;
+}
+
+/* La marca del programa, con el brillo del salón. */
+.pgw-marco .vtb-barra {
+  background: linear-gradient(180deg, #17245c, #0b1230);
+  border-bottom: 2px solid rgba(92, 225, 230, 0.3);
+}
+.pgw-marco .vtb-barra-marca {
+  color: #7ee0ff;
+  text-shadow: 0 0 18px rgba(92, 225, 230, 0.45);
+}
+
+/* ── La herramienta de rescate, en la barra del programa ───────────────────── */
+
+.pgw-marco .web-herramienta {
+  border-color: #6d4bd8;
+  background: linear-gradient(180deg, #3a2a86, #241a5c);
+  color: #e9deff;
+}
+.pgw-marco .web-herramienta:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── La mesa de imágenes de la práctica (parada 2) ─────────────────────────── */
+
+.pgw-recursos {
+  margin: 0 12px 12px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 2px solid #7c4a12;
+  background: linear-gradient(180deg, #2a1c07, #1a1204);
+}
+
+.pgw-recursos-titulo {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #fbbf24;
+}
+
+.pgw-recursos-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pgw-recurso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px 6px 6px;
+  border-radius: 12px;
+  border: 2px solid #7c4a12;
+  background: #120c02;
+}
+.pgw-recurso img {
+  border-radius: 8px;
+  background: #fff;
+}
+.pgw-recurso code {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffd25a;
+}
+.pgw-recurso span {
+  max-width: 190px;
+  font-size: 12px;
+  font-weight: 650;
+  color: #e7d3ae;
+}
+
+/* ── La portada de objetivos ───────────────────────────────────────────────── */
+
+.pgw-portada {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background:
+    radial-gradient(90% 70% at 50% -10%, rgba(50, 168, 255, 0.22), transparent 62%),
+    linear-gradient(165deg, #0b1740 0%, #070c22 60%, #04060f 100%);
+}
+
+/* MISMA FAMILIA QUE EL DEFECTO DE `.vtb-marco` (ver `simuladores/ventana-base.css`),
+   encontrado el 1-sep-2026 en la auditoría. `.pgw-portada` es
+   `position:absolute; inset:0`, y eso sólo funciona si alguien le da altura de
+   verdad al padre. En las tres clases de `n6/web` la portada va anidada dentro
+   de `ArcadeSala` (`.arcade-n1` es `position:fixed; inset:0`), así que ahí hay
+   altura y se ve bien. Pero `n6-proyecto-integrador` la devuelve DESNUDA como
+   raíz de su laboratorio: su único padre pasa a ser `.act-frame--inmersivo`,
+   que no tiene altura explícita y no contiene nada más en flujo — el resultado
+   es el colapso a 0px de siempre: la portada existe en el DOM y el alumno ve la
+   pantalla en blanco, sin la situación, sin el objetivo y sin el botón de
+   empezar. Invisible para `tsc`, para `eslint` y para jsdom (la prueba monta el
+   componente fuera de este árbol y jsdom no calcula layout).
+
+   Se cura igual que se curó aquél: con un selector de HIJO DIRECTO, que por
+   construcción sólo alcanza el caso roto y jamás el anidado dentro del bezel,
+   donde `.pgw-portada` no es hijo directo de `.act-frame--inmersivo`. Así no se
+   toca ningún archivo de actividad ni se arriesga el patrón que sí funciona. */
+.cen-hub .act-frame--inmersivo > .pgw-portada {
+  position: fixed;
+  z-index: 80;
+}
+
+.pgw-portada-caja {
+  width: min(760px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  padding: 26px 28px 24px;
+  border-radius: 22px;
+  border: 2px solid var(--acento, #5ce1e6);
+  background: linear-gradient(160deg, #101c4e, #0a1030);
+  box-shadow:
+    0 0 46px color-mix(in srgb, var(--acento, #5ce1e6) 30%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.pgw-portada-situacion {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--acento, #5ce1e6);
+}
+
+.pgw-portada-tema {
+  margin: 0 0 14px;
+  font-size: clamp(22px, 3.4vw, 32px);
+  font-weight: 900;
+  line-height: 1.12;
+  color: #ffffff;
+  text-shadow: 0 0 28px color-mix(in srgb, var(--acento, #5ce1e6) 45%, transparent);
+}
+
+.pgw-portada-objetivo {
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  border-radius: 14px;
+  border-left: 6px solid var(--acento, #5ce1e6);
+  background: rgba(92, 225, 230, 0.09);
+}
+.pgw-portada-objetivo p {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #eaf4ff;
+}
+
+.pgw-portada-etiqueta {
+  display: block;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #9db4ec;
+}
+
+.pgw-portada-cuerpo {
+  display: grid;
+  grid-template-columns: 1.35fr 0.85fr;
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 720px) {
+  .pgw-portada-cuerpo {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pgw-portada-lista ol {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pgw-portada-lista li {
+  font-size: 14px;
+  font-weight: 650;
+  color: #d7e4ff;
+}
+.pgw-portada-lista li::marker {
+  color: var(--acento, #5ce1e6);
+  font-weight: 900;
+}
+
+.pgw-portada-datos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pgw-portada-dato {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 2px solid #2b3a7a;
+  background: #101a44;
+  font-size: 13px;
+  font-weight: 700;
+  color: #cfe0ff;
+}
+.pgw-portada-dato b {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--acento, #5ce1e6);
+}
+
+.pgw-portada-empezar {
+  margin-top: 18px;
+  width: 100%;
+  padding: 16px 22px;
+  border: 0;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  color: #061024;
+  background: linear-gradient(135deg, var(--acento, #5ce1e6), #32a8ff);
+  box-shadow: 0 12px 34px color-mix(in srgb, var(--acento, #5ce1e6) 38%, transparent);
+}
+.pgw-portada-empezar:hover {
+  filter: brightness(1.08);
+}
+.pgw-portada-empezar:focus-visible {
+  outline: 3px solid #ffd25a;
+  outline-offset: 3px;
+}
+
+.pgw-portada-pie {
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  color: #8fa6e0;
+}

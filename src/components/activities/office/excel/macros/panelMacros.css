@@ -1,0 +1,125 @@
+/**
+ * `PanelMacros.tsx` — grabar, ejecutar, borrar y asignar macros a un botón,
+ * para `of-excel-macros` (bloques 55 y 56).
+ *
+ * Mismo molde que `panelValidacion.css` (`of-excel-validacion`): el panel
+ * entra por `panelFijo`, que ya envuelve el cuerpo en `.txtw-panel-cuerpo`
+ * —márgenes y fondo son de ahí—, así que aquí sólo se ordenan las secciones.
+ */
+
+.pmc {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.82rem;
+}
+
+.pmc-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.pmc-seccion:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.pmc-seccion h4 {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
+
+.pmc-ayuda {
+  margin: 0;
+  font-size: 0.76rem;
+  opacity: 0.7;
+}
+
+.pmc-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.pmc-fila button,
+.pmc-seccion > button {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: #fff;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.pmc-fila button:hover {
+  background: rgba(15, 108, 189, 0.1);
+}
+
+.pmc-fila select,
+.pmc-fila input[type='text'] {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.78rem;
+  min-width: 0;
+}
+
+.pmc-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pmc-macro {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pmc-macro-cab {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.pmc-macro-cuenta {
+  font-size: 0.72rem;
+  opacity: 0.65;
+}
+
+.pmc-pasos {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.76rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: rgba(15, 108, 189, 0.06);
+  border-radius: 6px;
+  padding: 8px 8px 8px 24px;
+}
+
+.pmc-botones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.76rem;
+}

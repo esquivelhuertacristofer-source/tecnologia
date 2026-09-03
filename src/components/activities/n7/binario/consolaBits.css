@@ -1,0 +1,244 @@
+/*
+ * N7·U1·parada 2 — «Tecnia Bits». El aparato, no una interfaz encima de un
+ * fondo: los controles SON el panel (regla del cliente «nada de botones
+ * flotantes genéricos»). Color pleno sobre fondo oscuro con drama de luz —
+ * cada led y cada peldaño encendido tiene su halo real, nada pastel, nada
+ * blanco sobre blanco, ningún borde punteado.
+ */
+
+.cbits-panel {
+  background: linear-gradient(168deg, #10203a 0%, #08122a 55%, #050b1c 100%);
+  border: 1px solid #1e3a63;
+  border-radius: 22px;
+  padding: 22px 20px 26px;
+  box-shadow: inset 0 1px 0 rgba(120, 190, 255, 0.18), 0 24px 60px rgba(0, 0, 0, 0.55);
+}
+
+/* ── El display de la consola ── */
+.cbits-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: #030a18;
+  border: 1px solid #14304f;
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: inset 0 0 26px rgba(34, 211, 238, 0.16);
+}
+
+.cbits-display-decimal {
+  font-family: ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+  font-size: clamp(2.6rem, 9vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1;
+  color: #7dd3fc;
+  text-shadow: 0 0 14px rgba(56, 189, 248, 0.85), 0 0 38px rgba(56, 189, 248, 0.45);
+  letter-spacing: 0.04em;
+}
+
+.cbits-display-binario {
+  font-family: ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+  font-size: clamp(1.05rem, 4.2vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  color: #fbbf24;
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.7);
+}
+
+.cbits-display-rotulo {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #64809f;
+}
+
+/* ── La fila de ocho interruptores ── */
+.cbits-fila {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.cbits-switch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 2px 8px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #16294a, #0b1730);
+  border: 1px solid #22406b;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.cbits-switch:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: #3b82f6;
+}
+
+.cbits-switch:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+
+.cbits-switch-valor {
+  font-family: ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+  font-size: clamp(0.62rem, 2.2vw, 0.82rem);
+  font-weight: 800;
+  color: #8fb4d9;
+}
+
+/* El cuerpo de la palanca: la perilla sube cuando el bit vale 1. */
+.cbits-switch-cuerpo {
+  position: relative;
+  width: 100%;
+  max-width: 30px;
+  height: 46px;
+  border-radius: 9px;
+  background: #060d1e;
+  border: 1px solid #1c3557;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+
+.cbits-switch-perilla {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  height: 18px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #64809f, #35507a);
+  transition: top 0.14s cubic-bezier(0.4, 1.6, 0.5, 1), background 0.14s ease, box-shadow 0.18s ease;
+  top: 25px;
+}
+
+.cbits-switch.encendido .cbits-switch-perilla {
+  top: 3px;
+  background: linear-gradient(180deg, #7dd3fc, #0ea5e9);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.95), 0 0 30px rgba(56, 189, 248, 0.5);
+}
+
+.cbits-switch.encendido {
+  border-color: #38bdf8;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.35);
+}
+
+.cbits-switch.encendido .cbits-switch-valor {
+  color: #7dd3fc;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+}
+
+.cbits-switch-bit {
+  font-family: ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #3f5b80;
+}
+
+.cbits-switch.encendido .cbits-switch-bit {
+  color: #fbbf24;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+}
+
+/* ── La escalera de unidades ── */
+.cbits-peldano {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid #1e3a63;
+  background: linear-gradient(100deg, #0c182e, #0a142a);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.cbits-peldano.puesto {
+  border-color: var(--peldano-color, #38bdf8);
+  box-shadow: 0 0 20px -4px var(--peldano-color, #38bdf8), inset 0 0 22px -12px var(--peldano-color, #38bdf8);
+}
+
+.cbits-peldano-abrev {
+  font-family: ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+  font-weight: 800;
+  font-size: 1.05rem;
+  min-width: 3.2rem;
+  text-align: center;
+  color: var(--peldano-color, #64809f);
+  text-shadow: 0 0 12px color-mix(in srgb, var(--peldano-color, #38bdf8) 70%, transparent);
+}
+
+/* ── Las chapas de la charola ── */
+.cbits-chapa {
+  font-family: ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 12px 20px;
+  border-radius: 12px;
+  color: #04101f;
+  background: linear-gradient(180deg, var(--chapa-color, #38bdf8), color-mix(in srgb, var(--chapa-color, #38bdf8) 62%, #04101f));
+  border: 1px solid color-mix(in srgb, var(--chapa-color, #38bdf8) 80%, white);
+  box-shadow: 0 0 22px -6px var(--chapa-color, #38bdf8);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.18s ease;
+}
+
+.cbits-chapa:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 30px -4px var(--chapa-color, #38bdf8);
+}
+
+/* ── Botón físico del panel (Fijar, Siguiente): parte del mueble, no flotante ── */
+.cbits-boton {
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 14px 26px;
+  border-radius: 14px;
+  color: #04101f;
+  background: linear-gradient(180deg, #fbbf24, #d97706);
+  border: 1px solid #fde68a;
+  box-shadow: 0 0 26px -6px rgba(251, 191, 36, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.18s ease;
+}
+
+.cbits-boton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 34px -4px rgba(251, 191, 36, 1);
+}
+
+.cbits-boton.cian {
+  background: linear-gradient(180deg, #7dd3fc, #0284c7);
+  border-color: #bae6fd;
+  box-shadow: 0 0 26px -6px rgba(56, 189, 248, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.cbits-boton.verde {
+  background: linear-gradient(180deg, #6ee7b7, #059669);
+  border-color: #a7f3d0;
+  box-shadow: 0 0 26px -6px rgba(52, 211, 153, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+/* ── La consola de Bit: el renglón de mensajes del aparato ── */
+.cbits-consola {
+  background: #030a18;
+  border: 1px solid #14304f;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: inset 0 0 24px rgba(34, 211, 238, 0.12);
+}
+
+.cbits-linea {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #cfe3f7;
+}
+
+.cbits-linea.pista {
+  color: #fbbf24;
+  font-weight: 700;
+}

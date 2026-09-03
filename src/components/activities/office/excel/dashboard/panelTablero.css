@@ -1,0 +1,90 @@
+/**
+ * `PanelTablero.tsx` — la sección «Lo que hay puesto encima de la hoja» del
+ * bloque 58.
+ *
+ * Sólo viste la sección propia: debajo va `PanelDinamica`, que trae su
+ * `panelDinamica.css` y no se toca desde aquí. Mismo molde que `panelReglas.css`
+ * y `panelDinamica.css` —el panel entra por `panelFijo`, que ya envuelve el
+ * cuerpo en `.txtw-panel-cuerpo`—, así que aquí sólo se ordena la lista.
+ */
+
+.ptb {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.82rem;
+}
+
+.ptb-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.ptb-seccion h4 {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
+
+.ptb-ayuda {
+  margin: 0;
+  font-size: 0.76rem;
+  opacity: 0.72;
+}
+
+.ptb-vacio {
+  margin: 0;
+  font-size: 0.78rem;
+  font-style: italic;
+  opacity: 0.55;
+}
+
+.ptb-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ptb-lista li,
+.ptb-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(184, 76, 31, 0.1);
+  box-shadow: inset 2px 0 0 #b84c1f;
+}
+
+.ptb-detalle {
+  opacity: 0.7;
+}
+
+.ptb-lista button,
+.ptb-fila button {
+  flex: none;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: #fff;
+  padding: 4px 9px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ptb-lista button:hover,
+.ptb-fila button:hover {
+  background: #b84c1f;
+  border-color: #b84c1f;
+  color: #fff;
+}

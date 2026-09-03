@@ -1,0 +1,122 @@
+/**
+ * `PanelYSi.tsx` — Buscar objetivo y los escenarios, para `of-excel-y-si`
+ * (bloque 57).
+ *
+ * Mismo molde que `panelTablas.css` (`of-excel-tablas-y-filtros`): el panel
+ * entra por `panelFijo`, que ya envuelve el cuerpo en `.txtw-panel-cuerpo`
+ * —márgenes y fondo son de ahí—, así que aquí sólo se ordenan las secciones.
+ */
+
+.pys {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.82rem;
+}
+
+.pys-sel {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(15, 108, 189, 0.08);
+  color: inherit;
+}
+
+.pys-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.pys-seccion:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.pys-seccion h4 {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
+
+.pys-ayuda {
+  margin: 0;
+  font-size: 0.76rem;
+  opacity: 0.7;
+}
+
+.pys-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.pys-fila button {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: #fff;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.pys-fila button:hover {
+  background: rgba(15, 108, 189, 0.1);
+}
+
+.pys-fila button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pys-fila input[type='text'],
+.pys-fila input[type='number'] {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.78rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.pys-escenarios {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pys-escenario {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.pys-escenario-nombre {
+  flex: 1;
+  font-weight: 600;
+}
+
+.pys-escenario button {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: #fff;
+  padding: 4px 8px;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+.pys-escenario button:hover {
+  background: rgba(15, 108, 189, 0.1);
+}

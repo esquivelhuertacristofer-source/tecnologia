@@ -1,0 +1,509 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `of-word-revisa-y-comenta` · lo que esta clase pinta dentro de Tecnia Textos.
+
+   Todo lleva el prefijo `rc-`, que es el slug de la clase, y nada de aquí toca
+   una clase del motor. Las dos únicas excepciones son deliberadas y están
+   explicadas abajo: los dos colores centinela con los que esta clase marca lo
+   borrado y lo comentado.
+
+   El lenguaje es el de Word y no el de la plataforma —caja clara, bordes finos,
+   azul #185ABD—, porque esto está DENTRO del programa. El color pleno vive en la
+   entrada de la actividad y en el panel del maestro, no aquí.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────── lo que se ve DENTRO del documento ─────────────────── */
+
+/*
+ * El subrayado rojo ondulado del corrector.
+ *
+ * Es una decoración de ProseMirror, no una marca: no forma parte del documento
+ * y desaparece sola en cuanto la palabra queda bien, igual que en Word. Con
+ * `skip-ink` apagado, porque si la onda se corta bajo las letras con rabito —la
+ * p, la j, la q— deja de leerse como una onda.
+ */
+.txtw-flujo .rc-falta {
+  text-decoration: underline wavy #d13438;
+  text-decoration-skip-ink: none;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+
+/*
+ * TACHADO — el centinela `#f6eef8` del control de cambios.
+ *
+ * El esquema del motor no tiene marca de tachado y no se puede tocar, así que
+ * lo borrado viaja como un `resaltado` con este color, que nadie más escribe, y
+ * aquí se repinta como lo que es: una raya encima y nada de fondo. El `!important`
+ * es obligatorio porque el resaltado pinta su color en el atributo `style` del
+ * propio elemento, y sin él ganaría siempre.
+ *
+ * El COLOR de las letras no lo pone esta regla: lo pone la marca `color` del
+ * autor, que viaja junto. Así el tachado del maestro sale morado y el del alumno
+ * verde sin que el CSS sepa nada de autores.
+ */
+.txtw-flujo mark[data-color='#f6eef8'] {
+  background: transparent !important;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
+/*
+ * El comentario que se está escribiendo y aún no tiene texto.
+ *
+ * El resaltado ya está puesto —es la marca de siempre—; esto es una decoración
+ * encima que le cambia la rayita por una a trazos, para que se distinga de un
+ * comentario terminado mientras el globo sigue abierto. Se va sola en cuanto se
+ * pulsa «Comentar», sin tocar el documento.
+ */
+.txtw-flujo .rc-comentando {
+  border-bottom: 2px dashed #d9931f;
+}
+
+/*
+ * COMENTARIO — el centinela `#ffe08a`.
+ *
+ * Éste sí se ve como un resaltado de verdad, que es exactamente lo que Word
+ * pinta bajo el texto comentado, con su rayita más oscura para que se distinga
+ * de un resaltado cualquiera.
+ */
+.txtw-flujo mark[data-color='#ffe08a'] {
+  border-bottom: 2px solid #d9931f;
+  border-radius: 1px;
+}
+
+/* ─────────────────── el panel de revisión ─────────────────── */
+
+.rc-panel {
+  position: absolute;
+  z-index: 40;
+  /* Da para el globo de comentario entero —cabecera, extracto, cuadro de texto
+     y sus dos botones— sin que haya que desplazar la columna para escribir. */
+  height: 232px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-top: 1px solid #c8c6c4;
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.22);
+  font-family: 'Segoe UI', 'Selawik', system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  color: #201f1e;
+}
+
+.rc-panel *,
+.rc-panel *::before,
+.rc-panel *::after {
+  box-sizing: border-box;
+}
+
+.rc-panel-cab {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: none;
+  height: 28px;
+  padding: 0 4px 0 12px;
+  background: #f3f2f1;
+  border-bottom: 1px solid #e1dfdd;
+}
+
+.rc-panel-titulo {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #185abd;
+}
+
+.rc-panel-cifras {
+  display: flex;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: #605e5c;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.rc-panel-cifras b {
+  color: #201f1e;
+  font-variant-numeric: tabular-nums;
+}
+
+.rc-panel-cerrar {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 22px;
+  flex: none;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #605e5c;
+  cursor: pointer;
+}
+
+.rc-panel-cerrar:hover {
+  background: #d13438;
+  color: #fff;
+}
+
+.rc-panel-cuerpo {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+}
+
+.rc-columna {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  border-right: 1px solid #edebe9;
+}
+
+.rc-columna:last-child {
+  border-right: 0;
+}
+
+.rc-columna-titulo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  margin: 0;
+  padding: 7px 12px 5px;
+  color: #605e5c;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.rc-columna-lista {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 12px 10px;
+  scrollbar-width: thin;
+}
+
+/* ─── fichas ─── */
+
+.rc-falta-ficha,
+.rc-globo,
+.rc-cambio {
+  padding: 8px 10px;
+  margin-bottom: 7px;
+  border: 1px solid #e1dfdd;
+  border-left: 3px solid #185abd;
+  border-radius: 4px;
+  background: #fbfbfa;
+}
+
+.rc-falta-ficha {
+  border-left-color: #d13438;
+}
+
+.rc-falta-linea {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0 0 3px;
+  font-size: 13px;
+}
+
+.rc-mal {
+  color: #a4262c;
+  text-decoration: underline wavy #d13438;
+  text-decoration-skip-ink: none;
+  text-underline-offset: 3px;
+}
+
+.rc-bien {
+  color: #0b6a0b;
+}
+
+.rc-falta-contexto {
+  margin: 0 0 6px;
+  color: #605e5c;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* ─── botones del panel: los de Word, no los de la plataforma ─── */
+
+.rc-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.rc-boton {
+  padding: 4px 10px;
+  border: 1px solid #185abd;
+  border-radius: 3px;
+  background: #185abd;
+  color: #fff;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.rc-boton:hover {
+  background: #103f91;
+  border-color: #103f91;
+}
+
+.rc-boton.es-suave {
+  background: #fff;
+  color: #185abd;
+}
+
+.rc-boton.es-suave:hover {
+  background: #eaf3fd;
+  color: #103f91;
+}
+
+/* ─── globos de comentario ─── */
+
+.rc-globo {
+  border-left-color: #d9931f;
+  background: #fffaf0;
+}
+
+.rc-globo.es-editando {
+  border-color: #d9931f;
+  box-shadow: 0 0 0 2px rgba(217, 147, 31, 0.25);
+}
+
+.rc-globo-cab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-size: 11.5px;
+}
+
+.rc-avatar {
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  flex: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.rc-globo-quitar {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-left: auto;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #605e5c;
+  cursor: pointer;
+}
+
+.rc-globo-quitar:hover {
+  background: #f3d6d7;
+  color: #a4262c;
+}
+
+/* El trozo comentado, recortado a dos renglones: un comentario sobre un párrafo
+   entero llenaba el globo de texto repetido y empujaba fuera de la vista el
+   cuadro donde hay que escribir. */
+.rc-globo-extracto {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0 0 4px;
+  color: #605e5c;
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.rc-globo-texto {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.rc-globo-cuadro {
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 5px 7px;
+  border: 1px solid #c8c6c4;
+  border-radius: 3px;
+  background: #fff;
+  color: #201f1e;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.35;
+  resize: none;
+}
+
+.rc-globo-cuadro:focus {
+  outline: none;
+  border-color: #185abd;
+  box-shadow: 0 0 0 1px #185abd;
+}
+
+/* ─── cambios ─── */
+
+.rc-cambio {
+  border-left-color: #a4128f;
+}
+
+.rc-cambio-tipo {
+  color: #605e5c;
+}
+
+.rc-cambio-texto {
+  margin: 0 0 6px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.rc-cambio-texto.es-insercion {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+}
+
+.rc-cambio-texto.es-borrado {
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
+/* ─── vacíos y avisos ─── */
+
+.rc-vacio {
+  padding: 6px 0;
+}
+
+.rc-vacio-titulo {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0b6a0b;
+}
+
+.rc-vacio-nota {
+  margin: 0 0 5px;
+  color: #605e5c;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.rc-confusiones {
+  margin: 0;
+  padding-left: 15px;
+  list-style: disc outside;
+  color: #201f1e;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.rc-confusiones b {
+  color: #a4262c;
+}
+
+.rc-aviso {
+  margin: 0 0 7px;
+  padding: 7px 9px;
+  border: 1px solid #f0c36d;
+  border-radius: 4px;
+  background: #fff4ce;
+  color: #654b00;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+/* ─── la pestañita del panel cerrado ─── */
+
+/*
+ * Cuando el panel está cerrado queda esto: una pestaña acoplada al mismo borde,
+ * con el mismo `data-control`, para que el señalador del modo guía nunca se
+ * quede sin diana y para que volver a abrirlo no pase por la cinta —y por tanto
+ * no cueste un tropiezo—. Word tiene el panel de revisión igual de a mano en la
+ * barra de estado.
+ */
+.rc-pestanita {
+  position: absolute;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid #c8c6c4;
+  border-bottom: 0;
+  border-radius: 5px 5px 0 0;
+  background: #f3f2f1;
+  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.14);
+  font-family: 'Segoe UI', 'Selawik', system-ui, -apple-system, sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #185abd;
+  cursor: pointer;
+}
+
+.rc-pestanita:hover {
+  background: #eaf3fd;
+  color: #103f91;
+}
+
+/* ─── el recado de «acabas de resolver un cambio» ─── */
+
+/*
+ * Sale al aceptar o rechazar desde el panel, y lleva su propio deshacer.
+ *
+ * Medido el 10-ago-2026 jugando MAL: rechazar desde aquí la propuesta que el
+ * encargo 7 mandaba aceptar borra la frase del documento, y con ella la única
+ * forma de cumplir el encargo. La ventana no se enteraba —esto no es un botón de
+ * la cinta— así que no salía ni recado, ni pista, ni tropiezo: el alumno se
+ * quedaba mirando un encargo imposible sin que nadie le dijera nada.
+ */
+.rc-hecho {
+  margin: 0 0 7px;
+  padding: 7px 9px;
+  border: 1px solid #bcd3f0;
+  border-radius: 4px;
+  background: #eaf3fd;
+  color: #1b3a5c;
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.rc-hecho b {
+  color: #103f91;
+}
+
+.rc-hecho-deshacer {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 5px;
+  padding: 3px 9px;
+  border: 1px solid #185abd;
+  border-radius: 3px;
+  background: #fff;
+  color: #185abd;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rc-hecho-deshacer:hover {
+  background: #185abd;
+  color: #fff;
+}

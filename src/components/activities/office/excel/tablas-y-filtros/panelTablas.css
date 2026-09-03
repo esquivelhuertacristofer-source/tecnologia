@@ -1,0 +1,122 @@
+/**
+ * `PanelTablas.tsx` — «Crear tabla», estilos, fila de totales, filtrar,
+ * ordenar por varias columnas y filas escondidas a mano, para
+ * `of-excel-tablas-y-filtros` (bloques 33-36).
+ *
+ * Mismo molde que `panelReglas.css` (`n7-formato-condicional`): el panel
+ * entra por `panelFijo`, que ya envuelve el cuerpo en `.txtw-panel-cuerpo`
+ * —márgenes y fondo son de ahí—, así que aquí sólo se ordenan las secciones.
+ */
+
+.ptb {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.82rem;
+}
+
+.ptb-sel {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(15, 108, 189, 0.08);
+  color: inherit;
+}
+
+.ptb-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.ptb-seccion:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ptb-seccion h4 {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
+
+.ptb-ayuda {
+  margin: 0;
+  font-size: 0.76rem;
+  opacity: 0.7;
+}
+
+.ptb-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ptb-fila button {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: #fff;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.ptb-fila button:hover {
+  background: rgba(15, 108, 189, 0.1);
+}
+
+.ptb-fila button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ptb-fila select,
+.ptb-fila input[type='text'],
+.ptb-fila input[type='number'] {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.78rem;
+  min-width: 0;
+}
+
+.ptb-fila input[type='number'] {
+  width: 80px;
+}
+
+.ptb-estilos {
+  gap: 8px;
+}
+
+.ptb-estilo {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 6px;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+}
+
+.ptb-valores {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ptb-valores li label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  font-size: 0.78rem;
+}

@@ -1,0 +1,59 @@
+{
+  "fuente": "Wikimedia Commons",
+  "fotos": [
+    {
+      "archivo": "foto-hdmi-cable.jpg",
+      "origen": "HDMI Cable 1.JPG",
+      "autor": "Kannan shanmugam",
+      "licencia": "CC BY-SA 4.0"
+    },
+    {
+      "archivo": "foto-hdmi-puerto.jpg",
+      "origen": "HDMI connector female.jpg",
+      "autor": "Wikimedia Commons",
+      "licencia": "CC BY-SA 3.0"
+    },
+    {
+      "archivo": "foto-vga.jpg",
+      "origen": "Vga-cable.jpg",
+      "autor": "Evan-Amos",
+      "licencia": "Dominio público"
+    },
+    {
+      "archivo": "foto-usb-a.jpg",
+      "origen": "USB A Connector Dual Side.JPG",
+      "autor": "wdwd",
+      "licencia": "CC BY-SA 4.0"
+    },
+    {
+      "archivo": "foto-usb-tipos.jpg",
+      "origen": "Usb connectors.JPG",
+      "autor": "Wikimedia Commons",
+      "licencia": "Dominio público"
+    },
+    {
+      "archivo": "foto-audio-jack.jpg",
+      "origen": "Audio-TRS-Mini-Plug.jpg",
+      "autor": "Evan-Amos",
+      "licencia": "Dominio público"
+    },
+    {
+      "archivo": "foto-ethernet.jpg",
+      "origen": "8p8c crimpable.JPG",
+      "autor": "Thomas Wydra",
+      "licencia": "Dominio público"
+    },
+    {
+      "archivo": "foto-corriente.jpg",
+      "origen": "Cabo de forca computador 01.jpg",
+      "autor": "Luis Dantas",
+      "licencia": "Dominio público"
+    },
+    {
+      "archivo": "foto-panel-trasero.jpg",
+      "origen": "ZotacION2.jpg",
+      "autor": "Fabexplosive",
+      "licencia": "CC BY-SA 3.0"
+    }
+  ]
+}

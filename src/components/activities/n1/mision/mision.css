@@ -1,0 +1,211 @@
+/* Misión: Aprende Computación — port fiel de styles.css, scoped a .mision-n1 */
+
+/* Raíz de la actividad: sustituye a :root/html/body del original. */
+.mision-n1 {
+  --bg: #06101c;
+  --panel: rgba(12, 28, 47, 0.78);
+  --panel-strong: rgba(8, 21, 37, 0.94);
+  --line: rgba(177, 220, 255, 0.16);
+  --blue: #32a8ff;
+  --cyan: #5ce1e6;
+  --green: #58e29c;
+  --yellow: #ffd25a;
+  --red: #ff6d7c;
+  --text: #eef8ff;
+  --muted: #9eb5c8;
+  --radius: 22px;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.mision-n1, .mision-n1 * { box-sizing: border-box; }
+.mision-n1 button, .mision-n1 input { font: inherit; }
+.mision-n1 button { cursor: pointer; }
+/* #scene del original (canvas 3D) */
+.mision-n1 .scene, .mision-n1 #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* #app del original (capa de UI sobre el canvas) */
+.mision-n1 .app, .mision-n1 #app { position: absolute; inset: 0; pointer-events: none; }
+.mision-n1 .app button, .mision-n1 .app .interaction-card, .mision-n1 .app .byte-panel, .mision-n1 .app .hud, .mision-n1 .app .bottom-bar { pointer-events: auto; }
+.mision-n1 .hidden { display: none !important; }
+.mision-n1 .glass { background: var(--panel); border: 1px solid var(--line); backdrop-filter: blur(18px); box-shadow: 0 18px 60px rgba(0,0,0,.28); }
+.mision-n1 .glass-heavy { background: linear-gradient(145deg, rgba(11, 27, 46, .98), rgba(5, 17, 31, .96)); border: 1px solid rgba(166, 221, 255, .18); box-shadow: 0 30px 100px rgba(0,0,0,.55); }
+.mision-n1 .hud { position: absolute; left: 24px; top: 20px; right: 24px; min-height: 76px; border-radius: 20px; display: grid; grid-template-columns: 52px minmax(220px, 1fr) minmax(200px, 320px) auto 52px; align-items: center; gap: 18px; padding: 12px 16px; }
+.mision-n1 .icon-button { width: 46px; height: 46px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255,255,255,.06); color: var(--text); font-size: 20px; }
+.mision-n1 .icon-button:hover { background: rgba(50,168,255,.18); border-color: rgba(50,168,255,.42); }
+.mision-n1 .mission-copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.mision-n1 .mission-copy span, .mision-n1 .eyebrow { color: var(--cyan); font-size: 11px; font-weight: 800; letter-spacing: .15em; }
+.mision-n1 .mission-copy strong { font-size: 18px; }
+.mision-n1 .mission-copy small { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mision-n1 .hud-progress { min-width: 0; }
+.mision-n1 .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 7px; }
+.mision-n1 .progress-label b { color: var(--text); }
+.mision-n1 .progress-track { height: 8px; border-radius: 10px; overflow: hidden; background: rgba(255,255,255,.08); }
+.mision-n1 .progress-track span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), var(--cyan)); border-radius: inherit; transition: width .45s ease; }
+.mision-n1 .stars { color: var(--yellow); font-weight: 800; white-space: nowrap; padding: 0 8px; }
+.mision-n1 .byte-panel { position: absolute; left: 24px; bottom: 104px; width: min(410px, calc(100vw - 48px)); border-radius: var(--radius); padding: 16px; display: grid; grid-template-columns: 74px 1fr; gap: 14px; align-items: center; }
+.mision-n1 .byte-panel p { margin: 5px 0 0; color: #d8e9f7; line-height: 1.45; font-size: 14px; }
+.mision-n1 .byte-panel strong { color: var(--cyan); letter-spacing: .12em; font-size: 12px; }
+.mision-n1 .byte-avatar { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 35% 25%, #77efff, #1d6ddb 60%, #0a1e3e); box-shadow: inset 0 0 20px rgba(255,255,255,.25), 0 0 28px rgba(50,168,255,.28); position: relative; }
+.mision-n1 .antenna { position: absolute; width: 3px; height: 18px; background: var(--cyan); top: -12px; left: 50%; transform: translateX(-50%); }
+.mision-n1 .antenna::after { content: ""; position: absolute; width: 9px; height: 9px; border-radius: 50%; background: var(--yellow); left: -3px; top: -4px; box-shadow: 0 0 12px var(--yellow); }
+.mision-n1 .robot-face { width: 46px; height: 30px; border-radius: 12px; background: #06101c; display: flex; justify-content: space-evenly; align-items: center; }
+.mision-n1 .robot-face i { width: 8px; height: 10px; border-radius: 6px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); animation: mision-blink 4.5s infinite; }
+@keyframes mision-blink { 0%, 45%, 50%, 100% { transform: scaleY(1); } 48% { transform: scaleY(.15); } }
+.mision-n1 .mini-button { grid-column: 2; justify-self: start; border: 0; background: transparent; color: var(--muted); padding: 0; font-size: 12px; }
+.mision-n1 .mini-button:hover { color: white; }
+.mision-n1 .bottom-bar { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); border-radius: 20px; padding: 8px; display: flex; gap: 6px; }
+.mision-n1 .bottom-bar button { border: 0; color: var(--muted); background: transparent; padding: 10px 14px; border-radius: 14px; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; }
+.mision-n1 .bottom-bar button:hover { color: white; background: rgba(255,255,255,.07); }
+.mision-n1 .bottom-bar button span { font-size: 18px; }
+.mision-n1 .interaction-card { position: absolute; right: 24px; bottom: 104px; width: min(360px, calc(100vw - 48px)); border-radius: var(--radius); padding: 22px; }
+.mision-n1 .interaction-card span { color: var(--yellow); font-size: 10px; font-weight: 900; letter-spacing: .14em; }
+.mision-n1 .interaction-card h2 { font-size: 28px; margin: 6px 0 8px; }
+.mision-n1 .interaction-card p { color: var(--muted); line-height: 1.55; margin: 0 0 18px; }
+.mision-n1 .primary-button, .mision-n1 .secondary-button, .mision-n1 .danger-button { border-radius: 14px; padding: 12px 18px; border: 1px solid transparent; font-weight: 800; }
+.mision-n1 .primary-button { color: #031323; background: linear-gradient(135deg, var(--cyan), var(--blue)); box-shadow: 0 10px 28px rgba(50,168,255,.25); }
+.mision-n1 .primary-button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.mision-n1 .primary-button--large { padding: 15px 24px; font-size: 16px; }
+.mision-n1 .secondary-button { color: var(--text); background: rgba(255,255,255,.06); border-color: var(--line); }
+.mision-n1 .danger-button { color: #ffdbe1; background: rgba(255,109,124,.12); border-color: rgba(255,109,124,.25); }
+.mision-n1 .toast { position: absolute; left: 50%; top: 116px; transform: translate(-50%, -12px); opacity: 0; padding: 12px 18px; border-radius: 14px; background: rgba(5,18,31,.94); border: 1px solid var(--line); box-shadow: 0 16px 50px rgba(0,0,0,.4); font-weight: 700; transition: .25s; }
+.mision-n1 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+.mision-n1 .toast.success { border-color: rgba(88,226,156,.4); color: #c9ffe2; }
+.mision-n1 .toast.error { border-color: rgba(255,109,124,.4); color: #ffd1d7; }
+/* Pantallas y modales: siempre montados; se muestran/ocultan al instante con
+   .visible, igual que el .hidden{display:none} del original (sin fundido,
+   salvo screen--loading que sí funde como en la referencia). */
+.mision-n1 .screen, .mision-n1 .modal { position: absolute; inset: 0; z-index: 30; display: grid; place-items: center; padding: 24px; background: radial-gradient(circle at 50% 20%, rgba(25,90,142,.26), rgba(2,9,17,.92) 60%); opacity: 0; visibility: hidden; pointer-events: none; }
+.mision-n1 .screen.visible, .mision-n1 .modal.visible { opacity: 1; visibility: visible; pointer-events: auto; }
+.mision-n1 .screen--loading { z-index: 100; transition: opacity .5s; }
+.mision-n1 .loader-orbit { position: relative; width: 100px; height: 100px; margin-bottom: 16px; }
+.mision-n1 .loader-orbit span { position: absolute; inset: 0; border: 2px solid transparent; border-top-color: var(--cyan); border-radius: 50%; animation: mision-spin 1.3s linear infinite; }
+.mision-n1 .loader-orbit span:nth-child(2) { inset: 12px; border-top-color: var(--blue); animation-duration: 1s; animation-direction: reverse; }
+.mision-n1 .loader-orbit span:nth-child(3) { inset: 28px; border-top-color: var(--yellow); animation-duration: .8s; }
+@keyframes mision-spin { to { transform: rotate(360deg); } }
+.mision-n1 .screen--loading h1 { margin: 0; }
+.mision-n1 .screen--loading p { color: var(--muted); }
+.mision-n1 .start-card { width: min(780px, 100%); border-radius: 30px; padding: 42px; }
+.mision-n1 .brand-lockup { display: flex; gap: 20px; align-items: flex-start; }
+.mision-n1 .brand-mark { width: 74px; height: 74px; border-radius: 22px; display: grid; place-items: center; color: #06101c; font-weight: 950; font-size: 36px; background: linear-gradient(145deg, var(--cyan), var(--blue)); box-shadow: 0 18px 40px rgba(50,168,255,.25); }
+.mision-n1 .brand-lockup span { color: var(--cyan); letter-spacing: .15em; font-weight: 900; font-size: 11px; }
+.mision-n1 .brand-lockup h1 { margin: 6px 0 18px; font-size: clamp(38px, 6vw, 68px); line-height: .98; letter-spacing: -.04em; }
+.mision-n1 .start-card > p { color: var(--muted); font-size: 17px; line-height: 1.6; max-width: 680px; }
+.mision-n1 .field-label { display: grid; gap: 8px; margin-top: 26px; color: #dceafa; font-size: 13px; font-weight: 700; }
+.mision-n1 .field-label input { width: 100%; border-radius: 14px; border: 1px solid var(--line); color: var(--text); background: rgba(255,255,255,.05); padding: 14px 16px; outline: none; }
+.mision-n1 .field-label input:focus { border-color: rgba(92,225,230,.55); box-shadow: 0 0 0 4px rgba(92,225,230,.08); }
+.mision-n1 .start-actions { display: flex; gap: 10px; margin-top: 18px; }
+.mision-n1 .feature-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; color: var(--muted); font-size: 12px; }
+.mision-n1 .feature-row span { padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; }
+.mision-n1 .modal { z-index: 40; background: rgba(1,7,13,.78); backdrop-filter: blur(10px); }
+.mision-n1 .modal-card { position: relative; width: min(980px, 100%); max-height: 90vh; overflow: auto; border-radius: 28px; padding: 34px; }
+.mision-n1 .modal-card--wide { width: min(1080px, 100%); }
+.mision-n1 .close-button { position: absolute; right: 20px; top: 18px; border: 0; background: rgba(255,255,255,.06); color: var(--text); width: 40px; height: 40px; border-radius: 12px; font-size: 24px; }
+.mision-n1 .modal-card h2 { margin: 6px 0 24px; font-size: 34px; }
+.mision-n1 .module-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.mision-n1 .module-card { text-align: left; min-height: 150px; padding: 18px; border-radius: 18px; border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--text); position: relative; overflow: hidden; }
+.mision-n1 .module-card::after { content: ""; position: absolute; width: 120px; height: 120px; border-radius: 50%; right: -50px; bottom: -70px; background: rgba(50,168,255,.12); }
+.mision-n1 .module-card:hover:not(:disabled) { transform: translateY(-3px); border-color: rgba(50,168,255,.45); background: rgba(50,168,255,.09); }
+.mision-n1 .module-card:disabled { opacity: .45; cursor: not-allowed; }
+.mision-n1 .module-card.complete { border-color: rgba(88,226,156,.35); }
+.mision-n1 .module-card span { color: var(--cyan); font-size: 11px; font-weight: 900; letter-spacing: .12em; }
+.mision-n1 .module-card h3 { margin: 9px 0 6px; font-size: 18px; }
+.mision-n1 .module-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.mision-n1 .module-card b { position: absolute; right: 15px; top: 14px; color: var(--green); }
+.mision-n1 .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+/* Botón fantasma pequeño para volver al hub (adaptación plataforma). */
+.mision-n1 .salir-hub { border: 1px solid var(--line); background: rgba(255,255,255,.05); color: var(--muted); border-radius: 14px; padding: 10px 14px; font-weight: 700; font-size: 13px; margin-right: auto; }
+.mision-n1 .salir-hub:hover { color: white; background: rgba(255,255,255,.09); }
+.mision-n1 .metrics-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.mision-n1 .metric-card { border: 1px solid var(--line); background: rgba(255,255,255,.04); border-radius: 18px; padding: 18px; }
+.mision-n1 .metric-card span { display: block; color: var(--muted); font-size: 12px; }
+.mision-n1 .metric-card strong { display: block; font-size: 28px; margin-top: 5px; }
+.mision-n1 .report-section { margin-top: 24px; }
+.mision-n1 .report-section h3 { margin-bottom: 10px; }
+.mision-n1 .report-list { display: grid; gap: 8px; }
+.mision-n1 .report-row { display: grid; grid-template-columns: 1fr auto; gap: 14px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255,255,255,.03); }
+.mision-n1 .report-row span { color: var(--muted); }
+.mision-n1 .os-shell { position: absolute; inset: 0; z-index: 20; background: #164c7d; display: grid; grid-template-rows: 44px 1fr 54px; color: #102233; }
+.mision-n1 .os-topbar { background: rgba(240,248,255,.94); display: flex; align-items: center; gap: 20px; padding: 0 14px; box-shadow: 0 3px 15px rgba(0,0,0,.18); }
+.mision-n1 .os-topbar strong { color: #0d5ca0; }
+.mision-n1 .os-topbar span { flex: 1; color: #405b70; font-size: 13px; }
+.mision-n1 .os-topbar button { border: 0; background: #102f4a; color: white; border-radius: 9px; padding: 7px 12px; }
+.mision-n1 .desktop { position: relative; padding: 22px; display: grid; grid-template-columns: repeat(5, 100px); grid-auto-rows: 110px; align-content: start; gap: 10px; background:
+  radial-gradient(circle at 70% 20%, rgba(111,220,255,.46), transparent 24%),
+  linear-gradient(135deg, #1769a0, #1a3f76 60%, #122953);
+  overflow: hidden;
+}
+.mision-n1 .desktop::after { content: "EDU\A OS"; white-space: pre; position: absolute; right: 6vw; bottom: 7vh; color: rgba(255,255,255,.12); font-size: 12vw; font-weight: 950; line-height: .7; text-align: right; letter-spacing: -.08em; pointer-events: none; }
+.mision-n1 .desktop-icon { width: 90px; height: 96px; border: 0; background: transparent; border-radius: 12px; display: grid; place-items: center; align-content: center; gap: 5px; color: white; text-shadow: 0 1px 3px rgba(0,0,0,.5); z-index: 1; }
+.mision-n1 .desktop-icon:hover, .mision-n1 .desktop-icon.selected { background: rgba(255,255,255,.14); outline: 1px solid rgba(255,255,255,.28); }
+.mision-n1 .desktop-icon span { font-size: 42px; }
+.mision-n1 .desktop-icon b { font-size: 12px; }
+.mision-n1 .taskbar { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: rgba(242,248,252,.95); box-shadow: 0 -3px 15px rgba(0,0,0,.18); }
+.mision-n1 .taskbar > button { width: 42px; height: 42px; border: 0; border-radius: 11px; background: #1164a3; color: white; font-size: 22px; }
+/* #taskButtons del original */
+.mision-n1 .task-buttons, .mision-n1 #taskButtons { flex: 1; display: flex; gap: 6px; }
+.mision-n1 .task-button { border: 0; border-radius: 9px; background: #dceaf4; color: #17344b; padding: 9px 12px; }
+.mision-n1 .system-tray { display: flex; gap: 12px; align-items: center; color: #2c485c; font-size: 13px; }
+.mision-n1 .app-window { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(720px, 78vw); height: min(500px, 65vh); background: #f9fcff; border-radius: 14px; box-shadow: 0 22px 70px rgba(0,0,0,.38); overflow: hidden; display: grid; grid-template-rows: 46px 1fr; color: #193145; z-index: 5; }
+.mision-n1 .app-window.maximized { left: 0; top: 0; transform: none; width: 100%; height: 100%; border-radius: 0; }
+.mision-n1 .window-titlebar { display: flex; align-items: center; gap: 10px; padding: 0 12px; background: #e6f0f7; border-bottom: 1px solid #cadbe7; }
+.mision-n1 .window-titlebar strong { flex: 1; }
+.mision-n1 .window-controls { display: flex; gap: 5px; }
+.mision-n1 .window-controls button { width: 32px; height: 28px; border: 0; border-radius: 7px; background: #d4e3ed; }
+.mision-n1 .window-controls button:last-child:hover { background: #ef6f7e; color: white; }
+.mision-n1 .window-body { overflow: auto; padding: 18px; }
+.mision-n1 .file-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.mision-n1 .file-item { border: 1px solid #d3e1ea; border-radius: 12px; background: white; padding: 14px; text-align: center; }
+.mision-n1 .file-item span { display: block; font-size: 34px; margin-bottom: 7px; }
+.mision-n1 .text-editor { display: grid; grid-template-rows: auto 1fr auto; gap: 12px; height: 100%; }
+.mision-n1 .editor-toolbar { display: flex; gap: 6px; padding-bottom: 8px; border-bottom: 1px solid #d8e4ec; }
+.mision-n1 .editor-toolbar button, .mision-n1 .editor-save { border: 1px solid #c9dae6; background: white; border-radius: 8px; padding: 7px 10px; }
+.mision-n1 .text-editor textarea { resize: none; border: 1px solid #d2e0e9; border-radius: 10px; padding: 15px; font-size: 18px; line-height: 1.5; outline: none; }
+.mision-n1 .editor-status { display: flex; justify-content: space-between; color: #607789; font-size: 12px; }
+.mision-n1 .paint-layout { display: grid; grid-template-columns: 80px 1fr; height: 100%; gap: 12px; }
+.mision-n1 .paint-tools { display: flex; flex-direction: column; gap: 8px; }
+.mision-n1 .paint-tools button, .mision-n1 .paint-tools input { width: 100%; min-height: 42px; border: 1px solid #c8dbe7; background: white; border-radius: 9px; }
+/* #paintCanvas del original */
+.mision-n1 .paint-canvas, .mision-n1 #paintCanvas { width: 100%; height: 100%; border: 1px solid #cadbe6; background: white; border-radius: 10px; cursor: crosshair; }
+.mision-n1 .calc-wrap { display: grid; grid-template-rows: 70px 1fr; max-width: 360px; margin: auto; gap: 10px; }
+.mision-n1 .calc-display { border-radius: 12px; background: #173047; color: white; display: flex; align-items: center; justify-content: flex-end; padding: 15px; font-size: 30px; overflow: hidden; }
+.mision-n1 .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.mision-n1 .calc-grid button { border: 1px solid #c9dae5; background: white; border-radius: 10px; font-size: 18px; }
+.mision-n1 .calc-grid button.operator { background: #dff3ff; }
+.mision-n1 .completion-card { width: min(900px, 100%); border-radius: 30px; padding: 38px; text-align: center; }
+.mision-n1 .trophy { font-size: 70px; filter: drop-shadow(0 12px 20px rgba(255,210,90,.22)); }
+.mision-n1 .completion-card h2 { font-size: 46px; margin: 8px 0; }
+.mision-n1 .completion-card > p { color: var(--muted); }
+.mision-n1 .badge-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 24px 0; }
+.mision-n1 .badge { padding: 10px 14px; border-radius: 999px; background: rgba(255,210,90,.1); border: 1px solid rgba(255,210,90,.25); color: #ffe8a8; }
+
+@media (max-width: 900px) {
+  .mision-n1 .hud { grid-template-columns: 46px 1fr auto 46px; right: 12px; left: 12px; top: 12px; }
+  .mision-n1 .hud-progress { grid-column: 2 / span 2; grid-row: 2; }
+  .mision-n1 .hud { min-height: 104px; }
+  .mision-n1 .byte-panel { bottom: 90px; left: 12px; }
+  .mision-n1 .interaction-card { right: 12px; bottom: 90px; }
+  .mision-n1 .module-grid { grid-template-columns: repeat(2, 1fr); }
+  .mision-n1 .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+  .mision-n1 .start-card { padding: 26px 20px; }
+  .mision-n1 .brand-mark { display: none; }
+  .mision-n1 .start-actions { flex-direction: column; }
+  .mision-n1 .feature-row { display: none; }
+  .mision-n1 .hud { gap: 8px; }
+  .mision-n1 .stars { display: none; }
+  .mision-n1 .byte-panel { width: calc(100vw - 24px); grid-template-columns: 58px 1fr; }
+  .mision-n1 .byte-avatar { width: 56px; height: 56px; }
+  .mision-n1 .interaction-card { width: calc(100vw - 24px); top: 126px; bottom: auto; }
+  .mision-n1 .bottom-bar { width: calc(100vw - 24px); justify-content: space-around; }
+  .mision-n1 .bottom-bar button { padding: 9px; font-size: 0; }
+  .mision-n1 .bottom-bar button span { font-size: 20px; }
+  .mision-n1 .module-grid { grid-template-columns: 1fr; }
+  .mision-n1 .desktop { grid-template-columns: repeat(3, 86px); }
+  .mision-n1 .os-topbar span { display: none; }
+  .mision-n1 .app-window { width: 94vw; height: 70vh; }
+}

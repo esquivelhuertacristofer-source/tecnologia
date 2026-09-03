@@ -1,0 +1,347 @@
+/*
+ * EXAMEN DE POSICIONAMIENTO DEL ALUMNO — /hub/posicionamiento
+ * ─────────────────────────────────────────────────────────────────────────
+ * Sólo toca `.posic-*` y el enlace de entrada en el hero del hub
+ * (`.hero-posic-link`). Deriva sus tokens de CenHub.css (mismo `.cen-hub`),
+ * no define ninguno propio — misma disciplina que CenOfficeBloque.css.
+ *
+ * El motor es adaptativo (búsqueda binaria, `@/lib/posicionamiento`), así
+ * que la franja de progreso no es una barra de "pregunta X de 10": son los
+ * 10 niveles reales, cada uno reusando su color de identidad `--nivel`
+ * (`.nivel-n{n}`, ya definido para las tarjetas de la trayectoria) para que
+ * la búsqueda se sienta parte del mismo camino, no una pantalla aparte.
+ */
+
+/* ─── Enlace de entrada, dentro del hero principal del hub ────────────── */
+
+.cen-hub .hero-posic-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+    font-weight: 700;
+    font-size: 14.5px;
+    color: rgba(233, 242, 252, 0.7);
+    border-bottom: 1px solid rgba(233, 242, 252, 0.28);
+    padding-bottom: 2px;
+    transition: color 0.2s ease, border-color 0.2s ease, gap 0.2s ease;
+}
+
+.cen-hub .hero-posic-link:hover {
+    color: var(--white);
+    border-color: var(--sky);
+    gap: 11px;
+}
+
+/* ─── Banner de la página (misma receta que .hero, franja llena) ──────── */
+
+.cen-hub .posic-banner {
+    background:
+        radial-gradient(900px 420px at 12% -10%, rgba(20, 99, 255, 0.5), transparent 62%),
+        radial-gradient(760px 420px at 88% 8%, rgba(99, 199, 255, 0.24), transparent 60%),
+        var(--navy);
+    color: var(--white);
+    padding: 56px 0 68px;
+}
+
+.cen-hub .posic-banner h1 {
+    font-size: clamp(2.1rem, 4.4vw, 3.4rem);
+    font-weight: 800;
+    margin: 16px 0 14px;
+    line-height: 1.04;
+}
+
+.cen-hub .posic-banner .accent {
+    color: var(--sky);
+}
+
+.cen-hub .posic-sub {
+    color: rgba(233, 242, 252, 0.78);
+    font-size: 16.5px;
+    max-width: 58ch;
+}
+
+.cen-hub .posic-previo {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 22px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    font-size: 13.5px;
+    font-weight: 700;
+    color: rgba(233, 242, 252, 0.92);
+}
+
+.cen-hub .posic-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 13px;
+    margin-top: 30px;
+}
+
+/* ─── Franja de progreso: los 10 niveles reales ────────────────────────── */
+
+.cen-hub .posic-progreso {
+    margin-top: -34px;
+    position: relative;
+    z-index: 5;
+}
+
+.cen-hub .posic-progreso-etiqueta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.cen-hub .posic-rango {
+    display: flex;
+    gap: 8px;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: 14px;
+}
+
+.cen-hub .posic-rango-celda {
+    flex: 1;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-manrope), "Manrope", sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--muted);
+    background: var(--paper-2);
+    transition: all 0.45s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.cen-hub .posic-rango-celda.dominado {
+    background: linear-gradient(135deg, var(--nivel, var(--blue)), var(--nivel-deep, var(--blue-deep)));
+    color: var(--white);
+    box-shadow: 0 10px 18px -8px color-mix(in srgb, var(--nivel, var(--blue)) 55%, transparent);
+}
+
+.cen-hub .posic-rango-celda.descartado {
+    background: var(--paper);
+    color: color-mix(in srgb, var(--muted) 55%, transparent);
+}
+
+.cen-hub .posic-rango-celda.evaluando {
+    background: var(--white);
+    color: var(--nivel-deep, var(--blue-deep));
+    outline: 3px solid color-mix(in srgb, var(--nivel, var(--blue)) 45%, transparent);
+    outline-offset: 2px;
+    transform: scale(1.08);
+}
+
+/* ─── Tarjetas (pregunta / resultado) ──────────────────────────────────── */
+
+.cen-hub .posic-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 40px;
+}
+
+.cen-hub .posic-pregunta-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--nivel-deep, var(--blue));
+}
+
+.cen-hub .posic-pregunta-eyebrow .icono {
+    font-size: 26px;
+}
+
+.cen-hub .posic-pregunta-titulo {
+    margin: 18px 0 26px;
+    font-size: clamp(1.35rem, 2.6vw, 1.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    color: var(--ink);
+}
+
+.cen-hub .posic-opciones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+}
+
+.cen-hub .posic-opcion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    padding: 16px 20px;
+    border-radius: 16px;
+    border: 2px solid var(--line);
+    background: var(--paper);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.cen-hub .posic-opcion:hover:not(:disabled) {
+    border-color: var(--nivel, var(--blue));
+    transform: translateY(-2px);
+}
+
+.cen-hub .posic-opcion:disabled {
+    cursor: default;
+}
+
+.cen-hub .posic-opcion.correcta {
+    background: color-mix(in srgb, #0e8a6d 12%, var(--white));
+    border-color: #0e8a6d;
+    color: #0e6b54;
+}
+
+.cen-hub .posic-opcion.incorrecta {
+    background: color-mix(in srgb, #d64545 10%, var(--white));
+    border-color: #d64545;
+    color: #a92e2e;
+}
+
+/* ─── Resultado ─────────────────────────────────────────────────────────── */
+
+.cen-hub .posic-resultado-hero {
+    text-align: center;
+    padding: 8px 0 6px;
+}
+
+.cen-hub .posic-resultado-hero .section-tag {
+    justify-content: center;
+}
+
+.cen-hub .posic-nivel-numero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 18px 0 8px;
+}
+
+.cen-hub .posic-nivel-numero .icono {
+    font-size: 3.4rem;
+}
+
+.cen-hub .posic-nivel-numero h2 {
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--blue);
+}
+
+.cen-hub .posic-nivel-titulo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--ink);
+}
+
+.cen-hub .posic-confirmacion {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 18px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    background: color-mix(in srgb, #0e8a6d 12%, var(--white));
+    color: #0e6b54;
+    font-weight: 800;
+    font-size: 13.5px;
+}
+
+.cen-hub .posic-breakdown-nota {
+    font-size: 13.5px;
+    color: var(--muted);
+    max-width: 60ch;
+}
+
+.cen-hub .posic-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.cen-hub .posic-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    padding: 16px 10px;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+}
+
+.cen-hub .posic-chip.dominado {
+    background: color-mix(in srgb, #0e8a6d 10%, var(--white));
+    border-color: color-mix(in srgb, #0e8a6d 30%, transparent);
+}
+
+.cen-hub .posic-chip:not(.dominado) {
+    background: color-mix(in srgb, #d64545 8%, var(--white));
+    border-color: color-mix(in srgb, #d64545 26%, transparent);
+}
+
+.cen-hub .posic-chip .icono {
+    font-size: 1.6rem;
+}
+
+.cen-hub .posic-chip .etiqueta {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.cen-hub .posic-chip .marcas {
+    display: flex;
+    gap: 6px;
+    font-weight: 800;
+}
+
+.cen-hub .posic-chip .marcas .ok {
+    color: #0e8a6d;
+}
+
+.cen-hub .posic-chip .marcas .bad {
+    color: #d64545;
+}
+
+@media (max-width: 720px) {
+    .cen-hub .posic-card {
+        padding: 26px 22px;
+    }
+
+    .cen-hub .posic-rango {
+        gap: 5px;
+        padding: 10px;
+    }
+
+    .cen-hub .posic-rango-celda {
+        height: 36px;
+        font-size: 12.5px;
+        border-radius: 9px;
+    }
+}

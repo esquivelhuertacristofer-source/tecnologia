@@ -1,0 +1,127 @@
+/**
+ * `PanelReglas.tsx` — el «Formato condicional» y el «Insertar minigráfico»
+ * de Excel, en miniatura, para `n7-formato-condicional`.
+ *
+ * Vive en la carpeta de la clase y no en `ventanaHojas.css`: el panel entra
+ * por `panelFijo`, que ya envuelve su cuerpo en `.txtw-panel-cuerpo` (los
+ * márgenes y el fondo son de ahí); aquí sólo se ordenan los cinco bloques de
+ * adentro.
+ */
+
+.pfc {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.82rem;
+}
+
+.pfc-sel {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(15, 108, 189, 0.08);
+  color: inherit;
+}
+
+.pfc-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.pfc-seccion:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.pfc-seccion h4 {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
+
+.pfc-ayuda {
+  margin: 0;
+  font-size: 0.76rem;
+  opacity: 0.7;
+}
+
+.pfc-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.pfc-fila button {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: #fff;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.pfc-fila button:hover {
+  background: rgba(15, 108, 189, 0.1);
+}
+
+.pfc-fila select,
+.pfc-fila input[type='text'],
+.pfc-fila input[type='number'] {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.78rem;
+  min-width: 0;
+}
+
+.pfc-fila input[type='number'] {
+  width: 80px;
+}
+
+.pfc-vacio {
+  margin: 0;
+  font-size: 0.76rem;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.pfc-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pfc-lista li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.pfc-lista button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #9c0006;
+}
+
+.pfc-lista button:hover {
+  background: rgba(156, 0, 6, 0.12);
+}

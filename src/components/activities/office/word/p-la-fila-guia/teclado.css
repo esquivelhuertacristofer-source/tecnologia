@@ -1,0 +1,363 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `p-la-fila-guia` · el teclado guía
+
+   Va acoplado al fondo de la ventana, debajo de la barra de estado, igual que
+   el teclado en pantalla de Windows debajo de un programa. Y viste de programa,
+   no de videojuego: el chrome claro de Word, el azul #185ABD para la tecla que
+   toca y el ámbar del halo para Mayús. El color pleno de la plataforma vive en
+   la entrada y en el panel del maestro; aquí dentro mandaría la fidelidad
+   aunque no hubiera regla, porque un teclado de colores saturados no se parece
+   al teclado que el niño tiene delante.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.filag {
+  --f-azul: #185abd;
+  --f-honda: #103f91;
+  --f-borde: #c8c6c4;
+  --f-gris: #605e5c;
+  --f-ambar: #ffb020;
+  --f-verde: #12a75a;
+  --f-rojo: #d13438;
+
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+  padding: 9px 14px 10px;
+  background: #eceae8;
+  border-top: 1px solid #d6d4d2;
+  color: #201f1e;
+  font-family: 'Segoe UI', 'Selawik', system-ui, sans-serif;
+  font-size: 12px;
+}
+
+.filag * {
+  box-sizing: border-box;
+}
+
+/* ─────────────────────────── el renglón en curso ─────────────────────────── */
+
+.filag-renglon {
+  flex: 1 1 260px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.filag-cab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.filag-cab-num {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--f-azul);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.filag-cab-tit {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.filag-cab-fin {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f7b3f;
+}
+
+.filag-listo {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--f-verde);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  animation: filag-brinco 0.4s ease-out;
+}
+
+@keyframes filag-brinco {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+
+/* La tira del renglón: una casilla por letra, como la hoja del taller viejo. */
+.filag-modelo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin: 0;
+}
+
+.filag-letra {
+  display: grid;
+  place-items: center;
+  min-width: 21px;
+  height: 26px;
+  padding: 0 3px;
+  border: 1px solid var(--f-borde);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--f-gris);
+  /* La misma letra del documento, y no una monoespaciada: lo que el niño ve en
+     la tira tiene que ser calcado a lo que va a aparecer en la hoja. Con
+     Consolas, la ele de «lija» se lee como un uno. */
+  font-family: 'Carlito', 'Calibri', 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.filag-letra.es-espacio {
+  min-width: 30px;
+  color: #a19f9d;
+}
+
+.filag-letra.es-hecha {
+  border-color: #8bd7ab;
+  background: #e7f7ee;
+  color: #0f7b3f;
+}
+
+.filag-letra.es-ahora {
+  border-color: var(--f-honda);
+  background: var(--f-azul);
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(24, 90, 189, 0.24);
+}
+
+.filag-letra.es-sobra {
+  border-color: #f1a3a5;
+  background: #ffe9e9;
+  color: var(--f-rojo);
+  text-decoration: line-through;
+}
+
+.filag-letra.es-entrar {
+  min-width: 32px;
+  font-size: 13px;
+}
+
+.filag-orden {
+  margin: 0;
+  min-height: 16px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #333130;
+}
+
+/* Un apuro —te sobran letras, estás escribiendo donde no es, se te quedó Bloq
+   Mayús— no puede vestirse igual que «ahora toca la letra A». A los ocho años,
+   un renglón que no cambia de aspecto no se lee: la advertencia se ve, y se ve
+   antes de leerla. */
+.filag-orden.es-apuro {
+  padding: 3px 8px;
+  border-left: 3px solid var(--f-rojo);
+  border-radius: 3px;
+  background: #fdecea;
+  color: #a4262c;
+}
+
+/* ─────────────────────────── el teclado ─────────────────────────── */
+
+.filag-teclado {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+  padding: 6px 8px 5px;
+  border: 1px solid #d6d4d2;
+  border-radius: 8px;
+  background: #f8f7f6;
+}
+
+.filag-fila {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+}
+
+.filag-tecla {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 27px;
+  border: 1px solid var(--f-borde);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: #fff;
+  color: #201f1e;
+  font-size: 11.5px;
+  font-weight: 600;
+  user-select: none;
+}
+
+/* La fila del medio va marcada: es la fila guía, y verla distinta es media
+   lección. Igual que en el mueble de la clase vieja. */
+.filag-fila.es-guia .filag-tecla {
+  background: #eaf3fd;
+  border-color: #9ec7f0;
+}
+
+/* Las rayitas de la F y la J, dibujadas donde están de verdad. */
+.filag-tecla.es-rayita::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  width: 11px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--f-gris);
+  transform: translateX(-50%);
+}
+
+.filag-tecla.es-ancha {
+  width: 54px;
+  font-size: 13px;
+}
+
+.filag-tecla.es-mayus {
+  width: 58px;
+  font-size: 10.5px;
+}
+
+.filag-tecla.es-barra {
+  width: 232px;
+  font-size: 10.5px;
+  color: var(--f-gris);
+}
+
+.filag-tecla.es-pide {
+  background: var(--f-azul);
+  border-color: var(--f-honda);
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(24, 90, 189, 0.26);
+}
+
+.filag-tecla.es-pide::after {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.filag-tecla.es-pide-mayus {
+  background: var(--f-ambar);
+  border-color: #b45309;
+  color: #3a2400;
+  box-shadow: 0 0 0 3px rgba(255, 176, 32, 0.34);
+}
+
+/* ─── las ocho huellas: qué dedo pulsa ─── */
+
+.filag-manos {
+  display: flex;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.filag-huella {
+  width: 15px;
+  height: 9px;
+  border-radius: 999px;
+  background: #dedbd9;
+  border: 1px solid #c8c6c4;
+}
+
+.filag-huella.es-corte {
+  margin-right: 24px;
+}
+
+.filag-huella.es-pide {
+  background: var(--f-azul);
+  border-color: var(--f-honda);
+  transform: scaleY(1.4);
+}
+
+.filag-huella.es-mayus {
+  background: var(--f-ambar);
+  border-color: #b45309;
+  transform: scaleY(1.4);
+}
+
+/* ─────────────────────────── el marcador ─────────────────────────── */
+
+.filag-marcador {
+  flex: none;
+  width: 172px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 14px;
+  border-left: 1px solid #d6d4d2;
+}
+
+.filag-dato {
+  margin: 0;
+  color: var(--f-gris);
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.filag-dato b {
+  color: #201f1e;
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.filag-calma {
+  margin: 4px 0 0;
+  color: #0f7b3f;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.filag-boton {
+  margin-top: auto;
+  padding: 5px 8px;
+  border: 1px solid var(--f-borde);
+  border-radius: 4px;
+  background: #fff;
+  color: #201f1e;
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.filag-boton:hover {
+  background: #f0f0f0;
+  border-color: #a19f9d;
+}
+
+/* Plegado. El botón está para dejarle la pantalla al documento, así que el
+   marcador se tumba en una fila: si el aparato se queda igual de alto, guardar
+   el teclado no sirve para lo único que se guarda. */
+.filag.es-plegado .filag-marcador {
+  width: auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.filag.es-plegado .filag-calma {
+  display: none;
+}
+
+.filag.es-plegado .filag-boton {
+  margin-top: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filag-listo {
+    animation: none;
+  }
+}

@@ -1,0 +1,1133 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Tecnia Hojas · lo que esta ventana tiene y las otras dos no (doc §45)
+
+   Este archivo **no repite** el chrome. La barra de título, las pestañas, la
+   cinta, los botones, el panel del maestro, el aro y sus rótulos, la portada de
+   objetivos y el diálogo de la insignia se pintan con las clases `.txtw-*` de
+   `ventanaTextos.css`, que la ventana importa antes que ésta. Es la misma
+   disciplina que estrenó `ventanaDiapositivas.css`: si para cambiar de programa
+   hubiera que tocar reglas en vez de variables, es que el chrome está copiado y
+   no sacado.
+
+   Lo que sí es de aquí: el verde de Excel, el cuadro de nombres, la barra de
+   fórmulas, la rejilla —con sus cabeceras de columna y de fila— y las pestañas
+   de hoja del pie.
+
+   ── LA REJILLA ES INFINITA Y LA PANTALLA NO ──────────────────────────────
+
+   Se pintan sólo las filas que se ven. El truco de maquetación que lo permite
+   está aquí y conviene entenderlo antes de tocar nada: el contenedor que
+   desplaza (`.hjw-rejilla`) tiene dentro un `.hjw-espacio` del tamaño ENTERO de
+   la hoja —ancho y alto de verdad, para que la barra de desplazamiento mida lo
+   que tiene que medir—, y las filas visibles se colocan encima en posición
+   absoluta, cada una a su altura. Las cabeceras no se recolocan a mano: se
+   pegan con `position: sticky`, que es trabajo del navegador y no nuestro.
+
+   Y de ahí sale la regla que hereda del §39 —«cuadricular, no medir»—: **el
+   alto de fila y el ancho de columna son constantes** (`ALTO_FILA`,
+   `ANCHO_COL` en `VentanaHojas.tsx`). Mientras lo sean, saber qué celda hay
+   debajo del ratón es una división entera, no una medición del DOM.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.hjw {
+  /* El verde de Excel sustituye al azul de Word en TODO el chrome compartido,
+     con una sola redefinición de variables. */
+  --w-azul: #107c41;
+  --w-azul-honda: #0b5d31;
+  --w-titulo-h: #185c37;
+
+  --x-rejilla: #d4d4d4;
+  --x-cabecera: #f5f5f5;
+  --x-cabecera-activa: #cfe8d9;
+  --x-sel: #107c41;
+  --x-formula: #0f6cbd;
+
+  /* Título · pestañas · cinta · barra de fórmulas · hoja · barra de estado.
+     La fila de más respecto a Word es la barra de fórmulas, y no puede ir
+     dentro del área de la hoja: en Excel está fuera y por encima, porque
+     pertenece a la celda activa y no al documento. */
+  grid-template-rows: 38px 34px auto 26px minmax(0, 1fr) 26px;
+}
+
+/* ───────────────────── el panel acoplado de la clase ─────────────────────── */
+
+/* `.txtw-medio` trae DOS columnas —la hoja y el maestro—, así que una clase con
+   panel propio metía un tercer hijo en una rejilla de dos y se le caía debajo,
+   fuera de la pantalla. La columna se abre aquí, igual que en PowerPoint. */
+.hjw .txtw-medio.es-con-panel {
+  grid-template-columns: minmax(0, 1fr) 244px var(--w-maestro);
+}
+
+.hjw-panel-clase {
+  border-left: 1px solid var(--w-borde);
+}
+
+/* A 390px la rejilla de tres columnas pedía 244px + var(--w-maestro) (340px)
+   fijos y le dejaba 0px a la hoja — medido con Playwright en
+   `n6-elige-la-grafica`: `hojaClientWidth: 0`, la hoja invisible y los dos
+   paneles cortados a la mitad. Mismo criterio que `.txtw-medio` en
+   `ventanaTextos.css` (doc §37: «el documento manda»): se apilan las tres
+   filas y la hoja se queda con la mayoría del alto. */
+@media (max-width: 760px) {
+  .hjw .txtw-medio.es-con-panel {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1.6fr) minmax(0, 0.8fr) minmax(0, 1fr);
+  }
+
+  .hjw-panel-clase {
+    border-left: 0;
+    border-top: 1px solid var(--w-borde);
+  }
+}
+
+/* ───────────────────── el cuadro de nombres y la barra ───────────────────── */
+
+.hjw-barra {
+  display: flex;
+  align-items: stretch;
+  background: #fff;
+  border-bottom: 1px solid var(--w-borde);
+  border-top: 1px solid var(--w-borde);
+}
+
+.hjw-nombres {
+  width: 122px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 12px;
+  color: var(--w-texto);
+  border-right: 1px solid var(--w-borde);
+  background: #fff;
+  cursor: text;
+}
+
+.hjw-nombres input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+}
+
+.hjw-fx {
+  width: 30px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: italic;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 13px;
+  color: var(--w-gris);
+  border-right: 1px solid var(--w-borde);
+}
+
+.hjw-formula {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  padding: 0 10px;
+  font-size: 13px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: var(--w-texto);
+  background: #fff;
+}
+
+.hjw-formula:focus {
+  box-shadow: inset 0 0 0 1px var(--x-formula);
+}
+
+/* ───────────────────────────── la rejilla ──────────────────────────────── */
+
+.hjw-hoja {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: #fff;
+}
+
+.hjw-rejilla {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  outline: none;
+  background: #fff;
+  /* La rejilla se navega con el teclado y tiene que poder recibir el foco sin
+     que el navegador le pinte su anillo encima de las cabeceras. */
+}
+
+.hjw-espacio {
+  position: relative;
+}
+
+/* — cabeceras — */
+
+.hjw-cab-cols {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+}
+
+.hjw-esquina {
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  flex: none;
+  background: var(--x-cabecera);
+  border-right: 1px solid #b0b0b0;
+  border-bottom: 1px solid #b0b0b0;
+}
+
+.hjw-cab {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--x-cabecera);
+  border-right: 1px solid var(--x-rejilla);
+  border-bottom: 1px solid #b0b0b0;
+  font-size: 11px;
+  color: #444;
+  user-select: none;
+  cursor: pointer;
+}
+
+.hjw-cab.es-activa {
+  background: var(--x-cabecera-activa);
+  color: #0b5d31;
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--x-sel);
+}
+
+.hjw-cab-fila {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--x-cabecera);
+  border-right: 1px solid #b0b0b0;
+  border-bottom: 1px solid var(--x-rejilla);
+  font-size: 11px;
+  color: #444;
+  user-select: none;
+  cursor: pointer;
+}
+
+.hjw-cab-fila.es-activa {
+  background: var(--x-cabecera-activa);
+  color: #0b5d31;
+  font-weight: 600;
+  box-shadow: inset -2px 0 0 var(--x-sel);
+}
+
+/* — filas y celdas — */
+
+.hjw-fila {
+  position: absolute;
+  left: 0;
+  display: flex;
+}
+
+/* Las cuatro caras están declaradas, y **dos de ellas son transparentes**: la
+   cuadrícula sólo dibuja la derecha y la de abajo —si dibujara las cuatro, cada
+   raya se pintaría dos veces y se vería el doble de gruesa—, pero los bordes del
+   bloque 9 sí pueden pedir arriba y a la izquierda. Declararlas transparentes
+   deja que un borde se pinte cambiando un color y no metiendo un borde nuevo,
+   que es lo que movería la cuadrícula: con `box-sizing: border-box` el ancho de
+   la celda es el mismo con borde y sin él, y `ANCHO_COL` sigue siendo una
+   división entera (§39). */
+.hjw-celda {
+  flex: none;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  border: 1px solid transparent;
+  border-right-color: var(--x-rejilla);
+  border-bottom-color: var(--x-rejilla);
+  font-size: 12.5px;
+  line-height: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: cell;
+  background: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── el texto ajustado, y lo que aquí NO se puede hacer ──────────────────────
+
+   En Excel, «Ajustar texto» parte el texto en renglones **y sube el alto de la
+   fila**. Aquí el alto es constante y no se negocia: de él salen la fila que se
+   pinta al desplazarse y la celda que hay bajo el ratón, las dos con una
+   división entera y sin medir el DOM (§39, «cuadricular, no medir»). Un alto
+   variable convierte las dos en una búsqueda.
+
+   Así que la elección está tomada y escrita: **el texto se parte en dos
+   renglones dentro del alto que hay**, y para que quepan, los renglones se
+   aprietan —9.5 px por 1.05 de interlínea son 19.95 px, que es exactamente el
+   hueco de una fila de 22 con sus dos bordes—. Se ve más chico que el resto de
+   la hoja, y eso es la verdad de lo que pasa, no un disimulo: el alumno ve que
+   el texto cabe entero y ve lo que cuesta. Lo que no se hace es fingir que la
+   fila creció.
+
+   Lo dice también la ficha de guía de `ajustar-texto` y el motivo apagado de
+   `alto-fila`, con la diferencia frente al Excel de su casa puesta por escrito. */
+.hjw-celda.es-ajustado {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: 9.5px;
+  line-height: 1.05;
+}
+
+/* Sin líneas de cuadrícula (el botón `ver-cuadricula`): la hoja se queda en
+   blanco como en Excel, y ahí se ve para qué servían. */
+.hjw-rejilla.sin-cuadricula .hjw-celda {
+  border-color: transparent;
+}
+
+.hjw-celda.es-dentro {
+  background: #e8f3ec;
+}
+
+.hjw-celda.es-error {
+  color: #a4262c;
+}
+
+.hjw-celda.es-circular {
+  box-shadow: inset 0 0 0 1px #a4262c;
+}
+
+/* El halo del §37 tiene que poder señalar una celda concreta, así que la celda
+   activa se dibuja con un borde propio y no con el `outline` del navegador. */
+.hjw-celda.es-activa {
+  box-shadow: inset 0 0 0 2px var(--x-sel);
+  background: #fff;
+  z-index: 1;
+}
+
+.hjw-editor {
+  width: 100%;
+  border: 0;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  padding: 0;
+}
+
+/* ── las celdas combinadas · bloque 10 ───────────────────────────────────────
+
+   No hay `colspan` que valga: la rejilla es una fila de `flex` con anchos
+   constantes, y una celda que se estire empujaría a las de su derecha. Así que
+   una combinación se dibuja **por tiras**, una por fila que ocupa: la celda de
+   la izquierda de cada tira mide `n × ANCHO_COL` y las tapadas de esa tira miden
+   **cero** —sin padding y sin bordes, o los 8 px de relleno y la raya de la
+   derecha las harían medir nueve—. La suma sigue siendo la misma, así que la
+   columna D cae donde caía y la división entera del ratón sigue valiendo.
+
+   Las rayas de dentro se apagan desde el TSX, cara por cara, porque quién es
+   «de dentro» depende de dónde está la celda en la caja, y eso no lo sabe una
+   clase de CSS. */
+.hjw-celda.es-tapada {
+  padding: 0;
+  border-right-width: 0;
+  border-left-width: 0;
+}
+
+/* ── los hipervínculos dentro del libro · bloque 40 ──────────────────────────
+   Igual que en Excel: azul y subrayado mientras el destino existe. Y cuando
+   ya no existe, se ve roto — tachado y en el rojo de `.es-error` — en vez de
+   fallar en silencio, que es la regla del bloque 40. */
+.hjw-celda.es-vinculo {
+  color: #0f6cbd;
+  text-decoration: underline;
+}
+
+.hjw-celda.es-vinculo-roto {
+  color: #a4262c;
+  text-decoration: line-through;
+}
+
+/* ── la validación de datos · bloque 32 ──────────────────────────────────────
+   La flecha vive DENTRO del flujo normal de la celda —`.hjw-celda` es un
+   `flex` de toda la vida, y `margin-left: auto` la empuja al borde derecho
+   sin una sola coordenada—, porque la celda tiene `overflow: hidden` (para
+   cortar el texto que no cabe) y un hijo `position: absolute` normal se
+   recortaría igual que el texto. El desplegable, en cambio, tiene que salir
+   POR ENCIMA de esa cuadrícula recortada, así que se cuelga de `document.body`
+   con un portal (`VentanaHojas.tsx`) y se posiciona con la coordenada real de
+   la celda en la pantalla — la misma idea que ya usa el halo del modo guía. */
+.hjw-flecha-validacion {
+  flex: none;
+  margin-left: auto;
+  padding-left: 4px;
+  font-size: 9px;
+  line-height: 1;
+  color: var(--w-texto-tenue, #666);
+  cursor: pointer;
+}
+
+.hjw-lista-validacion {
+  position: fixed;
+  z-index: 60;
+  max-height: 160px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid var(--x-rejilla);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+.hjw-lista-validacion-opcion {
+  display: block;
+  width: 100%;
+  padding: 3px 6px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  font-size: 12px;
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.hjw-lista-validacion-opcion:hover {
+  background: #e8f3ec;
+}
+
+.hjw-mensaje-validacion {
+  color: var(--w-texto);
+}
+
+/* ── la brocha cargada ───────────────────────────────────────────────────────
+   El puntero cambia en toda la hoja mientras la brocha lleva algo dentro. Es la
+   única señal de que el programa está esperando **dónde** soltarla, y sin ella
+   la herramienta de dos tiempos parece un botón que no hizo nada. */
+.hjw-rejilla.es-brocha .hjw-celda,
+.hjw-rejilla.es-brocha .hjw-cab,
+.hjw-rejilla.es-brocha .hjw-cab-fila {
+  cursor: copy;
+}
+
+/* ── el cuadrito de relleno, la estela y la marca del portapapeles ───────────
+
+   El CSS del tirador estaba escrito desde el §45.7 y ninguna línea lo pintaba;
+   al construirlo (15-ago-2026) hubo que **cambiarlo**, y el motivo se deja
+   escrito porque es de los que se repiten: estaba pensado para vivir DENTRO de
+   la celda activa —`right: -3px; bottom: -3px`—, y la celda tiene
+   `overflow: hidden` porque lo necesita para cortar el texto que no cabe. O sea
+   que el cuadrito habría salido recortado justo por las dos mitades que
+   sobresalen, que son las que se agarran con el ratón.
+
+   Ahora cuelga del espacio de la hoja y su sitio se calcula con la misma
+   multiplicación que el de las filas (§39, «cuadricular, no medir»): esquina de
+   lo marcado por el ancho de columna y el alto de fila, y ni una medida del DOM.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.hjw-tirador {
+  position: absolute;
+  z-index: 2;
+  width: 8px;
+  height: 8px;
+  background: var(--x-sel);
+  border: 1px solid #fff;
+  border-radius: 1px;
+  cursor: crosshair;
+}
+
+.hjw-tirador:hover {
+  transform: scale(1.35);
+}
+
+/* Hasta dónde llegaría el relleno si se soltara aquí. */
+.hjw-estela {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  border: 1px dashed var(--x-sel);
+  background: rgba(16, 124, 65, 0.08);
+}
+
+/* Lo copiado o lo cortado. Las «hormigas que marchan» de Excel, quietas: una
+   raya que se mueve sola a cuatro cuadros por segundo llama más la atención que
+   el encargo que el alumno está leyendo. */
+.hjw-marca {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  border: 2px dashed var(--x-sel);
+}
+
+.hjw-marca.es-corte {
+  border-style: dotted;
+  border-color: #b45309;
+}
+
+/* ── las flechas de auditoría · bloque 47 ──────────────────────────────────
+   `flechasDeAuditoria` (consultas.ts) ya da `col`/`puesto` de pantalla; el
+   TSX sólo multiplica por `ANCHO_COL`/`ALTO_FILA`, la misma disciplina que el
+   tirador y las gráficas dos bloques más arriba (§39, «cuadricular, no
+   medir»). El SVG cuelga del espacio de la hoja igual que ellos, así que se
+   desplaza con el scroll sin ningún cálculo extra. */
+.hjw-flechas-auditoria {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.hjw-flecha-auditoria-linea {
+  stroke: var(--x-formula);
+  stroke-width: 2;
+}
+
+.hjw-flecha-auditoria-punta {
+  fill: var(--x-formula);
+}
+
+.hjw-flecha-auditoria-origen {
+  fill: var(--x-formula);
+}
+
+/* El rótulo de «esto sigue en otra hoja»: mismo azul que la flecha, para que
+   se lea como la misma familia de señal aunque no haya línea que dibujar. */
+.hjw-chips-otra-hoja {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.hjw-chip-otra-hoja {
+  display: inline-block;
+  width: fit-content;
+  padding: 1px 6px;
+  font-size: 10px;
+  line-height: 14px;
+  white-space: nowrap;
+  color: #fff;
+  background: var(--x-formula);
+  border-radius: 8px;
+}
+
+/* ─────────────────────── las gráficas ───────────────────────────────────────
+   Flotan sobre la rejilla, ancladas a celdas: su sitio y su tamaño los pone el
+   TSX con la misma multiplicación que las filas (§39), y aquí sólo vive cómo se
+   ven. Fondo blanco y opaco porque una gráfica tapa lo que hay debajo —en Excel
+   también—, y `z-index` por encima de la estela y de las hormigas del
+   portapapeles, que son las otras dos cosas que flotan aquí dentro. */
+.hjw-grafica {
+  position: absolute;
+  z-index: 3;
+  background: #fff;
+  border: 1px solid var(--w-borde);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  cursor: move;
+  /* El dibujo es SVG y no se selecciona con el ratón: arrastrar una gráfica no
+     puede acabar pintando de azul el título como si fuera texto de una página. */
+  user-select: none;
+  overflow: hidden;
+}
+
+.hjw-grafica.es-activa {
+  /* Los tiradores de Excel serían ocho cuadritos, y no se dibujan porque
+     redimensionar todavía no existe (reserva (a) de `comandos.ts`). Ocho
+     cuadritos que no hacen nada al arrastrarlos serían ocho promesas rotas. */
+  border-color: var(--x-sel);
+  box-shadow: 0 0 0 1px var(--x-sel);
+}
+
+.hjw-grafica.es-en-vuelo {
+  opacity: 0.85;
+}
+
+.hjw-grafica-svg {
+  display: block;
+}
+
+/* ─────────────────────── las tablas · bloques 33-36 ─────────────────────────
+   El color de cabecera y las bandas NO están aquí: se pintan como una celda
+   más, mezclados en `decoraciones` (`VentanaHojas.tsx`, `TablaVisual.tsx`),
+   porque `.hjw-celda` es opaca y una capa encima le taparía el texto. Lo que
+   sí vive aquí es lo que no tapa nada: el marco —relleno transparente, sólo
+   el borde— y la fila de totales, que es una fila que no existe en
+   `Hoja.celdas` y por eso necesita su propio `div`. */
+.hjw-tabla-marco {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  background: transparent;
+  border: 2px solid var(--x-sel);
+  border-radius: 2px;
+}
+
+.hjw-tabla-totales {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  pointer-events: none;
+  background: #eef1f5;
+  border-top: 2px solid var(--w-borde);
+}
+
+.hjw-tabla-totales-celda {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #24292f;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ────────────────── lo que pinta una tabla dinámica ─────────────────────
+
+   Bloques 49 y 50. Estas reglas van DESPUÉS de `.hjw-celda.es-activa` a
+   propósito: con la misma especificidad gana la última, así que el color de la
+   dinámica se ve también en la celda marcada — y el recuadro de la selección,
+   que es un `box-shadow`, sigue encima. Por eso ninguna de estas reglas usa
+   `box-shadow`: le taparía el cursor al alumno justo dentro de la dinámica,
+   que es donde la clase 49 le pide que intente escribir.
+
+   Los tres papeles se tienen que distinguir de un vistazo o la dinámica no se
+   lee: cabecera (azul lleno), dato (fondo claro) y **total** —que es tanto el
+   total general como el subtotal de un campo anidado—, en azul pálido y
+   negrita. `dinamica.ts` los da ya masticados en `roles`. */
+
+.hjw-celda.hjw-din {
+  background: #f7faff;
+  color: #17375e;
+}
+
+.hjw-celda.es-din-titulo,
+.hjw-celda.es-din-cabecera {
+  background: #1f5fb8;
+  color: #fff;
+  font-weight: 700;
+}
+
+.hjw-celda.es-din-etiqueta {
+  background: #eef4fc;
+  font-weight: 600;
+}
+
+.hjw-celda.es-din-dato {
+  background: #fbfdff;
+}
+
+.hjw-celda.es-din-total {
+  background: #dbe7f8;
+  font-weight: 700;
+  border-top-color: #9dbbe4;
+}
+
+.hjw-din-texto {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─────────────────────── las pestañas de hoja ─────────────────────────── */
+
+.hjw-pestanas {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  flex: none;
+  height: 26px;
+  padding: 0 6px;
+  background: #f5f5f5;
+  border-top: 1px solid var(--w-borde);
+}
+
+.hjw-hoja-tab {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  color: var(--w-gris);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.hjw-hoja-tab:hover {
+  background: #ebebeb;
+}
+
+.hjw-hoja-tab.es-activa {
+  color: var(--x-sel);
+  font-weight: 600;
+  background: #fff;
+  border-bottom-color: var(--x-sel);
+}
+
+.hjw-hoja-mas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  border: 0;
+  background: transparent;
+  color: var(--w-gris);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.hjw-hoja-mas:hover {
+  background: #ebebeb;
+  color: var(--x-sel);
+}
+
+/* El nombre de la hoja mientras se está escribiendo (doble clic en la
+   lengüeta). Ocupa el sitio de la lengüeta y se ve como ella: cambiarle el
+   nombre a una hoja no debe abrir un cuadro de diálogo — en Excel tampoco. */
+.hjw-hoja-nombre {
+  width: 92px;
+  border: 1px solid var(--x-sel);
+  outline: none;
+  padding: 0 4px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--w-texto);
+  background: #fff;
+}
+
+/* La paleta de colores de lengüeta (bloque 16). Sale encima de las lengüetas,
+   pegada a ellas, porque lo que va a pintar está justo debajo. */
+.hjw-paleta {
+  position: absolute;
+  left: 8px;
+  bottom: 30px;
+  z-index: 6;
+  display: flex;
+  gap: 5px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid var(--w-borde);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.hjw-color {
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* El panel «Diseño de gráfico» (bloque 18). Docked a la esquina de arriba a la
+   derecha de `.hjw-hoja` —que es `position: relative` desde el §45.7— y no
+   pegado al dibujo: así no hay que recalcular su sitio en cada arrastre, y es
+   donde vive el panel «Formato de gráfico» del Excel de verdad. */
+.hjw-panel-grafica {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 194px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid var(--w-borde);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.hjw-panel-grafica-titulo {
+  margin: 0 0 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--w-texto);
+}
+
+.hjw-panel-grafica-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--w-gris);
+}
+
+.hjw-panel-grafica-campo input {
+  padding: 4px 6px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--w-texto);
+  border: 1px solid var(--w-borde);
+  border-radius: 4px;
+  outline: none;
+}
+
+.hjw-panel-grafica-campo input:focus {
+  border-color: var(--x-formula);
+}
+
+.hjw-panel-grafica-casilla {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--w-texto);
+  cursor: pointer;
+}
+
+/* ── el panel «Importar datos» (bloque 43) ────────────────────────────────────
+
+   Cuelga del mismo grupo que su botón, como `.hjw-desplegable` — la regla está
+   dos bloques más abajo, en `.hjw .txtw-grupo { position: relative; }` — pero
+   es más ancho porque lleva un cuadro de texto de varias líneas, no una fila
+   de cuadraditos. */
+.hjw-panel-importar {
+  position: absolute;
+  top: 100%;
+  left: 6px;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 280px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid var(--w-borde);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.hjw-panel-importar-titulo {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--w-texto);
+}
+
+.hjw-panel-importar-archivos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.hjw-panel-importar-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--w-gris);
+}
+
+.hjw-panel-importar-campo textarea,
+.hjw-panel-importar-campo select {
+  padding: 4px 6px;
+  font: inherit;
+  font-size: 12px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  color: var(--w-texto);
+  border: 1px solid var(--w-borde);
+  border-radius: 4px;
+  outline: none;
+  resize: vertical;
+}
+
+.hjw-panel-importar-campo select {
+  font-family: inherit;
+}
+
+.hjw-panel-importar-campo textarea:focus,
+.hjw-panel-importar-campo select:focus {
+  border-color: var(--x-formula);
+}
+
+.hjw-panel-importar-nota {
+  margin: 0;
+  font-size: 11px;
+  color: var(--w-gris);
+}
+
+/* El parte que devuelve `leerCsv` (§46.8): el separador, filas y columnas, y
+   —lo que de verdad importa— las columnas que quedaron texto pareciendo
+   número. Monoespaciado para que se lea como lo que es: un reporte, no una
+   frase de la clase. */
+.hjw-panel-importar-parte {
+  margin: 0;
+  padding: 6px 8px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  color: var(--w-texto);
+  background: #f3f2f1;
+  border-radius: 4px;
+}
+
+.hjw-panel-importar-error {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #a4262c;
+}
+
+.hjw-panel-importar-aviso {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #8a5700;
+}
+
+.hjw-boton-panel {
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--x-formula);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.hjw-boton-panel:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.hjw-boton-panel.es-secundario {
+  color: var(--w-texto);
+  background: #f3f2f1;
+  border: 1px solid var(--w-borde);
+  font-weight: 500;
+}
+
+.hjw-boton-panel.es-aviso {
+  background: #8a5700;
+}
+
+/* ── el desplegable de un botón de la cinta (colores de celda y bordes) ───────
+
+   Cuelga **del grupo en el que vive su botón**, no de la ventana: en Excel una
+   paleta sale pegada al botón que la abrió, y aquí eso se consigue anclando el
+   panel al grupo y sin medir nada del DOM. La alternativa —un panel suelto con
+   una posición calculada— sería un botón flotante genérico y además volvería a
+   traer medidas donde no hacen falta. */
+.hjw .txtw-grupo {
+  position: relative;
+}
+
+.hjw-desplegable {
+  position: absolute;
+  top: 100%;
+  left: 6px;
+  z-index: 8;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  width: max-content;
+  max-width: 232px;
+  padding: 7px;
+  background: #fff;
+  border: 1px solid var(--w-borde);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.hjw-desplegable-titulo {
+  width: 100%;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--w-gris);
+}
+
+/* «Automático» y «Sin relleno»: la casilla que QUITA el color. Se dibuja con la
+   raya roja de Excel y no como un cuadro blanco, porque un cuadro blanco en una
+   paleta es un color más — y pintar de blanco no es lo mismo que despintar. */
+.hjw-color.es-ninguno {
+  position: relative;
+  background: #fff;
+}
+
+.hjw-color.es-ninguno::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: linear-gradient(to bottom right, transparent 44%, #c00000 44%, #c00000 56%, transparent 56%);
+}
+
+/* Los siete de bordes. Cuadraditos con la cara que ponen dibujada con bordes de
+   verdad, que es lo único que se puede leer de un vistazo a este tamaño. */
+.hjw-borde {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--w-borde);
+  border-radius: 4px;
+  background: #fff;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--w-texto);
+  cursor: pointer;
+}
+
+.hjw-borde:hover {
+  background: #e8f3ec;
+  border-color: var(--x-sel);
+}
+
+.hjw-color:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--x-sel);
+}
+
+/* ── el desplegable de «Formato de número» · bloque 6 ─────────────────────────
+
+   El mismo panel que las paletas, en columna: aquí lo que distingue un tipo de
+   otro es el EJEMPLO escrito al lado —46269 contra 04/09/2026 contra
+   $46,269.00—, y eso no cabe en un cuadradito de 30 píxeles. Por eso `es-lista`
+   cambia la dirección y suelta el ancho máximo de las paletas, y por eso cada
+   renglón lleva su nombre a la izquierda y su ejemplo a la derecha: los seis
+   ejemplos son el mismo número, y verlos en columna es la mitad del bloque 6
+   enseñada sin una palabra. */
+.hjw-desplegable.es-lista {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 1px;
+  max-width: none;
+  min-width: 186px;
+}
+
+.hjw-tipo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 5px 7px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--w-texto);
+  text-align: left;
+  cursor: pointer;
+}
+
+.hjw-tipo:hover {
+  background: #e8f3ec;
+  border-color: var(--x-sel);
+}
+
+/* El que ya tiene puesto la celda del cursor. Se marca con el verde de la hoja y
+   no con un palomeado: el desplegable de Excel enseña el formato actual
+   resaltado, y una palomita al lado de «General» se lee como «esto ya lo
+   hiciste» en vez de «esto es lo que hay». */
+.hjw-tipo.es-puesto {
+  background: var(--x-sel);
+  border-color: var(--x-sel);
+  color: #fff;
+  font-weight: 600;
+}
+
+.hjw-tipo-ejemplo {
+  font-variant-numeric: tabular-nums;
+  color: var(--w-gris);
+}
+
+.hjw-tipo.es-puesto .hjw-tipo-ejemplo {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ── el desplegable de texto libre: «Formato personalizado» (bloque 45) y
+   «Regla con fórmula» (bloque 46) ─────────────────────────────────────────
+
+   Mismo panel que las paletas y la lista de tipos —cuelga del grupo, mismo
+   marco, misma sombra—, sólo que en columna y con un `<input>` en vez de
+   botones: lo que el alumno trae aquí no está en ninguna lista cerrada. */
+.hjw-desplegable.es-texto {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 6px;
+  min-width: 230px;
+  max-width: none;
+}
+
+.hjw-campo-texto {
+  width: 100%;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--w-texto);
+  background: #fff;
+  border: 1px solid var(--w-borde);
+  border-radius: 4px;
+  outline: none;
+}
+
+.hjw-campo-texto:focus {
+  border-color: var(--x-formula);
+}
+
+.hjw-aplicar {
+  align-self: flex-end;
+  padding: 5px 14px;
+  border: 1px solid var(--x-sel);
+  border-radius: 4px;
+  background: var(--x-sel);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hjw-aplicar:hover {
+  filter: brightness(1.08);
+}
+
+/* ─────────────────────── extras de la barra de estado ─────────────────── */
+
+/* Excel enseña la cuenta rápida de la selección abajo a la derecha. No es
+   decoración: es la primera vez que el alumno ve que la máquina ya sabía la
+   suma antes de que él escribiera la fórmula. */
+.hjw-cuenta {
+  display: flex;
+  gap: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hjw-cuenta b {
+  font-weight: 600;
+  color: var(--w-texto);
+}
+
+.hjw-circular {
+  color: #a4262c;
+  font-weight: 600;
+}

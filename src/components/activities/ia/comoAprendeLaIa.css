@@ -1,0 +1,565 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `n7-como-aprende-la-ia` — la consola del Comité de Acopio (N7 · U6 · 1)
+
+   Hereda los tokens y el chasis de `salaIA.css` (`.tia-sala`, `.tia-lienzo`,
+   `.tia-marco`, `.tia-mesa`, `.tia-banda`, `.tia-boton`, `.tia-nota`): esa
+   hoja la comparten cinco clases y NO se toca. Aquí sólo va lo que esta clase
+   tiene y ninguna otra: la tabla del lote, el recuento en barras, el árbol con
+   su apoyo, el boletín por grupos, la bitácora y los tres lotes.
+
+   Color pleno sobre fondo oscuro con drama de luz: cada pieza que decide algo
+   lleva su halo. Ni un borde punteado, ni un pastel, ni un control flotando
+   encima de la escena — todo botón vive dentro de su panel.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.cai-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.8fr);
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+}
+@media (max-width: 980px) {
+  .cai-cuerpo {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+}
+
+/* ── El costado derecho: acta + bitácora ─────────────────────────────────── */
+
+.cai-costado {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.cai-panel {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid #1c4b76;
+  background: linear-gradient(168deg, #0a2b48, #061a2e);
+  color: var(--tia-texto);
+}
+
+.cai-panel-titulo {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tia-cian);
+  text-shadow: 0 0 16px rgba(34, 211, 238, 0.6);
+}
+
+.cai-acta {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 5px 10px;
+  font-size: 12.5px;
+}
+.cai-acta dt {
+  font-weight: 900;
+  color: var(--tia-ambar);
+  white-space: nowrap;
+}
+.cai-acta dd {
+  margin: 0;
+  font-weight: 650;
+  color: var(--tia-texto);
+}
+
+/* ── La bitácora de corridas: sólo crece, nunca se borra ─────────────────── */
+
+.cai-bitacora {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.cai-corrida {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 11px;
+  border-left: 4px solid var(--tia-cian);
+  background: rgba(34, 211, 238, 0.11);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tia-texto);
+}
+.cai-corrida.es-mentira {
+  border-left-color: var(--tia-rosa);
+  background: rgba(251, 113, 133, 0.13);
+}
+.cai-corrida.es-campo {
+  border-left-color: var(--tia-ambar);
+  background: rgba(251, 191, 36, 0.13);
+}
+.cai-corrida b {
+  margin-left: auto;
+  font-size: 14px;
+  font-weight: 900;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.cai-vacio {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tia-texto-suave);
+}
+
+/* ── La tabla del lote ───────────────────────────────────────────────────── */
+
+.cai-tabla-caja {
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 2px solid #17456e;
+  background: #061c30;
+}
+.cai-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: var(--tia-texto);
+}
+.cai-tabla th,
+.cai-tabla td {
+  padding: 7px 12px;
+  text-align: left;
+  border-bottom: 1px solid #123a5b;
+}
+.cai-tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+.cai-tabla td {
+  font-weight: 650;
+}
+.cai-tabla th {
+  padding: 0;
+}
+
+.cai-cabecera {
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-bottom: 3px solid #17456e;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  color: #a5f3fc;
+  background: linear-gradient(180deg, #0e3555, #0a2740);
+  cursor: pointer;
+}
+.cai-cabecera:hover:not(:disabled) {
+  color: #ffffff;
+  background: linear-gradient(180deg, #14486f, #0e3555);
+}
+.cai-cabecera:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: -3px;
+}
+.cai-cabecera:disabled {
+  cursor: default;
+}
+.cai-cabecera.es-etiqueta {
+  color: #04121f;
+  background: linear-gradient(180deg, var(--tia-verde), var(--tia-verde-honda));
+  border-bottom-color: var(--tia-verde);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--tia-verde) 45%, transparent);
+}
+.cai-cabecera-nota {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  opacity: 0.85;
+}
+
+.cai-mas {
+  margin: 0;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--tia-texto-suave);
+  background: #051627;
+}
+
+/* ── El recuento en barras: el cero también se pulsa ─────────────────────── */
+
+.cai-recuento {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 10px;
+  align-items: end;
+}
+
+.cai-barra {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  min-height: 132px;
+  padding: 8px;
+  border: none;
+  border-radius: 13px;
+  font: inherit;
+  color: var(--tia-texto);
+  background: #071f34;
+  border: 2px solid #17456e;
+  cursor: pointer;
+}
+.cai-barra:hover:not(:disabled) {
+  border-color: var(--tia-cian);
+}
+.cai-barra:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.cai-barra:disabled {
+  cursor: default;
+}
+.cai-barra-torre {
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--tia-cian), var(--tia-cian-honda));
+  box-shadow: 0 0 22px color-mix(in srgb, var(--tia-cian) 42%, transparent);
+}
+/* El hueco NO es una barra de altura cero: es un hueco con su cero dentro, y
+   se puede pulsar. Un cero que no se ve no se puede señalar. */
+.cai-barra.es-hueco .cai-barra-torre {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--tia-ambar);
+  background: rgba(251, 191, 36, 0.1);
+  border: 3px solid var(--tia-ambar);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-ambar) 40%, transparent);
+}
+.cai-barra.es-senalada {
+  border-color: var(--tia-verde);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-verde) 45%, transparent);
+}
+.cai-barra-pie {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+}
+.cai-barra-cuenta {
+  font-size: 15px;
+  color: #ffffff;
+}
+
+/* ── El árbol, con el apoyo de cada regla ────────────────────────────────── */
+
+.cai-reglas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cai-regla {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 2px solid var(--tia-cian-honda);
+  border-radius: 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  color: var(--tia-texto);
+  background: rgba(14, 116, 144, 0.2);
+  cursor: pointer;
+}
+.cai-regla:hover:not(:disabled) {
+  border-color: var(--tia-cian);
+  background: rgba(34, 211, 238, 0.18);
+}
+.cai-regla:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.cai-regla:disabled {
+  cursor: default;
+}
+.cai-regla.es-senalada {
+  border-color: var(--tia-verde);
+  background: rgba(52, 211, 153, 0.2);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--tia-verde) 38%, transparent);
+}
+.cai-regla-si {
+  flex: 1 1 auto;
+}
+.cai-regla-si b {
+  color: #a5f3fc;
+}
+.cai-regla-entonces {
+  font-weight: 900;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.cai-regla-apoyo {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 900;
+  white-space: nowrap;
+  color: #04121f;
+  background: var(--tia-cian);
+}
+.cai-regla-apoyo.es-memoria {
+  color: #2a1400;
+  background: var(--tia-ambar);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--tia-ambar) 55%, transparent);
+}
+
+.cai-ciego {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 3px solid var(--tia-rosa);
+  background: rgba(251, 113, 133, 0.14);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--tia-texto);
+}
+.cai-ciego b {
+  color: #fecdd3;
+}
+
+/* ── El boletín por grupos ───────────────────────────────────────────────── */
+
+.cai-boletin {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cai-fila {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr) 74px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 2px solid #17456e;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+  color: var(--tia-texto);
+  background: #071f34;
+  cursor: pointer;
+}
+.cai-fila:hover:not(:disabled) {
+  border-color: var(--tia-cian);
+}
+.cai-fila:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.cai-fila:disabled {
+  cursor: default;
+}
+.cai-fila.es-senalada {
+  border-color: var(--tia-verde);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-verde) 42%, transparent);
+}
+.cai-riel {
+  height: 15px;
+  border-radius: 999px;
+  background: #0b2c48;
+  overflow: hidden;
+}
+.cai-relleno {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--tia-verde-honda), var(--tia-verde));
+  box-shadow: 0 0 18px color-mix(in srgb, var(--tia-verde) 55%, transparent);
+}
+.cai-relleno.es-cero {
+  background: var(--tia-rosa);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--tia-rosa) 60%, transparent);
+}
+.cai-fila-cifra {
+  text-align: right;
+  font-size: 15px;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+/* ── Los dos marcadores grandes: acierto total y brecha ──────────────────── */
+
+.cai-marcadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+.cai-marcador {
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 2px solid var(--tia-cian-honda);
+  background: linear-gradient(170deg, rgba(34, 211, 238, 0.16), rgba(6, 26, 46, 0.9));
+}
+.cai-marcador.es-alarma {
+  border-color: var(--tia-rosa);
+  background: linear-gradient(170deg, rgba(251, 113, 133, 0.2), rgba(6, 26, 46, 0.9));
+}
+.cai-marcador span {
+  display: block;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tia-texto-suave);
+}
+.cai-marcador strong {
+  display: block;
+  font-size: 1.9rem;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #ffffff;
+  text-shadow: 0 0 24px rgba(34, 211, 238, 0.55);
+}
+.cai-marcador.es-alarma strong {
+  text-shadow: 0 0 24px rgba(251, 113, 133, 0.65);
+}
+
+/* ── Opciones de respuesta y lotes ───────────────────────────────────────── */
+
+.cai-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cai-opcion {
+  padding: 11px 14px;
+  border: 2px solid #17456e;
+  border-radius: 13px;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 750;
+  text-align: left;
+  color: var(--tia-texto);
+  background: linear-gradient(170deg, #0a2740, #071f34);
+  cursor: pointer;
+}
+.cai-opcion:hover:not(:disabled) {
+  border-color: var(--tia-cian);
+  color: #ffffff;
+}
+.cai-opcion:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+.cai-opcion:disabled {
+  cursor: default;
+}
+.cai-opcion.es-senalada {
+  border-color: var(--tia-verde);
+  color: #ffffff;
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-verde) 40%, transparent);
+}
+
+.cai-lotes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+}
+.cai-lote {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 12px;
+  border: 2px solid #17456e;
+  border-radius: 15px;
+  background: linear-gradient(170deg, #0b2c48, #061c30);
+  color: var(--tia-texto);
+}
+.cai-lote.es-probado {
+  border-color: var(--tia-morado);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--tia-morado) 32%, transparent);
+}
+.cai-lote-nombre {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 900;
+  color: #ffffff;
+}
+.cai-lote-reclamo {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--tia-texto-suave);
+}
+.cai-lote-cifras {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 900;
+}
+.cai-lote-cifras span {
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: #04121f;
+  background: var(--tia-morado);
+}
+.cai-lote-botones {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+.cai-lote-botones .tia-boton {
+  margin-left: 0;
+  flex: 1 1 auto;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* ── La consigna del encargo, dentro del panel y no encima ───────────────── */
+
+.cai-consigna {
+  margin: 0;
+  padding: 10px 13px;
+  border-radius: 13px;
+  border-left: 5px solid var(--tia-ambar);
+  background: rgba(251, 191, 36, 0.13);
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #ffffff;
+}
+.cai-consigna b {
+  color: var(--tia-ambar);
+}
+
+.cai-veredicto {
+  margin: 0;
+  padding: 10px 13px;
+  border-radius: 13px;
+  font-size: 13px;
+  font-weight: 750;
+  color: var(--tia-texto);
+  background: rgba(52, 211, 153, 0.15);
+  border-left: 5px solid var(--tia-verde);
+}
+.cai-veredicto.es-mal {
+  background: rgba(251, 113, 133, 0.15);
+  border-left-color: var(--tia-rosa);
+}

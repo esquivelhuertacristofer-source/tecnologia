@@ -1,0 +1,320 @@
+/*
+ * Tecnia Tablero — el tablero de tareas por columnas.
+ *
+ * Color pleno y saturado sobre fondo oscuro con drama de luz, misma familia
+ * que `ventanaMuro.css` y `ventanaCorreo.css`.
+ *
+ * Los dos controles de mover viven DENTRO del pie de la tarjeta, no flotando
+ * encima: mover una tarjeta es algo que se le hace a esa tarjeta, y el botón
+ * tiene que estar donde está la cosa.
+ *
+ * El marco (barra de título) llega con `VentanaBase`.
+ */
+
+.tt {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  background: radial-gradient(120% 100% at 30% 0%, #1b1140 0%, #0f0a26 55%, #070514 100%);
+  color: #f0ebff;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.tt-aviso {
+  flex: none;
+  padding: 9px 16px;
+  background: #241a52;
+  border-bottom: 2px solid #3b2c86;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #ffd166;
+}
+
+.tt-marco {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+}
+
+.tt-vacio {
+  margin: auto;
+  padding: 24px;
+  text-align: center;
+  color: #9c8fd6;
+  font-weight: 700;
+  max-width: 32ch;
+}
+
+/* ── las columnas ────────────────────────────────────────────────────────── */
+
+.tt-columnas {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  padding: 14px;
+  overflow-x: auto;
+  align-items: flex-start;
+}
+
+.tt-columna {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 236px;
+  max-height: 100%;
+  min-height: 0;
+  border: 2px solid #3b2c86;
+  border-radius: 14px;
+  background: #150e38;
+  overflow: hidden;
+}
+
+.tt-columna-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, #2b1f6b, #1d1450);
+  border-bottom: 2px solid #3b2c86;
+}
+.tt-columna-titulo {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tt-columna-n {
+  flex: none;
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #3b2c86;
+  font-size: 11.5px;
+  font-weight: 900;
+  text-align: center;
+  color: #d9ceff;
+}
+.tt-columna-quitar {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #a394e0;
+  font-weight: 900;
+  cursor: pointer;
+}
+.tt-columna-quitar:hover {
+  background: #f87171;
+  color: #2b0509;
+}
+
+.tt-columna-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-height: 0;
+  padding: 10px;
+  overflow-y: auto;
+}
+.tt-columna-vacia {
+  margin: 6px 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6d5fa8;
+}
+
+.tt-columna-nueva {
+  flex: none;
+  margin: 0 10px 10px;
+  padding: 8px;
+  border: 2px dashed #4a389f;
+  border-radius: 10px;
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #a394e0;
+  cursor: pointer;
+}
+.tt-columna-nueva:hover {
+  border-style: solid;
+  border-color: #a78bfa;
+  color: #fff;
+  background: #241a52;
+}
+
+/* ── la tarjeta ──────────────────────────────────────────────────────────── */
+
+.tt-tarjeta {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #4a389f;
+  border-radius: 12px;
+  background: #1d1450;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+.tt-tarjeta.es-abierta {
+  border-color: #a78bfa;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), 0 0 22px rgba(167, 139, 250, 0.45);
+}
+.tt-tarjeta.es-vencida {
+  border-color: #f87171;
+}
+
+.tt-tarjeta-cara {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 11px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  width: 100%;
+}
+button.tt-tarjeta-cara {
+  cursor: pointer;
+}
+button.tt-tarjeta-cara:hover {
+  background: #241a5f;
+}
+.tt-tarjeta-titulo {
+  font-weight: 800;
+  color: #fff;
+}
+.tt-tarjeta-desc {
+  font-size: 12.5px;
+  color: #b9abee;
+}
+
+.tt-etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 2px;
+}
+.tt-etiqueta {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #7c3aed;
+  font-size: 11px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.tt-tarjeta-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-top: 2px solid #33268a;
+  background: #170f42;
+}
+
+.tt-responsable {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #d9ceff;
+}
+/* Sin dueño, y se ve: es la mitad de lo que este programa enseña. */
+.tt-responsable.es-nadie {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #4b1d2a;
+  color: #ffb4b4;
+  border: 1px dashed #f87171;
+}
+.tt-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f472b6, #a78bfa);
+  font-size: 11px;
+  font-weight: 900;
+  color: #1c1032;
+}
+
+.tt-fecha {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #2b1f6b;
+  color: #c9bcff;
+}
+.tt-fecha.es-hoy {
+  background: #f5a524;
+  color: #2a1704;
+}
+.tt-fecha.es-vencida {
+  background: #f87171;
+  color: #2b0509;
+}
+
+.tt-flechas {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 4px;
+}
+.tt-flecha {
+  width: 26px;
+  height: 24px;
+  border: 2px solid #4a389f;
+  border-radius: 7px;
+  background: #241a5f;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  color: #d9ceff;
+  cursor: pointer;
+}
+.tt-flecha:hover:not(:disabled) {
+  border-color: #a78bfa;
+  background: #33268a;
+  color: #fff;
+}
+.tt-flecha:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+/* ── panel lateral de la clase ───────────────────────────────────────────── */
+
+.tt-panel {
+  flex: 0 0 262px;
+  min-height: 0;
+  padding: 14px;
+  border-left: 2px solid #3b2c86;
+  background: #100a2e;
+  overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+  .tt-columna {
+    flex-basis: 200px;
+  }
+  .tt-panel {
+    flex-basis: 200px;
+  }
+}

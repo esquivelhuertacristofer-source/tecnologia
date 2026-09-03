@@ -1,0 +1,828 @@
+/*
+ * Tecnia Web — el estudio: editor a la izquierda, página a la derecha.
+ *
+ * Fondo oscuro con color pleno encima, como el editor de código del que
+ * hereda: ningún editor del mundo es blanco pastel. Los controles van
+ * integrados en la barra del programa, no flotando encima.
+ *
+ * ── Las dos zonas, y por qué se ven distintas ──────────────────────────────
+ *
+ * El estudio es oscuro; **la vista previa es blanca**. No es un descuido: lo
+ * que hay dentro del lienzo es la página del alumno, y una página web empieza
+ * con fondo blanco y letra negra hasta que ella diga lo contrario. Si el
+ * lienzo heredara el tema oscuro del estudio, el alumno pondría `color: white`
+ * y vería lo mismo en su casa con fondo blanco.
+ *
+ * ── El navegador de mentira dentro del lienzo ──────────────────────────────
+ *
+ * Debajo de `.wpv-lienzo` va lo que un navegador trae de fábrica: los tamaños
+ * de los títulos, las viñetas de las listas, el subrayado de los enlaces, el
+ * borde de las tablas. Sin eso, la plataforma —que lleva su propio reinicio de
+ * estilos— dejaría el `<h1>` del alumno del mismo tamaño que un `<p>`, y la
+ * primera clase entera («los títulos se ven más grandes») se caería. Va todo
+ * marcado con `.wpv-lienzo` delante para no salpicar a nadie.
+ */
+
+.web {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: radial-gradient(120% 100% at 50% 0%, #1a1f4d 0%, #0d1230 55%, #060a1c 100%);
+  color: #e8f0ff;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+/* ── La barra ─────────────────────────────────────────────────────────────── */
+
+.web-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #0a0f28;
+  border-bottom: 2px solid #2b3a7a;
+}
+
+.web-proyecto {
+  font-weight: 900;
+  font-size: 13px;
+  color: #7ee0ff;
+  letter-spacing: 0.02em;
+}
+
+.web-pestanas {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.web-pestana {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: 10px 10px 0 0;
+  border: 2px solid #2b3a7a;
+  border-bottom-color: transparent;
+  background: #101a44;
+  color: #9db4ec;
+  font: inherit;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+}
+.web-pestana:hover {
+  color: #dce7ff;
+  border-color: #3d55b0;
+}
+.web-pestana.es-activa {
+  background: linear-gradient(180deg, #1b2a5e, #12204a);
+  border-color: #4f7dff;
+  color: #ffffff;
+}
+.web-pestana-candado {
+  font-size: 11px;
+}
+
+.web-vistas,
+.web-herramientas {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.web-vista,
+.web-herramienta {
+  border-radius: 10px;
+  border: 2px solid #3d55b0;
+  background: #131d47;
+  color: #cfe0ff;
+  font: inherit;
+  font-weight: 800;
+  font-size: 12.5px;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+.web-vista:hover,
+.web-herramienta:hover {
+  border-color: #7ee0ff;
+}
+.web-vista.es-activa,
+.web-herramienta.es-activa {
+  background: linear-gradient(180deg, #2563eb, #1d4ed8);
+  border-color: #7ee0ff;
+  color: #ffffff;
+}
+.web-herramienta.es-principal {
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+  border-color: #fcd34d;
+  color: #1a1200;
+}
+.web-herramienta:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.web-aviso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  font-weight: 800;
+  font-size: 13.5px;
+  background: rgba(250, 204, 21, 0.16);
+  color: #ffe9a8;
+  border-bottom: 2px solid #facc15;
+}
+.web-aviso.es-candado {
+  background: rgba(148, 163, 184, 0.18);
+  color: #dbe6ff;
+  border-bottom-color: #94a3b8;
+}
+.web-aviso-cerrar {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* ── El cuerpo: tres columnas ─────────────────────────────────────────────── */
+
+.web-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(340px, 1.15fr) minmax(240px, 0.7fr);
+  gap: 12px;
+  padding: 12px;
+  min-height: 0;
+  align-items: start;
+}
+
+.web-izquierda,
+.web-derecha {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.web-pista-teclado {
+  margin: 0;
+  color: #8fa6e0;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.web-pista-teclado kbd {
+  background: #1b2a5e;
+  border: 1px solid #3d55b0;
+  border-radius: 5px;
+  padding: 1px 5px;
+  font-size: 11.5px;
+}
+
+/* Los seis colores que Tecnia Web le pidió al editor de Python. Viven aquí y
+ * no en `ventanaCodigo.css` porque son de este armazón: en un archivo de
+ * Python no aparece ni uno. */
+.web .cod-t-etiqueta {
+  color: #ff4d9d;
+  font-weight: 700;
+}
+.web .cod-t-atributo {
+  color: #fbbf24;
+}
+.web .cod-t-selector {
+  color: #7ee0ff;
+  font-weight: 700;
+}
+.web .cod-t-propiedad {
+  color: #a78bfa;
+  font-weight: 700;
+}
+.web .cod-t-valor {
+  color: #4ade80;
+}
+.web .cod-t-entidad {
+  color: #ffa94d;
+  font-weight: 700;
+}
+
+/* ── Lo que hay que arreglar ──────────────────────────────────────────────── */
+
+.web-problemas {
+  border: 2px solid #2b3a7a;
+  border-radius: 12px;
+  background: #0a1030;
+  overflow: hidden;
+}
+.web-problemas-cabeza {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #101a44;
+  border-bottom: 2px solid #2b3a7a;
+}
+.web-problemas-titulo {
+  font-weight: 900;
+  font-size: 13px;
+  color: #cfe0ff;
+}
+.web-problemas-cuenta {
+  margin-left: auto;
+  font-weight: 800;
+  font-size: 12px;
+  color: #ffb4b4;
+}
+.web-problemas-vacia {
+  margin: 0;
+  padding: 12px;
+  color: #7ee0ff;
+  font-weight: 700;
+  font-size: 13px;
+}
+.web-problemas-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 230px;
+  overflow-y: auto;
+}
+.web-problema {
+  display: grid;
+  gap: 2px;
+  padding: 9px 12px;
+  border-bottom: 1px solid #1a2550;
+  border-left: 4px solid #ef4444;
+}
+.web-problema.es-aviso {
+  border-left-color: #facc15;
+}
+.web-problema-sitio {
+  justify-self: start;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #7ee0ff;
+  font: inherit;
+  font-weight: 900;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.web-problema-sitio:disabled {
+  color: #6a86bd;
+  cursor: default;
+  text-decoration: none;
+}
+.web-problema-mensaje {
+  color: #ffe1e1;
+  font-weight: 700;
+  font-size: 13px;
+}
+.web-problema.es-aviso .web-problema-mensaje {
+  color: #ffeeb8;
+}
+.web-problema-pista {
+  color: #b9c9f2;
+  font-size: 12.5px;
+}
+.web-problema-familia {
+  color: #6a86bd;
+  font-size: 11.5px;
+  font-style: italic;
+}
+
+/* ── El navegador de mentira ──────────────────────────────────────────────── */
+
+.web-navegador {
+  border: 2px solid #2b3a7a;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0a1030;
+}
+.web-navegador-barra {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #101a44;
+  border-bottom: 2px solid #2b3a7a;
+}
+.web-navegador-puntos {
+  display: inline-flex;
+  gap: 5px;
+}
+.web-navegador-puntos span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3d55b0;
+}
+.web-navegador-url {
+  flex: 1;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #060a1c;
+  border: 1px solid #2b3a7a;
+  color: #9db4ec;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.web-navegador-paginas {
+  display: inline-flex;
+  gap: 4px;
+}
+.web-navegador-pagina {
+  border: 1px solid #3d55b0;
+  border-radius: 8px;
+  background: #131d47;
+  color: #cfe0ff;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.web-navegador-pagina.es-activa {
+  background: #2563eb;
+  border-color: #7ee0ff;
+  color: #fff;
+}
+
+.web-vistas-lienzos {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  overflow: auto;
+  background: #060a1c;
+}
+.web-lienzo-marco {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.web-lienzo-rotulo {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #9db4ec;
+}
+
+/* ── LA PÁGINA DEL ALUMNO ─────────────────────────────────────────────────── */
+
+.wpv {
+  max-width: 100%;
+  overflow: auto;
+  border-radius: 8px;
+  border: 1px solid #2b3a7a;
+}
+.wpv-lienzo {
+  background: #ffffff;
+  color: #111111;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 16px;
+  line-height: normal;
+  padding: 8px;
+  min-height: 220px;
+}
+.wpv-vacia {
+  color: #6b7280;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Lo que trae un navegador de fábrica y la plataforma le había quitado. */
+.wpv-lienzo h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.67em 0;
+}
+.wpv-lienzo h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.83em 0;
+}
+.wpv-lienzo h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: 1em 0;
+}
+.wpv-lienzo h4 {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 1.33em 0;
+}
+.wpv-lienzo h5 {
+  font-size: 0.83em;
+  font-weight: bold;
+  margin: 1.67em 0;
+}
+.wpv-lienzo h6 {
+  font-size: 0.67em;
+  font-weight: bold;
+  margin: 2.33em 0;
+}
+.wpv-lienzo p,
+.wpv-lienzo blockquote,
+.wpv-lienzo pre {
+  margin: 1em 0;
+}
+.wpv-lienzo blockquote {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+.wpv-lienzo ul,
+.wpv-lienzo ol {
+  margin: 1em 0;
+  padding-left: 40px;
+}
+.wpv-lienzo ul {
+  list-style: disc;
+}
+.wpv-lienzo ol {
+  list-style: decimal;
+}
+.wpv-lienzo li {
+  display: list-item;
+}
+.wpv-lienzo a {
+  color: #0000ee;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.wpv-lienzo strong,
+.wpv-lienzo b {
+  font-weight: bold;
+}
+.wpv-lienzo em,
+.wpv-lienzo i {
+  font-style: italic;
+}
+.wpv-lienzo small {
+  font-size: 0.8em;
+}
+.wpv-lienzo code,
+.wpv-lienzo pre {
+  font-family: Consolas, 'Courier New', monospace;
+}
+.wpv-lienzo pre {
+  white-space: pre;
+}
+.wpv-lienzo hr {
+  border: 0;
+  border-top: 1px solid #999;
+  margin: 0.5em 0;
+}
+.wpv-lienzo table {
+  border-collapse: collapse;
+  margin: 4px 0;
+}
+.wpv-lienzo th,
+.wpv-lienzo td {
+  border: 1px solid #999;
+  padding: 3px 6px;
+}
+.wpv-lienzo th {
+  font-weight: bold;
+  text-align: center;
+}
+.wpv-lienzo caption {
+  font-weight: bold;
+  padding: 3px;
+}
+.wpv-lienzo button,
+.wpv-lienzo input,
+.wpv-lienzo select,
+.wpv-lienzo textarea {
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  padding: 2px 6px;
+  border: 1px solid #767676;
+  border-radius: 3px;
+  background: #efefef;
+  color: #111;
+}
+.wpv-lienzo input[type='checkbox'],
+.wpv-lienzo input[type='radio'] {
+  padding: 0;
+}
+.wpv-lienzo label {
+  margin-right: 6px;
+}
+.wpv-lienzo fieldset {
+  border: 1px solid #999;
+  padding: 6px;
+  margin: 4px 0;
+}
+.wpv-lienzo img {
+  max-width: 100%;
+}
+.wpv-img-rota {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 2px dashed #d1495b;
+  border-radius: 6px;
+  background: #fff1f2;
+  color: #9f1239;
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* El elemento que el inspector tiene cogido. */
+.wpv-n.es-elegido {
+  outline: 2px solid #ff4d9d;
+  outline-offset: 1px;
+}
+
+/* ── El lateral: encargo, inspector y publicar ────────────────────────────── */
+
+.web-lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.web-lateral-titulo {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7ee0ff;
+}
+
+.web-encargo,
+.web-inspector,
+.web-publicar {
+  border: 2px solid #2b3a7a;
+  border-radius: 14px;
+  background: #0a1030;
+  padding: 12px 14px;
+}
+.web-encargo.es-hecho {
+  border-color: #22c55e;
+}
+.web-encargo-cuenta {
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7ee0ff;
+}
+.web-encargo-titulo {
+  margin: 4px 0 6px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #ffffff;
+}
+.web-encargo-instruccion {
+  margin: 0;
+  font-size: 13.5px;
+  color: #cfe0ff;
+}
+.web-encargo-opciones {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+.web-opcion {
+  border: 2px solid #3d55b0;
+  border-radius: 10px;
+  background: #131d47;
+  color: #dce7ff;
+  font: inherit;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 8px 10px;
+  cursor: pointer;
+  text-align: left;
+}
+.web-opcion.es-elegida {
+  border-color: #7ee0ff;
+  background: #1d4ed8;
+  color: #fff;
+}
+.web-encargo-confirma,
+.web-encargo-siguiente,
+.web-encargo-pedir-pista {
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 2px solid #fcd34d;
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+  color: #1a1200;
+  font: inherit;
+  font-weight: 900;
+  font-size: 13px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.web-encargo-pedir-pista {
+  background: transparent;
+  border-color: #3d55b0;
+  color: #9db4ec;
+  font-weight: 700;
+}
+.web-encargo-pista {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(250, 204, 21, 0.14);
+  color: #ffe9a8;
+  font-size: 13px;
+}
+.web-encargo-aprendido {
+  margin: 10px 0 0;
+  color: #86efac;
+  font-weight: 800;
+  font-size: 13.5px;
+}
+
+/* ── El inspector: la caja ────────────────────────────────────────────────── */
+
+.web-inspector-quien {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: #9db4ec;
+}
+.web-inspector-quien code {
+  color: #ff8fc4;
+  font-weight: 700;
+}
+.web-inspector-vacio {
+  margin: 0;
+  color: #8fa6e0;
+  font-size: 12.5px;
+}
+.web-inspector-sub {
+  margin: 12px 0 6px;
+  font-size: 11.5px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9db4ec;
+}
+
+.web-caja-margen,
+.web-caja-borde,
+.web-caja-relleno {
+  position: relative;
+  padding: 18px 10px 18px;
+  border-radius: 6px;
+  text-align: center;
+}
+.web-caja-margen {
+  background: rgba(251, 191, 36, 0.16);
+  border: 1px dashed #fbbf24;
+}
+.web-caja-borde {
+  background: rgba(148, 163, 184, 0.18);
+  border: 1px solid #94a3b8;
+}
+.web-caja-relleno {
+  background: rgba(74, 222, 128, 0.16);
+  border: 1px dashed #4ade80;
+}
+.web-caja-contenido {
+  background: #1d4ed8;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 900;
+  font-size: 12px;
+  padding: 10px 4px;
+}
+.web-caja-rotulo {
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  font-size: 9.5px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #cfe0ff;
+}
+.web-caja-v {
+  position: absolute;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #e8f0ff;
+}
+.web-caja-v.es-arriba {
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.web-caja-v.es-abajo {
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.web-caja-v.es-izquierda {
+  left: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.web-caja-v.es-derecha {
+  right: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.web-reglas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 3px;
+}
+.web-regla {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: #101a44;
+  font-size: 12px;
+}
+.web-regla-prop {
+  color: #a78bfa;
+  font-weight: 800;
+}
+.web-regla-valor {
+  color: #4ade80;
+  justify-self: end;
+}
+.web-regla-quien {
+  grid-column: 1 / -1;
+  color: #6a86bd;
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* ── Publicar ─────────────────────────────────────────────────────────────── */
+
+.web-publicar-pasos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.web-publicar-paso {
+  display: grid;
+  gap: 3px;
+}
+.web-publicar-boton {
+  justify-self: start;
+  border-radius: 10px;
+  border: 2px solid #3d55b0;
+  background: #131d47;
+  color: #dce7ff;
+  font: inherit;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+.web-publicar-paso.es-hecho .web-publicar-boton {
+  border-color: #22c55e;
+  color: #86efac;
+  cursor: default;
+}
+.web-publicar-detalle {
+  color: #9db4ec;
+  font-size: 12px;
+}
+.web-publicar-direccion {
+  margin: 12px 0 0;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.16);
+  border: 2px solid #22c55e;
+  color: #dcfce7;
+  font-size: 13px;
+}
+
+@media (max-width: 1100px) {
+  .web-cuerpo {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* El modo guía: lo que el encargo está señalando ahora. Un aro, no un dedo
+ * flotante: el control se ilumina donde está, sin taparlo. */
+.es-senalada {
+  outline: 3px solid #facc15;
+  outline-offset: 3px;
+  border-radius: 12px;
+}

@@ -1,0 +1,4601 @@
+/*
+ * Hub del alumno, hub de nivel y host de actividad — Fase 1.
+ * Derivado 1:1 del lenguaje visual de la landing de CEN (CenLanding.css):
+ * mismos tokens, misma tipografía (Manrope títulos / DM Sans texto),
+ * mismos radios, sombras, botones y patrones de tarjeta.
+ * Todo con scope .cen-hub para no tocar landing ni login.
+ */
+
+.cen-hub {
+    --navy: #061a35;
+    --navy-2: #0b2d5b;
+    --ink: #0b1f3a;
+    --paper: #f4f8fc;
+    --paper-2: #e8f1fa;
+    --white: #ffffff;
+    --blue: #1463ff;
+    --blue-deep: #0b3f9f;
+    --sky: #63c7ff;
+    --lime: #2f8fff;
+    --coral: #1f6fd1;
+    --purple: #5f82ff;
+    --muted: #5e6f86;
+    --line: rgba(6, 26, 53, 0.13);
+    --line-dark: rgba(255, 255, 255, 0.12);
+    --shadow-sm: 0 12px 30px rgba(22, 24, 42, 0.08);
+    --shadow-md: 0 24px 70px rgba(22, 24, 42, 0.14);
+    --shadow-lg: 0 40px 100px rgba(16, 20, 47, 0.22);
+    --radius-sm: 16px;
+    --radius-md: 24px;
+    --radius-lg: 38px;
+    --max: 1220px;
+
+    min-height: 100vh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+    font-size: 16.5px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+}
+
+.cen-hub h1,
+.cen-hub h2,
+.cen-hub h3,
+.cen-hub h4 {
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    letter-spacing: -0.045em;
+    line-height: 1.05;
+    margin: 0;
+    text-wrap: balance;
+}
+
+.cen-hub p {
+    margin: 0;
+}
+
+.cen-hub a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.cen-hub .container {
+    width: min(calc(100% - 40px), var(--max));
+    margin-inline: auto;
+}
+
+/* ─── Etiqueta de sección (idéntica a la landing) ───────────────────────── */
+
+.cen-hub .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.cen-hub .section-tag::before {
+    content: "";
+    width: 28px;
+    height: 2px;
+    background: var(--blue);
+}
+
+.cen-hub .hero .section-tag,
+.cen-hub .hero .section-tag::before {
+    color: var(--sky);
+    background-color: transparent;
+}
+
+.cen-hub .hero .section-tag::before {
+    background: var(--sky);
+}
+
+.cen-hub .section-head {
+    display: grid;
+    grid-template-columns: 1.05fr 0.75fr;
+    gap: 34px;
+    align-items: end;
+    margin-bottom: 54px;
+}
+
+.cen-hub .section-head h2 {
+    font-size: clamp(2.1rem, 4vw, 3.4rem);
+    margin-top: 14px;
+}
+
+.cen-hub .section-head p {
+    color: var(--muted);
+    font-size: 17px;
+}
+
+/* ─── Encabezado protagonista de la trayectoria ───────────────────────────
+   Titular a dos líneas en tamaño póster — la segunda teñida con el
+   arcoíris de los 10 niveles — y debajo el camino literal: diez pasos de
+   color encadenados con línea punteada. Cada paso reutiliza la identidad
+   --nivel de su clase .nivel-n{n}. */
+
+.cen-hub .trayectoria-head h2 {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(2.6rem, 6vw, 4.6rem);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    margin-top: 16px;
+}
+
+.cen-hub .camino-grad {
+    width: fit-content;
+    background: linear-gradient(90deg, #1463ff 0%, #00b8d9 22%, #17b26a 42%, #ffab00 60%, #ff5d73 78%, #4f46e5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 0.06em;
+}
+
+.cen-hub .camino-pasos {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 12px;
+    align-items: center;
+    margin-top: 26px;
+}
+
+.cen-hub .camino-paso {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-family: var(--font-manrope), 'Manrope', sans-serif;
+    font-style: normal;
+    font-size: 14.5px;
+    font-weight: 800;
+    color: var(--white);
+    background: linear-gradient(135deg, var(--nivel, var(--blue)), var(--nivel-deep, var(--blue-deep)));
+    box-shadow: 0 10px 18px -8px color-mix(in srgb, var(--nivel, var(--blue)) 65%, transparent);
+}
+
+/* El nivel disponible hoy lleva halo */
+.cen-hub .camino-paso.activo {
+    outline: 3px solid color-mix(in srgb, var(--nivel, var(--blue)) 32%, transparent);
+    outline-offset: 2px;
+}
+
+/* Eslabón punteado entre paso y paso */
+.cen-hub .camino-paso + .camino-paso {
+    position: relative;
+    margin-left: 24px;
+}
+
+.cen-hub .camino-paso + .camino-paso::before {
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    translate: 0 -50%;
+    width: 24px;
+    border-top: 2px dashed color-mix(in srgb, var(--navy) 28%, transparent);
+}
+
+/* Los pasos brincan en cadena al entrar la sección a la vista */
+.cen-hub .trayectoria-head.in-view .camino-paso {
+    animation: cen-hub-chip-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.cen-hub .trayectoria-head.in-view .camino-paso:nth-child(2) { animation-delay: 0.07s; }
+.cen-hub .trayectoria-head.in-view .camino-paso:nth-child(3) { animation-delay: 0.14s; }
+.cen-hub .trayectoria-head.in-view .camino-paso:nth-child(4) { animation-delay: 0.21s; }
+.cen-hub .trayectoria-head.in-view .camino-paso:nth-child(5) { animation-delay: 0.28s; }
+.cen-hub .trayectoria-head.in-view .camino-paso:nth-child(6) { animation-delay: 0.35s; }
+.cen-hub .trayectoria-head.in-view .camino-paso:nth-child(7) { animation-delay: 0.42s; }
+.cen-hub .trayectoria-head.in-view .camino-paso:nth-child(8) { animation-delay: 0.49s; }
+.cen-hub .trayectoria-head.in-view .camino-paso:nth-child(9) { animation-delay: 0.56s; }
+.cen-hub .trayectoria-head.in-view .camino-paso:nth-child(10) { animation-delay: 0.63s; }
+
+/* ─── Botones (receta de la landing) ────────────────────────────────────── */
+
+.cen-hub .button-primary,
+.cen-hub .button-dark,
+.cen-hub .button-light,
+.cen-hub .button-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border-radius: 14px;
+    padding: 14px 22px;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.cen-hub .button-primary {
+    background: var(--blue);
+    color: var(--white);
+}
+
+.cen-hub .button-dark {
+    background: var(--navy);
+    color: var(--white);
+}
+
+.cen-hub .button-light {
+    background: var(--white);
+    color: var(--navy);
+}
+
+.cen-hub .button-ghost {
+    background: transparent;
+    color: var(--white);
+    border-color: rgba(255, 255, 255, 0.34);
+}
+
+.cen-hub .button-primary:hover,
+.cen-hub .button-dark:hover,
+.cen-hub .button-light:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(20, 99, 255, 0.3);
+}
+
+.cen-hub .button-ghost:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ─── Barra superior ────────────────────────────────────────────────────── */
+
+.cen-hub .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(6, 26, 53, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    color: var(--white);
+}
+
+.cen-hub .topbar-inner {
+    width: min(calc(100% - 40px), var(--max));
+    margin-inline: auto;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.cen-hub .brand {
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.07em;
+    color: var(--white);
+    display: inline-flex;
+    align-items: baseline;
+}
+
+/* Nombre completo del cliente junto a la sigla, en el azul cielo de marca */
+.cen-hub .brand-sub {
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--sky);
+    margin-left: 12px;
+}
+
+.cen-hub .topbar-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.82);
+    transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.cen-hub .topbar-back:hover {
+    color: var(--white);
+    gap: 11px;
+}
+
+.cen-hub .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.cen-hub .chip-alumno {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    border-radius: 999px;
+    padding: 6px 15px 6px 7px;
+    font-weight: 700;
+    font-size: 13.5px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: var(--white);
+    white-space: nowrap;
+}
+
+.cen-hub .chip-alumno .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(99, 199, 255, 0.2);
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+}
+
+.cen-hub .topbar-salir {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.55);
+    font: inherit;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 8px 10px;
+    transition: color 0.2s ease;
+}
+
+.cen-hub .topbar-salir:hover {
+    color: var(--white);
+}
+
+/* Barra de progreso de actividad en la topbar */
+.cen-hub .topbar-progress {
+    flex: 1;
+    max-width: 320px;
+    height: 9px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.13);
+    overflow: hidden;
+}
+
+.cen-hub .topbar-progress > span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--blue), var(--sky));
+    transition: width 0.5s ease;
+}
+
+/* ─── Hero (banda navy con brillos radiales, como la landing) ─────────────
+   Bajo los brillos va una trama de circuito impreso (chip + pistas + nodos)
+   dibujada como SVG inline a opacidad muy baja — la "imagen de tecnología"
+   del fondo, sin assets externos. */
+
+.cen-hub .hero {
+    background:
+        radial-gradient(900px 420px at 12% -10%, rgba(20, 99, 255, 0.5), transparent 62%),
+        radial-gradient(760px 420px at 88% 8%, rgba(99, 199, 255, 0.24), transparent 60%),
+        radial-gradient(600px 380px at 55% 115%, rgba(95, 130, 255, 0.28), transparent 64%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cg fill='none' stroke='%239ecbff' stroke-opacity='.13' stroke-width='1.6'%3E%3Crect x='108' y='108' width='44' height='44' rx='7'/%3E%3Crect x='118' y='118' width='24' height='24' rx='4'/%3E%3Cpath d='M108 122h-34v-48h-30'/%3E%3Cpath d='M108 138h-52v34'/%3E%3Cpath d='M152 122h40v-58'/%3E%3Cpath d='M152 138h30v44h28'/%3E%3Cpath d='M122 108v-36h-28'/%3E%3Cpath d='M138 108v-24l30-30'/%3E%3Cpath d='M122 152v40h-46'/%3E%3Cpath d='M138 152v28l36 36'/%3E%3Cpath d='M26 210h56l18-18'/%3E%3Cpath d='M210 26v34l-22 22'/%3E%3C/g%3E%3Cg fill='%239ecbff' fill-opacity='.16'%3E%3Ccircle cx='44' cy='74' r='4'/%3E%3Ccircle cx='56' cy='172' r='4'/%3E%3Ccircle cx='192' cy='64' r='4'/%3E%3Ccircle cx='210' cy='182' r='4'/%3E%3Ccircle cx='94' cy='72' r='4'/%3E%3Ccircle cx='168' cy='54' r='4'/%3E%3Ccircle cx='76' cy='192' r='4'/%3E%3Ccircle cx='174' cy='216' r='4'/%3E%3Ccircle cx='26' cy='210' r='4'/%3E%3Ccircle cx='210' cy='26' r='4'/%3E%3Ccircle cx='100' cy='192' r='4'/%3E%3Ccircle cx='188' cy='82' r='4'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 260px 260px repeat,
+        var(--navy);
+    color: var(--white);
+    padding: 74px 0 108px;
+}
+
+.cen-hub .hero h1 {
+    font-size: clamp(2.6rem, 5.4vw, 4.6rem);
+    font-weight: 800;
+    margin: 18px 0 16px;
+    line-height: 1.01;
+}
+
+.cen-hub .hero h1 span {
+    color: var(--sky);
+    display: block;
+}
+
+/* La segunda línea del hero toma el mismo arcoíris de los 10 niveles que
+   la Trayectoria (.camino-grad) — el hub abre con la misma firma de color
+   que luego explica "diez niveles, un solo camino". */
+.cen-hub .hero h1 span.camino-grad {
+    color: transparent;
+}
+
+.cen-hub .hero .hero-sub {
+    color: rgba(233, 242, 252, 0.78);
+    font-size: 18px;
+    max-width: 56ch;
+}
+
+/* Bit protagoniza el saludo del hub: retrato flotante (mismo keyframe que
+   el ícono de .nivel-hero) + burbuja de diálogo en vidrio esmerilado
+   (misma receta rgba que los chips de .nivel-hero-meta). */
+.cen-hub .hero-bit {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    max-width: 56ch;
+    margin-top: 28px;
+}
+
+.cen-hub .hero-bit-retrato {
+    flex-shrink: 0;
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.28);
+    box-shadow:
+        0 0 0 4px rgba(99, 199, 255, 0.18),
+        0 14px 30px rgba(4, 19, 38, 0.45);
+    animation: cen-hub-nivel-flotar 3.6s ease-in-out infinite;
+}
+
+.cen-hub .hero-bit-globo {
+    position: relative;
+    margin-top: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 4px 20px 20px 20px;
+    padding: 14px 20px;
+    font-size: 15.5px;
+    font-weight: 700;
+    line-height: 1.42;
+    color: rgba(238, 245, 253, 0.96);
+    backdrop-filter: blur(6px);
+}
+
+.cen-hub .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 13px;
+    margin-top: 30px;
+}
+
+/* Franja de estadísticas que se encima al hero (patrón audience-strip) */
+.cen-hub .stats-strip {
+    margin-top: -52px;
+    position: relative;
+    z-index: 5;
+    background: var(--white);
+    border-radius: 25px;
+    box-shadow: var(--shadow-lg);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    overflow: hidden;
+}
+
+/* Las 22 plantillas «EntradaXBase» (§F1 — n1 a n7) sólo tienen 3 datos, no 4,
+   y fijaban las 3 columnas con un `style` inline — que por especificidad le
+   ganaba SIEMPRE a los `@media` de abajo, así que en un teléfono seguían
+   siendo 3 columnas apretadas en vez de bajar a 2 o 1. Esta clase hace lo
+   mismo que el `style` pero como regla de hoja de estilos: mismo orden de
+   cascada que las reglas `@media` de aquí abajo, así que a partir de 1050px
+   y 620px las heredan igual que a `.stats-strip` normal. */
+.cen-hub .stats-strip--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.cen-hub .stat {
+    padding: 26px 30px 24px;
+    border-left: 1px solid var(--line);
+    position: relative;
+}
+
+.cen-hub .stat:first-child {
+    border-left: none;
+}
+
+.cen-hub .stat::before {
+    content: "";
+    position: absolute;
+    left: 30px;
+    top: 22px;
+    width: 26px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--accent, var(--blue));
+    box-shadow: 0 8px 16px -6px color-mix(in srgb, var(--accent, var(--blue)) 70%, transparent);
+}
+
+.cen-hub .stat dt {
+    margin-top: 16px;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.cen-hub .stat dd {
+    margin: 4px 0 0;
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.7rem, 2.6vw, 2.35rem);
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ─── Entrada de actividad enriquecida: escenario Bit+video y fichas ──────
+   El .act-hero de la plataforma (CenActividadHost) ya muestra "Nivel 1 ·
+   Mi primera computadora · Conoce las partes" en un hero navy — esta
+   pantalla no lo repite, va directo al contenido. Bit y el video comparten
+   un solo escenario que reutiliza tal cual el fondo de .hero (brillos
+   radiales + trama de circuito) y la receta de Bit/CTA del hero principal
+   del hub (.hero-bit-retrato/-globo, .hero-actions .button-light con su
+   canto duro de juguete): nada de esto es estética nueva. Las fichas de
+   repaso dejan de ser tarjetas blancas y pasan a ser cartas de videojuego
+   de color pleno — la misma receta que .ejercicio-card en las páginas de
+   nivel: degradado saturado del --accent de cada parte, canto inferior
+   duro, blob blanco con la foto sobre un fondo de destellos. */
+
+.cen-hub .escenario-bit {
+    /* padding-bottom > 52px: .stats-strip flota -52px sobre este bloque:
+       con menos aire aquí, la tarjeta blanca tapaba el borde inferior del
+       video (bug reportado: "el reproductor está cortado"). */
+    padding: 34px 28px 100px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.cen-hub .video-pantalla {
+    position: relative;
+    padding: 10px;
+    border-radius: var(--radius-md);
+    background: var(--ink);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.14),
+        inset 0 2px 10px rgba(0, 0, 0, 0.35),
+        var(--shadow-md);
+}
+
+.cen-hub .video-pantalla video {
+    border-radius: calc(var(--radius-md) - 6px);
+    display: block;
+    /* Viñeta suave: funde el borde del frame con el bisel --ink que lo rodea
+       en vez de que se sienta como una estampilla pegada encima. */
+    box-shadow: inset 0 0 46px 6px rgba(2, 10, 20, 0.4);
+}
+
+/* Pantalla del video cuando el video todavía no existe. Ocupa el mismo 16:9
+   que ocupará después, así que la página no se recoloca al llegar el archivo. */
+.cen-hub .video-pendiente {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    aspect-ratio: 16 / 9;
+    padding: 24px 34px;
+    border-radius: calc(var(--radius-md) - 6px);
+    background:
+        radial-gradient(circle at 50% 38%, rgba(43, 127, 255, 0.16) 0%, transparent 62%),
+        #0a1730;
+    box-shadow: inset 0 0 46px 6px rgba(2, 10, 20, 0.45);
+    text-align: center;
+}
+
+.cen-hub .video-pendiente-icono {
+    font-size: 40px;
+    line-height: 1;
+    filter: grayscale(0.15);
+}
+
+.cen-hub .video-pendiente-titulo {
+    margin: 0;
+    max-width: 30ch;
+    color: #dbeafe;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.25;
+    text-wrap: balance;
+}
+
+.cen-hub .video-pendiente-sub {
+    margin: 0;
+    max-width: 46ch;
+    color: rgba(219, 234, 254, 0.66);
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+.cen-hub .video-badge {
+    overflow: hidden;
+}
+
+.cen-hub .video-badge::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -30px;
+    width: 20px;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+    transform: skewX(-18deg);
+    animation: cen-hub-brillo 3.8s ease-in-out infinite;
+}
+
+/* Cubrepantalla previo: tapa por completo el diálogo de Bit + el video hasta
+   que el alumno arranca. z-index 20 queda por encima del .video-badge (z-10)
+   para que nada se asome debajo. Un solo clic hace desaparecer la capa,
+   revela diálogo + video a la vez y ya arranca la reproducción — no "primero
+   el botón, luego busca el play de nuevo". El fondo NO repite el navy del
+   .hero que lo rodea (eso lo hacía ilegible / poco llamativo): usa la misma
+   receta de degradado + trama de puntos + halos de esquina que .unidad-banner,
+   así llega como su propio momento, no como un panel apagado sobre el hero. */
+.cen-hub .video-arranque {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.16) 2px, transparent 2.6px),
+        radial-gradient(560px 320px at 14% -12%, rgba(255, 255, 255, 0.32), transparent 60%),
+        radial-gradient(480px 300px at 90% 116%, rgba(99, 199, 255, 0.45), transparent 62%),
+        linear-gradient(135deg, var(--blue), var(--blue-deep));
+    background-size: 22px 22px, auto, auto, auto;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.cen-hub .video-arranque-retrato {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.4);
+    box-shadow:
+        0 0 0 8px rgba(255, 255, 255, 0.16),
+        0 16px 34px rgba(4, 19, 38, 0.5);
+    animation: cen-hub-bob 3.6s ease-in-out infinite;
+}
+
+.cen-hub .video-arranque-titulo {
+    font-weight: 800;
+    font-size: 26px;
+    color: var(--white);
+    text-align: center;
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 10px rgba(4, 19, 38, 0.35);
+}
+
+.cen-hub .video-arranque-sub {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+    text-align: center;
+    margin-top: -8px;
+}
+
+/* Botón de play como medalla de color, no botón azul sobre navy: el mismo
+   gradiente + destello barrido de las medallas conseguidas (.medalla-cuerpo),
+   con el canto duro de las cartas de videojuego. */
+.cen-hub .video-arranque-play {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 92px;
+    height: 92px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(160deg, var(--sky), var(--blue));
+    color: var(--white);
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow:
+        0 0 0 6px rgba(255, 255, 255, 0.32),
+        0 8px 0 var(--blue-deep),
+        0 28px 54px rgba(4, 19, 38, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cen-hub .video-arranque-play svg {
+    margin-left: 4px;
+}
+
+.cen-hub .video-arranque-play::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -40px;
+    width: 26px;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+    transform: skewX(-18deg);
+    animation: cen-hub-brillo 3.2s ease-in-out infinite;
+}
+
+.cen-hub .video-arranque-play:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow:
+        0 0 0 6px rgba(255, 255, 255, 0.38),
+        0 11px 0 var(--blue-deep),
+        0 32px 58px rgba(4, 19, 38, 0.55);
+}
+
+.cen-hub .video-arranque-play:active {
+    transform: translateY(4px) scale(0.98);
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.32), 0 1px 0 var(--blue-deep);
+}
+
+.cen-hub .ficha-parte {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border-radius: 26px;
+    padding: 18px 16px 20px;
+    color: var(--white);
+    background: linear-gradient(165deg, var(--accent), var(--accent-deep));
+    box-shadow:
+        0 7px 0 color-mix(in srgb, var(--accent-deep) 68%, #041326),
+        0 14px 30px color-mix(in srgb, var(--accent) 28%, transparent);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    animation: cen-hub-chip-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.cen-hub .ficha-parte:hover {
+    transform: translateY(-5px);
+    box-shadow:
+        0 12px 0 color-mix(in srgb, var(--accent-deep) 68%, #041326),
+        0 26px 46px color-mix(in srgb, var(--accent) 42%, transparent);
+}
+
+.cen-hub .ficha-parte:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--accent-deep) 68%, #041326);
+}
+
+.cen-hub .ficha-parte-numero {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--accent-deep);
+    background: var(--white);
+    box-shadow: 0 3px 0 rgba(4, 19, 38, 0.24);
+    font-variant-numeric: tabular-nums;
+}
+
+.cen-hub .ficha-parte-escena {
+    margin: 0 -14px 6px;
+    padding: 12px 0 14px;
+    display: grid;
+    place-items: center;
+    background:
+        radial-gradient(circle at 14% 22%, rgba(255, 255, 255, 0.95) 2.4px, transparent 3.1px),
+        radial-gradient(circle at 87% 16%, rgba(255, 255, 255, 0.8) 1.8px, transparent 2.4px),
+        radial-gradient(circle at 83% 82%, rgba(255, 255, 255, 0.9) 2.2px, transparent 2.9px),
+        radial-gradient(circle at 9% 78%, rgba(255, 255, 255, 0.7) 1.6px, transparent 2.2px);
+}
+
+.cen-hub .ficha-parte-foto {
+    position: relative;
+    width: 88px;
+    height: 88px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--white);
+    box-shadow:
+        0 0 0 6px rgba(255, 255, 255, 0.28),
+        0 12px 24px rgba(4, 19, 38, 0.28);
+    transition: transform 0.25s ease;
+}
+
+.cen-hub .ficha-parte:hover .ficha-parte-foto {
+    transform: scale(1.08) rotate(-4deg);
+}
+
+.cen-hub .ficha-parte-tag {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.68);
+}
+
+.cen-hub .ficha-parte-titulo {
+    font-weight: 800;
+    font-size: 16px;
+    line-height: 1.2;
+    text-wrap: balance;
+    text-shadow: 0 1px 0 rgba(4, 19, 38, 0.18);
+    margin-top: 3px;
+}
+
+.cen-hub .ficha-parte-detalle {
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.44;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 5px;
+}
+
+/* ─── Secciones ─────────────────────────────────────────────────────────── */
+
+.cen-hub .section {
+    padding: 96px 0;
+}
+
+.cen-hub .section-office {
+    background: var(--paper-2);
+}
+
+/* La vitrina cerró el hub y quedó justo después de Office. Con el mismo
+   --paper-2 que Office las dos secciones se fundían en un solo bloque de casi
+   200 px de fondo idéntico y se perdía dónde acaba una y empieza la otra; en su
+   lugar antiguo (arriba, contra la franja de stats) eso no pasaba. Va sobre el
+   papel base para que el fondo alterne: trayectoria → Office → vitrina. */
+.cen-hub .section-insignias {
+    background: var(--paper);
+}
+
+/* Encabezado de etapa dentro de la trayectoria */
+/* ─── Separadores de etapa ─────────────────────────────────────────────────
+   Banda divisoria protagonista entre bloques de niveles: sello con la
+   inicial de la etapa en su color institucional (--etapa-c/--etapa-soft,
+   inyectados desde ETAPA_META), título grande con kicker, línea de color
+   que llena el ancho y pastilla con el rango de niveles. */
+
+.cen-hub .etapa-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 92px 0 36px;
+}
+
+/* El primer bloque va pegado al encabezado de la sección, no flotando */
+.cen-hub .trayectoria-head + div .etapa-row {
+    margin-top: 16px;
+}
+
+.cen-hub .etapa-sello {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 17px;
+    font-family: var(--font-manrope), 'Manrope', sans-serif;
+    font-size: 27px;
+    font-weight: 800;
+    color: var(--white);
+    background: linear-gradient(135deg, var(--etapa-c), color-mix(in srgb, var(--etapa-c) 60%, #041326));
+    box-shadow: 0 16px 28px -14px color-mix(in srgb, var(--etapa-c) 75%, transparent);
+}
+
+.cen-hub .etapa-row h3 {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(1.9rem, 3.2vw, 2.7rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+}
+
+.cen-hub .etapa-kicker {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--etapa-c);
+    margin-bottom: 4px;
+}
+
+.cen-hub .etapa-linea {
+    flex: 1;
+    min-width: 32px;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg,
+        color-mix(in srgb, var(--etapa-c) 55%, transparent),
+        color-mix(in srgb, var(--etapa-c) 8%, transparent));
+}
+
+.cen-hub .etapa-row .etapa-rango {
+    flex: none;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--etapa-c);
+    background: var(--etapa-soft);
+    border: 1.5px solid color-mix(in srgb, var(--etapa-c) 25%, transparent);
+    padding: 9px 17px;
+    border-radius: 999px;
+}
+
+/* ─── Tarjetas de nivel ────────────────────────────────────────────────────
+   Cada nivel abre con un banner-escena dibujado en CSS (computadora,
+   carpeta, navegador, bloques, gráfica, videojuego, terminal, app móvil,
+   sitio web, perfil). Cada tarjeta tiene su PROPIO color de identidad
+   (--nivel/--nivel-deep, vía .nivel-n1…n10) y su propio patrón de fondo
+   (puntos, rayas, retícula, píxeles) — el mismo tratamiento que las fichas
+   Office con su color de marca —, más el rotulado protagonista "NIVEL n"
+   a la izquierda del banner (palabra + número gigante en blanco sólido) y
+   chips satélite. Las escenas reutilizan las piezas Office (.office-mock,
+   .mock-chrome, .office-chip): dentro de .nivel-card, --office se remapea
+   a --nivel, y suman acentos vivos compartidos (amarillo, coral, verde,
+   cielo) para que cada banner sea multicolor. */
+
+.cen-hub .niveles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.cen-hub .nivel-card {
+    --nivel: var(--blue);
+    --nivel-deep: var(--blue-deep);
+    --office: var(--nivel);
+    --office-deep: var(--nivel-deep);
+    /* acentos vivos compartidos por las escenas */
+    --amarillo: #ffc93c;
+    --coral-vivo: #ff5d73;
+    --verde-vivo: #2ec27e;
+    --cielo-vivo: #63c7ff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    color: var(--ink);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cen-hub a.nivel-card:hover {
+    transform: translateY(-8px);
+    box-shadow:
+        0 30px 56px -26px color-mix(in srgb, var(--nivel) 55%, transparent),
+        var(--shadow-md);
+}
+
+/* Identidad de color + patrón por nivel. La serie abre con el azul CEN y
+   recorre una paleta viva; el patrón de cada banner alude al tema del
+   nivel (retícula = datos, píxeles = videojuego, scanlines = terminal…). */
+.cen-hub .nivel-n1 {
+    --nivel: var(--blue);
+    --nivel-deep: var(--blue-deep);
+    --patron: radial-gradient(rgba(255, 255, 255, 0.3) 1.5px, transparent 1.6px);
+    --patron-size: 18px 18px;
+}
+
+.cen-hub .nivel-n2 {
+    --nivel: #ffab00;
+    --nivel-deep: #e07800;
+    --patron: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.14) 0 12px, transparent 12px 26px);
+}
+
+.cen-hub .nivel-n3 {
+    --nivel: #00b8d9;
+    --nivel-deep: #00789b;
+    --patron:
+        linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+    --patron-size: 26px 26px;
+}
+
+.cen-hub .nivel-n4 {
+    --nivel: #ff7a1a;
+    --nivel-deep: #d95800;
+    --patron: radial-gradient(rgba(255, 255, 255, 0.26) 2px, transparent 2.1px);
+    --patron-size: 24px 24px;
+}
+
+.cen-hub .nivel-n5 {
+    --nivel: #17b26a;
+    --nivel-deep: #0e7a45;
+    --patron:
+        linear-gradient(rgba(255, 255, 255, 0.13) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.13) 1px, transparent 1px);
+    --patron-size: 22px 22px;
+}
+
+.cen-hub .nivel-n6 {
+    --nivel: #8b5cf6;
+    --nivel-deep: #5b21b6;
+    --patron: conic-gradient(rgba(255, 255, 255, 0.09) 25%, transparent 0 50%, rgba(255, 255, 255, 0.09) 0 75%, transparent 0);
+    --patron-size: 24px 24px;
+}
+
+.cen-hub .nivel-n7 {
+    --nivel: #33538f;
+    --nivel-deep: #071b38;
+    --patron: repeating-linear-gradient(rgba(255, 255, 255, 0.07) 0 2px, transparent 2px 7px);
+}
+
+.cen-hub .nivel-n8 {
+    --nivel: #ff5d73;
+    --nivel-deep: #d62f54;
+    --patron: radial-gradient(rgba(255, 255, 255, 0.28) 1.5px, transparent 1.6px);
+    --patron-size: 18px 18px;
+}
+
+.cen-hub .nivel-n9 {
+    --nivel: #0ea5e9;
+    --nivel-deep: #0c6aa8;
+    --patron:
+        linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+    --patron-size: 26px 26px;
+}
+
+.cen-hub .nivel-n10 {
+    --nivel: #4f46e5;
+    --nivel-deep: #2b2694;
+    --patron: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.11) 0 14px, transparent 14px 30px);
+}
+
+/* Banner con la escena del nivel */
+.cen-hub .nivel-visual {
+    position: relative;
+    flex: none;
+    height: 164px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 84% -30%, rgba(255, 255, 255, 0.3), transparent 55%),
+        radial-gradient(circle at 6% 130%, rgba(255, 255, 255, 0.16), transparent 45%),
+        linear-gradient(135deg, var(--nivel), var(--nivel-deep));
+}
+
+/* Patrón decorativo del banner: se desvanece hacia la izquierda para que
+   el rotulado NIVEL respire sobre color limpio (el patrón vive del lado
+   de la escena). */
+.cen-hub .nivel-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--patron, none);
+    background-size: var(--patron-size, auto);
+    -webkit-mask-image: linear-gradient(100deg, transparent 32%, #000 60%);
+    mask-image: linear-gradient(100deg, transparent 32%, #000 60%);
+    pointer-events: none;
+}
+
+/* "NIVEL n" es el protagonista del banner: rotulado grande y sólido a la
+   izquierda (palabra arriba, número gigante debajo); la escena queda a la
+   derecha como acompañamiento. */
+.cen-hub .nivel-marca {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    translate: 0 -50%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-family: var(--font-manrope), 'Manrope', sans-serif;
+    line-height: 1;
+    color: var(--white);
+    user-select: none;
+    pointer-events: none;
+}
+
+.cen-hub .marca-palabra {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    padding-left: 6px;
+    margin-bottom: 4px;
+    color: rgba(255, 255, 255, 0.92);
+    text-shadow: 0 2px 8px rgba(4, 19, 38, 0.35);
+}
+
+.cen-hub .marca-numero {
+    font-size: 100px;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    text-shadow: 0 16px 34px rgba(4, 19, 38, 0.42);
+}
+
+.cen-hub .nivel-card.in-view .nivel-marca {
+    animation: cen-hub-marca 0.65s cubic-bezier(0.22, 0.9, 0.35, 1) 0.1s backwards;
+}
+
+@keyframes cen-hub-marca {
+    from {
+        opacity: 0;
+        translate: -16px -50%;
+    }
+}
+
+/* Póster tipográfico: la escena se encoge y se asoma recortada por el
+   borde derecho del banner, como acento — el rotulado NIVEL manda.
+   (Las fichas Office conservan su mock centrado a tamaño completo.) */
+.cen-hub .nivel-card .office-mock {
+    left: 88%;
+    scale: 0.84;
+}
+
+/* Piezas compartidas por varias escenas */
+.cen-hub .office-mock .url-bar {
+    display: block;
+    padding: 6px 10px 0;
+}
+
+.cen-hub .office-mock .url-bar i {
+    display: block;
+    height: 10px;
+    border-radius: 999px;
+    background: #eef4fb;
+}
+
+/* N1 · computadora que se enciende */
+.cen-hub .mock-n1 {
+    width: 150px;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.cen-hub .mock-n1 .pc-pantalla {
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    width: 116px;
+    height: 64px;
+    border-radius: 9px;
+    border: 3px solid var(--white);
+    /* escritorio encendido: fondo azul + fila de "apps" de colores */
+    background:
+        radial-gradient(circle at 18px 48px, var(--amarillo) 0 3.5px, transparent 4.5px),
+        radial-gradient(circle at 31px 48px, var(--verde-vivo) 0 3.5px, transparent 4.5px),
+        radial-gradient(circle at 44px 48px, var(--coral-vivo) 0 3.5px, transparent 4.5px),
+        linear-gradient(135deg, #0b1f3a, #14418a);
+    box-shadow: 0 16px 32px -12px rgba(4, 19, 38, 0.55);
+    overflow: hidden;
+}
+
+.cen-hub .mock-n1 .pc-pantalla i {
+    position: absolute;
+    display: block;
+    left: 10px;
+    height: 8px;
+    border-radius: 4px;
+}
+
+.cen-hub .mock-n1 .pc-pantalla i:nth-child(1) {
+    top: 12px;
+    width: 44px;
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.cen-hub .mock-n1 .pc-pantalla i:nth-child(2) {
+    top: 27px;
+    width: 66px;
+    height: 6px;
+    background: color-mix(in srgb, var(--cielo-vivo) 75%, transparent);
+}
+
+.cen-hub .nivel-card.in-view .mock-n1 .pc-pantalla {
+    animation: cen-hub-encender 0.7s ease-out 0.35s backwards;
+}
+
+.cen-hub .mock-n1 .pc-pie,
+.cen-hub .mock-n1 .pc-base {
+    display: block;
+    margin: 0 auto;
+    background: var(--white);
+}
+
+.cen-hub .mock-n1 .pc-pie {
+    width: 16px;
+    height: 9px;
+}
+
+.cen-hub .mock-n1 .pc-base {
+    width: 54px;
+    height: 5px;
+    border-radius: 3px;
+}
+
+.cen-hub .mock-n1 .pc-teclado {
+    display: block;
+    margin: 8px auto 0;
+    width: 134px;
+    height: 17px;
+    border-radius: 5px;
+    background-color: var(--white);
+    background-image: repeating-linear-gradient(90deg, #dbe6f2 0 7px, transparent 7px 11px);
+    background-position: 6px 4px;
+    background-size: 122px 9px;
+    background-repeat: no-repeat;
+    box-shadow: 0 10px 22px -10px rgba(4, 19, 38, 0.45);
+}
+
+/* N2 · carpeta de la que brotan archivos */
+.cen-hub .mock-n2 {
+    width: 142px;
+    height: 106px;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.cen-hub .mock-n2 .carpeta {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    translate: -50%;
+    width: 130px;
+    height: 60px;
+    border-radius: 10px;
+    background: linear-gradient(160deg, #ffffff, #e7f0fb);
+    box-shadow: 0 18px 36px -12px rgba(4, 19, 38, 0.5);
+}
+
+.cen-hub .mock-n2 .carpeta::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -9px;
+    width: 46px;
+    height: 14px;
+    border-radius: 7px 7px 0 0;
+    background: var(--white);
+}
+
+.cen-hub .mock-n2 .archivo {
+    position: absolute;
+    bottom: 28px;
+    width: 36px;
+    height: 46px;
+    border-radius: 6px;
+    border: 1px solid #dfe9f4;
+    background-color: var(--white);
+    background-image: repeating-linear-gradient(#e4edf7 0 4px, transparent 4px 11px);
+    background-position: 7px 10px;
+    background-size: 22px 28px;
+    background-repeat: no-repeat;
+}
+
+.cen-hub .mock-n2 .archivo.a1 {
+    left: 22px;
+    rotate: -8deg;
+    border-top: 4px solid var(--coral-vivo);
+    background-image: repeating-linear-gradient(#ffd3da 0 4px, transparent 4px 11px);
+}
+
+.cen-hub .mock-n2 .archivo.a2 {
+    right: 24px;
+    rotate: 7deg;
+    border-top: 4px solid var(--cielo-vivo);
+    background-image: repeating-linear-gradient(#cfeaff 0 4px, transparent 4px 11px);
+}
+
+.cen-hub .nivel-card.in-view .mock-n2 .archivo.a1 {
+    animation: cen-hub-brotar 0.6s cubic-bezier(0.2, 0.8, 0.3, 1.15) 0.4s backwards;
+}
+
+.cen-hub .nivel-card.in-view .mock-n2 .archivo.a2 {
+    animation: cen-hub-brotar 0.6s cubic-bezier(0.2, 0.8, 0.3, 1.15) 0.55s backwards;
+}
+
+/* N3 · navegador con globo terráqueo */
+.cen-hub .mock-n3 {
+    width: 150px;
+}
+
+.cen-hub .mock-n3 .globo {
+    position: relative;
+    display: block;
+    margin: 11px auto 14px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 2.5px solid var(--office);
+    /* planeta: océano celeste con continentes verdes */
+    background:
+        radial-gradient(circle at 32% 32%, var(--verde-vivo) 0 7px, transparent 8px),
+        radial-gradient(circle at 68% 62%, var(--verde-vivo) 0 5px, transparent 6px),
+        color-mix(in srgb, var(--cielo-vivo) 45%, var(--white));
+}
+
+.cen-hub .mock-n3 .globo i {
+    position: absolute;
+    display: block;
+    opacity: 0.55;
+}
+
+.cen-hub .mock-n3 .globo i:nth-child(1) {
+    left: 50%;
+    top: -2px;
+    translate: -50%;
+    width: 26px;
+    height: 53px;
+    border-radius: 50%;
+    border: 2px solid var(--office);
+}
+
+.cen-hub .mock-n3 .globo i:nth-child(2) {
+    left: 2px;
+    right: 2px;
+    top: 50%;
+    height: 2px;
+    background: var(--office);
+}
+
+/* N4 · bloques de programación en escalera */
+.cen-hub .mock-n4 {
+    width: 150px;
+}
+
+.cen-hub .mock-n4 .bloques {
+    display: block;
+    padding: 11px 12px 14px;
+}
+
+.cen-hub .mock-n4 .bloque {
+    position: relative;
+    display: block;
+    height: 17px;
+    border-radius: 5px;
+    margin-bottom: 6px;
+    transform-origin: left center;
+}
+
+.cen-hub .mock-n4 .bloque::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    top: -3px;
+    width: 14px;
+    height: 3px;
+    border-radius: 2px 2px 0 0;
+    background: inherit;
+}
+
+.cen-hub .mock-n4 .bloque:nth-child(1) {
+    width: 62%;
+    background: var(--amarillo);
+}
+
+.cen-hub .mock-n4 .bloque:nth-child(2) {
+    width: 84%;
+    margin-left: 12px;
+    background: var(--cielo-vivo);
+}
+
+.cen-hub .mock-n4 .bloque:nth-child(3) {
+    width: 66%;
+    margin-left: 24px;
+    margin-bottom: 0;
+    background: var(--verde-vivo);
+}
+
+.cen-hub .nivel-card.in-view .mock-n4 .bloque:nth-child(1) {
+    animation: cen-hub-escribir 0.5s ease-out 0.35s backwards;
+}
+
+.cen-hub .nivel-card.in-view .mock-n4 .bloque:nth-child(2) {
+    animation: cen-hub-escribir 0.5s ease-out 0.5s backwards;
+}
+
+.cen-hub .nivel-card.in-view .mock-n4 .bloque:nth-child(3) {
+    animation: cen-hub-escribir 0.5s ease-out 0.65s backwards;
+}
+
+/* N5 · gráfica de área con datos */
+.cen-hub .mock-n5 {
+    width: 156px;
+}
+
+.cen-hub .mock-n5 .area-chart {
+    display: block;
+    margin: 10px 12px 12px;
+    height: 60px;
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--office) 55%, var(--white)),
+        color-mix(in srgb, var(--office) 8%, var(--white))
+    );
+    clip-path: polygon(0 100%, 0 62%, 26% 38%, 50% 56%, 74% 16%, 100% 34%, 100% 100%);
+    transform-origin: bottom;
+}
+
+.cen-hub .nivel-card.in-view .mock-n5 .area-chart {
+    animation: cen-hub-crecer 0.7s cubic-bezier(0.2, 0.8, 0.3, 1.1) 0.4s backwards;
+}
+
+.cen-hub .mock-n5 .punto {
+    position: absolute;
+    display: block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 2px solid var(--white);
+    box-shadow: 0 2px 6px rgba(4, 19, 38, 0.3);
+}
+
+.cen-hub .mock-n5 .punto.p1 {
+    left: 41px;
+    top: 28px;
+    background: var(--amarillo);
+}
+
+.cen-hub .mock-n5 .punto.p2 {
+    left: 105px;
+    top: 15px;
+    background: var(--coral-vivo);
+}
+
+.cen-hub .nivel-card.in-view .mock-n5 .punto.p1 {
+    animation: cen-hub-chip-pop 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.2) 0.8s backwards;
+}
+
+.cen-hub .nivel-card.in-view .mock-n5 .punto.p2 {
+    animation: cen-hub-chip-pop 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.2) 0.95s backwards;
+}
+
+/* N6 · pantalla de videojuego */
+.cen-hub .mock-n6 {
+    width: 150px;
+    height: 96px;
+    border: 3px solid var(--white);
+    background-color: #0b1f3a;
+    background-image: repeating-linear-gradient(rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 4px);
+}
+
+.cen-hub .mock-n6 .game-dots {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    translate: 0 -50%;
+    display: flex;
+    gap: 9px;
+}
+
+.cen-hub .mock-n6 .game-dots i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--amarillo);
+}
+
+.cen-hub .nivel-card.in-view .mock-n6 .game-dots i:nth-child(1) {
+    animation: cen-hub-pulso 1.6s ease-in-out infinite;
+}
+
+.cen-hub .nivel-card.in-view .mock-n6 .game-dots i:nth-child(2) {
+    animation: cen-hub-pulso 1.6s ease-in-out 0.25s infinite;
+}
+
+.cen-hub .nivel-card.in-view .mock-n6 .game-dots i:nth-child(3) {
+    animation: cen-hub-pulso 1.6s ease-in-out 0.5s infinite;
+}
+
+.cen-hub .mock-n6 .fantasma {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    translate: 0 -54%;
+    width: 34px;
+    height: 30px;
+    border-radius: 17px 17px 5px 5px;
+    background: var(--coral-vivo);
+}
+
+.cen-hub .mock-n6 .fantasma i {
+    position: absolute;
+    top: 9px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--white);
+}
+
+.cen-hub .mock-n6 .fantasma i::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 2.5px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #0b1f3a;
+}
+
+.cen-hub .mock-n6 .fantasma i:nth-child(1) {
+    left: 6px;
+}
+
+.cen-hub .mock-n6 .fantasma i:nth-child(2) {
+    right: 6px;
+}
+
+/* N7 · terminal con líneas de código en colores de sintaxis */
+.cen-hub .mock-n7 {
+    width: 152px;
+    background: #0b1f3a;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 22px 44px -14px rgba(2, 10, 22, 0.8);
+}
+
+.cen-hub .mock-n7 .mock-chrome {
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.cen-hub .mock-n7 .mock-chrome i {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.cen-hub .mock-n7 .mock-chrome i:first-child {
+    background: var(--coral-vivo);
+}
+
+.cen-hub .mock-n7 .mock-chrome i:nth-child(2) {
+    background: var(--amarillo);
+}
+
+.cen-hub .mock-n7 .mock-chrome i:nth-child(3) {
+    background: var(--verde-vivo);
+}
+
+.cen-hub .mock-n7 .term-body {
+    display: block;
+    padding: 11px 12px 14px;
+}
+
+.cen-hub .mock-n7 .term-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.cen-hub .mock-n7 .term-line:last-child {
+    margin-bottom: 0;
+}
+
+.cen-hub .mock-n7 .term-line b {
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--verde-vivo);
+}
+
+.cen-hub .mock-n7 .term-line i {
+    display: block;
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.4);
+    transform-origin: left center;
+}
+
+.cen-hub .mock-n7 .term-line:nth-child(1) i {
+    width: 62px;
+    background: color-mix(in srgb, var(--cielo-vivo) 80%, transparent);
+}
+
+.cen-hub .mock-n7 .term-line:nth-child(2) i {
+    width: 88px;
+    background: color-mix(in srgb, var(--amarillo) 80%, transparent);
+}
+
+.cen-hub .mock-n7 .term-line:nth-child(3) i {
+    width: 34px;
+    background: color-mix(in srgb, var(--coral-vivo) 80%, transparent);
+}
+
+.cen-hub .mock-n7 .term-cursor {
+    width: 7px !important;
+    height: 10px !important;
+    border-radius: 2px !important;
+    background: var(--verde-vivo) !important;
+    animation: cen-hub-cursor 1.1s steps(1) infinite;
+}
+
+.cen-hub .nivel-card.in-view .mock-n7 .term-line i:not(.term-cursor) {
+    animation: cen-hub-escribir 0.5s ease-out backwards;
+}
+
+.cen-hub .nivel-card.in-view .mock-n7 .term-line:nth-child(1) i {
+    animation-delay: 0.35s;
+}
+
+.cen-hub .nivel-card.in-view .mock-n7 .term-line:nth-child(2) i {
+    animation-delay: 0.55s;
+}
+
+.cen-hub .nivel-card.in-view .mock-n7 .term-line:nth-child(3) i:not(.term-cursor) {
+    animation-delay: 0.75s;
+}
+
+/* N8 · app móvil con señal de sensores */
+.cen-hub .mock-n8 {
+    width: 128px;
+    height: 112px;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.cen-hub .mock-n8 .fon {
+    position: absolute;
+    left: 16px;
+    bottom: 0;
+    width: 58px;
+    height: 104px;
+    border-radius: 14px;
+    border: 2.5px solid #0b1f3a;
+    background: var(--white);
+    box-shadow: 0 18px 36px -12px rgba(4, 19, 38, 0.5);
+}
+
+.cen-hub .mock-n8 .fon i {
+    position: absolute;
+    display: block;
+}
+
+.cen-hub .mock-n8 .fon-notch {
+    left: 50%;
+    translate: -50%;
+    top: 5px;
+    width: 20px;
+    height: 4px;
+    border-radius: 999px;
+    background: #dbe6f2;
+}
+
+.cen-hub .mock-n8 .fon-toggle {
+    left: 10px;
+    top: 20px;
+    width: 26px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--verde-vivo);
+}
+
+.cen-hub .mock-n8 .fon-toggle::after {
+    content: "";
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--white);
+}
+
+.cen-hub .mock-n8 .fon-bar {
+    left: 10px;
+    height: 6px;
+    border-radius: 3px;
+    background: #e8eef6;
+}
+
+.cen-hub .mock-n8 .fon-bar:nth-of-type(3) {
+    top: 46px;
+    width: 34px;
+}
+
+.cen-hub .mock-n8 .fon-bar:nth-of-type(4) {
+    top: 58px;
+    width: 24px;
+}
+
+/* retícula de apps de colores en la pantalla del teléfono */
+.cen-hub .mock-n8 .fon-apps {
+    position: absolute;
+    left: 10px;
+    top: 72px;
+    display: grid;
+    grid-template-columns: repeat(2, 10px);
+    gap: 5px;
+}
+
+.cen-hub .mock-n8 .fon-apps i {
+    position: static;
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.cen-hub .mock-n8 .fon-apps i:nth-child(1) { background: var(--amarillo); }
+.cen-hub .mock-n8 .fon-apps i:nth-child(2) { background: var(--cielo-vivo); }
+.cen-hub .mock-n8 .fon-apps i:nth-child(3) { background: var(--coral-vivo); }
+.cen-hub .mock-n8 .fon-apps i:nth-child(4) { background: var(--verde-vivo); }
+
+.cen-hub .nivel-card.in-view .mock-n8 .fon-apps i {
+    animation: cen-hub-chip-pop 0.4s cubic-bezier(0.2, 0.8, 0.3, 1.2) backwards;
+}
+
+.cen-hub .nivel-card.in-view .mock-n8 .fon-apps i:nth-child(1) { animation-delay: 0.5s; }
+.cen-hub .nivel-card.in-view .mock-n8 .fon-apps i:nth-child(2) { animation-delay: 0.6s; }
+.cen-hub .nivel-card.in-view .mock-n8 .fon-apps i:nth-child(3) { animation-delay: 0.7s; }
+.cen-hub .nivel-card.in-view .mock-n8 .fon-apps i:nth-child(4) { animation-delay: 0.8s; }
+
+.cen-hub .mock-n8 .senal {
+    position: absolute;
+    right: 4px;
+    top: 12px;
+    width: 44px;
+    height: 44px;
+}
+
+.cen-hub .mock-n8 .senal i {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border: 3px solid transparent;
+    border-top-color: var(--white);
+    border-radius: 50%;
+    rotate: 45deg;
+}
+
+.cen-hub .mock-n8 .senal i:nth-child(1) {
+    width: 16px;
+    height: 16px;
+}
+
+.cen-hub .mock-n8 .senal i:nth-child(2) {
+    width: 28px;
+    height: 28px;
+}
+
+.cen-hub .mock-n8 .senal i:nth-child(3) {
+    width: 40px;
+    height: 40px;
+}
+
+.cen-hub .nivel-card.in-view .mock-n8 .senal i:nth-child(1) {
+    animation: cen-hub-pulso 2s ease-in-out infinite;
+}
+
+.cen-hub .nivel-card.in-view .mock-n8 .senal i:nth-child(2) {
+    animation: cen-hub-pulso 2s ease-in-out 0.25s infinite;
+}
+
+.cen-hub .nivel-card.in-view .mock-n8 .senal i:nth-child(3) {
+    animation: cen-hub-pulso 2s ease-in-out 0.5s infinite;
+}
+
+/* N9 · sitio web recién publicado */
+.cen-hub .mock-n9 {
+    width: 156px;
+}
+
+.cen-hub .mock-n9 .web-hero {
+    display: block;
+    margin: 8px 10px;
+    padding: 9px 10px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--office) 10%, var(--white));
+}
+
+.cen-hub .mock-n9 .web-titulo {
+    display: block;
+    width: 64%;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--office);
+    margin-bottom: 7px;
+}
+
+.cen-hub .mock-n9 .web-btn {
+    display: block;
+    width: 30px;
+    height: 9px;
+    border-radius: 999px;
+    background: var(--coral-vivo);
+}
+
+.cen-hub .mock-n9 .web-cols {
+    display: flex;
+    gap: 7px;
+    margin: 0 10px 12px;
+}
+
+.cen-hub .mock-n9 .web-cols i {
+    flex: 1;
+    height: 16px;
+    border-radius: 5px;
+}
+
+.cen-hub .mock-n9 .web-cols i:nth-child(1) {
+    background: color-mix(in srgb, var(--amarillo) 45%, var(--white));
+}
+
+.cen-hub .mock-n9 .web-cols i:nth-child(2) {
+    background: color-mix(in srgb, var(--verde-vivo) 38%, var(--white));
+}
+
+.cen-hub .nivel-card.in-view .mock-n9 .web-hero {
+    animation: cen-hub-chip-pop 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.2) 0.35s backwards;
+}
+
+.cen-hub .nivel-card.in-view .mock-n9 .web-cols i:nth-child(1) {
+    animation: cen-hub-chip-pop 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.2) 0.5s backwards;
+}
+
+.cen-hub .nivel-card.in-view .mock-n9 .web-cols i:nth-child(2) {
+    animation: cen-hub-chip-pop 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.2) 0.62s backwards;
+}
+
+/* N10 · tarjeta de perfil con barras de habilidades */
+.cen-hub .mock-n10 {
+    width: 174px;
+    padding: 14px 16px 16px;
+}
+
+.cen-hub .mock-n10 .perfil-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.cen-hub .mock-n10 .perfil-avatar {
+    display: block;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--office) 25%, var(--white));
+    background: linear-gradient(135deg, var(--office), var(--office-deep));
+}
+
+.cen-hub .mock-n10 .perfil-datos {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cen-hub .mock-n10 .perfil-datos i {
+    display: block;
+    height: 7px;
+    border-radius: 4px;
+    background: #dde6f0;
+}
+
+.cen-hub .mock-n10 .perfil-datos i:first-child {
+    width: 70%;
+    background: var(--office);
+}
+
+.cen-hub .mock-n10 .skills {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cen-hub .mock-n10 .skill {
+    position: relative;
+    display: block;
+    height: 7px;
+    border-radius: 999px;
+    background: #e8eef6;
+    overflow: hidden;
+}
+
+.cen-hub .mock-n10 .skill::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--office), var(--office-deep));
+    transform-origin: left center;
+}
+
+.cen-hub .mock-n10 .skill:nth-child(1)::after {
+    width: 86%;
+    background: linear-gradient(90deg, var(--cielo-vivo), var(--blue));
+}
+
+.cen-hub .mock-n10 .skill:nth-child(2)::after {
+    width: 64%;
+    background: linear-gradient(90deg, var(--verde-vivo), #0e7a45);
+}
+
+.cen-hub .mock-n10 .skill:nth-child(3)::after {
+    width: 74%;
+    background: linear-gradient(90deg, var(--amarillo), #ff7a1a);
+}
+
+.cen-hub .nivel-card.in-view .mock-n10 .skill:nth-child(1)::after {
+    animation: cen-hub-escribir 0.7s ease-out 0.4s backwards;
+}
+
+.cen-hub .nivel-card.in-view .mock-n10 .skill:nth-child(2)::after {
+    animation: cen-hub-escribir 0.7s ease-out 0.55s backwards;
+}
+
+.cen-hub .nivel-card.in-view .mock-n10 .skill:nth-child(3)::after {
+    animation: cen-hub-escribir 0.7s ease-out 0.7s backwards;
+}
+
+@keyframes cen-hub-encender {
+    from {
+        opacity: 0;
+        filter: brightness(2.2);
+    }
+}
+
+@keyframes cen-hub-brotar {
+    from {
+        translate: 0 24px;
+        opacity: 0;
+    }
+}
+
+@keyframes cen-hub-pulso {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Cuerpo blanco de la tarjeta */
+.cen-hub .nivel-cuerpo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 24px 24px;
+}
+
+.cen-hub .nivel-num {
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--nivel-deep);
+    margin-bottom: 7px;
+}
+
+.cen-hub .nivel-card h3 {
+    font-size: clamp(1.35rem, 2vw, 1.7rem);
+    line-height: 1.12;
+    margin-bottom: 12px;
+}
+
+.cen-hub .nivel-ejes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 16px;
+}
+
+.cen-hub .nivel-ejes span {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 5px 11px;
+    color: var(--nivel-deep);
+    background: color-mix(in srgb, var(--nivel) 11%, var(--white));
+    border: 1px solid color-mix(in srgb, var(--nivel) 32%, transparent);
+}
+
+.cen-hub .nivel-pie {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid color-mix(in srgb, var(--nivel) 22%, transparent);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.cen-hub .nivel-meta {
+    color: var(--muted);
+}
+
+.cen-hub .nivel-entrar {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 800;
+    font-size: 13.5px;
+    border-radius: 999px;
+    padding: 9px 16px;
+    background: linear-gradient(135deg, var(--nivel), var(--nivel-deep));
+    color: var(--white);
+    box-shadow: 0 10px 20px -10px color-mix(in srgb, var(--nivel) 70%, transparent);
+    transition: gap 0.2s ease;
+    white-space: nowrap;
+}
+
+.cen-hub a.nivel-card:hover .nivel-entrar {
+    gap: 11px;
+}
+
+/* Progreso dentro de la tarjeta disponible */
+.cen-hub .nivel-progreso {
+    height: 7px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--nivel) 14%, var(--white));
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+.cen-hub .nivel-progreso > span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--nivel), var(--nivel-deep));
+}
+
+.cen-hub .chip-disponible {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 3;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 6px 12px;
+    background: var(--amarillo, #ffc93c);
+    color: #4a2c00;
+    box-shadow: 0 10px 22px rgba(4, 19, 38, 0.32);
+}
+
+/* Bachillerato ocupa fila completa: escena a un costado, cuerpo al otro */
+.cen-hub .niveles-grid .nivel-card.ancha {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+}
+
+.cen-hub .nivel-card.ancha .nivel-visual {
+    height: 100%;
+    min-height: 230px;
+}
+
+.cen-hub .nivel-card.ancha .nivel-marca {
+    left: 26px;
+}
+
+.cen-hub .nivel-card.ancha .marca-numero {
+    font-size: 128px;
+}
+
+.cen-hub .nivel-card.ancha .marca-palabra {
+    font-size: 17px;
+}
+
+.cen-hub .nivel-card.ancha .nivel-cuerpo {
+    padding: 26px 30px;
+}
+
+/* ─── Sección Office ──────────────────────────────────────────────────────
+   Fichas grandes (2 por fila) con identidad de marca por programa vía
+   --office/--office-deep (Word azul, Excel verde, PowerPoint naranja,
+   M365 azul cielo). Cada una abre con una escena dibujada en CSS —
+   documento, hoja con gráfica, diapositiva, nube — sobre el degradado de
+   marca, con la letra gigante de fondo y el icono estilo app encimado. */
+
+.cen-hub .office-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+}
+
+.cen-hub .office-card {
+    --office: var(--blue);
+    --office-deep: var(--blue-deep);
+    background: var(--white);
+    border-radius: 30px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cen-hub .office-card:hover {
+    transform: translateY(-8px);
+    box-shadow:
+        0 28px 56px -26px color-mix(in srgb, var(--office) 55%, transparent),
+        var(--shadow-md);
+}
+
+/* Escena gráfica con el degradado del color de marca */
+.cen-hub .office-visual {
+    position: relative;
+    height: 195px;
+    background:
+        radial-gradient(circle at 84% -30%, rgba(255, 255, 255, 0.26), transparent 55%),
+        radial-gradient(circle at 6% 130%, rgba(255, 255, 255, 0.14), transparent 45%),
+        linear-gradient(135deg, var(--office), var(--office-deep));
+    overflow: hidden;
+}
+
+.cen-hub .office-visual::after {
+    content: '';
+    position: absolute;
+    left: -40px;
+    top: -52px;
+    width: 132px;
+    height: 132px;
+    border-radius: 50%;
+    border: 20px solid rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+}
+
+/* Letra gigante de marca al fondo de la escena */
+.cen-hub .office-marca {
+    position: absolute;
+    right: 12px;
+    bottom: -38px;
+    font-family: var(--font-manrope), 'Manrope', sans-serif;
+    font-size: 172px;
+    font-weight: 800;
+    letter-spacing: -0.06em;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.1);
+    user-select: none;
+}
+
+/* ── Mockups en miniatura (uno por programa) ── */
+
+.cen-hub .office-mock {
+    position: absolute;
+    left: 46%;
+    top: 50%;
+    translate: -50% -50%;
+    rotate: -2.5deg;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 22px 44px -14px rgba(4, 19, 38, 0.45);
+    animation: cen-hub-flotar 6.5s ease-in-out infinite alternate;
+    transition: rotate 0.35s ease, scale 0.35s ease;
+}
+
+.cen-hub .office-card:hover .office-mock {
+    rotate: -0.5deg;
+    scale: 1.04;
+}
+
+/* En las tarjetas de nivel el mock vive encogido (0.84): al hover crece
+   apenas, sin recuperar el tamaño completo */
+.cen-hub a.nivel-card:hover .office-mock {
+    rotate: -0.5deg;
+    scale: 0.9;
+}
+
+@keyframes cen-hub-flotar {
+    from { translate: -50% -53%; }
+    to   { translate: -50% -47%; }
+}
+
+/* Barra de título de la ventana; el primer punto toma el color de marca */
+.cen-hub .mock-chrome {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 10px;
+    border-bottom: 1px solid #edf2f8;
+}
+
+.cen-hub .mock-chrome i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #dfe8f2;
+}
+
+.cen-hub .mock-chrome i:first-child {
+    background: color-mix(in srgb, var(--office) 55%, #fff);
+}
+
+/* Mini cinta de pestañas; la activa en color de marca */
+.cen-hub .mock-tabs {
+    display: flex;
+    gap: 5px;
+    padding: 6px 10px 0;
+}
+
+.cen-hub .mock-tabs i {
+    display: block;
+    width: 20px;
+    height: 7px;
+    border-radius: 3px;
+    background: #e8eef6;
+}
+
+.cen-hub .mock-tabs .tab-activa {
+    width: 26px;
+    background: var(--office);
+}
+
+/* Chips satélite: autoguardado, dato, comentario, colaboradores */
+.cen-hub .office-chip {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 12px 26px -10px rgba(4, 19, 38, 0.5);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+.cen-hub .office-chip b {
+    color: var(--office);
+}
+
+.cen-hub .chip-ne { top: -13px; right: -26px; }
+.cen-hub .chip-se { bottom: -13px; right: -22px; }
+.cen-hub .chip-so { bottom: -13px; left: -24px; }
+
+/* En las tarjetas de nivel la escena asoma recortada por la derecha, así
+   que los chips satélite se anclan al costado izquierdo del mock (si
+   quedaran a la derecha, el overflow de la tarjeta los cortaría). */
+.cen-hub .nivel-card .chip-ne { right: auto; left: -34px; top: -10px; }
+.cen-hub .nivel-card .chip-se { right: auto; left: -38px; bottom: -10px; }
+.cen-hub .nivel-card .chip-so { left: -38px; bottom: -10px; }
+
+/* El chip "brinca" al entrar la ficha a la vista y luego flota por su cuenta */
+.cen-hub .office-card.in-view .office-chip,
+.cen-hub .nivel-card.in-view .office-chip {
+    animation:
+        cen-hub-chip-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.9s backwards,
+        cen-hub-flotar-chip 5.4s ease-in-out 1.4s infinite alternate;
+}
+
+@keyframes cen-hub-chip-pop {
+    from {
+        scale: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes cen-hub-flotar-chip {
+    from { translate: 0 -2px; }
+    to   { translate: 0 3px; }
+}
+
+/* Avatares de colaboradores (chip de M365) */
+.cen-hub .office-chip .avatars {
+    display: inline-flex;
+}
+
+.cen-hub .office-chip .avatars i {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #eaf2fb;
+    border: 1.5px solid #fff;
+    display: grid;
+    place-items: center;
+    font-size: 9px;
+    font-style: normal;
+    margin-left: -6px;
+}
+
+.cen-hub .office-chip .avatars i:first-child {
+    margin-left: 0;
+}
+
+/* Word: documento que se "escribe" solo, con cursor parpadeando */
+.cen-hub .mock-word {
+    width: 158px;
+}
+
+.cen-hub .mock-word .mock-body {
+    display: block;
+    padding: 11px 14px 14px;
+}
+
+.cen-hub .mock-word .doc-bar {
+    display: block;
+    height: 10px;
+    width: 58%;
+    border-radius: 4px;
+    background: var(--office);
+    margin-bottom: 11px;
+}
+
+.cen-hub .mock-word .doc-line {
+    display: block;
+    height: 6px;
+    border-radius: 3px;
+    background: #dde6f0;
+    margin-bottom: 7px;
+    transform-origin: left center;
+}
+
+.cen-hub .mock-word .mock-body > .doc-line:nth-of-type(2) { width: 100%; }
+.cen-hub .mock-word .mock-body > .doc-line:nth-of-type(3) { width: 88%; }
+.cen-hub .mock-word .mock-body > .doc-line:nth-of-type(4) { width: 94%; }
+.cen-hub .mock-word .mock-body > .doc-line:nth-of-type(5) { width: 82%; }
+
+.cen-hub .mock-word .doc-fila {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.cen-hub .mock-word .doc-fila .doc-line {
+    width: 62%;
+    margin-bottom: 0;
+}
+
+.cen-hub .mock-word .doc-cursor {
+    width: 2px;
+    height: 11px;
+    border-radius: 1px;
+    background: var(--office);
+    animation: cen-hub-cursor 1.1s linear infinite;
+}
+
+@keyframes cen-hub-cursor {
+    0%, 45% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+/* Los renglones se "escriben" al entrar la ficha a la vista */
+.cen-hub .office-card.in-view .mock-word .doc-line {
+    animation: cen-hub-escribir 0.5s ease-out backwards;
+}
+
+.cen-hub .office-card.in-view .mock-word .mock-body > .doc-line:nth-of-type(2) { animation-delay: 0.35s; }
+.cen-hub .office-card.in-view .mock-word .mock-body > .doc-line:nth-of-type(3) { animation-delay: 0.5s; }
+.cen-hub .office-card.in-view .mock-word .mock-body > .doc-line:nth-of-type(4) { animation-delay: 0.65s; }
+.cen-hub .office-card.in-view .mock-word .mock-body > .doc-line:nth-of-type(5) { animation-delay: 0.8s; }
+.cen-hub .office-card.in-view .mock-word .doc-fila .doc-line { animation-delay: 0.95s; }
+
+@keyframes cen-hub-escribir {
+    from { scale: 0 1; }
+}
+
+/* Excel: barra de fórmulas, encabezados de columna, celdas y gráfica */
+.cen-hub .mock-excel {
+    width: 190px;
+}
+
+.cen-hub .mock-excel .formula-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-bottom: 1px solid #edf2f8;
+    font-size: 8.5px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.cen-hub .mock-excel .formula-bar b {
+    color: var(--office);
+    font-weight: 800;
+    font-style: italic;
+}
+
+.cen-hub .mock-sheet {
+    position: relative;
+    display: block;
+    height: 106px;
+    background-color: #fff;
+    background-image:
+        linear-gradient(#e6edf5 1px, transparent 1px),
+        linear-gradient(90deg, #e6edf5 1px, transparent 1px);
+    background-size: 22px 16px;
+    background-position: 0 13px;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+}
+
+.cen-hub .mock-sheet .col-heads {
+    position: absolute;
+    inset: 0 0 auto;
+    display: flex;
+    height: 13px;
+    background: #f6f9fc;
+    border-bottom: 1px solid #e6edf5;
+}
+
+.cen-hub .mock-sheet .col-heads i {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    font-size: 7.5px;
+    font-weight: 700;
+    font-style: normal;
+    color: #93a5ba;
+}
+
+.cen-hub .mock-excel .celda-sel {
+    position: absolute;
+    left: 22px;
+    top: 29px;
+    width: 44px;
+    height: 16px;
+    border: 2px solid var(--office);
+    background: color-mix(in srgb, var(--office) 14%, #fff);
+}
+
+.cen-hub .mock-excel .chart {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 10px;
+    height: 56px;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.cen-hub .mock-excel .chart i {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    background: var(--office);
+    transform-origin: bottom;
+}
+
+.cen-hub .mock-excel .chart i:nth-child(1) { height: 42%; opacity: 0.5; }
+.cen-hub .mock-excel .chart i:nth-child(2) { height: 64%; opacity: 0.68; }
+.cen-hub .mock-excel .chart i:nth-child(3) { height: 50%; opacity: 0.85; }
+.cen-hub .mock-excel .chart i:nth-child(4) { height: 86%; }
+
+/* Las barras crecen al entrar la ficha a la vista */
+.cen-hub .office-card.in-view .mock-excel .chart i {
+    animation: cen-hub-crecer 0.6s cubic-bezier(0.2, 0.8, 0.3, 1.15) backwards;
+}
+
+.cen-hub .office-card.in-view .mock-excel .chart i:nth-child(1) { animation-delay: 0.35s; }
+.cen-hub .office-card.in-view .mock-excel .chart i:nth-child(2) { animation-delay: 0.5s; }
+.cen-hub .office-card.in-view .mock-excel .chart i:nth-child(3) { animation-delay: 0.65s; }
+.cen-hub .office-card.in-view .mock-excel .chart i:nth-child(4) { animation-delay: 0.8s; }
+
+@keyframes cen-hub-crecer {
+    from { scale: 1 0; }
+}
+
+/* PowerPoint: panel de miniaturas, diapositiva, pastel que se dibuja */
+.cen-hub .mock-ppt {
+    width: 200px;
+}
+
+.cen-hub .ppt-layout {
+    display: flex;
+    gap: 8px;
+    padding: 9px 10px 12px;
+}
+
+.cen-hub .ppt-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 26px;
+}
+
+.cen-hub .ppt-panel .thumb {
+    display: block;
+    height: 16px;
+    border-radius: 3px;
+    background: #f2e9e4;
+    border: 1px solid transparent;
+}
+
+.cen-hub .ppt-panel .thumb-activa {
+    border-color: var(--office);
+    background: color-mix(in srgb, var(--office) 12%, #fff);
+}
+
+.cen-hub .ppt-slide {
+    flex: 1;
+    border: 1px solid #f0e7e2;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.cen-hub .ppt-slide .slide-titulo {
+    display: block;
+    height: 10px;
+    width: 62%;
+    border-radius: 4px;
+    background: var(--office);
+    margin-bottom: 11px;
+}
+
+.cen-hub .ppt-slide .slide-fila {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* --cen-pie controla cuánto del pastel está dibujado (animable vía @property;
+   sin soporte, el valor local 100% deja el pastel completo) */
+@property --cen-pie {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 100%;
+}
+
+.cen-hub .ppt-slide .pie {
+    --cen-pie: 100%;
+    flex: none;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--office) 0 calc(var(--cen-pie) * 0.58),
+        var(--office-deep) calc(var(--cen-pie) * 0.58) calc(var(--cen-pie) * 0.78),
+        #efe2dc calc(var(--cen-pie) * 0.78) var(--cen-pie),
+        transparent var(--cen-pie)
+    );
+}
+
+/* El pastel se dibuja al entrar la ficha a la vista */
+.cen-hub .office-card.in-view .ppt-slide .pie {
+    animation: cen-hub-pastel 0.9s ease-out 0.45s backwards;
+}
+
+@keyframes cen-hub-pastel {
+    from { --cen-pie: 0%; }
+}
+
+.cen-hub .ppt-slide .slide-lineas {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cen-hub .ppt-slide .slide-lineas i {
+    display: block;
+    height: 5px;
+    border-radius: 3px;
+    background: #e9dfda;
+}
+
+.cen-hub .ppt-slide .slide-lineas i:nth-child(2) { width: 78%; }
+.cen-hub .ppt-slide .slide-lineas i:nth-child(3) { width: 56%; }
+
+/* Microsoft 365: nube con el logo de 4 cuadros */
+.cen-hub .mock-m365 {
+    width: 176px;
+    height: 122px;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    rotate: 0deg;
+}
+
+.cen-hub .office-card:hover .mock-m365 {
+    rotate: 0deg;
+}
+
+.cen-hub .mock-m365 .nube {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    translate: -50%;
+    width: 132px;
+    height: 46px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 22px 44px -14px rgba(4, 19, 38, 0.5);
+}
+
+.cen-hub .mock-m365 .nube::before,
+.cen-hub .mock-m365 .nube::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.cen-hub .mock-m365 .nube::before {
+    left: 16px;
+    top: -24px;
+    width: 52px;
+    height: 52px;
+}
+
+.cen-hub .mock-m365 .nube::after {
+    right: 12px;
+    top: -32px;
+    width: 64px;
+    height: 64px;
+}
+
+/* Mosaico-icono de la app, encimado entre la escena y el cuerpo */
+.cen-hub .office-logo {
+    align-self: flex-start;
+    position: relative;
+    z-index: 2;
+    margin: -29px 0 0 26px;
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--office), var(--office-deep));
+    border: 3px solid var(--white);
+    box-shadow: 0 12px 26px -10px color-mix(in srgb, var(--office) 65%, transparent);
+    font-family: var(--font-manrope), 'Manrope', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #fff;
+}
+
+/* Logo Microsoft (4 cuadros) */
+.cen-hub .logo-ms {
+    display: grid;
+    grid-template-columns: repeat(2, 11px);
+    grid-template-rows: repeat(2, 11px);
+    gap: 3px;
+}
+
+.cen-hub .logo-ms i {
+    display: block;
+    border-radius: 2px;
+}
+
+.cen-hub .logo-ms i:nth-child(1) { background: #f25022; }
+.cen-hub .logo-ms i:nth-child(2) { background: #7fba00; }
+.cen-hub .logo-ms i:nth-child(3) { background: #00a4ef; }
+.cen-hub .logo-ms i:nth-child(4) { background: #ffb900; }
+
+.cen-hub .logo-ms-grande {
+    position: absolute;
+    left: 50%;
+    bottom: 36px;
+    translate: -50%;
+    z-index: 2;
+    grid-template-columns: repeat(2, 15px);
+    grid-template-rows: repeat(2, 15px);
+    gap: 4px;
+}
+
+.cen-hub .logo-ms-grande i {
+    border-radius: 3px;
+}
+
+/* Cuerpo blanco de la ficha */
+.cen-hub .office-cuerpo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 26px 26px;
+}
+
+.cen-hub .office-titulo {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin-bottom: 8px;
+}
+
+.cen-hub .office-titulo h3 {
+    font-size: 1.5rem;
+    line-height: 1.1;
+}
+
+.cen-hub .office-tagline {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--office);
+}
+
+.cen-hub .office-cuerpo > p {
+    color: var(--muted);
+    font-size: 14.5px;
+    margin-bottom: 20px;
+}
+
+/* Ruta Básico → Intermedio → Avanzado: línea de tiempo horizontal de marca */
+.cen-hub .office-ruta {
+    display: flex;
+    gap: 12px;
+    margin: 0 0 20px;
+    padding: 0;
+}
+
+.cen-hub .office-ruta li {
+    list-style: none;
+    flex: 1;
+    position: relative;
+    padding-top: 21px;
+}
+
+/* Punto de cada grado; el último (el destino) va relleno */
+.cen-hub .office-ruta li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: 2.5px solid var(--office);
+    background: var(--white);
+}
+
+.cen-hub .office-ruta li:last-child::before {
+    background: var(--office);
+}
+
+/* Línea que conecta los puntos */
+.cen-hub .office-ruta li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 4.5px;
+    left: 19px;
+    right: -6px;
+    height: 2.5px;
+    border-radius: 2px;
+    background: var(--office);
+    opacity: 0.25;
+}
+
+.cen-hub .office-ruta .ruta-nivel {
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--office);
+    margin-bottom: 3px;
+    white-space: nowrap;
+}
+
+.cen-hub .office-ruta li:last-child .ruta-nivel {
+    color: var(--office-deep);
+}
+
+.cen-hub .office-ruta .ruta-rango {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* Chip de desbloqueo teñido con el color del programa */
+.cen-hub .office-desde {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: auto;
+    padding: 7px 13px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--office-deep);
+    background: color-mix(in srgb, var(--office) 9%, var(--white));
+    border: 1px solid color-mix(in srgb, var(--office) 22%, transparent);
+}
+
+/* ─── Footer (como la landing) ──────────────────────────────────────────── */
+
+.cen-hub .footer {
+    margin-top: auto;
+    background: #041326;
+    color: rgba(233, 242, 252, 0.72);
+    padding: 34px 0;
+}
+
+.cen-hub .footer-inner {
+    width: min(calc(100% - 40px), var(--max));
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+}
+
+.cen-hub .footer-inner strong {
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.06em;
+    color: var(--white);
+}
+
+/* ─── Página de nivel: unidades, sesiones y ejercicios ──────────────────── */
+
+/* Hero teñido con la identidad del nivel (--nivel/--nivel-deep vía .nivel-n{n}) */
+.cen-hub .nivel-hero {
+    position: relative;
+    overflow: hidden;
+}
+
+.cen-hub .nivel-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 10% -30%, color-mix(in srgb, var(--nivel, var(--blue)) 52%, transparent), transparent 52%),
+        radial-gradient(circle at 92% 130%, color-mix(in srgb, var(--nivel-deep, var(--blue-deep)) 46%, transparent), transparent 56%);
+    pointer-events: none;
+}
+
+.cen-hub .nivel-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Ola que derrama el hero hacia el contenido (relleno = --paper, el fondo de página) */
+.cen-hub .nivel-hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 58px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60' preserveAspectRatio='none'%3E%3Cpath d='M0 60V30C240 58 480 2 720 18s480 38 720-8v50z' fill='%23f4f8fc'/%3E%3C/svg%3E") bottom center / 100% 100% no-repeat;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Número monumental del nivel, en trazo translúcido tipo póster.
+   En navegadores con scroll-driven animations, deriva suavemente al hacer scroll. */
+@supports (animation-timeline: scroll()) {
+    .cen-hub .nivel-hero-num {
+        animation: cen-hub-num-deriva linear both;
+        animation-timeline: scroll();
+        animation-range: 0 600px;
+    }
+}
+
+@keyframes cen-hub-num-deriva {
+    from { translate: 0 0; }
+    to { translate: 0 70px; }
+}
+
+.cen-hub .nivel-hero-num {
+    position: absolute;
+    right: -14px;
+    bottom: -70px;
+    z-index: 0;
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: clamp(220px, 28vw, 360px);
+    line-height: 1;
+    color: color-mix(in srgb, var(--nivel, var(--blue)) 22%, transparent);
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Icono del nivel: tile flotante junto al titular.
+   (Selector con h1 para ganarle a `.hero h1 span`, que lo volvería block/sky.) */
+.cen-hub .nivel-hero h1 .nivel-hero-icono {
+    display: inline-grid;
+    place-items: center;
+    width: 84px;
+    height: 84px;
+    font-size: 44px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--nivel, var(--blue)) 78%, #ffffff), var(--nivel-deep, var(--blue-deep)));
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 18px 40px color-mix(in srgb, var(--nivel, var(--blue)) 45%, transparent);
+    vertical-align: middle;
+    margin-right: 8px;
+    animation: cen-hub-nivel-flotar 3.6s ease-in-out infinite;
+}
+
+@keyframes cen-hub-nivel-flotar {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-9px) rotate(3deg); }
+}
+
+.cen-hub .nivel-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+}
+
+.cen-hub .nivel-hero-meta span {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    color: rgba(238, 245, 253, 0.94);
+    font-variant-numeric: tabular-nums;
+}
+
+/* CTA del hero: botón de juguete con canto duro y destello que barre cada ~4s.
+   Se comparte con el hero principal del hub (mismo rol: CTA primario sobre
+   fondo navy) — fuera de .nivel-card, --nivel/--nivel-deep no existen, así
+   que los fallbacks resuelven a --blue/--blue-deep del root. */
+.cen-hub .nivel-hero .hero-actions .button-light,
+.cen-hub .hero .hero-actions .button-light {
+    position: relative;
+    overflow: hidden;
+    font-size: 16px;
+    padding: 16px 30px;
+    border-radius: 999px;
+    box-shadow: 0 6px 0 color-mix(in srgb, var(--nivel-deep, var(--blue-deep)) 55%, #041326);
+}
+
+.cen-hub .nivel-hero .hero-actions .button-light:hover,
+.cen-hub .hero .hero-actions .button-light:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 0 color-mix(in srgb, var(--nivel-deep, var(--blue-deep)) 55%, #041326),
+        0 18px 36px rgba(4, 19, 38, 0.35);
+}
+
+.cen-hub .nivel-hero .hero-actions .button-light:active,
+.cen-hub .hero .hero-actions .button-light:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--nivel-deep, var(--blue-deep)) 55%, #041326);
+}
+
+.cen-hub .nivel-hero .hero-actions .button-light::after,
+.cen-hub .hero .hero-actions .button-light::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -70px;
+    width: 46px;
+    background: linear-gradient(100deg, transparent, color-mix(in srgb, var(--nivel, var(--blue)) 22%, transparent), transparent);
+    transform: skewX(-18deg);
+    animation: cen-hub-brillo 4.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes cen-hub-brillo {
+    0%, 68% { left: -70px; }
+    100% { left: calc(100% + 30px); }
+}
+
+/* CTA final sobre fondo claro (fuera de .hero): mismo canto duro + destello
+   que el CTA del hero, sólo que reskineado sobre .button-primary (azul
+   sólido, legible en --paper) en vez de .button-light (blanco, pensado
+   para navy). Misma mecánica de interacción, mismo keyframe, otro color.
+   Es la única acción de la pantalla, así que va grande y con un halo de
+   luz detrás (mismo lenguaje de brillos radiales que .hero, tonalizado
+   para fondo claro) para que aterrice como el momento culminante. */
+.cen-hub .cta-final {
+    position: relative;
+}
+
+.cen-hub .cta-final::before {
+    content: "";
+    position: absolute;
+    inset: -60px 0 auto;
+    height: 220px;
+    background: radial-gradient(480px 160px at 50% 50%, color-mix(in srgb, var(--blue) 22%, transparent), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.cen-hub .cta-final .button-primary {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    gap: 14px;
+    font-size: 20px;
+    padding: 26px 72px;
+    border-radius: 999px;
+    box-shadow:
+        0 9px 0 var(--blue-deep),
+        0 24px 48px color-mix(in srgb, var(--blue) 32%, transparent);
+}
+
+.cen-hub .cta-final .button-primary:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 12px 0 var(--blue-deep),
+        0 32px 60px color-mix(in srgb, var(--blue) 42%, transparent);
+}
+
+.cen-hub .cta-final .button-primary:active {
+    transform: translateY(6px);
+    box-shadow: 0 2px 0 var(--blue-deep);
+}
+
+.cen-hub .cta-final .button-primary::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -70px;
+    width: 46px;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    transform: skewX(-18deg);
+    animation: cen-hub-brillo 4.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@media (max-width: 620px) {
+    .cen-hub .cta-final .button-primary {
+        width: 100%;
+        font-size: 17px;
+        padding: 22px 28px;
+    }
+}
+
+/* ─── CTA "Entra al laboratorio 3D" como ficha gigante: es la única acción
+   de la pantalla y la puerta a la simulación 3D, así que no es un botón
+   pequeño — usa el mismo lenguaje que .unidad-banner (degradado + trama de
+   puntos + halo de esquina) más el canto duro, el número gigante desvanecido
+   y el destello barrido de las cartas de videojuego (.ejercicio-card /
+   .cta-final). Nada de esto es estética nueva. ─────────────────────────── */
+.cen-hub .laboratorio-cta {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: 30px 40px;
+    color: var(--white);
+    cursor: pointer;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.14) 2px, transparent 2.6px),
+        radial-gradient(circle at 90% -30%, rgba(255, 255, 255, 0.3), transparent 55%),
+        linear-gradient(135deg, var(--blue), var(--blue-deep));
+    background-size: 22px 22px, auto, auto;
+    box-shadow:
+        0 9px 0 var(--blue-deep),
+        0 24px 48px color-mix(in srgb, var(--blue) 35%, transparent);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cen-hub .laboratorio-cta:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 13px 0 var(--blue-deep),
+        0 32px 60px color-mix(in srgb, var(--blue) 45%, transparent);
+}
+
+.cen-hub .laboratorio-cta:active {
+    transform: translateY(6px);
+    box-shadow: 0 2px 0 var(--blue-deep);
+}
+
+.cen-hub .laboratorio-cta::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -90px;
+    width: 60px;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transform: skewX(-18deg);
+    animation: cen-hub-brillo 4.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.cen-hub .laboratorio-cta-num {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 132px;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.14);
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.28);
+    pointer-events: none;
+    user-select: none;
+}
+
+.cen-hub .laboratorio-cta-icono {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 88px;
+    height: 88px;
+    font-size: 46px;
+    border-radius: 999px;
+    background: var(--white);
+    box-shadow:
+        0 0 0 6px rgba(255, 255, 255, 0.26),
+        0 12px 24px rgba(4, 19, 38, 0.32);
+    transition: transform 0.25s ease;
+}
+
+.cen-hub .laboratorio-cta:hover .laboratorio-cta-icono {
+    transform: scale(1.08) rotate(-6deg);
+}
+
+.cen-hub .laboratorio-cta-textos {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    margin-right: auto;
+}
+
+.cen-hub .laboratorio-cta-kicker {
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.cen-hub .laboratorio-cta-titulo {
+    font-size: clamp(1.35rem, 2.6vw, 1.85rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.cen-hub .laboratorio-cta-detalle {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.cen-hub .laboratorio-cta-flecha {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--blue-deep);
+    box-shadow: 0 4px 0 rgba(4, 19, 38, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.cen-hub .laboratorio-cta:hover .laboratorio-cta-flecha {
+    transform: translateX(5px);
+}
+
+@media (max-width: 640px) {
+    .cen-hub .laboratorio-cta {
+        flex-wrap: wrap;
+        padding: 26px 24px;
+        gap: 16px;
+    }
+
+    .cen-hub .laboratorio-cta-num,
+    .cen-hub .laboratorio-cta-flecha {
+        display: none;
+    }
+}
+
+/* Bit asomándose por el borde inferior de la ficha, delante del "3D"
+   gigante: el mismo retrato circular con anillo de .video-arranque-retrato,
+   recortado por el overflow de la ficha para que solo asome la cabeza
+   ("ven conmigo"), con el flote de cen-hub-bob. `rotate` va como propiedad
+   aparte para que componga con el translateY de la animación. */
+.cen-hub .laboratorio-cta-bit {
+    position: absolute;
+    right: 128px;
+    bottom: -30px;
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.4);
+    box-shadow:
+        0 0 0 7px rgba(255, 255, 255, 0.18),
+        0 14px 30px rgba(4, 19, 38, 0.4);
+    rotate: -8deg;
+    animation: cen-hub-bob 3.6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@media (max-width: 900px) {
+    .cen-hub .laboratorio-cta-bit {
+        display: none;
+    }
+}
+
+/* ─── Lienzo de la entrada de actividad: la zona clara deja de ser papel
+   liso. Un ::before a todo el ancho del viewport pinta detrás del contenido
+   la misma retícula de puntitos de 22px de .unidad-banner/.laboratorio-cta
+   (aquí en tinta navy muy tenue sobre --paper) más los resplandores
+   radiales de color del .hero en versión clara. Va con z-index -1 dentro
+   del stacking context de .act-frame--inmersivo (z-index 5), así que queda
+   debajo del escenario navy y de todas las tarjetas; la máscara lo hace
+   aparecer y desvanecerse suave en los extremos. ─────────────────────────── */
+.cen-hub .entrada-lienzo {
+    position: relative;
+}
+
+.cen-hub .entrada-lienzo::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: -40px;
+    left: 50%;
+    translate: -50%;
+    width: 100vw;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 2px 2px, color-mix(in srgb, var(--navy-2) 6%, transparent) 2px, transparent 2.6px),
+        radial-gradient(680px 460px at 8% 42%, color-mix(in srgb, var(--sky) 18%, transparent), transparent 62%),
+        radial-gradient(620px 440px at 94% 58%, color-mix(in srgb, var(--purple) 13%, transparent), transparent 62%),
+        radial-gradient(760px 500px at 50% 86%, color-mix(in srgb, var(--blue) 11%, transparent), transparent 64%);
+    background-size: 22px 22px, auto, auto, auto;
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 150px, #000 calc(100% - 110px), transparent);
+    mask-image: linear-gradient(180deg, transparent, #000 150px, #000 calc(100% - 110px), transparent);
+}
+
+/* Letreros de sección de la entrada: mismo tamaño H1 que .hero h1 (la
+   página conserva un solo <h1> semántico en el act-hero; estos van como
+   <h2> con escala visual de H1). */
+.cen-hub .entrada-titulo {
+    font-size: clamp(2.6rem, 5.4vw, 4.6rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    color: var(--ink);
+    margin: 10px 0 30px;
+}
+
+/* ─── Paradas de "Tu ruta": círculo .camino-paso + título visible ─────────
+   Antes los pasos eran circulitos sin nombre; ahora cada parada es una
+   columna con su título debajo y el paso siguiente al actual va en color
+   (el degradado --nivel por defecto de .camino-paso) como invitación a
+   continuar. El eslabón punteado original (.camino-paso + .camino-paso)
+   ya no aplica con los círculos envueltos, así que aquí se redefine entre
+   paradas: corre de centro a centro y se oculta bajo los círculos opacos
+   (z-index -1), con lo que sobrevive a cualquier ancho de parada. */
+.cen-hub .ruta-parada {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    width: 104px;
+    text-align: center;
+}
+
+.cen-hub .ruta-parada-titulo {
+    font-size: 11.5px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--muted);
+}
+
+.cen-hub .ruta-parada.actual .ruta-parada-titulo {
+    color: var(--ink);
+}
+
+.cen-hub .ruta-parada.siguiente .ruta-parada-titulo {
+    color: var(--blue);
+}
+
+.cen-hub .ruta-parada + .ruta-parada {
+    position: relative;
+    margin-left: 18px;
+}
+
+.cen-hub .ruta-parada + .ruta-parada::before {
+    content: "";
+    position: absolute;
+    right: 50%;
+    top: 18px;
+    width: calc(100% + 18px);
+    border-top: 2px dashed color-mix(in srgb, var(--navy) 28%, transparent);
+    z-index: -1;
+}
+
+/* Mismo brinco encadenado que los pasos del hub, re-escalonado a través
+   del envoltorio .ruta-parada (los delays por nth-child de .camino-paso
+   dejan de aplicar al quedar cada círculo como primer hijo). */
+.cen-hub .trayectoria-head.in-view .ruta-parada:nth-child(2) .camino-paso { animation-delay: 0.07s; }
+.cen-hub .trayectoria-head.in-view .ruta-parada:nth-child(3) .camino-paso { animation-delay: 0.14s; }
+.cen-hub .trayectoria-head.in-view .ruta-parada:nth-child(4) .camino-paso { animation-delay: 0.21s; }
+.cen-hub .trayectoria-head.in-view .ruta-parada:nth-child(5) .camino-paso { animation-delay: 0.28s; }
+
+.cen-hub .unidades-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Ficha de unidad — identidad de color por eje formativo (la operan niños:
+   banner de color, icono grande, número gigante y ejercicios como fichas de juego). */
+.cen-hub .unidad-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 32px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cen-hub .unidad-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 54px color-mix(in srgb, var(--eje-c, var(--blue)) 20%, rgba(4, 19, 38, 0.1));
+}
+
+.cen-hub .unidad-banner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    padding: 26px 150px 26px 30px;
+    background:
+        radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.14) 2px, transparent 2.6px),
+        radial-gradient(circle at 88% -40%, rgba(255, 255, 255, 0.3), transparent 55%),
+        linear-gradient(135deg, var(--eje-c, var(--blue)), var(--eje-deep, var(--blue-deep)));
+    background-size: 22px 22px, auto, auto;
+    color: var(--white);
+    overflow: hidden;
+}
+
+.cen-hub .unidad-icono {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    flex: none;
+    font-size: 38px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 2px solid rgba(255, 255, 255, 0.34);
+    box-shadow: 0 10px 24px rgba(4, 19, 38, 0.18);
+    transform: rotate(-4deg);
+    transition: transform 0.25s ease;
+}
+
+.cen-hub .unidad-card:hover .unidad-icono {
+    transform: rotate(3deg) scale(1.06);
+}
+
+.cen-hub .unidad-titulos {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-right: auto;
+    min-width: 0;
+}
+
+.cen-hub .unidad-kicker {
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.cen-hub .unidad-banner h3 {
+    color: var(--white);
+    font-size: clamp(1.65rem, 3vw, 2.35rem);
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+}
+
+.cen-hub .unidad-estado {
+    position: relative;
+    z-index: 1;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 8px 14px;
+    color: var(--white);
+    background: rgba(4, 19, 38, 0.28);
+    border: 1.5px dashed rgba(255, 255, 255, 0.45);
+    white-space: nowrap;
+}
+
+.cen-hub .unidad-big-num {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 142px;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.16);
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* El cuerpo lleva el tinte y el confeti del eje: las cartas ya no flotan sobre blanco */
+.cen-hub .unidad-cuerpo {
+    padding: 24px 30px 30px;
+    background:
+        radial-gradient(circle at 2px 2px, color-mix(in srgb, var(--eje-c, var(--blue)) 14%, transparent) 1.7px, transparent 2.3px),
+        color-mix(in srgb, var(--eje-c, var(--blue)) 6%, var(--white));
+    background-size: 26px 26px, auto;
+}
+
+.cen-hub .unidad-sub {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--eje-deep, var(--blue-deep)) 72%, var(--ink));
+    margin: 26px 0 14px;
+}
+
+.cen-hub .unidad-cuerpo .unidad-sub:first-child {
+    margin-top: 0;
+}
+
+/* Sesiones como etiquetas translúcidas dentro del banner: la identidad de la
+   unidad cuenta lo que se aprende sin alargar el cuerpo de la ficha */
+.cen-hub .unidad-sesiones {
+    counter-reset: sesion;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0;
+    margin: 12px 0 0;
+}
+
+.cen-hub .unidad-sesiones li {
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.14);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    padding: 4px 13px 4px 5px;
+}
+
+/* Nodo numerado del chip — pequeño, blanco, con el número del color del eje */
+.cen-hub .unidad-sesiones li::before {
+    content: counter(sesion);
+    counter-increment: sesion;
+    display: grid;
+    place-items: center;
+    width: 21px;
+    height: 21px;
+    flex: none;
+    border-radius: 999px;
+    font-size: 11.5px;
+    color: var(--eje-deep, var(--blue-deep));
+    background: var(--white);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Ejercicios como cartas de videojuego de color pleno: degradado saturado del
+   eje, emoji protagonista en blob blanco, estrellas doradas y botón blanco. */
+.cen-hub .ejercicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(186px, 100%), 1fr));
+    gap: 18px;
+    margin-bottom: 8px;
+}
+
+.cen-hub .ejercicio-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 7px;
+    border-radius: 26px;
+    padding: 18px 14px 14px;
+    color: var(--white);
+    background: linear-gradient(165deg, var(--eje-c, var(--blue)), var(--eje-deep, var(--blue-deep)));
+    /* Canto inferior duro tipo tecla de juguete + sombra de color */
+    box-shadow:
+        0 7px 0 color-mix(in srgb, var(--eje-deep, var(--blue-deep)) 68%, #041326),
+        0 14px 30px color-mix(in srgb, var(--eje-c, var(--blue)) 28%, transparent);
+}
+
+/* Escena superior: el escenario del emoji, con destellos blancos sobre el color */
+.cen-hub .ejercicio-escena {
+    align-self: stretch;
+    margin: 0 -14px 2px;
+    padding: 8px 0 12px;
+    display: grid;
+    place-items: center;
+    background:
+        radial-gradient(circle at 14% 22%, rgba(255, 255, 255, 0.95) 2.4px, transparent 3.1px),
+        radial-gradient(circle at 87% 16%, rgba(255, 255, 255, 0.8) 1.8px, transparent 2.4px),
+        radial-gradient(circle at 83% 82%, rgba(255, 255, 255, 0.9) 2.2px, transparent 2.9px),
+        radial-gradient(circle at 9% 78%, rgba(255, 255, 255, 0.7) 1.6px, transparent 2.2px);
+}
+
+.cen-hub .unidad-card.in-view .ejercicio-card {
+    animation: cen-hub-chip-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.cen-hub .unidad-card.in-view .ejercicio-card:nth-child(2) { animation-delay: 0.06s; }
+.cen-hub .unidad-card.in-view .ejercicio-card:nth-child(3) { animation-delay: 0.12s; }
+.cen-hub .unidad-card.in-view .ejercicio-card:nth-child(4) { animation-delay: 0.18s; }
+.cen-hub .unidad-card.in-view .ejercicio-card:nth-child(5) { animation-delay: 0.24s; }
+.cen-hub .unidad-card.in-view .ejercicio-card:nth-child(n + 6) { animation-delay: 0.3s; }
+
+.cen-hub .ejercicio-card.jugable {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cen-hub .ejercicio-card.jugable:hover {
+    transform: translateY(-5px);
+    box-shadow:
+        0 12px 0 color-mix(in srgb, var(--eje-deep, var(--blue-deep)) 68%, #041326),
+        0 26px 46px color-mix(in srgb, var(--eje-c, var(--blue)) 42%, transparent);
+}
+
+/* Al presionar, la ficha se hunde como tecla */
+.cen-hub .ejercicio-card.jugable:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--eje-deep, var(--blue-deep)) 68%, #041326);
+}
+
+/* Bloqueada: la misma carta pero apagada — gris azulado sólido, sin relieve extra */
+.cen-hub .ejercicio-card.bloqueado {
+    background: linear-gradient(165deg, #8794aa, #56647e);
+    box-shadow:
+        0 7px 0 #43516a,
+        0 10px 22px rgba(4, 19, 38, 0.14);
+}
+
+/* Número como sticker blanco en la esquina de la carta */
+.cen-hub .ejercicio-num {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 31px;
+    height: 31px;
+    border-radius: 999px;
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 13.5px;
+    color: var(--eje-deep, var(--blue-deep));
+    background: var(--white);
+    box-shadow: 0 3px 0 rgba(4, 19, 38, 0.24);
+    font-variant-numeric: tabular-nums;
+}
+
+.cen-hub .ejercicio-card.bloqueado .ejercicio-num {
+    color: #56647e;
+}
+
+/* Blob circular con el emoji del ejercicio — el protagonista de la carta:
+   círculo blanco con halo translúcido que resalta sobre el color pleno */
+.cen-hub .ejercicio-icono {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 84px;
+    height: 84px;
+    font-size: 46px;
+    line-height: 1;
+    border-radius: 999px;
+    background: var(--white);
+    box-shadow:
+        0 0 0 6px rgba(255, 255, 255, 0.28),
+        0 12px 24px rgba(4, 19, 38, 0.28);
+    transition: transform 0.25s ease;
+}
+
+/* En reposo, el emoji de las fichas jugables flota — señala "aquí sí puedes" */
+.cen-hub .ejercicio-card.jugable .ejercicio-icono {
+    animation: cen-hub-bob 3.2s ease-in-out infinite;
+}
+
+.cen-hub .ejercicio-card.jugable:hover .ejercicio-icono {
+    animation: none;
+    transform: scale(1.12) rotate(-6deg);
+}
+
+@keyframes cen-hub-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.cen-hub .ejercicio-card.bloqueado .ejercicio-icono {
+    filter: grayscale(0.6);
+}
+
+.cen-hub .ejercicio-candado {
+    position: absolute;
+    right: -8px;
+    bottom: -6px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    border-radius: 999px;
+    background: var(--white);
+    box-shadow: 0 5px 12px rgba(4, 19, 38, 0.24);
+}
+
+.cen-hub .ejercicio-titulo {
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--white);
+    line-height: 1.2;
+    text-wrap: balance;
+    text-shadow: 0 1px 0 rgba(4, 19, 38, 0.18);
+}
+
+.cen-hub .ejercicio-detalle {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.88);
+    min-height: 15px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Botón blanco sobre la carta de color: el contraste manda "presióname" */
+.cen-hub .ejercicio-jugar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    margin-top: auto;
+    font-weight: 800;
+    font-size: 14px;
+    border-radius: 999px;
+    padding: 12px 16px;
+    background: var(--white);
+    color: var(--eje-deep, var(--blue-deep));
+    box-shadow: 0 4px 0 rgba(4, 19, 38, 0.3);
+    white-space: nowrap;
+    transition: transform 0.2s ease;
+}
+
+.cen-hub .ejercicio-card.jugable:hover .ejercicio-jugar {
+    transform: scale(1.05);
+}
+
+.cen-hub .ejercicio-jugar.bloqueada {
+    background: rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.8);
+    box-shadow: none;
+}
+
+.cen-hub .ejercicios-vacio {
+    font-size: 14px;
+    color: var(--muted);
+    background: var(--white);
+    border: 1.5px dashed var(--line);
+    border-radius: 18px;
+    padding: 16px 18px;
+}
+
+/* ─── Vitrina de insignias (F1.4) ───────────────────────────────────────────
+   Medallas de colección: cinta de color detrás, círculo con relieve al
+   frente y un barrido de brillo en las conseguidas (mismo keyframe que el
+   CTA del hero de nivel). Las bloqueadas repiten el gris azulado sólido de
+   las fichas de ejercicio bloqueadas — nunca dashed/pastel. */
+
+.cen-hub .insignias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 18px;
+}
+
+.cen-hub .insignia-medalla {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 34px 18px 22px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cen-hub .insignia-medalla.conseguida {
+    border-color: color-mix(in srgb, var(--ins-c, var(--blue)) 45%, var(--line));
+    box-shadow: 0 18px 40px color-mix(in srgb, var(--ins-c, var(--blue)) 22%, transparent);
+}
+
+.cen-hub .insignia-medalla.conseguida:hover {
+    transform: translateY(-4px);
+}
+
+.cen-hub .medalla-cinta {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    width: 46px;
+    height: 60px;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, var(--ins-c, var(--blue)), var(--ins-deep, var(--blue-deep)));
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+    opacity: 0.9;
+    z-index: 0;
+}
+
+.cen-hub .insignia-medalla.bloqueada .medalla-cinta {
+    background: linear-gradient(180deg, #b7c0cf, #8794aa);
+    opacity: 0.7;
+}
+
+.cen-hub .medalla-cuerpo {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 82px;
+    height: 82px;
+    border-radius: 999px;
+    background: linear-gradient(160deg, var(--ins-c, var(--blue)), var(--ins-deep, var(--blue-deep)));
+    box-shadow:
+        0 0 0 5px var(--white),
+        0 0 0 8px color-mix(in srgb, var(--ins-c, var(--blue)) 35%, transparent),
+        0 10px 22px color-mix(in srgb, var(--ins-c, var(--blue)) 40%, transparent);
+    margin-bottom: 4px;
+}
+
+.cen-hub .medalla-icono {
+    font-size: 38px;
+    line-height: 1;
+}
+
+.cen-hub .insignia-medalla.bloqueada .medalla-cuerpo {
+    background: linear-gradient(160deg, #8794aa, #56647e);
+    box-shadow: 0 0 0 5px var(--white), 0 0 0 8px rgba(86, 100, 126, 0.18);
+}
+
+.cen-hub .insignia-medalla.bloqueada .medalla-icono {
+    filter: grayscale(1);
+    opacity: 0.75;
+}
+
+/* Barrido de brillo en las medallas conseguidas */
+.cen-hub .insignia-medalla.conseguida .medalla-cuerpo {
+    overflow: hidden;
+}
+
+.cen-hub .insignia-medalla.conseguida .medalla-cuerpo::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -40px;
+    width: 24px;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+    transform: skewX(-18deg);
+    animation: cen-hub-brillo 3.4s ease-in-out infinite;
+}
+
+.cen-hub .insignia-medalla h3 {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--navy);
+    margin: 0;
+    text-wrap: balance;
+}
+
+.cen-hub .insignia-medalla p {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.35;
+}
+
+.cen-hub .medalla-progreso {
+    margin-top: 4px;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--ins-deep, var(--blue-deep));
+    background: color-mix(in srgb, var(--ins-c, var(--blue)) 14%, var(--white));
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.cen-hub .insignia-medalla.bloqueada .medalla-progreso {
+    color: var(--muted);
+    background: color-mix(in srgb, #8794aa 16%, var(--white));
+}
+
+/* ─── Host de actividad ─────────────────────────────────────────────────── */
+
+.cen-hub .act-hero {
+    padding: 46px 0 88px;
+}
+
+/* El título del ejercicio manda más que el del hub: sube por encima del
+   clamp base de .hero h1 (tope 4.6rem). Los títulos de actividad son
+   cortos ("Enciende con seguridad" es el más largo), así que cabe. */
+.cen-hub .act-hero h1 {
+    font-size: clamp(3.1rem, 6.6vw, 5.6rem);
+}
+
+.cen-hub .act-frame {
+    margin-top: -52px;
+    position: relative;
+    z-index: 5;
+    background: var(--white);
+    border-radius: 30px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+/* ─── Marco inmersivo (F2.0+): actividades con escena 3D/juego que piden
+   todo el ancho del área de contenido, sin la tarjeta blanca acotada.
+   El header/breadcrumb y el footer de la plataforma se conservan; solo el
+   marco de la actividad se libera del ancho máximo de 1220px. ───────────── */
+
+.cen-hub .act-frame-wrap--inmersivo {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    padding-bottom: 0;
+}
+
+.cen-hub .act-frame--inmersivo {
+    margin-top: -52px;
+    position: relative;
+    z-index: 5;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    padding: 0 clamp(12px, 3vw, 40px);
+}
+
+/* Cuando el archivo de una actividad no llega (red del aula, o un despliegue
+   nuevo mientras la pestaña estaba abierta). Antes de esto no había nada que
+   pintar: el esqueleto se quedaba girando para siempre. */
+.cen-hub .act-frame-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 4px;
+  min-height: 320px;
+  padding: 40px 24px;
+  color: #e8f4ff;
+}
+
+.cen-hub .act-skeleton {
+    padding: 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.cen-hub .act-skeleton > span {
+    display: block;
+    border-radius: 999px;
+    background: rgba(6, 26, 53, 0.07);
+    height: 26px;
+    animation: cen-hub-pulse 1.4s ease-in-out infinite;
+}
+
+.cen-hub .act-skeleton > span:nth-child(2) {
+    height: 190px;
+    border-radius: 24px;
+    width: 100%;
+}
+
+.cen-hub .act-skeleton > span:first-child { width: 34%; }
+.cen-hub .act-skeleton > span:last-child  { width: 62%; }
+
+@keyframes cen-hub-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+}
+
+/* ─── Navegación entre ejercicios (anterior / siguiente) ──────────────────
+   Dos tarjetas al pie del ejercicio, derivadas del orden de la unidad en
+   CURRICULO. La de "siguiente" es la protagonista: reusa la receta de
+   canto duro + degradado + trama de puntos del .laboratorio-cta. La de
+   "anterior" va en blanco discreto, como .button-light. */
+.cen-hub .act-nav {
+    margin-top: 34px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.cen-hub .act-nav-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cen-hub .act-nav-card--prev {
+    background: var(--white);
+    color: var(--ink);
+    box-shadow: var(--shadow-sm), inset 0 0 0 1px var(--line);
+}
+
+.cen-hub .act-nav-card--prev:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md), inset 0 0 0 1px var(--line);
+}
+
+.cen-hub .act-nav-card--next {
+    justify-content: flex-end;
+    text-align: right;
+    color: var(--white);
+    background:
+        radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.14) 2px, transparent 2.6px),
+        radial-gradient(circle at 88% -40%, rgba(255, 255, 255, 0.3), transparent 55%),
+        linear-gradient(135deg, var(--blue), var(--blue-deep));
+    background-size: 22px 22px, auto, auto;
+    box-shadow:
+        0 6px 0 var(--blue-deep),
+        0 18px 38px color-mix(in srgb, var(--blue) 30%, transparent);
+}
+
+.cen-hub .act-nav-card--next:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 9px 0 var(--blue-deep),
+        0 26px 48px color-mix(in srgb, var(--blue) 40%, transparent);
+}
+
+.cen-hub .act-nav-card--next:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 var(--blue-deep);
+}
+
+.cen-hub .act-nav-flecha {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    transition: transform 0.2s ease;
+}
+
+.cen-hub .act-nav-card--prev .act-nav-flecha {
+    background: var(--paper-2);
+    color: var(--blue-deep);
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--navy) 14%, transparent);
+}
+
+.cen-hub .act-nav-card--next .act-nav-flecha {
+    background: var(--white);
+    color: var(--blue-deep);
+    box-shadow: 0 4px 0 rgba(4, 19, 38, 0.3);
+}
+
+.cen-hub .act-nav-card--prev:hover .act-nav-flecha { transform: translateX(-4px); }
+.cen-hub .act-nav-card--next:hover .act-nav-flecha { transform: translateX(4px); }
+
+.cen-hub .act-nav-kicker {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.cen-hub .act-nav-card--prev .act-nav-kicker { color: var(--muted); }
+.cen-hub .act-nav-card--next .act-nav-kicker { color: rgba(255, 255, 255, 0.82); }
+
+.cen-hub .act-nav-titulo {
+    display: block;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+@media (max-width: 640px) {
+    .cen-hub .act-nav {
+        grid-template-columns: 1fr;
+    }
+
+    .cen-hub .act-nav-card--next {
+        justify-content: space-between;
+        text-align: left;
+        flex-direction: row-reverse;
+    }
+}
+
+/* Consola del contrato en vivo (demo técnica) */
+.cen-hub .contrato-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color 0.2s ease;
+}
+
+.cen-hub .contrato-toggle:hover {
+    color: var(--blue);
+}
+
+.cen-hub .contrato-consola {
+    margin-top: 16px;
+    background: var(--navy);
+    color: var(--white);
+    border-radius: 24px;
+    padding: 24px 26px;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 13px;
+    overflow-x: auto;
+}
+
+.cen-hub .contrato-consola .consola-titulo {
+    color: var(--sky);
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.cen-hub .contrato-consola .consola-evento {
+    white-space: nowrap;
+    line-height: 1.9;
+}
+
+.cen-hub .contrato-consola .evento-nombre { color: var(--sky); }
+.cen-hub .contrato-consola .evento-parens { color: rgba(255, 255, 255, 0.4); }
+.cen-hub .contrato-consola .evento-payload { color: #8fd8ff; }
+.cen-hub .contrato-consola .consola-espera { color: rgba(255, 255, 255, 0.4); }
+
+/* Pantalla "no encontrada / en construcción" */
+.cen-hub .act-missing {
+    padding: 70px 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.cen-hub .act-missing h2 {
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+}
+
+.cen-hub .act-missing p {
+    color: var(--muted);
+    max-width: 46ch;
+}
+
+/* ─── Animación de aparición (patrón reveal de la landing) ──────────────── */
+
+.cen-hub .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+}
+
+.cen-hub .reveal.in-view {
+    animation: cen-hub-rise 0.7s cubic-bezier(0.2, 0.65, 0.25, 1) forwards;
+}
+
+@keyframes cen-hub-rise {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ─── Responsivo ────────────────────────────────────────────────────────── */
+
+@media (max-width: 1050px) {
+    .cen-hub .niveles-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cen-hub .section-head {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        align-items: start;
+    }
+
+    .cen-hub .stats-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cen-hub .stat:nth-child(3) {
+        border-left: none;
+    }
+
+    .cen-hub .stat:nth-child(n + 3) {
+        border-top: 1px solid var(--line);
+    }
+}
+
+@media (max-width: 820px) {
+    .cen-hub .section {
+        padding: 72px 0;
+    }
+
+    .cen-hub .hero {
+        padding: 54px 0 96px;
+    }
+
+    .cen-hub .chip-alumno .nombre {
+        display: none;
+    }
+
+    .cen-hub .topbar-progress {
+        max-width: 160px;
+    }
+
+    .cen-hub .nivel-hero-num {
+        font-size: 200px;
+        right: -20px;
+        bottom: -46px;
+    }
+
+    .cen-hub .nivel-hero h1 .nivel-hero-icono {
+        width: 62px;
+        height: 62px;
+        font-size: 33px;
+        border-radius: 18px;
+    }
+
+    .cen-hub .hero-bit-retrato {
+        width: 52px;
+        height: 52px;
+    }
+
+    .cen-hub .hero-bit-globo {
+        font-size: 14.5px;
+        padding: 12px 16px;
+    }
+
+    .cen-hub .unidad-card {
+        border-radius: 26px;
+    }
+
+    .cen-hub .unidad-banner {
+        padding: 20px 22px;
+        gap: 14px;
+    }
+
+    .cen-hub .unidad-big-num {
+        display: none;
+    }
+
+    .cen-hub .unidad-icono {
+        width: 56px;
+        height: 56px;
+        font-size: 28px;
+        border-radius: 16px;
+    }
+
+    .cen-hub .unidad-cuerpo {
+        padding: 20px 22px 26px;
+    }
+
+    .cen-hub .ejercicios-grid {
+        grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr));
+        gap: 12px;
+    }
+
+    .cen-hub .ejercicio-icono {
+        width: 68px;
+        height: 68px;
+        font-size: 36px;
+    }
+
+    .cen-hub .unidad-sesiones li {
+        font-size: 12px;
+        padding: 3px 11px 3px 4px;
+    }
+
+    .cen-hub .unidad-sesiones li::before {
+        width: 19px;
+        height: 19px;
+        font-size: 11px;
+    }
+
+    .cen-hub .office-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 620px) {
+    .cen-hub .niveles-grid,
+    .cen-hub .office-grid,
+    .cen-hub .stats-strip {
+        grid-template-columns: 1fr;
+    }
+
+    .cen-hub .stat {
+        border-left: none;
+    }
+
+    .cen-hub .stat:nth-child(n + 2) {
+        border-top: 1px solid var(--line);
+    }
+
+    /* En móvil la sigla basta; el nombre completo no cabe junto al avatar */
+    .cen-hub .brand-sub {
+        display: none;
+    }
+
+    /* La banda de etapa se compacta sin perder jerarquía */
+    .cen-hub .etapa-row {
+        gap: 14px;
+        margin: 64px 0 26px;
+    }
+
+    .cen-hub .etapa-sello {
+        width: 46px;
+        height: 46px;
+        border-radius: 13px;
+        font-size: 21px;
+    }
+
+    .cen-hub .etapa-row h3 {
+        font-size: 1.5rem;
+    }
+
+    .cen-hub .etapa-row .etapa-rango {
+        font-size: 11px;
+        padding: 7px 12px;
+        letter-spacing: 0.07em;
+    }
+
+    /* El camino se compacta para que los 10 pasos quepan en una línea */
+    .cen-hub .camino-pasos {
+        margin-top: 20px;
+    }
+
+    .cen-hub .camino-paso {
+        width: 26px;
+        height: 26px;
+        font-size: 12px;
+    }
+
+    .cen-hub .camino-paso + .camino-paso {
+        margin-left: 10px;
+    }
+
+    .cen-hub .camino-paso + .camino-paso::before {
+        width: 10px;
+    }
+
+    /* La tarjeta ancha vuelve a apilarse: escena arriba, cuerpo abajo */
+    .cen-hub .niveles-grid .nivel-card.ancha {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cen-hub .nivel-card.ancha .nivel-visual {
+        height: 164px;
+        min-height: 0;
+    }
+
+    .cen-hub .nivel-card.ancha .nivel-marca {
+        left: 20px;
+    }
+
+    .cen-hub .nivel-card.ancha .marca-numero {
+        font-size: 100px;
+    }
+
+    .cen-hub .nivel-card.ancha .marca-palabra {
+        font-size: 15px;
+    }
+
+    .cen-hub .nivel-card.ancha .nivel-cuerpo {
+        padding: 18px 24px 24px;
+    }
+
+    .cen-hub .footer-inner {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+}
+
+/* ─── Movimiento reducido ───────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    .cen-hub *,
+    .cen-hub *::before,
+    .cen-hub *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .cen-hub .reveal {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SALA DE OFFICE — /hub/office/[app] (doc §33)
+
+   Gemela del hub de nivel y no por ahorro: el alumno ya sabe leer un
+   `unidad-card` con su banner, sus temas y su rejilla de ejercicios, así que la
+   sala usa exactamente esa gramática y sólo cambia el criterio de ordenación
+   —grado de dominio en vez de unidad— y el color, que aquí es el de MARCA del
+   programa y no el del eje formativo. De ahí el remapeo de `--eje-c` a
+   `--office` en `.sala-grado`: una sola línea deja funcionar sin tocar nada las
+   ~200 de estilo que `unidad-card` y `ejercicio-card` ya tienen escritas.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.cen-hub .sala-hero {
+    position: relative;
+    overflow: hidden;
+}
+
+.cen-hub .sala-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 10% -30%, color-mix(in srgb, var(--office, var(--blue)) 52%, transparent), transparent 52%),
+        radial-gradient(circle at 92% 130%, color-mix(in srgb, var(--office-deep, var(--blue-deep)) 46%, transparent), transparent 56%);
+    pointer-events: none;
+}
+
+.cen-hub .sala-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* La misma ola que derrama el hero de nivel sobre el papel de la página. */
+.cen-hub .sala-hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 58px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60' preserveAspectRatio='none'%3E%3Cpath d='M0 60V30C240 58 480 2 720 18s480 38 720-8v50z' fill='%23f4f8fc'/%3E%3C/svg%3E") bottom center / 100% 100% no-repeat;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* La letra del programa, monumental y en trazo translúcido, ocupando el sitio
+   que en el hub de nivel ocupa el número. Es lo que hace que la sala de Word se
+   distinga de la de Excel de un vistazo y sin leer. */
+.cen-hub .sala-hero-marca {
+    position: absolute;
+    right: 8px;
+    bottom: -90px;
+    z-index: 0;
+    font-family: var(--font-manrope), "Manrope", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: clamp(220px, 26vw, 340px);
+    line-height: 1;
+    color: color-mix(in srgb, var(--office, var(--blue)) 26%, transparent);
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Microsoft 365 no tiene letra: en su lugar va el mosaico de cuatro cuadros,
+   que necesita tamaño propio porque el `font-size` gigante no le afecta. */
+.cen-hub .sala-hero-marca .logo-ms {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    width: clamp(200px, 22vw, 300px);
+    height: clamp(200px, 22vw, 300px);
+    opacity: 0.28;
+}
+
+.cen-hub .sala-hero-marca .logo-ms i {
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+@supports (animation-timeline: scroll()) {
+    .cen-hub .sala-hero-marca {
+        animation: cen-hub-num-deriva linear both;
+        animation-timeline: scroll();
+        animation-range: 0 600px;
+    }
+}
+
+/* El tile del logo junto al titular. Mismo cuerpo que `.nivel-hero-icono` y
+   mismo flotado, para que las dos pantallas respiren igual. El selector lleva
+   el h1 delante por lo mismo que allí: `.hero h1 span` lo volvería block. */
+.cen-hub .sala-hero h1 .sala-hero-logo {
+    display: inline-grid;
+    place-items: center;
+    width: 84px;
+    height: 84px;
+    font-size: 46px;
+    font-weight: 800;
+    color: #ffffff;
+    border-radius: 24px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--office, var(--blue)) 82%, #ffffff), var(--office-deep, var(--blue-deep)));
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 18px 40px color-mix(in srgb, var(--office, var(--blue)) 45%, transparent);
+    vertical-align: middle;
+    margin-right: 8px;
+    animation: cen-hub-nivel-flotar 3.6s ease-in-out infinite;
+}
+
+.cen-hub .sala-hero h1 .sala-hero-logo .logo-ms {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    width: 42px;
+    height: 42px;
+}
+
+.cen-hub .sala-hero h1 .sala-hero-logo .logo-ms i {
+    border-radius: 3px;
+    background: #ffffff;
+}
+
+/* Aquí el color del bloque es el de marca del programa, no el del eje. Una
+   línea y `unidad-card` entero sigue sirviendo. */
+.cen-hub .sala-grado {
+    --eje-c: var(--office);
+    --eje-deep: var(--office-deep);
+}
+
+/* Qué vas a saber hacer al salir de este grado. Va antes de la lista de temas
+   porque «Intermedio» no le dice nada a nadie: lo que orienta es la promesa. */
+.cen-hub .sala-promesa {
+    margin: 10px 0 4px;
+    max-width: 62ch;
+    font-size: 15.5px;
+    line-height: 1.5;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+/* La chapa de procedencia de cada clase. Es la pieza que sostiene la promesa de
+   que aquí NO hay contenido duplicado: dice de qué nivel viene la clase y, en
+   las exclusivas, que sólo existe en esta sala. Va sobre el detalle y con el
+   color de marca en tinta, no en fondo, para no competir con el botón de jugar.
+
+   No lleva `border: dashed` en ninguno de los dos estados: el punteado está
+   prohibido en toda la plataforma, así que lo exclusivo se marca con fondo
+   pleno y lo prestado con contorno sólido. */
+.cen-hub .clase-origen {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    margin-top: 6px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1.25;
+    text-align: left;
+    color: color-mix(in srgb, var(--eje-deep, var(--blue-deep)) 88%, #000000);
+    background: color-mix(in srgb, var(--eje-c, var(--blue)) 13%, #ffffff);
+    border: 1.5px solid color-mix(in srgb, var(--eje-c, var(--blue)) 34%, transparent);
+}
+
+.cen-hub .clase-origen::before {
+    content: "↗";
+    font-size: 12px;
+    opacity: 0.75;
+}
+
+/* Exclusiva de la sala: color pleno invertido, para que se lea como sello y no
+   como enlace a otro sitio —porque no lleva a ningún otro sitio—. */
+.cen-hub .clase-origen.es-exclusiva {
+    color: #ffffff;
+    background: linear-gradient(135deg, var(--eje-c, var(--blue)), var(--eje-deep, var(--blue-deep)));
+    border-color: transparent;
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--eje-c, var(--blue)) 32%, transparent);
+}
+
+.cen-hub .clase-origen.es-exclusiva::before {
+    content: "★";
+    opacity: 0.9;
+}
+
+/* La tarjeta bloqueada apaga su chapa junto con el resto, o el sello de
+   «Sólo aquí» sería lo más vivo de una clase que todavía no se puede jugar. */
+.cen-hub .ejercicio-card.bloqueado .clase-origen {
+    color: #5b6b7f;
+    background: #eef2f7;
+    border-color: #d7dfe9;
+    box-shadow: none;
+}
+
+.cen-hub .ejercicio-card.bloqueado .clase-origen.es-exclusiva {
+    color: #ffffff;
+    background: #94a3b5;
+}
+
+/* La tarjeta de Office ya es un enlace: necesita decirlo. El «Entrar ↗» vive en
+   el mismo pie que el conteo y se enciende al pasar por la tarjeta entera. */
+.cen-hub .office-card .office-entrar {
+    margin-left: auto;
+    font-weight: 800;
+    color: var(--office, var(--blue));
+    opacity: 0.55;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.cen-hub .office-card:hover .office-entrar,
+.cen-hub .office-card:focus-visible .office-entrar {
+    opacity: 1;
+    transform: translateX(3px);
+}

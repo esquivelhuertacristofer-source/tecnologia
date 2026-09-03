@@ -1,0 +1,347 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   `n3-ortografia-e-imagenes` · lo que esta clase añade a Tecnia Textos
+
+   Dos cosas y ninguna más: el subrayado rojo ondulado del corrector —que no es
+   del documento, es una decoración pintada encima— y las dos ventanitas de
+   diálogo, la del corrector y la de insertar imagen.
+
+   Visten de Word y no de la plataforma, y es a propósito (§36.2): el niño tiene
+   que reconocer este cuadro cuando lo vea en la computadora de la escuela. El
+   color pleno vive en la entrada de la actividad y en el panel del maestro.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── el subrayado del corrector ─────────────────────────────────────────────
+   No es una marca del documento: si se mandara a imprimir la hoja no saldría,
+   igual que en Word. Por eso se pinta con una decoración y por eso el alumno no
+   puede «corregir» una falta quitándole la raya. */
+
+/*
+ * La onda va de FONDO y no de `text-decoration: underline wavy`, y está medido.
+ *
+ * El documento tiene interlineado 1.08 —el de Word—, así que a 11 pt los
+ * renglones van a 15.84 px mientras la caja de cada renglón mide 18: se solapan.
+ * Con `text-underline-offset: 3px`, la onda de «anteguas» se pintaba a 25-30 px
+ * del alto del párrafo… es decir, ENCIMA de las letras del renglón siguiente,
+ * atravesando «parecido al de». Parecía que el corrector había subrayado otra
+ * palabra, y en una clase que trata precisamente de leer lo que el corrector
+ * marca, eso es el defecto entero.
+ *
+ * Un fondo se recorta a la caja del elemento y no puede invadir el renglón de
+ * abajo. Medido: la caja del subrayado va de 340 a 358, el renglón siguiente
+ * empieza en 355.84 y sus mayúsculas hacia 359, así que una onda de 3 px pegada
+ * al canto inferior cae en el hueco de los rabos de las letras —donde la pinta
+ * Word— y no toca nada.
+ */
+.txtw-flujo .oi-falta {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='6' height='3' viewBox='0 0 6 3'><path d='M0 2.3 q1.5 -2.3 3 0 t3 0' fill='none' stroke='%23d13438' stroke-width='1'/></svg>");
+  background-repeat: repeat-x;
+  background-position: left bottom;
+  background-size: 6px 3px;
+}
+
+/* La palabra que el diálogo está enseñando ahora mismo. Sin esto, con cuatro
+   subrayadas iguales no hay forma de saber de cuál está hablando el cuadro.
+   Se pinta con `background-color` y no con el atajo `background`, que borraría
+   la onda de arriba. */
+.txtw-flujo .oi-falta.es-actual {
+  background-color: rgba(209, 52, 56, 0.16);
+  border-radius: 2px;
+}
+
+/* ── las ventanitas ───────────────────────────────────────────────────────── */
+
+.txtw .oi-dialogo {
+  position: absolute;
+  right: 356px;
+  bottom: 40px;
+  z-index: 55; /* por debajo del halo (60): el maestro tiene que poder señalarlas */
+  width: 372px;
+  max-width: calc(100vw - 372px);
+  border: 1px solid #b6b3b0;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.34);
+  color: #201f1e;
+  overflow: hidden;
+}
+
+.txtw .oi-dialogo.es-galeria {
+  width: 520px;
+}
+
+.oi-dialogo-barra {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 4px 0 10px;
+  background: #f3f2f1;
+  border-bottom: 1px solid #e1dfdd;
+  color: #201f1e;
+}
+
+.oi-dialogo-titulo {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.oi-dialogo-x {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 22px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #605e5c;
+  cursor: pointer;
+}
+
+.oi-dialogo-x:hover {
+  background: #e6e5e4;
+  color: #201f1e;
+}
+
+.oi-dialogo-cuerpo {
+  padding: 12px 14px 13px;
+}
+
+.oi-rotulo {
+  margin: 0 0 5px;
+  font-size: 11.5px;
+  color: #605e5c;
+}
+
+/* El renglón donde está la palabra. Verla EN su frase es lo que permite decidir
+   si el corrector tiene razón: «Bit» sólo se defiende leyendo qué es Bit. */
+.oi-frase {
+  margin: 0 0 12px;
+  padding: 8px 9px;
+  border: 1px solid #d2d0ce;
+  border-radius: 2px;
+  background: #faf9f8;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.oi-frase-mal {
+  color: #a4262c;
+  font-weight: 700;
+  text-decoration: underline wavy #d13438;
+  text-decoration-skip-ink: none;
+  text-underline-offset: 3px;
+}
+
+.oi-sugerencias {
+  margin: 0 0 11px;
+  padding: 3px;
+  list-style: none;
+  border: 1px solid #d2d0ce;
+  border-radius: 2px;
+  background: #fff;
+  max-height: 116px;
+  overflow: auto;
+}
+
+.oi-sugerencia {
+  display: block;
+  width: 100%;
+  padding: 7px 9px;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: #201f1e;
+  font: inherit;
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.oi-sugerencia:hover {
+  background: #f3f2f1;
+}
+
+/* La elegida, en azul de selección de Windows. Ninguna viene marcada de
+   entrada: elegir es leer, y con una preseleccionada bastaría con pulsar
+   «Cambiar» sin haber leído nada. */
+.oi-sugerencia.es-elegida {
+  background: #185abd;
+  color: #fff;
+  font-weight: 600;
+}
+
+.oi-recado {
+  margin: 0 0 11px;
+  padding: 8px 10px;
+  border-left: 3px solid #f2c94c;
+  border-radius: 2px;
+  background: #fff4ce;
+  color: #5c4400;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.oi-nota {
+  margin: 0 0 11px;
+  font-size: 12px;
+  color: #605e5c;
+}
+
+.oi-listo {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.oi-listo-marca {
+  color: #107c10;
+  flex: none;
+  line-height: 1;
+}
+
+.oi-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.oi-cuenta {
+  flex: 1;
+  font-size: 11.5px;
+  color: #605e5c;
+}
+
+.oi-boton {
+  min-width: 88px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid #8a8886;
+  border-radius: 2px;
+  background: #fff;
+  color: #201f1e;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.oi-boton:hover {
+  background: #f3f2f1;
+}
+
+.oi-boton.es-primario {
+  border-color: #185abd;
+  background: #185abd;
+  color: #fff;
+  font-weight: 600;
+}
+
+.oi-boton.es-primario:hover {
+  border-color: #12448c;
+  background: #12448c;
+}
+
+/* Apagado a la vista, pero sigue respondiendo: al pulsarlo dice qué falta. Un
+   botón mudo deja al alumno sin saber por qué no pasa nada, y por eso tampoco
+   lleva `aria-disabled`: se anunciaría deshabilitado algo que contesta. */
+.oi-boton.es-esperando {
+  opacity: 0.5;
+}
+
+/* El de «Volver a revisar» dentro del cuadro amarillo: mismo botón de Word, sin
+   el ancho mínimo, que ahí compite con dos más. */
+.oi-boton.es-chico {
+  min-width: 0;
+  height: 26px;
+  padding: 0 10px;
+  font-size: 12.5px;
+  flex: none;
+}
+
+/* El aviso de «omitiste algo que sí estaba mal», con su salida al lado. Va en
+   amarillo de aviso de Word, igual que el recado, porque es lo mismo: algo que
+   el alumno tiene que saber antes de seguir. */
+.oi-rehacer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 11px;
+  padding: 8px 10px;
+  border-left: 3px solid #f2c94c;
+  border-radius: 2px;
+  background: #fff4ce;
+  color: #5c4400;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.oi-rehacer span {
+  flex: 1 1 150px;
+}
+
+/* ── la galería ───────────────────────────────────────────────────────────── */
+
+.oi-laminas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 0 0 12px;
+}
+
+.oi-lamina {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid #d2d0ce;
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.oi-lamina:hover {
+  border-color: #a19f9d;
+  background: #faf9f8;
+}
+
+.oi-lamina img {
+  display: block;
+  width: 100%;
+  height: 66px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.oi-lamina-nombre {
+  font-size: 11.5px;
+  line-height: 1.25;
+  color: #201f1e;
+  text-align: center;
+}
+
+.oi-lamina.es-elegida {
+  border-color: #185abd;
+  background: #eff5ff;
+  box-shadow: 0 0 0 2px rgba(24, 90, 189, 0.3);
+}
+
+/* En una pantalla de aula de 1024 el diálogo no cabe al lado del panel del
+   maestro: se pega al canto derecho del documento y se estrecha. Nunca tapa el
+   panel del maestro, que es donde está escrito el encargo. */
+@media (max-width: 1080px) {
+  .txtw .oi-dialogo {
+    right: 350px;
+    width: 330px;
+  }
+
+  .txtw .oi-dialogo.es-galeria {
+    width: 420px;
+  }
+}

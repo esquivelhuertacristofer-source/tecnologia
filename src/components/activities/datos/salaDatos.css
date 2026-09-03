@@ -1,0 +1,230 @@
+/*
+ * Las clases de Tecnia Datos — la portada de objetivos y el encaje del editor
+ * de consultas dentro de la pantalla del gabinete.
+ *
+ * Copiado de `python/salaCodigo.css` con el prefijo `sql-` en vez de `pyc-`
+ * (para no chocar con las clases `.dat-*` de `ventanaDatos.css`, que vive un
+ * nivel más abajo) y el acento esmeralda/teal de Tecnia Datos en vez del
+ * rosa/cian de Tecnia Código. Ni pastel, ni blanco sobre blanco, ni bordes
+ * punteados.
+ *
+ * Lo que NO está aquí: nada del editor ni de la ventana. Ésos traen su propia
+ * hoja (`ventanaDatos.css`, que a su vez reutiliza `ventanaCodigo.css` para el
+ * editor). Aquí sólo hay portada y encaje de layout.
+ */
+
+/* ─────────────────────────── la portada de objetivos ─────────────────────── */
+
+.sql-portada {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  justify-items: center;
+  /* `safe` y no `center` a secas: en una pantalla baja, con `center` a secas
+     una portada alta se recorta POR ARRIBA y lo primero que se pierde es el
+     tema de la clase. Con `safe` se alinea al principio en cuanto no cabe. */
+  align-content: safe center;
+  padding: 20px;
+  overflow-y: auto;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(16, 185, 129, 0.28), transparent 62%),
+    linear-gradient(165deg, #0a2b28, #050d0c 70%);
+}
+
+.sql-portada-caja {
+  width: min(760px, 100%);
+  border-radius: 22px;
+  border: 3px solid #1f8f7f;
+  background: linear-gradient(170deg, #0c2e2a, #071815);
+  box-shadow: 0 26px 70px rgba(2, 20, 16, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  padding: 22px 24px 24px;
+  color: #e6fbf5;
+}
+
+.sql-portada-situacion {
+  margin: 0 0 6px;
+  color: #6ee7d6;
+  font-size: 12.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sql-portada-tema {
+  margin: 0 0 16px;
+  font-size: clamp(23px, 3.4vw, 33px);
+  font-weight: 900;
+  line-height: 1.12;
+  color: #fff;
+  text-shadow: 0 0 26px rgba(45, 212, 191, 0.5);
+}
+
+.sql-portada-etiqueta {
+  display: block;
+  margin-bottom: 6px;
+  color: #7fc9bd;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sql-portada-objetivo {
+  border-radius: 14px;
+  border: 2px solid #2dd4bf;
+  background: linear-gradient(120deg, rgba(45, 212, 191, 0.16), rgba(45, 212, 191, 0.04));
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+.sql-portada-objetivo p {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.42;
+  color: #eafffa;
+}
+
+.sql-portada-cuerpo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.sql-portada-lista {
+  flex: 1 1 340px;
+  min-width: 0;
+}
+.sql-portada-lista ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: sql-paso;
+}
+.sql-portada-lista li {
+  counter-increment: sql-paso;
+  position: relative;
+  padding: 7px 0 7px 36px;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #cdece4;
+}
+.sql-portada-lista li::before {
+  content: counter(sql-paso);
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 12.5px;
+  font-weight: 900;
+  color: #052e2a;
+  background: linear-gradient(140deg, #facc15, #f59e0b);
+  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.4);
+}
+
+.sql-portada-lado {
+  flex: 0 0 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sql-portada-datos {
+  display: flex;
+  gap: 10px;
+}
+.sql-portada-datos span {
+  flex: 1;
+  border-radius: 12px;
+  border: 2px solid #1f8f7f;
+  background: #071c1a;
+  padding: 9px 6px;
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #7fc9bd;
+}
+.sql-portada-datos b {
+  display: block;
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.sql-portada-insignia {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  border: 2px solid #34d399;
+  background: linear-gradient(120deg, rgba(52, 211, 153, 0.22), rgba(52, 211, 153, 0.05));
+  padding: 10px 12px;
+}
+.sql-portada-insignia-glifo {
+  font-size: 26px;
+  line-height: 1;
+}
+.sql-portada-insignia-nombre {
+  font-size: 12px;
+  font-weight: 900;
+  color: #dcffe9;
+  line-height: 1.25;
+}
+
+.sql-portada-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+  border: 0;
+  border-radius: 16px;
+  padding: 16px 26px;
+  font-size: 19px;
+  font-weight: 900;
+  color: #04241f;
+  background: linear-gradient(135deg, #2dd4bf, #10b981);
+  box-shadow: 0 14px 36px rgba(16, 185, 129, 0.45);
+  cursor: pointer;
+}
+.sql-portada-boton:hover {
+  filter: brightness(1.08);
+}
+.sql-portada-boton:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 3px;
+}
+.sql-portada-boton-glifo {
+  font-size: 23px;
+}
+
+/* ───────────────── el encaje del editor en la pantalla ───────────────────── */
+
+/*
+ * `.vtb-marco` ya es `position: absolute; inset: 0`, así que la ventana llena
+ * el bisel del gabinete. `.dat` y `.dat-cuerpo` traen `min-height: 0` pero no
+ * `flex`: el armazón no decide dónde lo montan, y aquí sí se sabe.
+ */
+.sql-marco .dat {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.sql-marco .dat-cuerpo {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+/* La columna del editor puede pasar del alto disponible en una pantalla
+   baja (editor + tarjetas de resultado + error). Que scrollee ella, y no que
+   se salga por debajo del bisel. */
+.sql-marco .dat-izquierda {
+  min-height: 0;
+  overflow-y: auto;
+}

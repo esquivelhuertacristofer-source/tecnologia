@@ -1,0 +1,2948 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Tecnia Diapositivas · lo que esta ventana tiene y Word no (doc §40)
+
+   Este archivo **no repite** el chrome. La barra de título, las pestañas, la
+   cinta, los botones, el panel del maestro, el aro y sus rótulos, la portada de
+   objetivos y el diálogo de la insignia se pintan con las clases `.txtw-*` de
+   `ventanaTextos.css`, que la ventana importa antes que ésta. Copiarlas para
+   cambiarles tres colores es exactamente lo que hace que dos programas de la
+   misma suite acaben pareciendo de dos fábricas distintas.
+
+   Lo que sí es de aquí: el naranja de PowerPoint, la tira de miniaturas, el
+   lienzo 16:9 con sus tiradores, las galerías de diseño y tema, el cajón de
+   notas y el repaso a pantalla completa.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.dpw {
+  /* El naranja de PowerPoint sustituye al azul de Word en TODO el chrome
+     compartido, con una sola redefinición de variables. Ésa es la prueba de
+     que el chrome se sacó bien: si hubiera que tocar reglas, estaría copiado. */
+  --w-azul: #c43e1c;
+  --w-azul-honda: #9b3115;
+  --w-titulo-h: #b7472a;
+  --dpw-lienzo-fondo: #6f6d6b;
+  --dpw-sel: #c43e1c;
+  --dpw-tira: #f3f2f1;
+
+  /* Tira · centro · panel. La tira es angosta y fija: es una tira, no un
+     panel, y si crece se come el lienzo que es donde ocurre la clase. */
+  grid-template-rows: 38px 34px auto minmax(0, 1fr) 28px;
+}
+
+.dpw-medio {
+  grid-template-columns: 168px minmax(0, 1fr) var(--w-maestro);
+  /* El ancla de las galerías, que salen de la cinta pero cuelgan de aquí. */
+  position: relative;
+}
+
+/* ─────────────────────────── la tira de miniaturas ─────────────────────────── */
+
+.dpw-tira {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 8px 40px;
+  background: var(--dpw-tira);
+  border-right: 1px solid var(--w-borde);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.dpw-mini {
+  position: relative;
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  align-items: start;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+  /*
+   * Estas dos líneas no son cosmética: sin ellas la mitad de los arrastres de
+   * la tira no ocurren.
+   *
+   * Medido el 11-ago-2026 escuchando los eventos: el primer arrastre iba bien y
+   * el segundo disparaba `dragstart` y detrás `pointercancel`, o sea que el
+   * navegador arrancaba SU arrastre nativo —el del texto que el clic anterior
+   * había dejado seleccionado— y cancelaba el nuestro a media faena. En pantalla
+   * eso se ve como una miniatura que a veces se mueve y a veces no, que es el
+   * peor defecto posible: parece mala suerte del alumno.
+   *
+   * `touch-action: none` es la misma historia en tableta: sin él, el navegador
+   * interpreta el arrastre como un intento de desplazar la tira y lo cancela.
+   */
+  user-select: none;
+  touch-action: none;
+}
+
+.dpw-mini:hover {
+  background: #e7e5e3;
+}
+
+.dpw-mini:focus-visible {
+  outline: 2px solid var(--t-marca);
+  outline-offset: 1px;
+}
+
+.dpw-mini-num {
+  padding-top: 2px;
+  color: var(--w-gris);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.dpw-mini-lienzo {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--w-borde);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+/* El borde grueso de «estás aquí», del color del programa. */
+.dpw-mini.es-activa .dpw-mini-lienzo {
+  border-color: var(--dpw-sel);
+  box-shadow: 0 0 0 2px rgb(196 62 28 / 0.35);
+}
+
+/* Mientras se reordena: la que viaja se atenúa y el hueco de destino se marca
+   con una barra, no moviendo las demás. Mover el resto mientras el dedo está
+   abajo hace que el destino se escape al soltar. */
+.dpw-mini.es-viajando {
+  opacity: 0.45;
+}
+
+.dpw-mini.es-destino::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  right: 4px;
+  top: -5px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--dpw-sel);
+}
+
+.dpw-mini-caja {
+  position: absolute;
+  border: 1px solid;
+  border-radius: 1px;
+  opacity: 0.28;
+}
+
+.dpw-mini-caja.es-lleno,
+.dpw-mini-caja.es-libre {
+  opacity: 0.62;
+}
+
+.dpw-mini-nombre {
+  grid-column: 2;
+  color: var(--w-gris);
+  font-size: 10.5px;
+  line-height: 1.2;
+}
+
+.dpw-tira-vacia {
+  margin: 12px 4px;
+  color: var(--w-gris);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+/* ─────────────────────────── el centro: lienzo + notas ─────────────────────────── */
+
+.dpw-centro {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+  background: var(--dpw-lienzo-fondo);
+}
+
+.dpw-lienzo-caja {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding: 24px;
+  overflow: auto;
+}
+
+.dpw-lienzo {
+  position: relative;
+  transform-origin: center center;
+  box-shadow: 0 10px 34px rgb(0 0 0 / 0.42);
+  outline: 0;
+}
+
+.dpw-lienzo:focus-visible {
+  box-shadow: 0 10px 34px rgb(0 0 0 / 0.42), 0 0 0 3px var(--t-marca);
+}
+
+.dpw-sin-diapos {
+  display: grid;
+  gap: 8px;
+  place-items: center;
+  padding: 40px 32px;
+  color: #e8e6e4;
+  text-align: center;
+}
+
+.dpw-sin-diapos p {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.dpw-sin-diapos-pista {
+  font-size: 13.5px !important;
+  font-weight: 400 !important;
+  opacity: 0.82;
+}
+
+/* ─────────────────────────── las cajas del lienzo ─────────────────────────── */
+
+.dpw-caja {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  cursor: move;
+  user-select: none;
+}
+
+/* Un marcador vacío se ve; uno lleno, no. Es lo que hace PowerPoint y es lo
+   correcto: el borde punteado es una instrucción («falta esto»), no un adorno,
+   así que desaparece en cuanto deja de hacer falta. */
+.dpw-caja.es-marcador.es-vacio {
+  border: 1px dashed rgb(0 0 0 / 0.38);
+  border-radius: 3px;
+}
+
+.dpw-caja.es-sel {
+  border: 1px solid var(--dpw-sel);
+  border-radius: 3px;
+}
+
+/*
+ * El texto que no le cabe a su caja.
+ *
+ * Es la lección de «pocas palabras» del §27.2, y no se da diciéndosela: se da
+ * dejando que se salga delante del alumno. Lo cuenta el navegador —«¿te cabe tu
+ * contenido?»— sin una sola tolerancia, y la caja lo enseña con un aviso que se
+ * lee, no con un icono que hay que adivinar.
+ */
+.dpw-caja.es-rebosa {
+  border: 1px dashed #b91c1c;
+  border-radius: 3px;
+  box-shadow: inset 0 -14px 18px -12px rgb(185 28 28 / 0.5);
+}
+
+.dpw-caja.es-rebosa::after {
+  content: 'No cabe: se sale de su caja';
+  position: absolute;
+  right: 4px;
+  bottom: -20px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #b91c1c;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.dpw-galeria-foto {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid var(--w-borde);
+  border-radius: 3px;
+  margin-bottom: 3px;
+}
+
+.dpw-color.es-fondo {
+  width: 32px;
+  height: 32px;
+}
+
+.dpw-caja.es-imagen,
+.dpw-caja.es-forma,
+.dpw-caja.es-texto {
+  padding: 0;
+}
+
+.dpw-vacio-pista {
+  width: 100%;
+  color: rgb(0 0 0 / 0.42);
+  font-size: 18px;
+  text-align: center;
+  pointer-events: none;
+}
+
+/*
+ * `height: 100%` no es maquetación: es lo que hace que «¿te cabe?» signifique
+ * algo.
+ *
+ * Con la altura automática, la caja del texto CRECE con su contenido, así que
+ * `scrollHeight` y `clientHeight` valen siempre lo mismo y el navegador nunca
+ * dice que algo se sale. Medido el 11-ago-2026: el muro de texto de la clase 2
+ * —cuarenta palabras en una caja de cuatro renglones— no marcaba nada, y la
+ * fase 1 entera se apoya en que el alumno lo VEA salirse. El texto sobraba por
+ * fuera del marcador y el marcador tan campante.
+ */
+.dpw-texto {
+  width: 100%;
+  height: 100%;
+  line-height: 1.24;
+  overflow: hidden;
+}
+
+.dpw-texto p {
+  margin: 0 0 2px;
+}
+
+.dpw-texto ul {
+  margin: 0;
+  padding-left: 1.1em;
+}
+
+.dpw-texto ul.es-numeros {
+  list-style: decimal;
+}
+
+.dpw-texto ul.es-vinetas {
+  list-style: disc;
+}
+
+.dpw-texto li {
+  margin-bottom: 2px;
+}
+
+.dpw-escritura {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  line-height: 1.24;
+  resize: none;
+  outline: 0;
+}
+
+.dpw-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* Los ocho tiradores. 14 px de lado por la lección de LabFormasYWordArt: uno
+   de 8 px es imposible de agarrar con un trackpad de portátil de aula. */
+.dpw-tirador {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid var(--dpw-sel);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+}
+
+.dpw-tirador.es-nw { left: 0; top: 0; cursor: nwse-resize; }
+.dpw-tirador.es-n { left: 50%; top: 0; cursor: ns-resize; }
+.dpw-tirador.es-ne { left: 100%; top: 0; cursor: nesw-resize; }
+.dpw-tirador.es-e { left: 100%; top: 50%; cursor: ew-resize; }
+.dpw-tirador.es-se { left: 100%; top: 100%; cursor: nwse-resize; }
+.dpw-tirador.es-s { left: 50%; top: 100%; cursor: ns-resize; }
+.dpw-tirador.es-sw { left: 0; top: 100%; cursor: nesw-resize; }
+.dpw-tirador.es-w { left: 0; top: 50%; cursor: ew-resize; }
+
+/* La silueta de la casilla de destino. Es la mitad visible de «cuadricular, no
+   medir»: el alumno ve dónde va a caer ANTES de soltar, así que el salto a la
+   casilla no le parece que el programa le corrigió la mano. */
+.dpw-destino {
+  position: absolute;
+  z-index: 40;
+  border: 2px dashed var(--dpw-sel);
+  border-radius: 3px;
+  background: rgb(196 62 28 / 0.09);
+  pointer-events: none;
+}
+
+/* ─────────────────────────── el cajón de notas ─────────────────────────── */
+
+.dpw-notas {
+  display: grid;
+  gap: 4px;
+  padding: 8px 24px 10px;
+  background: #fff;
+  border-top: 1px solid var(--w-borde);
+}
+
+.dpw-notas-rotulo {
+  color: var(--w-gris);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.dpw-notas-campo {
+  height: 58px;
+  padding: 6px 8px;
+  border: 1px solid var(--w-borde);
+  border-radius: 4px;
+  background: #fbfbfa;
+  color: var(--w-texto);
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1.35;
+  resize: none;
+}
+
+.dpw-notas-campo:focus-visible {
+  outline: 2px solid var(--w-azul);
+  outline-offset: -1px;
+}
+
+/* ─────────────────────────── las galerías de la cinta ─────────────────────────── */
+
+/* Cuelgan de la cinta, no flotan sueltas en la pantalla: es un desplegable de
+   la cinta y tiene que verse pegado a su botón, como en el programa. */
+.dpw-galeria {
+  position: absolute;
+  z-index: 60;
+  top: 0;
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid var(--w-borde);
+  border-top: 0;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 12px 28px rgb(0 0 0 / 0.28);
+}
+
+.dpw-galeria-item {
+  display: grid;
+  gap: 3px;
+  width: 132px;
+  padding: 8px;
+  border: 1px solid var(--w-borde-suave);
+  border-radius: 5px;
+  background: #fff;
+  color: var(--w-texto);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dpw-galeria-item:hover {
+  background: #f6f5f4;
+  border-color: var(--w-borde);
+}
+
+.dpw-galeria-item.es-puesto {
+  border-color: var(--w-azul);
+  box-shadow: inset 0 0 0 1px var(--w-azul);
+}
+
+.dpw-galeria-item b {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dpw-galeria-item small {
+  color: var(--w-gris);
+  font-size: 10.5px;
+  line-height: 1.25;
+}
+
+/* El acomodo dibujado: es lo que hace que «dos contenidos» se entienda sin
+   saber leer la etiqueta. Se deriva de DISENOS, no se dibuja a mano. */
+.dpw-acomodo {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 3px;
+  border: 1px solid var(--w-borde);
+  border-radius: 2px;
+  background: #fdfdfb;
+}
+
+.dpw-acomodo-caja {
+  position: absolute;
+  border-radius: 1px;
+  background: #b9c6da;
+}
+
+.dpw-acomodo-caja.es-titulo {
+  background: var(--w-azul);
+}
+
+.dpw-acomodo-caja.es-imagen {
+  background: #8fa8c8;
+}
+
+.dpw-muestra {
+  position: relative;
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  aspect-ratio: 16 / 9;
+  padding: 8px;
+  margin-bottom: 3px;
+  border: 1px solid var(--w-borde);
+  border-radius: 2px;
+}
+
+.dpw-muestra i {
+  display: block;
+  height: 5px;
+  border-radius: 2px;
+}
+
+.dpw-muestra i:first-child {
+  width: 72%;
+  height: 8px;
+}
+
+.dpw-muestra i:last-child {
+  width: 48%;
+}
+
+.dpw-galeria.es-colores {
+  gap: 6px;
+  padding: 8px;
+}
+
+.dpw-color {
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgb(0 0 0 / 0.25);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dpw-color:hover {
+  outline: 2px solid var(--w-azul);
+  outline-offset: 1px;
+}
+
+/* ─────────────────────────── barra de estado ─────────────────────────── */
+
+.dpw-repasar {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 20px;
+  padding: 0 10px;
+  margin-right: 10px;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.2);
+  color: inherit;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dpw-repasar:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.33);
+}
+
+.dpw-repasar:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ─────────────────────────── el repaso a pantalla completa ─────────────────────────── */
+
+.dpw-repaso {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  background: #0b0f16;
+}
+
+.dpw-repaso-lienzo {
+  position: relative;
+  width: min(100vw, calc(100vh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  /* Encierra los z-index de la lámina.
+     Cada objeto libre se pinta con `z-index: 10 + z`, y sin un contexto de
+     apilamiento propio esos números competían con los de la barra de mandos:
+     bastaba con que una diapositiva tuviera algo abajo en el centro —el dibujo
+     del volcán de §42.1— para que el botón ▶ del modo presentación **existiera
+     y no se pudiera pulsar**. No lo vio ni el compilador ni la sonda: lo cazó
+     el navegador negándose a hacer clic. */
+  isolation: isolate;
+  z-index: 0;
+}
+
+/* La lámina: la diapositiva como la ve el público. Se mide en porcentajes de su
+   contenedor, así que la misma sirve para la pantalla completa del repaso y
+   para el rectángulo proyectado del auditorio. */
+.dpw-lamina {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* La lámina es su propio contenedor de consulta: los tamaños de letra van en
+     `cqh`, o sea en centésimas de SU alto. Así la misma diapositiva se lee
+     igual a pantalla completa y proyectada en la pared del auditorio, que mide
+     cinco metros y es un rectángulo pequeño en el lienzo 3D. */
+  container-type: size;
+}
+
+.dpw-lamina-caja {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 1.4%;
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+.dpw-lamina-caja p {
+  margin: 0 0 0.2em;
+}
+
+/* Las mismas reglas que el lienzo, porque es la misma marca. */
+.dpw-lamina-caja ul {
+  margin: 0;
+  padding-left: 1.1em;
+}
+
+.dpw-lamina-caja ul.es-numeros {
+  list-style: decimal;
+}
+
+.dpw-lamina-caja ul.es-vinetas {
+  list-style: disc;
+}
+
+.dpw-lamina-caja li {
+  margin-bottom: 0.12em;
+}
+
+/* ─────────────────────── lo que se mueve (§42.1) ─────────────────────── */
+
+/* La transición ENTRA con la diapositiva nueva, así que el efecto se pone en la
+   tela que envuelve a la lámina y se dispara con una `key` que cambia al pasar
+   de diapositiva: sin la key React reutiliza el nodo, la animación no se
+   reinicia y el efecto se ve una sola vez en toda la presentación.
+   La duración la pone la ventana en línea, leída de la diapositiva. */
+.dpw-repaso-tela {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.dpw-repaso-tela.es-desvanecer {
+  animation: dpw-entrar-desvanecer 0.7s ease-out both;
+}
+
+.dpw-repaso-tela.es-empujar {
+  animation: dpw-entrar-empujar 0.7s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+
+@keyframes dpw-entrar-desvanecer {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dpw-entrar-empujar {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+/* Las animaciones de OBJETO. Duran menos que una transición a propósito: lo que
+   entra es una parte del dibujo, no una pantalla entera. */
+.dpw-lamina-caja.es-entrando {
+  animation: dpw-anim-aparecer 0.42s ease-out both;
+}
+
+.dpw-lamina-caja.es-enfasis {
+  animation: dpw-anim-enfasis 0.6s ease-in-out;
+}
+
+@keyframes dpw-anim-aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(9%);
+  }
+}
+
+@keyframes dpw-anim-enfasis {
+  50% {
+    transform: scale(1.07);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dpw-repaso-tela.es-desvanecer,
+  .dpw-repaso-tela.es-empujar,
+  .dpw-lamina-caja.es-entrando,
+  .dpw-lamina-caja.es-enfasis {
+    animation: none;
+  }
+}
+
+/* El número de animación sobre la caja, en el LIENZO de trabajo. Es lo que
+   pinta PowerPoint al lado de cada objeto animado, y es lo que hace que el
+   orden se pueda ver sin abrir el panel. */
+.dpw-anim-num {
+  position: absolute;
+  left: -9px;
+  top: -9px;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 4px;
+  border-radius: 5px;
+  background: #c43e1c;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.35);
+  pointer-events: none;
+}
+
+/* ─────────────────────── recorte, audio y alt (§42.2) ─────────────────────── */
+
+/* El marco del recorte: la foto se pinta al tamaño que tendría SIN recortar y
+   este contenedor le corta lo que sobra. Así recortar encoge el marco y no
+   mueve ni reescala la imagen, que es lo que se ve en el programa. */
+.dpw-recorte {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.dpw-recorte .dpw-foto {
+  position: absolute;
+  border-radius: 0;
+}
+
+/* En modo recorte los tiradores dejan de ser redondos y blancos y se vuelven
+   las escuadras negras de PowerPoint: el alumno tiene que ver que el mismo
+   tirador hace otra cosa, o va a arrastrar creyendo que redimensiona. */
+.dpw-caja.es-recortando {
+  outline: 2px dashed rgb(255 255 255 / 0.7);
+  outline-offset: 1px;
+}
+
+.dpw-caja.es-recortando .dpw-recorte .dpw-foto {
+  /* Lo que va a quedar fuera se ve, pero apagado: es la vista previa del
+     recorte que PowerPoint enseña mientras arrastras. */
+  filter: none;
+}
+
+.dpw-tirador.es-recorte {
+  border-radius: 1px;
+  background: #0f172a;
+  border-color: #f8fafc;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.9);
+}
+
+/* El altavoz de un audio insertado. */
+.dpw-altavoz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+}
+
+.dpw-altavoz-icono {
+  font-size: 1.5em;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.4));
+}
+
+.dpw-altavoz.es-sonando .dpw-altavoz-icono {
+  animation: dpw-altavoz-late 0.7s ease-in-out infinite;
+}
+
+@keyframes dpw-altavoz-late {
+  50% {
+    transform: scale(1.16);
+  }
+}
+
+.dpw-altavoz-boton {
+  min-width: 30px;
+  padding: 1px 6px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(15 23 42 / 0.78);
+  color: #fff;
+  font-size: 9px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.dpw-altavoz-boton:hover {
+  background: #c43e1c;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dpw-altavoz.es-sonando .dpw-altavoz-icono {
+    animation: none;
+  }
+}
+
+/* El campo del texto alternativo, dentro del panel acoplado. */
+.dpw-panel-alt {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px;
+}
+
+.dpw-panel-alt label {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: #46505f;
+}
+
+.dpw-panel-alt-campo {
+  min-height: 96px;
+  padding: 7px 8px;
+  border: 1px solid #cfd6e0;
+  border-radius: 6px;
+  resize: vertical;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #1f2937;
+}
+
+.dpw-panel-alt-campo:focus-visible {
+  outline: 2px solid #c43e1c;
+  outline-offset: 1px;
+}
+
+.dpw-panel-alt-pista {
+  margin: 0;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: #77808f;
+}
+
+/* La pestaña contextual, con el color del programa: aparece y desaparece, y
+   tiene que verse que no es una pestaña de las de siempre. */
+.txtw-pestana.dpw-pestana-contextual {
+  color: #a5300f;
+  font-weight: 700;
+}
+
+.txtw-pestana.dpw-pestana-contextual::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: #e07a4e;
+}
+
+/* ─────────────── organizar y el pie con el número (§42.3) ─────────────── */
+
+/* La caja que acompaña a la principal en una selección múltiple: sin tiradores
+   —los tiradores son de la que se arrastra— pero con su marca, o el alumno no
+   sabría cuántas ha elegido. */
+.dpw-caja.es-acompana {
+  outline: 2px dashed #c43e1c;
+  outline-offset: 1px;
+}
+
+.dpw-grupo-marca {
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: #334155;
+  color: #fff;
+  font-size: 10px;
+  font-style: normal;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.3);
+  pointer-events: none;
+}
+
+/* El desplegable de Organizar: una lista, no una rejilla de muestras. */
+.dpw-galeria.es-organizar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 268px;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+/*
+ * Aquí ponía `display: block`, y era un defecto: la rejilla de
+ * `.dpw-galeria-item` es lo que apila el nombre y su explicación. En bloque,
+ * `b` y `small` volvían a ser elementos EN LÍNEA y las doce opciones se leían
+ * «Alinear a la izquierdaTodos empiezan en la misma raya.» Compilaba, pasaba
+ * los tests y era ilegible; se destapó mirando la captura.
+ */
+.dpw-galeria-item.es-lista {
+  width: 100%;
+  text-align: left;
+  padding: 6px 9px;
+}
+
+.dpw-galeria-item.es-lista b,
+.dpw-galeria-item.es-lista small {
+  display: block;
+}
+
+.dpw-galeria-item.es-apagado {
+  opacity: 0.42;
+  cursor: default;
+}
+
+/* El número de diapositiva: abajo a la derecha, pequeño y en el color del
+   tema. En porcentajes y `cqh`, como todo lo de la lámina, para que en el
+   lienzo de trabajo y en la pantalla del público se vea igual. */
+.dpw-pie-numero {
+  position: absolute;
+  right: 2.2%;
+  bottom: 1.6%;
+  z-index: 60;
+  opacity: 0.75;
+  font-size: 2.6cqh;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* En el lienzo de trabajo no hay consulta de contenedor, así que el tamaño va
+   en píxeles del lienzo de maquetación, que siempre mide 960 × 540. */
+.dpw-lienzo .dpw-pie-numero {
+  font-size: 14px;
+}
+
+/* El texto del pie (§44.3): misma altura que el número y en la otra esquina.
+   Se le pone tope de ancho para que un pie largo no cruce la diapositiva
+   entera: en PowerPoint el marcador del pie tampoco es infinito. */
+.dpw-pie-texto {
+  position: absolute;
+  left: 2.2%;
+  bottom: 1.6%;
+  z-index: 60;
+  max-width: 60%;
+  overflow: hidden;
+  opacity: 0.75;
+  font-size: 2.6cqh;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.dpw-lienzo .dpw-pie-texto {
+  font-size: 14px;
+}
+
+/* ─────────────────────── el panel de animación ─────────────────────── */
+
+/* ACOPLADO, no flotando.
+   En PowerPoint el panel de animación es un panel de tareas: se abre y el
+   lienzo se hace más estrecho para dejarle sitio. Puesto encima del lienzo
+   —que fue la primera versión— tapaba justo la diapositiva que el alumno está
+   animando, y además era el patrón de control flotante genérico que en esta
+   plataforma está descartado desde hace meses. Aquí abre una columna de la
+   rejilla, igual que la tira de miniaturas es una columna. */
+.dpw-medio.es-con-panel {
+  grid-template-columns: 168px minmax(0, 1fr) 248px var(--w-maestro);
+}
+
+/* Dos paneles a la vez —el de la clase y uno del programa— caben, cada uno en
+   su columna. Sin esta regla el segundo se salía de la rejilla y aparecía
+   pegado al borde derecho, encima del maestro. */
+.dpw-medio.es-con-dos-paneles {
+  --w-maestro: 320px;
+  grid-template-columns: 152px minmax(0, 1fr) 228px 228px var(--w-maestro);
+}
+
+.dpw-panel-anim.es-fijo .dpw-panel-anim-cabeza {
+  justify-content: flex-start;
+}
+
+.dpw-panel-anim {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+  border-left: 1px solid #d8dde5;
+  background: #fff;
+}
+
+.dpw-panel-anim-cabeza {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border-bottom: 1px solid #e6eaf0;
+  background: #f7f8fb;
+  font-size: 12px;
+  font-weight: 700;
+  color: #243043;
+}
+
+.dpw-panel-anim-cabeza button {
+  margin-left: auto;
+  border: 0;
+  background: none;
+  color: #5b6678;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dpw-panel-anim-lista {
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dpw-panel-anim-fila {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 7px;
+  border: 1px solid #e6eaf0;
+  border-radius: 6px;
+  background: #fbfcfe;
+}
+
+.dpw-panel-anim-fila.es-sel {
+  border-color: #c43e1c;
+  background: #fff4ef;
+}
+
+.dpw-panel-anim-orden {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: #c43e1c;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.dpw-panel-anim-que {
+  min-width: 0;
+}
+
+.dpw-panel-anim-que b {
+  display: block;
+  font-size: 12px;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dpw-panel-anim-que small {
+  display: block;
+  font-size: 10.5px;
+  color: #67707f;
+}
+
+.dpw-panel-anim-mandos {
+  display: flex;
+  gap: 3px;
+}
+
+.dpw-panel-anim-mandos button {
+  width: 22px;
+  height: 22px;
+  border: 1px solid #dbe1ea;
+  border-radius: 5px;
+  background: #fff;
+  color: #35404f;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dpw-panel-anim-mandos button:hover:not(:disabled) {
+  background: #eef2f7;
+}
+
+.dpw-panel-anim-mandos button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.dpw-panel-anim-vacio {
+  margin: 0;
+  padding: 14px 12px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #67707f;
+}
+
+/* El aviso de pasos en el repaso: «2 de 4 partes». Sin él, el alumno no sabe
+   que le faltan clics y cree que la diapositiva está incompleta. */
+.dpw-repaso-pasos {
+  padding: 0 8px;
+  opacity: 0.82;
+  font-size: 12px;
+}
+
+.dpw-repaso-barra {
+  position: fixed;
+  z-index: 3;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.12);
+  color: #fff;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(6px);
+}
+
+.dpw-repaso-barra button {
+  width: 30px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.14);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dpw-repaso-barra button:hover {
+  background: rgb(255 255 255 / 0.26);
+}
+
+.dpw-repaso-barra button.es-salir {
+  width: auto;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ── la vista Patrón (§43.4) ──────────────────────────────────────────────── */
+
+/*
+ * El aviso ocupa el sitio del cajón de notas, y eso es lo que hace que la
+ * ventana no dé un salto al entrar: el hueco es el mismo. Morado y no naranja
+ * porque naranja ya es «Archivo» y no puede significar dos cosas.
+ */
+.dpw-patron-aviso {
+  padding: 12px 14px;
+  border-top: 1px solid #d8dee8;
+  background: #f5f3ff;
+  color: #4c1d95;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.dpw-patron-aviso b {
+  font-weight: 800;
+}
+
+/* ── el cronómetro del ensayo (§43.3) ─────────────────────────────────────── */
+
+/* Ámbar y no blanco: es el único número de la barra que está midiendo algo, y
+   tiene que poder mirarse de reojo sin dejar de presentar. */
+.dpw-ensayo-reloj {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.05;
+  padding: 0 6px;
+}
+
+.dpw-ensayo-reloj b {
+  font-size: 17px;
+  font-weight: 800;
+  color: #fbbf24;
+}
+
+.dpw-ensayo-reloj small {
+  font-size: 10px;
+  opacity: 0.75;
+}
+
+/* ── el video (§43.3) ─────────────────────────────────────────────────────── */
+
+/*
+ * La carátula. Un degradado y nada más: no hay archivo que reproducir, y
+ * fingir un fotograma con una foto de banco sería enseñar un video que no
+ * existe. Lo que sí es de verdad —la duración y la barra— va encima.
+ */
+.dpw-video {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #0b1220;
+}
+
+.dpw-video-tela {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 30% 20%, rgb(56 189 248 / 0.28), transparent 60%),
+    radial-gradient(120% 90% at 80% 90%, rgb(168 85 247 / 0.26), transparent 62%),
+    repeating-linear-gradient(115deg, rgb(255 255 255 / 0.035) 0 2px, transparent 2px 9px);
+}
+
+.dpw-video-play {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.92);
+  color: #0b1220;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.45);
+}
+
+.dpw-video-play:hover {
+  background: #fff;
+}
+
+.dpw-video-play.es-va {
+  font-size: 15px;
+}
+
+.dpw-video-pie {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: 'titulo reloj' 'barra barra';
+  align-items: center;
+  gap: 4px 10px;
+  padding: 8px 10px 9px;
+  background: linear-gradient(transparent, rgb(0 0 0 / 0.72) 42%);
+  color: #fff;
+}
+
+.dpw-video-pie > b {
+  grid-area: titulo;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.dpw-video-reloj {
+  grid-area: reloj;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.9;
+}
+
+.dpw-video-barra {
+  grid-area: barra;
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.28);
+  overflow: hidden;
+}
+
+.dpw-video-barra i {
+  display: block;
+  height: 100%;
+  background: #f43f5e;
+  transition: width 0.24s linear;
+}
+
+/* Rojo cuando arranca solo: no es una opción más, es el defecto que la clase
+   manda arreglar, y un aviso que se ve es lo que hace que se arregle. */
+.dpw-video-arranque {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #b91c1c;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.dpw-video-arranque.es-clic {
+  background: #15803d;
+}
+
+/* ─────────────────── vínculos y botones de acción (§43.5) ─────────────────── */
+
+/* Los dos desplegables nuevos son LISTAS, como el de Organizar: nombres largos
+   —el título de una diapositiva— no caben en una fila de muestras. */
+.dpw-galeria.es-destinos,
+.dpw-galeria.es-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 300px;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+/* Las figuras van en rejilla dentro del mismo menú que los botones de acción
+   (§44.2). Dos secciones de una lista, no dos listas: la de arriba se lee de
+   izquierda a derecha y la de abajo en columna, igual que en PowerPoint. */
+.dpw-galeria-figuras {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--w-borde);
+}
+
+.dpw-galeria-titulo {
+  margin: 0 0 2px;
+  padding: 0 4px;
+  color: var(--w-gris);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* «Quitar el vínculo» se separa del resto con una raya: es lo único de la lista
+   que no elige un destino, y mezclada parecía un destino más llamado «quitar». */
+.dpw-galeria-item.es-quitar {
+  margin-top: 4px;
+  border-top: 1px solid var(--w-borde);
+  border-radius: 0 0 5px 5px;
+  color: var(--w-gris);
+}
+
+.dpw-accion-glifo {
+  display: inline-block;
+  width: 1.1em;
+  font-style: normal;
+}
+
+/*
+ * Un objeto CON VÍNCULO en el lienzo de trabajo: un borde de puntos y el dedito.
+ * Sin esta marca, un menú terminado y un menú con los tres botones muertos se
+ * ven exactamente igual, y el alumno no tiene forma de saber cuál tiene delante
+ * sin presentarlo. La marca es discreta a propósito: no sale al presentar.
+ */
+.dpw-caja.es-vinculo {
+  outline: 2px dotted rgb(37 99 235 / 0.6);
+  outline-offset: 2px;
+}
+
+.dpw-lamina-caja.es-saltable {
+  cursor: pointer;
+}
+
+.dpw-lamina-caja.es-saltable:hover,
+.dpw-lamina-caja.es-saltable:focus-visible {
+  filter: brightness(1.12);
+  outline: 3px solid rgb(255 255 255 / 0.75);
+  outline-offset: 2px;
+}
+
+/*
+ * El botón de acción, que se ve como un botón porque es un botón.
+ *
+ * Todo en `em` y nada en `cqh`: esta misma marca se pinta en las DOS
+ * superficies —el lienzo de trabajo, que mide en píxeles, y la lámina del
+ * público, que mide en `cqh`— y una unidad de contenedor dentro del lienzo se
+ * resolvería contra la ventana, o sea gigante. Cada superficie le da su
+ * tamaño de letra al padre y el botón hereda.
+ */
+.dpw-accion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  /*
+   * Se mete un poco DENTRO de su casilla, y eso es lo que deja el pasillo
+   * entre dos botones pegados. En `em` y no en píxeles porque la misma marca
+   * se pinta en las dos superficies a tamaños muy distintos: en píxeles, el
+   * pasillo del lienzo y el de la pantalla del público no serían el mismo.
+   */
+  width: calc(100% - 0.7em);
+  height: calc(100% - 0.4em);
+  margin: 0.2em auto;
+  padding: 0 0.5em;
+  border-radius: 0.3em;
+  background: rgb(255 255 255 / 0.14);
+  box-shadow: inset 0 0 0 0.1em currentColor;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.dpw-accion b {
+  font-size: 1.25em;
+  line-height: 1;
+}
+
+/* ─────────────────── el cuadro de la personalizada (§43.5) ────────────────── */
+
+/*
+ * Un cuadro de diálogo del programa: dentro de la ventana y no encima de la
+ * pantalla entera. Es la diferencia entre «PowerPoint te está preguntando algo»
+ * y «la página te está preguntando algo», y el alumno la nota.
+ */
+.dpw-cuadro {
+  position: absolute;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: rgb(17 24 39 / 0.45);
+}
+
+.dpw-cuadro-caja {
+  width: min(460px, 92%);
+  max-height: 84%;
+  overflow: auto;
+  padding: 18px 20px 16px;
+  border: 1px solid var(--w-borde);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.35);
+}
+
+.dpw-cuadro-caja h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.dpw-cuadro-pie {
+  margin: 4px 0 14px;
+  color: var(--w-gris);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.dpw-cuadro-campo {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.dpw-cuadro-campo span {
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.dpw-cuadro-campo input {
+  padding: 7px 9px;
+  border: 1px solid var(--w-borde);
+  border-radius: 5px;
+  font: inherit;
+  font-size: 13px;
+}
+
+.dpw-cuadro-etiqueta {
+  margin: 0 0 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.dpw-cuadro-lista {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 3px;
+}
+
+.dpw-cuadro-fila {
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--w-borde-suave);
+  border-radius: 5px;
+  background: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dpw-cuadro-fila:hover {
+  background: #f6f5f4;
+}
+
+/* La fila de casilla del cuadro de pie (§44.3): dos columnas, no tres — la
+   tercera es del número de orden de la presentación personalizada y aquí no
+   existe. Y el texto en dos alturas, porque una casilla que sólo dice su
+   nombre obliga a adivinar para qué sirve. */
+.dpw-cuadro-fila:has(> input[type='checkbox']) {
+  grid-template-columns: 16px 1fr;
+  align-items: start;
+}
+
+.dpw-cuadro-fila span small {
+  display: block;
+  margin-top: 2px;
+  color: var(--w-gris);
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+
+/* La excepción va sangrada bajo las dos de arriba: se lee como lo que es, una
+   salvedad a lo que acabas de marcar y no un ajuste independiente. */
+.dpw-cuadro-fila.es-sangrada {
+  margin-left: 18px;
+  width: auto;
+  border-style: dashed;
+}
+
+.dpw-cuadro-fila.es-puesta {
+  border-color: var(--w-azul);
+  box-shadow: inset 0 0 0 1px var(--w-azul);
+}
+
+/* El número de ORDEN en la lista, que es lo que hace visible que una
+   personalizada puede reordenar. Vacío cuando la diapositiva no entra. */
+.dpw-cuadro-orden {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: var(--w-gris);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.dpw-cuadro-fila.es-puesta .dpw-cuadro-orden {
+  background: var(--w-azul);
+  color: #fff;
+}
+
+.dpw-cuadro-fila b {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.dpw-cuadro-fila small {
+  color: var(--w-gris);
+  font-size: 10.5px;
+}
+
+.dpw-cuadro-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.dpw-cuadro-botones button {
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--w-azul);
+  color: #fff;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dpw-cuadro-botones button.es-secundario {
+  background: #eef2f7;
+  color: var(--w-texto);
+}
+
+.dpw-cuadro-botones button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* El botón que borra trabajo, en rojo y sólo ahí (§44.6). Es el ÚNICO de esta
+   ventana: si el rojo empezara a salir en botones que se pueden deshacer,
+   dejaría de significar «esto no vuelve». */
+.dpw-cuadro-botones button.es-peligro {
+  background: #c62828;
+}
+
+/* ─────────────── comentarios y diapositivas ocultas (§43.6) ──────────────── */
+
+/* El globo de la miniatura: es lo que hace que una revisión se lea de un
+   vistazo sin abrir el panel diapositiva por diapositiva. */
+.dpw-mini-globo {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 3;
+  padding: 1px 6px 1px 4px;
+  border-radius: 999px;
+  background: #facc15;
+  color: #422006;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+}
+
+.dpw-mini-globo.es-resuelto {
+  background: #cbd5e1;
+  color: #475569;
+}
+
+/* Una diapositiva oculta se ve tachada, como en el programa. No se esconde de
+   la tira: está en el archivo, y ése es justamente el hallazgo. */
+.dpw-mini.es-oculta .dpw-mini-lienzo {
+  opacity: 0.45;
+}
+
+.dpw-mini.es-oculta .dpw-mini-lienzo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom right,
+    transparent calc(50% - 1px),
+    #ef4444 calc(50% - 1px),
+    #ef4444 calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+
+.dpw-mini.es-oculta .dpw-mini-nombre {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+/* ── el panel de comentarios ── */
+
+.dpw-com-cuenta {
+  margin: 0;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--w-borde-suave);
+  background: #fffbeb;
+  color: #78350f;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.dpw-com-lista {
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  overflow-y: auto;
+}
+
+.dpw-com {
+  padding: 8px 9px;
+  border: 1px solid var(--w-borde-suave);
+  border-left: 3px solid #facc15;
+  border-radius: 4px 6px 6px 4px;
+  background: #fff;
+}
+
+.dpw-com.es-resuelto {
+  border-left-color: #cbd5e1;
+  opacity: 0.72;
+}
+
+.dpw-com-quien {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0 0 3px;
+}
+
+.dpw-com-quien b {
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+.dpw-com-quien small {
+  color: var(--w-gris);
+  font-size: 10px;
+}
+
+.dpw-com-sello {
+  margin-left: auto;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #14532d;
+  font-size: 9.5px;
+  font-style: normal;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.dpw-com-texto {
+  margin: 0 0 6px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.dpw-com-mandos {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+}
+
+.dpw-com-mandos button {
+  padding: 3px 9px;
+  border: 1px solid var(--w-borde);
+  border-radius: 4px;
+  background: #fff;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dpw-com-mandos button:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.dpw-com-mandos button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* El compositor se va abajo del todo: la lista crece hacia él y el sitio donde
+   se escribe está siempre en el mismo lado del panel, tenga una nota o diez.
+   Sin esto quedaba pegado a la última nota y debajo un palmo de blanco. */
+.dpw-com-nuevo {
+  margin-top: auto;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-top: 1px solid var(--w-borde-suave);
+}
+
+.dpw-com-nuevo label {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.dpw-com-nuevo textarea {
+  min-height: 68px;
+  padding: 7px 8px;
+  border: 1px solid var(--w-borde);
+  border-radius: 5px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.dpw-com-nuevo button {
+  justify-self: end;
+  padding: 6px 16px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--w-azul);
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dpw-com-nuevo button:disabled {
+  opacity: 0.42;
+  cursor: default;
+}
+
+/* En pantallas de aula estrechas la tira se encoge antes que el lienzo: la
+   clase ocurre en el lienzo. */
+@media (max-width: 1180px) {
+  .dpw-medio {
+    --w-maestro: 300px;
+    grid-template-columns: 128px minmax(0, 1fr) var(--w-maestro);
+  }
+}
+
+/* A 390px el recorte de 1180px ya no alcanza: 128px de tira + 300px de
+   maestro son 428px fijos, más que el viewport entero, así que al lienzo
+   —donde de verdad ocurre la clase— no le quedaba nada (medido con
+   Playwright en `n4-tus-primeras-diapositivas`: `lienzoCajaClientWidth: 0`).
+   `.dpw-medio` puede traer 2 a 5 hijos según el modo (tira + lienzo, más
+   hasta dos paneles, más el maestro), así que en vez de enumerar una
+   `grid-template-rows` distinta por combinación de `.es-con-panel` /
+   `.es-clasificando` / `.es-con-dos-paneles`, se cambia el eje entero a
+   flex-columna: cada hijo se apila solo, sin importar cuántos haya, y el
+   lienzo manda con `flex: 1 1 auto` (mismo criterio que `.txtw-medio` en
+   `ventanaTextos.css`, doc §37: «el documento manda»). `display: flex` aquí
+   no compite en especificidad con las reglas `.dpw-medio.es-*` de arriba
+   —ninguna de ellas toca `display`— así que gana solo y sus
+   `grid-template-columns` quedan inertes. */
+@media (max-width: 760px) {
+  .dpw-medio {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  /* La tira es una columna vertical de miniaturas (`flex-direction: column`
+     en `.dpw-tira`) pensada para 168px de ANCHO fijo — apilada tal cual se
+     vuelve una lista larguísima que empuja todo lo demás fuera de pantalla.
+     Le cambia el eje a fila: se desplaza de lado, como la cinta. */
+  .dpw-tira {
+    flex: 0 0 92px;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: 0;
+    border-bottom: 1px solid var(--w-borde);
+  }
+
+  .dpw-mini {
+    flex: 0 0 108px;
+  }
+
+  .dpw-lienzo-caja {
+    flex: 1 1 380px;
+    min-height: 320px;
+  }
+
+  .dpw-panel-anim,
+  .txtw-panel {
+    flex: 0 0 auto;
+    max-height: 42vh;
+    border-left: 0;
+    border-top: 1px solid var(--w-borde);
+  }
+}
+
+/* ───────────── las secciones y el Clasificador (§44.1) ───────────── */
+
+/*
+ * La etiqueta de un tramo, en la tira. Se pinta como una cabecera y no como una
+ * miniatura más —fondo propio, mayúsculas pequeñas, sin marco— porque no es una
+ * diapositiva: si se pareciera a una, el alumno intentaría presentarla.
+ */
+.dpw-seccion,
+.dpw-clas-seccion {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 5px 7px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--dpw-seccion-fondo, #e8eaee);
+  color: #384154;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dpw-seccion:hover,
+.dpw-clas-seccion:hover {
+  background: #dfe3e9;
+}
+
+.dpw-seccion span,
+.dpw-clas-seccion span {
+  font-size: 10px;
+  line-height: 1;
+  opacity: 0.75;
+}
+
+.dpw-seccion b,
+.dpw-clas-seccion b {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dpw-seccion small,
+.dpw-clas-seccion small {
+  font-size: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.dpw-clas-seccion {
+  margin: 14px 0 8px;
+  padding: 7px 10px;
+}
+
+.dpw-clas-seccion:first-child {
+  margin-top: 0;
+}
+
+/*
+ * El Clasificador ocupa el sitio del lienzo. Las miniaturas son las MISMAS de
+ * la tira —`pintarMini`—, así que aquí sólo se cambia cómo se acomodan: en
+ * rejilla y más anchas, que es para lo que sirve la vista.
+ */
+.dpw-clasificador {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 18px 40px;
+  background: var(--dpw-fuera, #f1f2f4);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.dpw-clas-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 14px 16px;
+  align-items: start;
+}
+
+/* En rejilla el número va encima y no en una columna a la izquierda: con 168 px
+   de ancho, robarle 16 a la miniatura se nota en lo único que importa aquí, que
+   es poder LEER la diapositiva pequeña. */
+.dpw-clasificador .dpw-mini {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid var(--w-borde);
+}
+
+.dpw-clasificador .dpw-mini.es-activa {
+  border-color: #b7472a;
+  box-shadow: 0 0 0 2px rgb(183 71 42 / 0.25);
+}
+
+.dpw-clasificador .dpw-mini-num {
+  font-size: 10px;
+  font-weight: 800;
+  opacity: 0.7;
+}
+
+/* ─── las dos formas de pantalla, dibujadas a escala (§44.3) ─── */
+
+.dpw-formas {
+  display: flex;
+  gap: 10px;
+}
+
+.dpw-forma {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 10px;
+  border: 1px solid var(--w-borde);
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.dpw-forma:hover {
+  background: #f8fafc;
+}
+
+.dpw-forma.es-elegida {
+  border-color: var(--w-azul);
+  box-shadow: 0 0 0 2px rgb(37 99 235 / 0.18);
+}
+
+/* El rectángulo: mismo alto en las dos y distinto ancho, que es exactamente lo
+   que cambia. Un icono cuadrado para las dos habría hecho la pregunta ilegible
+   sin leer los números. */
+.dpw-forma i {
+  display: block;
+  border: 1px solid #94a3b8;
+  border-radius: 2px;
+  background: #e2e8f0;
+}
+
+.dpw-forma.es-elegida i {
+  border-color: var(--w-azul);
+  background: #dbeafe;
+}
+
+.dpw-forma b {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.dpw-forma small {
+  color: var(--w-gris);
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+
+.dpw-forma em {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 9.5px;
+  font-style: normal;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* El cuadro de una sola pregunta no necesita 460 px de ancho. */
+.dpw-cuadro-caja.es-estrecho {
+  width: min(380px, 92%);
+}
+
+/* ─── la barra de vistas, en la barra de estado ─── */
+
+.dpw-vistas {
+  display: flex;
+  gap: 2px;
+  margin-right: 8px;
+}
+
+.dpw-vistas button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dpw-vistas button:hover {
+  background: rgb(0 0 0 / 0.1);
+}
+
+.dpw-vistas button.es-activa {
+  background: rgb(0 0 0 / 0.18);
+}
+
+/* La lámina de verdad dentro de una tarjeta del Clasificador. Mismo truco que
+   la vista Moderador: caja 16:9 con `container-type: size`, y la lámina se
+   escala sola a lo que le den. */
+.dpw-clas-lamina {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  container-type: size;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+/* Una diapositiva oculta se ve apagada y con el número tachado, como en el
+   programa: se distingue de un vistazo sin tener que leer el rótulo. */
+.dpw-clasificador .dpw-mini.es-oculta .dpw-clas-lamina {
+  opacity: 0.45;
+}
+
+.dpw-clasificador .dpw-mini.es-oculta .dpw-mini-num {
+  text-decoration: line-through;
+}
+
+/*
+ * En el Clasificador desaparece la columna de la tira: la rejilla ocupa todo el
+ * ancho de trabajo. Sin esto, el Clasificador heredaba el hueco de 168 px que
+ * la tira dejó libre y salía en una tira más —dieciocho diapositivas en fila
+ * india y media ventana vacía—, que es lo contrario de lo que la vista es. Se
+ * vio en la captura, no en el compilador.
+ *
+ * Va después de la regla del panel a propósito: las dos tocan la misma
+ * propiedad con la misma especificidad y manda la última, así que abrir un
+ * panel dentro del Clasificador no le devuelve la columna de la tira.
+ */
+.dpw-medio.es-clasificando {
+  grid-template-columns: minmax(0, 1fr) var(--w-maestro);
+}
+
+.dpw-medio.es-clasificando.es-con-panel {
+  grid-template-columns: minmax(0, 1fr) 248px var(--w-maestro);
+}
+
+.dpw-medio.es-clasificando.es-con-dos-paneles {
+  grid-template-columns: minmax(0, 1fr) 228px 228px var(--w-maestro);
+}
+
+/*
+ * La regla que estrujaba la lámina, y la caza fue de manual: la tarjeta decía
+ * tener UNA columna y el navegador contestaba que tenía dos, «112px 60.65px».
+ * Preguntándole a la hoja qué reglas ganaban salió que ninguna de las dos de
+ * columnas mentía — la segunda columna la fabricaba un HIJO:
+ * `.dpw-mini-nombre { grid-column: 2 }`, escrita para la tira, que en una
+ * rejilla de una sola columna crea una columna implícita y le deja a la lámina
+ * lo que sobra. Sesenta y un píxeles de diapositiva dentro de una tarjeta de
+ * ciento noventa.
+ *
+ * Y de paso: en el Clasificador el nombre del diseño no aporta nada, porque la
+ * diapositiva se LEE. Lo único que aporta es el aviso de que está oculta, y ése
+ * sí se queda.
+ */
+.dpw-clasificador .dpw-mini-nombre {
+  grid-column: auto;
+  display: none;
+}
+
+.dpw-clasificador .dpw-mini.es-oculta .dpw-mini-nombre {
+  display: block;
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+/* En el Clasificador el altavoz NO va suelto en la esquina: iría exactamente
+   encima del tiempo, que se alinea a la derecha —medido: la insignia ocupa
+   x175-197 y el tiempo termina en x193—, y taparía el número que esta vista
+   existe para enseñar. Aquí el altavoz lo lleva la propia fila del tiempo. */
+.dpw-clasificador .dpw-mini-voz {
+  display: none;
+}
+
+.dpw-clasificador .dpw-mini-num {
+  text-align: left;
+  padding-top: 0;
+}
+
+/* El hueco de destino, en rejilla, es una barra vertical al lado y no una
+   horizontal encima: en una fila, «encima» no quiere decir «antes». */
+.dpw-clasificador .dpw-mini.es-destino::before {
+  left: -9px;
+  right: auto;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  height: auto;
+}
+
+/* ───────────── formas dibujadas y modelo 3D (§44.2) ───────────── */
+
+.dpw-figura {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.dpw-figura svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* El texto de dentro va centrado y encima del trazo, como en PowerPoint. No es
+   un objeto aparte: si lo fuera, mover la forma dejaría la etiqueta atrás. */
+.dpw-figura-texto {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 4px 8px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  pointer-events: none;
+}
+
+.dpw-modelo3d {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.dpw-modelo3d canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.dpw-modelo3d-cargando {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: rgb(0 0 0 / 0.5);
+  font-size: 13px;
+}
+
+/*
+ * El tirador de giro, arriba del todo y separado de la caja, que es donde
+ * PowerPoint lo pone. Va con la SELECCIÓN y no dentro de la escena 3D: girar es
+ * una herramienta de edición, y una escena con controles pintados encima es
+ * exactamente lo que Cristofer rechazó de los laboratorios.
+ */
+.dpw-tirador-giro {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  border-radius: 999px;
+  background: var(--dpw-sel);
+  color: #fff;
+  font-size: 13px;
+  font-style: normal;
+  line-height: 1;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.dpw-tirador-giro:active {
+  cursor: grabbing;
+}
+
+.dpw-tirador-giro:focus-visible {
+  outline: 2px solid var(--t-marca);
+  outline-offset: 2px;
+}
+
+/* «Sin relleno» / «Sin contorno»: la diagonal roja del programa de verdad. */
+.dpw-color.es-ninguno {
+  background:
+    linear-gradient(to top right, transparent calc(50% - 1px), #dc2626 50%, transparent calc(50% + 1px)),
+    #fff;
+  border: 1px solid var(--w-borde);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LA HOJA DE PAPEL (§44.4)
+
+   El mismo dibujo en la vista de notas, en las dos vistas de patrón y en el
+   previo de imprimir. Se mide en `cqw` —unidades del propio contenedor— para
+   que la misma hoja valga a 200 px en el previo y a 700 px en la vista: si se
+   midiera en píxeles habría que escribir dos tamaños de letra y uno de los dos
+   acabaría mintiendo.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.hoja {
+  container-type: size;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 2cqw;
+  width: 100%;
+  padding: 3.4cqw;
+  background: #fff;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.18);
+  color: #111827;
+}
+
+/* Escala de grises: es un filtro sobre la hoja entera, como en la impresora.
+   No se recolorea nada — la presentación sigue siendo la de siempre y lo que
+   cambia es cómo SALE, que es justo la lección del encargo. */
+.hoja.es-grises {
+  filter: grayscale(1) contrast(1.06);
+}
+
+.hoja-arriba,
+.hoja-abajo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+  min-height: 4cqw;
+  color: #6b7280;
+  font-size: 2.4cqw;
+}
+
+.hoja-abajo {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.6cqw;
+}
+
+.hoja-arriba {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1.6cqw;
+}
+
+.hoja-rotulo {
+  font-weight: 700;
+  color: #374151;
+}
+
+/* En el molde, los rótulos SE ESCRIBEN. Es toda la vista de patrón: cuatro
+   cajas en las esquinas y un hueco en medio que no es tuyo. */
+.hoja-rotulo.es-molde {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.6cqw 1cqw;
+  border: 1px dashed #9ca3af;
+  border-radius: 2px;
+  background: rgb(37 99 235 / 0.04);
+  font: inherit;
+  font-weight: 700;
+  color: #374151;
+}
+
+.hoja-rotulo.es-molde:focus {
+  outline: 2px solid var(--t-marca);
+  outline-offset: 1px;
+  background: #fff;
+}
+
+/*
+ * `margin-left: auto` y no `space-between` a secas: cuando el encabezado o el
+ * pie están vacíos no se pinta nada —una hoja no reserva sitio para un rótulo
+ * que nadie escribió— y entonces el único hijo que queda se iba al borde
+ * izquierdo. Se veía en la captura: «1 de 3» debajo de la primera diapositiva
+ * en vez de en su esquina.
+ */
+.hoja-fecha,
+.hoja-pagina {
+  flex: 0 0 auto;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.hoja-cuerpo {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 1), minmax(0, 1fr));
+  align-content: start;
+  gap: 3cqw;
+  min-height: 0;
+}
+
+.hoja-hueco {
+  display: grid;
+  gap: 1.4cqw;
+  min-width: 0;
+}
+
+.hoja-cuerpo.es-con-rayas .hoja-hueco {
+  grid-template-columns: 1.35fr 1fr;
+  align-items: start;
+  gap: 2.4cqw;
+}
+
+/*
+ * En una página de notas, el sitio de las notas es **toda la mitad de abajo**,
+ * como en PowerPoint. Sin esto, dos frases dejaban la diapositiva arriba y medio
+ * folio en blanco flotando debajo, y en la vista de patrón el marcador de notas
+ * salía del tamaño de su letra en vez del tamaño de su hueco — que es
+ * exactamente lo que un molde tiene que enseñar.
+ */
+.hoja-cuerpo.es-con-notas {
+  align-content: stretch;
+}
+
+.hoja-cuerpo.es-con-notas .hoja-hueco {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.hoja-cuerpo.es-con-notas .hoja-notas-molde {
+  display: grid;
+  align-content: start;
+  height: 100%;
+}
+
+/*
+ * `position: relative` NO es decorativo: `.dpw-lamina` es `absolute; inset: 0`
+ * —lleva siéndolo desde §39— y sin un ancla aquí se cuelga del antepasado
+ * posicionado más cercano, que dentro del previo de imprimir es el Backstage
+ * entero. Resultado medido: una diapositiva de 1600 × 1000 tapando la pantalla
+ * mientras el DOM decía que había ocho hojas con su lámina cada una. Lo dijo el
+ * navegador al preguntarle por los rectángulos; la sonda que contaba elementos
+ * daba todo verde.
+ */
+.hoja-lamina {
+  position: relative;
+  container-type: size;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border: 1px solid #d1d5db;
+  overflow: hidden;
+}
+
+.hoja-lamina .dpw-lamina {
+  width: 100%;
+  height: 100%;
+}
+
+/* El hueco del molde: un rectángulo con su nombre, como lo pinta PowerPoint. */
+.hoja-lamina-molde {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background:
+    repeating-linear-gradient(45deg, #f3f4f6 0 6px, #eceef1 6px 12px);
+  color: #6b7280;
+  font-size: 3cqw;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Las rayas para apuntar del documento de 3. */
+.hoja-rayas {
+  display: grid;
+  align-content: space-between;
+  gap: 2.6cqw;
+  height: 100%;
+  min-height: 12cqw;
+  padding-top: 1.6cqw;
+}
+
+.hoja-rayas i {
+  display: block;
+  height: 1px;
+  background: #d1d5db;
+}
+
+.hoja-notas {
+  min-height: 18cqw;
+  color: #374151;
+  font-size: 2.5cqw;
+  line-height: 1.5;
+}
+
+.hoja-notas p {
+  margin: 0 0 0.6cqw;
+}
+
+.hoja-notas-vacio,
+.hoja-notas-molde {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.hoja-notas-molde {
+  display: block;
+  padding: 2cqw;
+  border: 1px dashed #9ca3af;
+  background: rgb(37 99 235 / 0.04);
+  font-style: normal;
+}
+
+/* El hueco que no lleva nada en la última hoja. Se ve el sitio vacío, que es
+   lo que pasa en el papel. */
+.hoja-hueco.es-vacio {
+  min-height: 6cqw;
+}
+
+/* ── las vistas de patrón de papel y la página de notas (§44.4) ───────────── */
+
+.dpw-patron-hoja,
+.dpw-pagina-notas {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  min-height: 0;
+  padding: 14px 18px 18px;
+  background: var(--w-fondo-lienzo, #6b7280);
+  overflow: auto;
+}
+
+/* Dos filas fijas —el aviso y la hoja— para que la hoja SIEMPRE tenga una fila
+   de alto medible: si cayera en la fila `auto`, su `height: 100%` se mediría
+   contra sí misma y no valdría nada. Por eso la hoja pide su fila por número y
+   no confía en el orden. */
+.dpw-pagina-notas {
+  grid-template-rows: auto minmax(0, 1fr);
+  place-items: start center;
+}
+
+.dpw-pagina-notas .hoja {
+  grid-row: 2;
+}
+
+/* El aviso de la oculta: va SOBRE la hoja, no dentro. Dentro sería tinta. */
+.dpw-notas-oculta {
+  margin: 0 0 10px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.94);
+  color: var(--w-rojo, #b91c1c);
+  font-size: 12.5px;
+}
+
+.dpw-patron-cab {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 9px 12px;
+  border-radius: 7px;
+  background: rgb(255 255 255 / 0.94);
+}
+
+.dpw-patron-cab b {
+  font-size: 13.5px;
+}
+
+.dpw-patron-cab span {
+  color: var(--w-gris);
+  font-size: 12.5px;
+}
+
+.dpw-patron-cerrar {
+  padding: 6px 12px;
+  border: 1px solid var(--w-borde);
+  border-radius: 5px;
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dpw-patron-cerrar:hover {
+  background: var(--w-hover, #f3f4f6);
+}
+
+.dpw-patron-lienzo {
+  place-self: stretch center;
+  display: grid;
+  place-items: start center;
+  min-height: 0;
+  width: 100%;
+}
+
+/*
+ * La hoja se dimensiona por lo que ESCASEA, y lo que escasea es el alto.
+ *
+ * Salió midiendo: con `width: 560px` y la proporción Carta puesta, la hoja mide
+ * 725px de alto SIEMPRE, y en la vista de patrón —que gasta 77px arriba en la
+ * barra de «Cerrar vista de patrón»— ya no caben. El pie de página quedaba
+ * cortado por el borde de abajo, y el pie es la mitad de lo que ese molde
+ * enseña: un patrón donde no se ve dónde va el pie no es un patrón. Había
+ * scroll, pero un alumno no descubre un scroll que no ve.
+ *
+ * Con el alto al mando y el ancho derivado de la proporción, la hoja cabe
+ * entera en cualquier ventana y sigue topando en los 560px de siempre cuando
+ * sobra sitio.
+ */
+.dpw-patron-lienzo .hoja,
+.dpw-pagina-notas .hoja {
+  height: min(100%, 725px);
+  width: auto;
+  max-width: min(560px, 100%);
+}
+
+/* ── el Zoom de resumen (§44.5) ───────────────────────────────────────────── */
+
+/*
+ * Una miniatura viva con su nombre debajo. El marco es lo que la hace parecer
+ * pulsable —que lo es— y `position: relative` es obligatorio y no decorativo:
+ * la lámina de dentro es `position: absolute; inset: 0` y sin un antepasado
+ * colocado se ancla a la ventana entera. Es exactamente el defecto A de §44.4,
+ * ya cobrado una vez.
+ */
+/*
+ *  aquí y no sólo en el marco: los tamaños de abajo van en
+ * `cqh` —centésimas del alto del propio botón— y sin contenedor propio el
+ * navegador los resolvía contra el ancestro más lejano, así que el nombre de la
+ * sección salía del tamaño de un titular y desbordaba la diapositiva. Medido
+ * mirando la captura, que es donde se ve.
+ */
+.dpw-zoom {
+  container-type: size;
+  display: flex;
+  flex-direction: column;
+  gap: 4cqh;
+  width: 100%;
+  height: 100%;
+}
+
+.dpw-zoom-marco {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  border: 0.6cqh solid rgb(255 255 255 / 0.85);
+  border-radius: 1.2cqh;
+  box-shadow: 0 1.4cqh 3cqh rgb(0 0 0 / 0.35);
+  container-type: size;
+}
+
+.dpw-zoom-nombre {
+  flex: 0 0 auto;
+  overflow: hidden;
+  /* 12 y no 4: medido en pantalla, 4cqh de un botón de tres filas son SIETE
+     píxeles — un rótulo que está y no se lee es peor que no ponerlo. */
+  font-size: 12cqh;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dpw-zoom-roto {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: #e5e7eb;
+  color: #b91c1c;
+  font-size: 9cqh;
+  font-weight: 700;
+}
+
+/* ── reutilizar diapositivas y el esquema de Word (§44.5) ─────────────────── */
+
+.dpw-reutilizar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  padding: 10px 12px 12px;
+}
+
+.dpw-reutilizar-archivo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  font-size: 12.5px;
+}
+
+.dpw-reutilizar-archivo span {
+  color: var(--w-gris);
+  font-size: 11.5px;
+}
+
+/* La casilla que es la lección: arriba, con su explicación debajo y no en un
+   globo de ayuda que hay que ir a buscar. */
+.dpw-reutilizar-casilla {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  padding: 9px 10px;
+  border: 1px solid var(--w-borde);
+  border-radius: 6px;
+  background: var(--w-hover, #f3f4f6);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dpw-reutilizar-casilla i {
+  display: block;
+  margin-top: 3px;
+  color: var(--w-gris);
+  font-size: 11.5px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.dpw-reutilizar-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.dpw-reutilizar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  padding: 6px;
+  border: 1px solid var(--w-borde);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.dpw-reutilizar-item:hover {
+  border-color: var(--w-acento, #c43e1c);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.14);
+}
+
+/* `position: relative` obligatorio: la lámina de dentro es absoluta (§44.4 A). */
+.dpw-reutilizar-lamina {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 3px;
+  container-type: size;
+}
+
+.dpw-reutilizar-nombre {
+  font-size: 11.5px;
+  font-weight: 600;
+  text-align: left;
+}
+
+/* ─── el diálogo del esquema ─── */
+
+.dpw-cuadro-caja.es-ancho {
+  width: min(880px, 94%);
+}
+
+.dpw-esquema {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 14px;
+  min-height: 0;
+}
+
+.dpw-esquema-hoja {
+  max-height: 46vh;
+  padding: 16px 18px;
+  overflow-y: auto;
+  border: 1px solid var(--w-borde);
+  border-radius: 5px;
+  background: #fff;
+}
+
+.dpw-esquema-hoja p {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 6px;
+  margin: 0 0 7px;
+  line-height: 1.3;
+}
+
+.dpw-esquema-hoja b {
+  align-self: start;
+  padding: 1px 0;
+  border-radius: 3px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 9.5px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.dpw-esq-t1 span {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.dpw-esq-t2 span {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/*
+ * Los que NO se convierten: en gris y sin etiqueta. Se ven para que se note.
+ *
+ *  no es cosmética: sin ella el renglón sin etiqueta caía en la
+ * columna de 26px que se reserva para el «T1», y un párrafo de ocho palabras se
+ * partía en ocho renglones de una palabra. El documento parecía roto justo en
+ * los renglones cuya única misión es enseñar que ahí no pasa nada.
+ */
+.dpw-esq-normal span {
+  grid-column: 2;
+  color: var(--w-gris);
+  font-size: 12px;
+}
+
+.dpw-esquema-saldran {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.dpw-esquema-cuenta {
+  margin: 0;
+  font-size: 12.5px;
+}
+
+/* Dos por fila: las cuatro que van a salir se ven a la vez, y el previo sirve
+   para decidir en vez de para hacer scroll. */
+.dpw-esquema-saldran ul {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  align-content: start;
+  max-height: 42vh;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.dpw-esquema-lamina {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--w-borde);
+  border-radius: 4px;
+  container-type: size;
+}
+
+
+/* ── grabar la presentación (§44.6) ───────────────────────────────────────── */
+
+/* El punto rojo, y late: un indicador de grabación quieto es un icono. */
+.dpw-grabando {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgb(185 28 28 / 0.9);
+  color: #fff;
+  font-size: 12.5px;
+}
+
+.dpw-grabando i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fff;
+  animation: dpw-late 1.1s ease-in-out infinite;
+}
+
+@keyframes dpw-late {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dpw-grabando i {
+    animation: none;
+  }
+}
+
+.dpw-grabando b {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
+}
+
+.dpw-grabando small {
+  opacity: 0.82;
+  font-size: 11px;
+}
+
+/* «Repetir ésta», en la misma barra que el resto de mandos del repaso pero sin
+   el rojo: repetir no es terminar, y dos botones rojos juntos se pulsan mal. */
+.dpw-repaso-barra .dpw-repetir {
+  width: auto;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.14);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+/* El altavoz de la miniatura grabada, ABAJO a la derecha: arriba a la derecha
+   vive el globo del comentario (§43.6) y dos esquinas iguales se tapan. Es
+   además la misma esquina que ocupa en el lienzo grande, así que el alumno lo
+   busca en un solo sitio. */
+.dpw-mini-voz {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgb(17 24 39 / 0.72);
+  font-size: 10px;
+  font-style: normal;
+  line-height: 1.3;
+}
+
+/* El tiempo bajo la miniatura del Clasificador. Cifras tabulares porque van en
+   rejilla: unos tiempos que no se alinean no se comparan de un vistazo, que es
+   exactamente para lo que están ahí. */
+.dpw-clas-tiempo {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  color: var(--w-gris);
+  font-size: 10.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.dpw-clas-tiempo i {
+  font-style: normal;
+  font-size: 10px;
+}
+
+/* Y el del lienzo, donde PowerPoint lo pone: sobre la diapositiva, abajo a la
+   derecha. Se pinta con su propio fondo oscuro y no con el del tema — un
+   altavoz que cambia de color con el tema se confunde con el contenido. */
+.dpw-voz-diapo {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 4;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgb(17 24 39 / 0.78);
+  font-size: 15px;
+  line-height: 1;
+  pointer-events: none;
+}

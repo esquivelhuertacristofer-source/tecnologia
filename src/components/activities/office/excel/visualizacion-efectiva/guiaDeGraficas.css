@@ -1,0 +1,111 @@
+/**
+ * `GuiaDeGraficas.tsx` — el panel de clase de `n8-visualizacion-efectiva`.
+ *
+ * Mismo molde que `fichaDeCalidad.css`: el panel entra por `panelFijo`, que ya
+ * envuelve el cuerpo en `.txtw-panel-cuerpo` —márgenes y fondo son de ahí—,
+ * así que aquí sólo se ordenan las cuatro reglas.
+ *
+ * Color pleno, no pastel: el verde de una regla demostrada es el verde de
+ * Excel (`#107c41`) y el ámbar de una pendiente es `#b45309`, los dos sobre su
+ * propio fondo saturado — la misma paleta que ya usa `fichaDeCalidad.css`,
+ * porque las dos fichas viven en la misma sala y enseñan la misma lección de
+ * fondo: esto se va marcando solo, no lo marca el alumno.
+ */
+
+.gdg {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.82rem;
+}
+
+.gdg-intro {
+  margin: 0;
+  font-size: 0.76rem;
+  opacity: 0.75;
+}
+
+.gdg-marcador {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(16, 124, 65, 0.12);
+  border-left: 4px solid #107c41;
+  font-weight: 700;
+}
+
+.gdg-marcador b {
+  font-size: 1.15rem;
+  color: #0b5c30;
+}
+
+.gdg-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gdg-item {
+  display: flex;
+  gap: 9px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border-left: 4px solid #b45309;
+  background: rgba(180, 83, 9, 0.1);
+}
+
+.gdg-item[data-hecho='si'] {
+  border-left-color: #107c41;
+  background: rgba(16, 124, 65, 0.12);
+}
+
+.gdg-marca {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #fff;
+  background: #b45309;
+}
+
+.gdg-item[data-hecho='si'] .gdg-marca {
+  background: #107c41;
+}
+
+.gdg-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gdg-titulo {
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.gdg-pregunta {
+  font-size: 0.74rem;
+  opacity: 0.8;
+  line-height: 1.3;
+}
+
+.gdg-nota {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(15, 108, 189, 0.1);
+  border-left: 4px solid #0f6cbd;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
