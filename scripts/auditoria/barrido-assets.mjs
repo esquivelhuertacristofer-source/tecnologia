@@ -57,6 +57,21 @@ function deRegistro(archivo) {
   return [...s.matchAll(/^ {2}'([a-z0-9-]+)':/gm)].map((m) => m[1]);
 }
 
+/**
+ * La sala (`app`) se lee del registro. Adivinarla partiendo el id da 'ppt' para
+ * `of-ppt-patron`, cuando el registro dice 'powerpoint': la URL sale mal, la
+ * pagina responde 200 con la sala vacia, y las 13 clases de PowerPoint parecen
+ * rotas sin estarlo. Costo un informe entero de falsos positivos.
+ */
+function officeDeRegistro(archivo) {
+  const s = readFileSync(join(RAIZ, archivo), 'utf8');
+  const fuera = [];
+  for (const m of s.matchAll(/^  '([a-z0-9-]+)': \{[\s\S]*?app: '([a-z0-9]+)'/gm)) {
+    fuera.push({ id: m[1], app: m[2] });
+  }
+  return fuera;
+}
+
 const rutas = [];
 if (todo) {
   for (const id of deRegistro('src/components/activities/registry.ts')) {
@@ -64,12 +79,20 @@ if (todo) {
   }
 }
 if (todo || soloOffice) {
-  for (const id of deRegistro('src/components/activities/office/registroOffice.ts')) {
-    rutas.push({ id, url: `/hub/office/${id.split('-')[1]}/actividad/${id}` });
+  for (const { id, app } of officeDeRegistro('src/components/activities/office/registroOffice.ts')) {
+    rutas.push({ id, url: `/hub/office/${app}/actividad/${id}` });
   }
 }
 
-const nav = await chromium.launch();
+const nav = await chromium.launch({
+  /*
+   * MUDO. Un barrido abre 235 laboratorios y muchos tienen sonido: aunque el
+   * navegador sea invisible, el audio SI sale por los altavoces del equipo.
+   * Se descubrio de la peor manera, con el equipo sonando solo mientras
+   * alguien intentaba trabajar.
+   */
+  args: ['--mute-audio', '--autoplay-policy=user-gesture-required'],
+});
 const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
 const p = await ctx.newPage();
 await p.goto(`${BASE}/log-in`, { waitUntil: 'domcontentloaded' });
