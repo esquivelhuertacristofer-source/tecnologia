@@ -50,7 +50,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Un documento ya armado',
       detalle:
         'Una plantilla no es un color ni un adorno: es un documento de partida hecho. Trae el texto, los títulos, el interlineado y hasta el pie de página puestos, y tú sólo cambias lo que es de tu escuela. Empezar de una hoja en blanco es la forma más lenta de empezar.',
-      img: 'ficha-plantilla.png',
+      img: 'ficha-plantilla.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -60,7 +60,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Arriba y abajo hay otra capa',
       detalle:
         'El encabezado y el pie de página no son el primer y el último renglón de la hoja: son una capa aparte del documento. Se escriben una vez y el programa los repite en todas las hojas, también en las que todavía no existen. Por eso se ven grises mientras escribes en el cuerpo.',
-      img: 'ficha-capa.png',
+      img: 'ficha-capa.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -70,7 +70,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Que lo cuente el programa',
       detalle:
         'El número de página no se escribe: se pone una vez y cada hoja sabe cuál es. Escribirlo a mano funciona hasta el día en que metes una hoja en medio, y ese día hay que renumerar el documento entero. Lo automático no es comodidad, es que no se rompe.',
-      img: 'ficha-numero.png',
+      img: 'ficha-numero.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -80,7 +80,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Una hoja que nace vestida',
       detalle:
         'La prueba de que no es un truco: escribe hasta que nazca una hoja nueva y mírala. Ya trae el encabezado arriba, el pie abajo y su número, sin que nadie los copie. Eso es lo que distingue una capa del documento de un renglón de texto.',
-      img: 'ficha-hoja-nueva.png',
+      img: 'ficha-hoja-nueva.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

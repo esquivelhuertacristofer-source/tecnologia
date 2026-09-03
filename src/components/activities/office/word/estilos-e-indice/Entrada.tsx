@@ -48,7 +48,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Una etiqueta, no un adorno',
       detalle:
         'Cuando le pones «Título 1» a un renglón no le estás poniendo un aspecto: le estás pegando una etiqueta que dice «esto es una sección». El aspecto viene detrás, de regalo. Por eso dos documentos con Título 1 se ven distintos y los dos están bien.',
-      img: 'ficha-estilo.png',
+      img: 'ficha-estilo.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -58,7 +58,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'El esqueleto del documento',
       detalle:
         'El panel de Navegación, a la izquierda, lista los títulos que tiene tu documento y te lleva a cualquiera con un clic. En un trabajo de veinte páginas es la diferencia entre buscar con la rueda del ratón y llegar de golpe.',
-      img: 'ficha-navegacion.png',
+      img: 'ficha-navegacion.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -68,7 +68,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Lo escribe la máquina',
       detalle:
         'La tabla de contenido no se teclea. El programa recorre el documento, apunta cada título con la página en la que cayó y lo escribe por ti. Si un renglón no tiene estilo de título, para él no existe y no aparece.',
-      img: 'ficha-indice.png',
+      img: 'ficha-indice.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -78,7 +78,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'El índice es una foto',
       detalle:
         'El índice no se corrige solo: es una foto del documento del momento en que lo hiciste. Si cambias un título o el texto crece y se corren las páginas, hay que volver a tomarla con «Actualizar tabla». Se hace siempre antes de entregar.',
-      img: 'ficha-actualizar.png',
+      img: 'ficha-actualizar.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

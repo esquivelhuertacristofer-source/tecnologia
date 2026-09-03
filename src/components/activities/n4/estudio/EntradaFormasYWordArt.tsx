@@ -42,7 +42,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Texto con estilo',
       detalle:
         'El título artístico es texto con estilo: más grande, con color, con contorno o con sombra. Sirve para el título de una portada, no para el texto normal, porque si todo va con estilo ya nada destaca sobre nada.',
-      img: 'ficha-titulo.png',
+      img: 'ficha-titulo.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -52,7 +52,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Que se lea de lejos',
       detalle:
         'Y hay una regla que se olvida siempre: un título tiene que LEERSE. Uno con demasiados efectos, o de un color que se pierde contra el papel, se ve bonito de cerca y desaparece de lejos. La prueba es bajarle el zoom a la página y mirarla entera.',
-      img: 'ficha-de-lejos.png',
+      img: 'ficha-de-lejos.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -62,7 +62,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Marcar y señalar',
       detalle:
         'Las formas son figuras que insertas: recuadros, círculos, flechas, globos. Sirven para marcar algo importante, para señalarlo o para agrupar. Cada una hace una cosa distinta, y una forma puesta donde no hay nada que marcar sólo estorba.',
-      img: 'ficha-forma.png',
+      img: 'ficha-forma.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -72,7 +72,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Cerca y sin deformar',
       detalle:
         'Una imagen va cerca del texto que explica, y con el texto acomodado a su alrededor. Y para cambiarle el tamaño se jala de una esquina, nunca de un lado: de un lado se estira y se deforma, y eso se nota muchísimo.',
-      img: 'ficha-imagen.png',
+      img: 'ficha-imagen.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

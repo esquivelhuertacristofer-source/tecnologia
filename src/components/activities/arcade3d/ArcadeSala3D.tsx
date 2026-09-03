@@ -21,7 +21,7 @@ import './arcade3d.css';
  * contrato bajo jsdom siguen pasando sin tocar three.js.
  */
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 export interface FinalMaquina3D {
   insigniaNombre: string;

@@ -31,7 +31,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 1,
       titulo: '¿Quién lo escribió?',
       detalle: 'Un museo, una escuela, una universidad, alguien con nombre y apellido que responda por lo que dice.',
-      img: 'ficha-quien.png',
+      img: 'ficha-quien.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -40,7 +40,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 2,
       titulo: '¿De cuándo es?',
       detalle: 'Una página con fecha de este año te dice que alguien la sigue cuidando.',
-      img: 'ficha-cuando.png',
+      img: 'ficha-cuando.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -49,7 +49,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 3,
       titulo: 'Señales de alerta',
       detalle: 'Sin autor, sin fecha, llena de anuncios o prometiendo algo increíble: desconfía.',
-      img: 'ficha-alerta.png',
+      img: 'ficha-alerta.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -58,7 +58,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 4,
       titulo: 'Compara dos',
       detalle: 'Si dos sitios serios que no se conocen dicen lo mismo, seguramente es cierto.',
-      img: 'ficha-compara.png',
+      img: 'ficha-compara.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
   ],

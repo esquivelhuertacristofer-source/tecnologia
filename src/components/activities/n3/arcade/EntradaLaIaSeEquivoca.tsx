@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'El fallo',
       titulo: 'Confunde cosas',
       detalle: 'Puede mirar una magdalena y decir muy convencida que es un perrito.',
-      img: 'ficha-confunde-cosas.png',
+      img: 'ficha-confunde-cosas.webp',
       acento: { c: '#ef4444', deep: '#7f1d1d' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'El truco',
       titulo: 'Suena segura pero…',
       detalle: 'Contesta con voz firme aunque la respuesta esté equivocada.',
-      img: 'ficha-suena-segura.png',
+      img: 'ficha-suena-segura.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'Tu turno',
       titulo: 'Revisa siempre',
       detalle: 'Lo importante se comprueba: en un libro, en clase o con otra fuente.',
-      img: 'ficha-revisa-siempre.png',
+      img: 'ficha-revisa-siempre.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'Tu apoyo',
       titulo: 'Pregunta a un adulto',
       detalle: 'Si algo no te cuadra, pídeselo a alguien mayor en quien confíes.',
-      img: 'ficha-pregunta-a-un-adulto.png',
+      img: 'ficha-pregunta-a-un-adulto.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

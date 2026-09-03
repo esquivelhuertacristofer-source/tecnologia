@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Concepto',
       titulo: 'El archivo',
       detalle: 'Es cualquier cosa que guardas en la compu: un dibujo, una tarea, una foto o una canción.',
-      img: 'ficha-archivo.png',
+      img: 'ficha-archivo.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Casa',
       titulo: 'Mi compu',
       detalle: 'Guarda tus archivos dentro de la máquina, sin necesitar internet.',
-      img: 'ficha-mi-compu.png',
+      img: 'ficha-mi-compu.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Casa',
       titulo: 'La USB',
       detalle: 'Una memoria pequeña que se conecta y se desconecta para llevar tus archivos a otra compu.',
-      img: 'ficha-usb.png',
+      img: 'ficha-usb.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Casa',
       titulo: 'La nube',
       detalle: 'Guarda tus archivos en internet, para verlos desde cualquier dispositivo conectado.',
-      img: 'ficha-nube.png',
+      img: 'ficha-nube.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

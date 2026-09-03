@@ -10,7 +10,7 @@ export default function NotFound() {
       {/* Mascot */}
       <div className="w-48 h-48 relative mb-6 animate-bounce" style={{ animationDuration: '3s' }}>
         <Image
-          src="/assets/ceny.png"
+          src="/assets/ceny.webp"
           alt="CENy"
           fill
           className="object-contain drop-shadow-xl"

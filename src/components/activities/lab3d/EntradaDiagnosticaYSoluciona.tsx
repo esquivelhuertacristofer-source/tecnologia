@@ -40,7 +40,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       titulo: 'Observa el síntoma exacto',
       detalle:
         'No «no funciona», sino «enciende el led y no hay imagen». El síntoma bien descrito ya reduce la lista de culpables a la mitad.',
-      img: 'ficha-sintoma.png',
+      img: 'ficha-sintoma.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -50,7 +50,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       titulo: 'Lo simple primero',
       detalle:
         'Cables, contactos y si de verdad está encendido. Una parte enorme de las fallas reales son eso, y se descartan en treinta segundos.',
-      img: 'ficha-simple.png',
+      img: 'ficha-simple.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -60,7 +60,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       titulo: 'Una variable a la vez',
       detalle:
         'Cambia el cable, no el cable y el monitor. Si cambias tres cosas y funciona, no sabes cuál era y no aprendiste nada.',
-      img: 'ficha-aisla.png',
+      img: 'ficha-aisla.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -70,7 +70,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       titulo: 'La solución mínima',
       detalle:
         'La que explique el síntoma y nada más, sin desarmar de más. Reinstalar y cambiar la pieza cara son el último recurso, no el primero.',
-      img: 'ficha-minima.png',
+      img: 'ficha-minima.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],

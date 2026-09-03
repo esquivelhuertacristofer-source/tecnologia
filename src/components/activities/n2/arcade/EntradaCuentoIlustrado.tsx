@@ -20,7 +20,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'La tira',
       titulo: 'Escribe tu página',
       detalle: 'Arrastra las palabras a la tira, en el orden correcto, y jala la palanca para imprimir la oración de tu página.',
-      img: 'ficha-escribe-tu-pagina.png',
+      img: 'ficha-escribe-tu-pagina.webp',
       acento: { c: '#5ce1e6', deep: '#0e7490' },
     },
     {
@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'El mini-lienzo',
       titulo: 'Dibuja tu página',
       detalle: 'Elige un frasco de color y toca cada zona del mini-lienzo para ilustrar lo que dice tu oración.',
-      img: 'ficha-dibuja-tu-pagina.png',
+      img: 'ficha-dibuja-tu-pagina.webp',
       acento: { c: '#ff6d7c', deep: '#d63a52' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'Idea clave',
       titulo: 'La portada',
       detalle: 'La portada es la primera página: su título invita a todos a leer el cuento que escribiste y dibujaste.',
-      img: 'ficha-la-portada.png',
+      img: 'ficha-la-portada.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'La prensa',
       titulo: 'La prensa de cuentos',
       detalle: 'Al terminar todas las páginas, la prensa del gabinete las encuaderna en un solo librito con portada.',
-      img: 'ficha-la-prensa-de-cuentos.png',
+      img: 'ficha-la-prensa-de-cuentos.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'El aviso',
       titulo: 'Subrayado rojo',
       detalle: 'El corrector marca en rojo las palabras que le parecen mal escritas.',
-      img: 'ficha-subrayado-rojo.png',
+      img: 'ficha-subrayado-rojo.webp',
       acento: { c: '#ef4444', deep: '#7f1d1d' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'La decisión',
       titulo: 'Corrige la palabra',
       detalle: 'Elige cómo se escribe bien… o déjala como está si el corrector se equivocó.',
-      img: 'ficha-corrige.png',
+      img: 'ficha-corrige.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'El añadido',
       titulo: 'Insertar imagen',
       detalle: 'Un escrito también se acompaña con imágenes que van en su propio hueco.',
-      img: 'ficha-insertar-imagen.png',
+      img: 'ficha-insertar-imagen.webp',
       acento: { c: '#f472b6', deep: '#9d174d' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'El criterio',
       titulo: 'Imagen que ayuda',
       detalle: 'No sirve cualquier dibujo: la buena imagen habla de lo mismo que el texto.',
-      img: 'ficha-imagen-que-ayuda.png',
+      img: 'ficha-imagen-que-ayuda.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

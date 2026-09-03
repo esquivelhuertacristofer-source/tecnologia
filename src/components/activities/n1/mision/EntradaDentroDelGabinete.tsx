@@ -11,12 +11,12 @@ import { EntradaUnidad1Base, type ConfigEntradaUnidad1 } from './EntradaUnidad1B
  */
 
 const IMG_POR_KEY: Record<string, string> = {
-  motherboard: 'ficha-tarjeta-madre.png',
-  cpu: 'ficha-procesador.png',
-  ram: 'ficha-ram.png',
-  ssd: 'ficha-ssd.png',
-  psu: 'ficha-fuente.png',
-  fan: 'ficha-ventilador.png',
+  motherboard: 'ficha-tarjeta-madre.webp',
+  cpu: 'ficha-procesador.webp',
+  ram: 'ficha-ram.webp',
+  ssd: 'ficha-ssd.webp',
+  psu: 'ficha-fuente.webp',
+  fan: 'ficha-ventilador.webp',
 };
 
 const ACENTO_POR_KEY: Record<string, { c: string; deep: string }> = {

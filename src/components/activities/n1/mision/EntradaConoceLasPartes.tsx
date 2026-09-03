@@ -47,15 +47,15 @@ import { useSfx } from '../../lib/useSfx';
  */
 
 const ASSETS = '/assets/actividades/n1-conoce-las-partes';
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 const FICHA_IMG: Record<string, string> = {
-  monitor: 'ficha-monitor.png',
-  keyboard: 'ficha-teclado.png',
-  mouse: 'ficha-mouse.png',
-  tower: 'ficha-gabinete.png',
-  printer: 'ficha-impresora.png',
-  regulator: 'ficha-regulador.png',
+  monitor: 'ficha-monitor.webp',
+  keyboard: 'ficha-teclado.webp',
+  mouse: 'ficha-mouse.webp',
+  tower: 'ficha-gabinete.webp',
+  printer: 'ficha-impresora.webp',
+  regulator: 'ficha-regulador.webp',
 };
 
 // Mismos pares de color que dan identidad a los niveles 1-6 (--nivel/--nivel-deep
@@ -196,7 +196,7 @@ export function EntradaConoceLasPartes(props: ActivityProps) {
                   controlsList="nodownload"
                   disablePictureInPicture
                   preload="metadata"
-                  poster={`${ASSETS}/portada.png`}
+                  poster={`${ASSETS}/portada.webp`}
                   src={`${ASSETS}/video-explicativo.mp4?v=4`}
                   className="w-full aspect-video"
                   tabIndex={iniciado ? undefined : -1}

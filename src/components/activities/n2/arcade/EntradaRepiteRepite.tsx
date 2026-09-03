@@ -20,7 +20,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'El tablero',
       titulo: 'El camino larguísimo',
       detalle: 'Un tramo recto con muchas casillas iguales obliga a elegir: ¿apilar cien bloques o buscar una forma más corta?',
-      img: 'ficha-camino-largo.png',
+      img: 'ficha-camino-largo.webp',
       acento: { c: '#5ce1e6', deep: '#0e7490' },
     },
     {
@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'El problema',
       titulo: 'Bloques apilados',
       detalle: 'Poner un bloque de avanzar por cada casilla funciona, pero deja una torre altísima y fácil de desordenar.',
-      img: 'ficha-bloques-apilados.png',
+      img: 'ficha-bloques-apilados.webp',
       acento: { c: '#ff6d7c', deep: '#b91457' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'Idea clave',
       titulo: 'El bloque repetir',
       detalle: 'Un bucle es un bloque que repite otro bloque el número exacto de veces que tú le indiques.',
-      img: 'ficha-bloque-repetir.png',
+      img: 'ficha-bloque-repetir.webp',
       acento: { c: '#8b5cf6', deep: '#5b21b6' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'Meta',
       titulo: 'Menos piezas, mismo camino',
       detalle: 'Un solo bloque repetir hace el mismo trabajo que una torre de bloques, con menos piezas y menos lugar para contar mal.',
-      img: 'ficha-menos-piezas.png',
+      img: 'ficha-menos-piezas.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

@@ -40,7 +40,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'La pregunta',
       detalle:
         'Cada mañana te asomas a la ventana y te haces una pregunta que se contesta sí o no: ¿está lloviendo? Un programa que decide hace exactamente eso — mira primero y actúa después.',
-      img: 'ficha-pregunta.png',
+      img: 'ficha-pregunta.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -50,7 +50,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'El bloque en C',
       detalle:
         'El condicional tiene forma de C abierta. En la boca de arriba lleva un hueco hexagonal, y en ese hueco sólo entran preguntas: una orden rectangular rebota antes de meterse.',
-      img: 'ficha-bloque-c.png',
+      img: 'ficha-bloque-c.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -60,7 +60,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Si se cumple',
       detalle:
         'Dentro de la C van las acciones que la respuesta protege. Si la respuesta es no, la computadora se las salta enteras; lo que dejes por debajo de la C pasa siempre, toque o no toque.',
-      img: 'ficha-si-cumple.png',
+      img: 'ficha-si-cumple.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -70,7 +70,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Si no',
       detalle:
         'Hay un hermano con dos bocas: arriba lo que pasa cuando la respuesta es sí, abajo lo que pasa cuando es no. Siempre se hace uno de los dos, nunca los dos y nunca ninguno.',
-      img: 'ficha-si-no.png',
+      img: 'ficha-si-no.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

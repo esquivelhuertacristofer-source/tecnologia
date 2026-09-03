@@ -15,7 +15,7 @@ import { useSfx } from '../../lib/useSfx';
  * actualizado — 1.º de secundaria, tono un peldaño más adulto que N6.
  */
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 export interface PasoRuta {
   id: string;
@@ -134,7 +134,7 @@ export function EntradaN7SituacionBase({ entrada, ...props }: ActivityProps & { 
                     controlsList="nodownload"
                     disablePictureInPicture
                     preload="metadata"
-                    poster={`${assets}/portada.png`}
+                    poster={`${assets}/portada.webp`}
                     src={`${assets}/video-explicativo.mp4`}
                     className="w-full aspect-video"
                     tabIndex={iniciado ? undefined : -1}

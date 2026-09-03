@@ -35,7 +35,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 1,
       titulo: 'Los tres botones',
       detalle: 'Nuevo abre una ventana vacía y la llenas tú. Responder contesta a quien te escribió. Reenviar manda ese mismo correo a otra persona.',
-      img: 'ficha-tres-botones.png',
+      img: 'ficha-tres-botones.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 2,
       titulo: 'Responder engancha',
       detalle: 'Pone solo la dirección y el asunto con Re: delante, y deja abajo el mensaje original con su rayita. Así la plática queda encadenada como los vagones de un tren.',
-      img: 'ficha-responder.png',
+      img: 'ficha-responder.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 3,
       titulo: 'Reenviar pregunta',
       detalle: 'Reenviar se lleva el mensaje entero con Fwd: delante, pero deja el Para vacío. Responder ya sabe a quién; Reenviar te lo pregunta.',
-      img: 'ficha-reenviar.png',
+      img: 'ficha-reenviar.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -62,7 +62,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 4,
       titulo: 'Revisa el clip',
       detalle: 'Que sea el archivo correcto, que no pese de más y que esté pegado de verdad. Si no ves el nombre abajo, no hay archivo.',
-      img: 'ficha-clip.png',
+      img: 'ficha-clip.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],

@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 1,
       titulo: 'La luz, de frente',
       detalle: 'La cámara se ajusta a lo que más brilla. Si la lámpara o la ventana están detrás de ti, tú te vuelves la sombra. Y lo que hay a tu espalda también sale: deja una pared lisa.',
-      img: 'ficha-luz-frente.png',
+      img: 'ficha-luz-frente.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -45,7 +45,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 2,
       titulo: 'Entra silenciado',
       detalle: 'A una reunión que ya empezó se entra con el micrófono apagado, porque nadie sabe qué se está oyendo en tu casa. Dentro, lo enciendes sólo cuando te toca hablar.',
-      img: 'ficha-silenciado.png',
+      img: 'ficha-silenciado.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -54,7 +54,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 3,
       titulo: 'La mano es el botón',
       detalle: 'La mano de tu brazo delante de la cámara no la ve nadie: quien habla está mirando su propia pantalla. La del botón ✋ deja tu nombre en la lista de turnos, en el orden en que se levantó.',
-      img: 'ficha-mano-boton.png',
+      img: 'ficha-mano-boton.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -63,7 +63,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 4,
       titulo: 'Nadie graba sin permiso',
       detalle: 'Tu cara y tu voz son tuyas: para grabar tenemos que estar todos de acuerdo. Y el enlace es la puerta de la reunión — sólo invita quien la organiza.',
-      img: 'ficha-permiso.png',
+      img: 'ficha-permiso.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],

@@ -35,7 +35,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 1,
       titulo: 'De, Para y CC',
       detalle: 'De dice quién te escribió. Para, a quién va. Y CC es quién más se entera, aunque el correo no sea para él.',
-      img: 'ficha-cabecera.png',
+      img: 'ficha-cabecera.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 2,
       titulo: 'Asunto y mensaje',
       detalle: 'El asunto son pocas palabras que dicen de qué trata; con eso deciden si lo abren. El mensaje lleva saludo, lo que necesitas y tu nombre.',
-      img: 'ficha-asunto.png',
+      img: 'ficha-asunto.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 3,
       titulo: 'El adjunto',
       detalle: 'Un archivo no se escribe: se engancha con el clip y viaja amarrado al correo. Una foto, un documento, tu tarea.',
-      img: 'ficha-adjunto.png',
+      img: 'ficha-adjunto.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -62,7 +62,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 4,
       titulo: 'Usuario, arroba y servidor',
       detalle: 'Una sola arroba, ni un espacio y nada de acentos. Si la dirección está rota, el correo sale, da vueltas y vuelve.',
-      img: 'ficha-direccion.png',
+      img: 'ficha-direccion.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
   ],

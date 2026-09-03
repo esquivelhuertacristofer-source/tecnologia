@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'Para ordenar',
       titulo: 'Una carpeta',
       detalle: 'Guarda archivos parecidos juntos para que encuentres todo sin perderte.',
-      img: 'ficha-carpeta.png',
+      img: 'ficha-carpeta.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'Por dentro',
       titulo: 'Carpetas dentro de carpetas',
       detalle: 'Una carpeta puede tener otras adentro, como cajones dentro de cajones.',
-      img: 'ficha-anidadas.png',
+      img: 'ficha-anidadas.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'El truco',
       titulo: 'Copiar y pegar',
       detalle: 'Ctrl más C copia y Ctrl más V pega: dos teclas y listo, sin volver a empezar.',
-      img: 'ficha-atajo.png',
+      img: 'ficha-atajo.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'La idea grande',
       titulo: 'Todo ordenado',
       detalle: 'Con carpetas y atajos encuentras tus cosas rapidísimo y trabajas mejor.',
-      img: 'ficha-orden.png',
+      img: 'ficha-orden.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

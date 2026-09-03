@@ -8,7 +8,7 @@ import type * as THREE from 'three';
 import { ControlHtml } from '../../arcade3d/piezas3d';
 import { MOSTRADOR_Y } from '../../arcade3d/EscenaArcade3D';
 
-const PIXEL_IMG = '/assets/actividades/n1-laberinto-del-mouse/pixel.png';
+const PIXEL_IMG = '/assets/actividades/n1-laberinto-del-mouse/pixel.webp';
 
 /**
  * Piezas 3D para «La mesa del laberinto» (N1·U2, parada 3), en WebGL 3D real.

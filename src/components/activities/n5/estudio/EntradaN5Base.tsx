@@ -18,7 +18,7 @@ import { useSfx } from '../../lib/useSfx';
  * config en vez de estar clavada aquí.
  */
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 export interface PasoRuta {
   id: string;
@@ -157,7 +157,7 @@ export function EntradaN5Base({ entrada, ...props }: ActivityProps & { entrada: 
                     controlsList="nodownload"
                     disablePictureInPicture
                     preload="metadata"
-                    poster={`${assets}/portada.png`}
+                    poster={`${assets}/portada.webp`}
                     src={`${assets}/video-explicativo.mp4`}
                     className="w-full aspect-video"
                     tabIndex={iniciado ? undefined : -1}

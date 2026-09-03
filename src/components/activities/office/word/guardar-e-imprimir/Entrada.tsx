@@ -49,7 +49,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Hasta que guardas, no existe',
       detalle:
         'Mientras escribes, tu documento sólo está en la memoria: una pizarra que se borra sola al apagar. Por eso arriba, junto al nombre del archivo, dice «Sin guardar» en cuanto tocas una tecla. Ese letrero es la diferencia entre tener la tarea y no tenerla.',
-      img: 'ficha-memoria.png',
+      img: 'ficha-memoria.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -59,7 +59,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Guardar pisa; Guardar como crea',
       detalle:
         '«Guardar» escribe encima del archivo que ya existe, sin preguntar nada. «Guardar como» hace un archivo NUEVO y te pregunta tres cosas: cómo se llama, en qué carpeta va y de qué tipo es. El archivo viejo se queda donde estaba: no se mueve ni se borra.',
-      img: 'ficha-guardar-como.png',
+      img: 'ficha-guardar-como.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -69,7 +69,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: '.docx para ti, PDF para mandar',
       detalle:
         'El .docx es tu documento: se abre en Word y se sigue editando. El PDF es una foto del papel: se ve igual en cualquier teléfono aunque no tenga Word, pero ya no se toca. Por eso se manda el PDF y se guarda el .docx. Nunca al revés.',
-      img: 'ficha-docx-pdf.png',
+      img: 'ficha-docx-pdf.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
     {
@@ -79,7 +79,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Mira el papel antes de gastarlo',
       detalle:
         'La vista previa te enseña las hojas en chiquito, tal como van a salir. Ahí se ve si el documento son una hoja o tres, y si la última lleva un solo renglón. Multiplica las hojas por las copias y ya sabes cuánto papel se va: 30 copias de dos hojas son 60.',
-      img: 'ficha-vista-previa.png',
+      img: 'ficha-vista-previa.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],

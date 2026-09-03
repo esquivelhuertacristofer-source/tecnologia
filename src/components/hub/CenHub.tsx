@@ -342,7 +342,7 @@ export default function CenHub() {
           <div className="hero-bit">
             <span className="hero-bit-retrato">
               <Image
-                src="/assets/actividades/n1-enciende-y-apaga/bit-cara.png"
+                src="/assets/actividades/n1-enciende-y-apaga/bit-cara.webp"
                 alt="Bit"
                 fill
                 sizes="64px"

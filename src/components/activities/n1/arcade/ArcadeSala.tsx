@@ -17,7 +17,7 @@ import './arcade.css';
  * montar para que la primera línea de Bit ya salga con la voz buena.
  */
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 export interface FinalMaquina {
   insigniaNombre: string;

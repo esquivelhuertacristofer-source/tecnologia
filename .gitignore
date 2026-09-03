@@ -42,7 +42,22 @@ output/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-scripts/
+# Los guiones locales (generacion de imagenes con krea2, guiones de video) se
+# quedan fuera: son el taller, no el sitio. PERO tres carpetas SI tienen que
+# viajar en el repositorio:
+#
+#   cloudflare/  porque `npm run build:cf` -el comando que corre Cloudflare
+#                Builds- ejecuta `scripts/cloudflare/construir.mjs`. Con la
+#                carpeta ignorada, el despliegue desde GitHub fallaba con
+#                «Cannot find module» antes de compilar una sola linea. No se
+#                habia notado porque hasta hoy siempre se desplego desde local.
+#   auditoria/   el barrido con navegador que el runbook manda pasar antes de
+#                entregar; un guion de calidad que no viaja no lo usa nadie.
+#   imagenes/    la conversion a WebP y sus comprobaciones.
+scripts/*
+!scripts/cloudflare/
+!scripts/auditoria/
+!scripts/imagenes/
 
 # Docs con credenciales — gestionar sólo en variables de entorno, nunca versionar valores reales
 docs/CREDENCIALES*.md
@@ -100,3 +115,4 @@ tsconfig.tsbuildinfo
 # Cacharros de sesión
 /scratchpad/
 *.log
+scripts/auditoria/assets-rotos.json

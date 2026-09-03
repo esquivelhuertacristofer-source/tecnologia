@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'Primera generación',
       titulo: 'Los bulbos',
       detalle: 'Piezas de vidrio grandes, como focos: se calentaban mucho y ocupaban muchísimo espacio.',
-      img: 'ficha-bulbos.png',
+      img: 'ficha-bulbos.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'Segunda generación',
       titulo: 'Los transistores',
       detalle: 'Mucho más pequeños que un bulbo y sin calentarse tanto: las computadoras encogieron.',
-      img: 'ficha-transistores.png',
+      img: 'ficha-transistores.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'Tercera generación',
       titulo: 'El microchip',
       detalle: 'Dentro de una pieza más chica que una uña caben millones de transistores.',
-      img: 'ficha-microchip.png',
+      img: 'ficha-microchip.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'La idea grande',
       titulo: 'Cada vez más pequeñas',
       detalle: 'Cuanto más pequeña es la pieza de adentro, más pequeña y rápida es la computadora.',
-      img: 'ficha-cada-vez-mas-pequenas.png',
+      img: 'ficha-cada-vez-mas-pequenas.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

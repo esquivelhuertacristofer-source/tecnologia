@@ -52,7 +52,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'El oficio, no el botón',
       detalle:
         'Word, Excel y PowerPoint te enseñaron a hacer negrita, a calcular un promedio y a cambiar un diseño. Eso que aprendiste no es la posición de un botón: es el oficio. En cualquier programa parecido, el botón cambia de sitio y el concepto se queda igual.',
-      img: 'ficha-oficio.png',
+      img: 'ficha-oficio.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -62,7 +62,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'El mismo formato, otro menú',
       detalle:
         'Aquí no hay cinta de opciones: hay un menú Formato con dos controles. Seleccionas el título con un clic y le aplicas negrita y tamaño 18. El resultado se ve exactamente igual que en Word, aunque el menú para llegar sea distinto.',
-      img: 'ficha-documentos.png',
+      img: 'ficha-documentos.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -72,7 +72,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'La misma fórmula, otro icono',
       detalle:
         'La celda E5 necesita el promedio de B5:D5. El icono no dice "fx" como en Excel: es la letra griega Sigma. Ábrelo, elige PROMEDIO y confirma el rango — el número que aparece se calcula de verdad, no está escrito de antemano.',
-      img: 'ficha-hojas.png',
+      img: 'ficha-hojas.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -82,7 +82,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'El mismo tema, otro panel',
       detalle:
         'Un botón "Cambiar Tema" abre un panel con varios estilos de color. Eliges uno y el fondo y el acento de la diapositiva cambian de verdad delante de ti — la misma idea que un diseño de PowerPoint, con el selector en otro lugar.',
-      img: 'ficha-presentaciones.png',
+      img: 'ficha-presentaciones.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

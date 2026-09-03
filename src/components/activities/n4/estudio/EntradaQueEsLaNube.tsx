@@ -32,7 +32,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 1,
       titulo: 'Son computadoras',
       detalle: 'Servidores enormes encendidos día y noche, en edificios llamados centros de datos. Nada de cielo.',
-      img: 'ficha-adentro.png',
+      img: 'ficha-adentro.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -41,7 +41,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 2,
       titulo: 'Se rompió la compu',
       detalle: 'Si tu computadora falla, lo que subiste sigue ahí: la torre ni se enteró.',
-      img: 'ficha-rompio.png',
+      img: 'ficha-rompio.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -50,7 +50,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 3,
       titulo: 'Desde otro aparato',
       detalle: 'Entras con tu cuenta desde la tablet de la escuela y ahí está tu trabajo, igualito.',
-      img: 'ficha-otro-aparato.png',
+      img: 'ficha-otro-aparato.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -59,7 +59,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 4,
       titulo: 'Necesita internet',
       detalle: 'Sin internet no hay camino a la torre, y sin tu contraseña no se abre. Por eso se cuida.',
-      img: 'ficha-internet.png',
+      img: 'ficha-internet.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
   ],

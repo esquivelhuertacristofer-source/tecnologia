@@ -20,7 +20,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'El material',
       titulo: 'Tarjetas de palabra',
       detalle: 'Cada tarjeta trae una sola palabra: acomódalas en el orden que le da sentido a la oración.',
-      img: 'ficha-tarjetas-de-palabra.png',
+      img: 'ficha-tarjetas-de-palabra.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'La tira',
       titulo: 'La tira de la oración',
       detalle: 'Las palabras se colocan en orden sobre la tira, con un espacio entre cada una para que no se peguen.',
-      img: 'ficha-tira-oracion.png',
+      img: 'ficha-tira-oracion.webp',
       acento: { c: '#5ce1e6', deep: '#0e7490' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'Idea clave',
       titulo: 'Mayúscula y punto',
       detalle: 'Toda oración empieza con una letra mayúscula y termina con un punto que avisa que la idea terminó.',
-      img: 'ficha-mayuscula-y-punto.png',
+      img: 'ficha-mayuscula-y-punto.webp',
       acento: { c: '#8b5cf6', deep: '#5b21b6' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'El teclado',
       titulo: 'Las teclas del gabinete',
       detalle: 'Con las mismas teclas que ya conoces, ahora las usas para escribir tus propias oraciones completas.',
-      img: 'ficha-teclas-del-gabinete.png',
+      img: 'ficha-teclas-del-gabinete.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

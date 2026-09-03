@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'La red',
       titulo: 'Millones de máquinas',
       detalle: 'Internet es una red gigante de computadoras conectadas por todo el mundo.',
-      img: 'ficha-maquinas.png',
+      img: 'ficha-maquinas.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'El viaje',
       titulo: 'La información viaja',
       detalle: 'Esas máquinas se envían información y llega a tu pantalla en segundos.',
-      img: 'ficha-viaja.png',
+      img: 'ficha-viaja.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'La ventana',
       titulo: 'El navegador',
       detalle: 'Con el navegador te asomas a internet y abres las páginas que buscas.',
-      img: 'ficha-navegador.png',
+      img: 'ficha-navegador.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'La idea grande',
       titulo: 'Siempre con cuidado',
       detalle: 'Internet es enorme y útil, y se recorre con cuidado y con un adulto cerca.',
-      img: 'ficha-cuidado.png',
+      img: 'ficha-cuidado.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

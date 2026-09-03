@@ -25,9 +25,9 @@ const LINEAS = {
   completar: '¡El tesoro es nuestro! Las flechas ya son tuyas.',
 };
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
-const COFRE_IMG = '/assets/actividades/n1-mapa-de-flechas/cofre.png';
-const BRUJULA_IMG = '/assets/actividades/n1-mapa-de-flechas/brujula.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
+const COFRE_IMG = '/assets/actividades/n1-mapa-de-flechas/cofre.webp';
+const BRUJULA_IMG = '/assets/actividades/n1-mapa-de-flechas/brujula.webp';
 
 /* Leyenda: B = salida de Bit, E = estrella, C = charco, T = cofre, # = muro. */
 const MAPAS: string[][] = [

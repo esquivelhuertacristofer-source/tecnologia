@@ -329,7 +329,7 @@ const RONDAS: Ronda[] = [
 ];
 
 const TOTAL_RONDAS = RONDAS.length;
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 type Mensaje =
   | { tipo: 'pregunta'; texto: string }

@@ -37,7 +37,7 @@ const LINEAS = {
   completar: '¡Atrapaste la lluvia entera! Ya conoces tu teclado.',
 } as const;
 
-const BIT_ATRAPA = '/assets/actividades/n1-lluvia-de-letras/bit-atrapa.png';
+const BIT_ATRAPA = '/assets/actividades/n1-lluvia-de-letras/bit-atrapa.webp';
 
 const COLORES = [
   { c: '#5ce1e6', hondo: '#1b7d81' },

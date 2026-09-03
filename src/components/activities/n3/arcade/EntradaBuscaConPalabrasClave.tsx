@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'Lo importante',
       titulo: 'Palabras clave',
       detalle: 'Escribe solo las palabras más importantes de lo que quieres saber.',
-      img: 'ficha-claves.png',
+      img: 'ficha-claves.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'Sé preciso',
       titulo: 'Claras y precisas',
       detalle: 'Palabras claras dan mejores resultados que palabras vagas como "cosas".',
-      img: 'ficha-preciso.png',
+      img: 'ficha-preciso.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'Si no sale',
       titulo: 'Cambia las palabras',
       detalle: 'Si no encuentras lo que quieres, prueba con otras palabras e intenta otra vez.',
-      img: 'ficha-cambia.png',
+      img: 'ficha-cambia.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'La idea grande',
       titulo: 'Directo a la respuesta',
       detalle: 'Con las palabras justas encuentras lo que buscas sin dar mil vueltas.',
-      img: 'ficha-directo.png',
+      img: 'ficha-directo.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

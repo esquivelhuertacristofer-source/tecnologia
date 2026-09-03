@@ -49,7 +49,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Que lea él, no tú',
       detalle:
         'Escribes una palabra y Word te marca de amarillo TODAS las veces que aparece, en las veinte hojas que haga falta, y te dice cuántas son. Es la diferencia entre revisar un trabajo en diez segundos y revisarlo renglón por renglón.',
-      img: 'ficha-buscar.png',
+      img: 'ficha-buscar.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -59,7 +59,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'No busca palabras: busca letras',
       detalle:
         'Si escribes «sol», Word marca el nombre Sol, el sol del cielo y también el trozo que está escondido dentro de «solamente». Para él son la misma tira de tres letras. Ahí empiezan todos los desastres de esta herramienta.',
-      img: 'ficha-tiras.png',
+      img: 'ficha-tiras.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -69,7 +69,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Lo que separa arreglar de romper',
       detalle:
         'Están escondidas detrás de un botón que dice «Más >>» y casi nadie lo pulsa. «Sólo palabras completas» le manda mirar lo que hay antes y después: si toca otra letra, no cuenta. «Coincidir mayúsculas y minúsculas» hace que Sol y sol dejen de ser lo mismo. Dos clics que deciden si el documento sobrevive.',
-      img: 'ficha-casillas.png',
+      img: 'ficha-casillas.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -79,7 +79,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Doce cambios, un solo deshacer',
       detalle:
         'Reemplazar todos parece de no retorno, y no lo es: los cambios se hacen de una vez, así que una sola flecha de deshacer los devuelve todos. Lo que hay que aprender es a mirar la hoja justo después, no dos horas más tarde.',
-      img: 'ficha-deshacer.png',
+      img: 'ficha-deshacer.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

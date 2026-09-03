@@ -34,7 +34,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Reto 1',
       titulo: 'Abre la ventana',
       detalle: 'Haz doble clic en “Mis archivos”.',
-      img: 'ventana.png',
+      img: 'ventana.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -42,7 +42,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Reto 2',
       titulo: 'Escóndela un momento',
       detalle: 'Minimiza la ventana con el botón “—”.',
-      img: 'minimizar.png',
+      img: 'minimizar.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -50,7 +50,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Reto 3',
       titulo: 'Haz que vuelva',
       detalle: 'Restaura la ventana desde la barra de tareas.',
-      img: 'restaurar.png',
+      img: 'restaurar.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -58,7 +58,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Reto 4',
       titulo: 'Ciérrala al terminar',
       detalle: 'Cierra la ventana con el botón “×”.',
-      img: 'cerrar.png',
+      img: 'cerrar.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

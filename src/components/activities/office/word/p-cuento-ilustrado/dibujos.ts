@@ -36,31 +36,31 @@ export const ALTO_DIBUJO = 300;
 export const DIBUJOS: Dibujo[] = [
   {
     id: 'nube',
-    src: '/assets/actividades/n2-donde-viven-mis-archivos/ficha-nube.png',
+    src: '/assets/actividades/n2-donde-viven-mis-archivos/ficha-nube.webp',
     nombre: 'Una nube',
     alt: 'Dibujo de una nube',
   },
   {
     id: 'casa',
-    src: '/assets/actividades/n2-cuento-ilustrado/ficha-la-portada.png',
+    src: '/assets/actividades/n2-cuento-ilustrado/ficha-la-portada.webp',
     nombre: 'Una casa en el campo',
     alt: 'Dibujo de una casa con un árbol en el campo',
   },
   {
     id: 'tren',
-    src: '/assets/actividades/n1-sigue-el-patron/tren.png',
+    src: '/assets/actividades/n1-sigue-el-patron/tren.webp',
     nombre: 'Un tren',
     alt: 'Dibujo de un tren de vagones de colores',
   },
   {
     id: 'cofre',
-    src: '/assets/actividades/n1-mapa-de-flechas/cofre.png',
+    src: '/assets/actividades/n1-mapa-de-flechas/cofre.webp',
     nombre: 'Un cofre',
     alt: 'Dibujo de un cofre del tesoro abierto',
   },
   {
     id: 'casco',
-    src: '/assets/actividades/n1-quien-usa-que/bombera.png',
+    src: '/assets/actividades/n1-quien-usa-que/bombera.webp',
     nombre: 'El casco de una bombera',
     alt: 'Dibujo del casco y la manguera de una bombera',
   },

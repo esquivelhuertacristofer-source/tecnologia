@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'Inventor',
       titulo: 'Charles Babbage',
       detalle: 'Diseñó una gran máquina de calcular con engranes: muchos la llaman «la abuela de las computadoras».',
-      img: 'ficha-babbage.png',
+      img: 'ficha-babbage.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'Primera programadora',
       titulo: 'Ada Lovelace',
       detalle: 'Escribió las primeras instrucciones para que una máquina hiciera un trabajo paso a paso.',
-      img: 'ficha-lovelace.png',
+      img: 'ficha-lovelace.webp',
       acento: { c: '#f472b6', deep: '#9d174d' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'Inventor',
       titulo: 'Alan Turing',
       detalle: 'Imaginó cómo una sola máquina podría resolver muchísimos problemas distintos.',
-      img: 'ficha-turing.png',
+      img: 'ficha-turing.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'Inventora',
       titulo: 'Grace Hopper',
       detalle: 'Logró que las computadoras entendieran palabras, no solo números.',
-      img: 'ficha-hopper.png',
+      img: 'ficha-hopper.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

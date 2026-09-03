@@ -43,7 +43,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'La cajita',
       detalle:
         'Una variable es una cajita con una etiqueta pegada por fuera y un número guardado dentro. La etiqueta la escribes tú y no cambia nunca; el número de dentro cambia todo el rato. Guarda uno solo: cuando entra otro, el anterior se borra.',
-      img: 'ficha-cajita.png',
+      img: 'ficha-cajita.webp',
       acento: { c: '#fb923c', deep: '#9a3412' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Empieza en cero',
       detalle:
         'Sobre el «por siempre» hay un sombrero de arranque: lo que pones ahí se hace una vez, al pulsar ▶. Ahí va «poner el marcador en 0». Si se te olvida, la partida arranca con los puntos de la vez pasada; si lo metes dentro del bucle, se borra a cada vuelta.',
-      img: 'ficha-empieza-en-cero.png',
+      img: 'ficha-empieza-en-cero.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -63,7 +63,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Suma dentro del si',
       detalle:
         'Sumar un punto sólo tiene sentido donde de verdad pasó algo: dentro de la C que pregunta si está tocando la moneda. Suelta esa misma pieza en el tronco del programa y el marcador sube sin parar, aunque el muñeco no recoja nada.',
-      img: 'ficha-suma-dentro.png',
+      img: 'ficha-suma-dentro.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -73,7 +73,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Pregunta por ella',
       detalle:
         'La cajita no sólo guarda: también se puede consultar. «¿el marcador llegó a 5?» es una pregunta hexagonal, igual que la de tocar la moneda, y entra en el mismo hueco del bloque «si». Ahí se cierra el círculo: el programa mira su propia cuenta y decide.',
-      img: 'ficha-pregunta-por-ella.png',
+      img: 'ficha-pregunta-por-ella.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],

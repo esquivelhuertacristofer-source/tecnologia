@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Tu herramienta',
       titulo: 'El teclado',
       detalle: 'Tiene una tecla para cada letra y cada número, con un orden especial que todos los teclados comparten.',
-      img: 'teclado.png',
+      img: 'teclado.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Ronda 1',
       titulo: 'Las vocales',
       detalle: 'A, E, I, O, U: las primeras letras que vas a atrapar. Después caerán las letras de tu nombre.',
-      img: 'vocales.png',
+      img: 'vocales.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Ronda 3',
       titulo: 'Los números',
       detalle: 'Del 0 al 9. Los números viven en la fila de arriba del teclado.',
-      img: 'numeros.png',
+      img: 'numeros.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -52,7 +52,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'La regla de oro',
       titulo: 'Bit atrapa contigo',
       detalle: 'Primero busca la tecla con los ojos, luego presiónala una sola vez, suave. Bit atrapa el globo por ti.',
-      img: 'bit-atrapa.png',
+      img: 'bit-atrapa.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

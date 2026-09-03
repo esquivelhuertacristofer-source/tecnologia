@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Tu control',
       titulo: 'Las cuatro flechas',
       detalle: 'Arriba, abajo, izquierda y derecha: viven juntas en una esquina del teclado y cada una mueve un paso.',
-      img: 'cruz.png',
+      img: 'cruz.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'La isla',
       titulo: 'La isla del tesoro',
       detalle: 'Junta las estrellas y esquiva los charcos de aceite. Piensa el camino antes de moverte.',
-      img: 'mapa.png',
+      img: 'mapa.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'La meta',
       titulo: 'El cofre',
       detalle: 'Al final de cada mapa te espera el cofre del tesoro. Se abre cuando llegas con todas las estrellas.',
-      img: 'cofre.png',
+      img: 'cofre.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -52,7 +52,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Exploradores',
       titulo: 'La brújula',
       detalle: 'Gira hacia donde tú vayas. Usar las flechas también es saber decir hacia dónde: como un explorador de verdad.',
-      img: 'brujula.png',
+      img: 'brujula.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

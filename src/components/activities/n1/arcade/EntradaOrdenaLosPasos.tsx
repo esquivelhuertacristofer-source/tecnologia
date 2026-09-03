@@ -29,7 +29,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'La receta',
       titulo: 'Una receta de pasos',
       detalle: 'Una instrucción es un paso: una sola cosa que se hace. Cuando juntas varios pasos en orden, tienes una secuencia: una receta de pasos.',
-      img: 'receta.png',
+      img: 'receta.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -37,7 +37,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'El orden importa',
       titulo: 'Primero lo primero',
       detalle: 'Si te pones los zapatos antes que los calcetines, ¡todo sale al revés! El orden de los pasos importa.',
-      img: 'orden.png',
+      img: 'orden.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -45,7 +45,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'Tal cual',
       titulo: 'La máquina obedece',
       detalle: 'Las computadoras hacen exactamente lo que les dices, paso por paso, sin adivinar nada. Por eso hay que pensar bien el orden.',
-      img: 'chef.png',
+      img: 'chef.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'Palabra secreta',
       titulo: 'El algoritmo',
       detalle: 'Una receta de pasos bien ordenada se llama algoritmo. Tú ya haces algoritmos todos los días: al vestirte y al lavarte los dientes.',
-      img: 'huellas.png',
+      img: 'huellas.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

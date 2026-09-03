@@ -48,7 +48,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Una foto a la que puedes volver',
       detalle:
         'Guardar el archivo deja UN documento, que se pisa a sí mismo cada vez. Guardar una versión deja una foto aparte, con nombre, autor y hora. Sigues escribiendo encima y esa foto no se mueve: si algo sale mal, vuelves a ella.',
-      img: 'ficha-versiones.png',
+      img: 'ficha-versiones.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -58,7 +58,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: '¿Qué cambió desde ayer?',
       detalle:
         'Es la pregunta que más se hace cuando escriben varios, y leer el documento entero para contestarla es perder media hora. Comparar dos versiones pone una al lado de la otra y marca en verde lo que se añadió y en rojo lo que se quitó. En tres segundos.',
-      img: 'ficha-comparar.png',
+      img: 'ficha-comparar.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -68,7 +68,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Resuelto quiere decir hecho',
       detalle:
         'Un comentario es una nota al margen: no cambia el documento, pide que alguien lo cambie. Y marcarlo como resuelto no es cerrarlo para quitarlo de en medio: es decir «esto ya está hecho». Si lo dices y no está, el otro deja de mirarlo y el error se queda dentro.',
-      img: 'ficha-comentarios.png',
+      img: 'ficha-comentarios.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -78,7 +78,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Se guarda antes, no después',
       detalle:
         'Volver a una versión borra de golpe todo lo que pasó después, y eso es justo lo que la hace útil. Por eso el hito se guarda cuando algo queda bien, antes de meter mano otra vez: arreglar a mano lo que se rompió cuesta diez veces más.',
-      img: 'ficha-antes.png',
+      img: 'ficha-antes.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

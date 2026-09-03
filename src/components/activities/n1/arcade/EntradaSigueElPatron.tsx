@@ -29,7 +29,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'El patrón',
       titulo: 'Todo se repite',
       detalle: 'Mira el tren: rojo, azul, rojo, azul… ¡Eso es un patrón! Algo que se repite siempre en el mismo orden.',
-      img: 'tren.png',
+      img: 'tren.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -37,7 +37,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'La regla',
       titulo: '¿Qué sigue?',
       detalle: 'El secreto de un patrón es su regla: qué se repite. Si la descubres, puedes adivinar qué sigue… sin verlo.',
-      img: 'que-sigue.png',
+      img: 'que-sigue.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -45,7 +45,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'Por todas partes',
       titulo: 'Patrones que suenan',
       detalle: 'Hay patrones en las canciones, en los días de la semana y en tu ropa a rayas. ¡También en luces y sonidos!',
-      img: 'botones.png',
+      img: 'botones.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'El otro superpoder',
       titulo: 'Clasificar',
       detalle: 'Clasificar es juntar lo que se parece: cada cosa en su caja. Así todo se encuentra rápido, igual que en la computadora.',
-      img: 'cajas.png',
+      img: 'cajas.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

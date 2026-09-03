@@ -34,41 +34,124 @@ npx wrangler whoami         # comprueba que es la cuenta correcta
 
 ---
 
-## 2. El bucket de los videos
+## 2. El bucket de los videos y sus credenciales
 
-```bash
-npx wrangler r2 bucket create tecnia-medios
+En el panel: **R2 Object Storage → Create bucket → `tecnia-medios`**. El nombre
+tiene que ser exactamente ése, o hay que cambiarlo también en `wrangler.jsonc`
+(`r2_buckets[0].bucket_name`); si no coinciden, `wrangler deploy` falla al
+validar los bindings antes de subir nada.
+
+Para subir los videos hace falta una credencial aparte, porque la subida **no
+va por wrangler**: **R2 → `{} API` → Manage API tokens → Create API token**,
+permiso **Object Read & Write** limitado a `tecnia-medios`. De la pantalla de
+resultado se guardan el *Access Key ID*, el *Secret Access Key* y el Account ID
+(está dentro del endpoint, `https://<cuenta>.r2.cloudflarestorage.com`) en
+`.medios/credenciales.env`, que no está en git:
+
+```
+CLOUDFLARE_ACCOUNT_ID=…
+R2_ACCESS_KEY_ID=…
+R2_SECRET_ACCESS_KEY=…
 ```
 
-El nombre tiene que ser exactamente ése, o hay que cambiarlo también en
-`wrangler.jsonc` (`r2_buckets[0].bucket_name`).
+**No los pongas en `.env.local`.** Wrangler v4 carga los ficheros `.env` por su
+cuenta, así que un `CLOUDFLARE_API_TOKEN` ahí dentro le pisa la sesión de OAuth
+y `wrangler deploy` empieza a hablar con otra cuenta diciendo «incorrect
+permissions» sin más explicación.
+
+**Y no uses el token de tipo Admin**: puede crear y **borrar buckets** de toda
+la cuenta. Object Read & Write sólo escribe objetos dentro del bucket que le
+digas.
 
 ---
 
 ## 3. Subir los videos (una sola vez, y luego sólo los nuevos)
 
 ```bash
-npm run medios:subir
-```
-
-Son 238 archivos y 4,46 GB, así que tarda. El guion lleva su propia lista en
-`.medios/subidos.txt`: si se corta, se vuelve a lanzar y sigue donde iba.
-
-```bash
+npm run medios:subir        # sube lo que falte y verifica al terminar
+npm run medios:verificar    # sólo comprueba: bucket contra disco
 npm run medios:estado       # dónde están los videos y cuántos van subidos
 ```
 
-**Por qué los videos van aparte.** Workers Assets —el almacén de estáticos del
-Worker— rechaza cualquier archivo de más de **25 MiB**, y 30 de los videos lo
-pasan (el mayor, 49,9 MB). No es una preferencia: con ellos dentro, el
-despliegue falla. Las imágenes sí se quedan en Assets, porque `next/image` las
-lee por ese binding y una imagen en R2 sería una imagen que el optimizador no
-encuentra.
+Son 238 archivos y 4,46 GB; con una línea decente van a ~950 MB/min, unos cinco
+minutos. El guion lleva su propia lista en `.medios/subidos.txt`: si se corta,
+se vuelve a lanzar y sigue donde iba.
 
-Los sirve `src/app/assets/[...ruta]/route.ts`, que responde a las mismas URL de
-siempre (`/assets/actividades/<id>/video-explicativo.mp4`) y entiende
-peticiones parciales (`Range`), que es lo que usa el navegador para saltar
-dentro de un video.
+**Por qué firma peticiones S3 en vez de llamar a wrangler.** Un token de
+«Object Read & Write» **no vale para la API REST de Cloudflare** —se midió:
+403 al listar buckets, 401 al escribir un objeto—. Es una credencial de S3 y
+sólo entiende `https://<cuenta>.r2.cloudflarestorage.com`. La firma SigV4 está
+en `scripts/cloudflare/s3.mjs`, cuarenta líneas con `node:crypto`, para no
+arrastrar los 20 MB de `@aws-sdk/client-s3` por dos operaciones. De paso va
+mucho más rápido que lanzar `npx wrangler` 238 veces.
+
+**Por qué `verificar` no es opcional.** R2 responde «ok» a un borrado —o a una
+escritura— de una clave que no existe. Durante la limpieza del bucket
+equivocado eso dio un **«borrados: 238, fallos: 0» con el bucket todavía
+lleno**: las claves reales llevaban el prefijo `assets/` y la lista lo había
+guardado sin él. Un recuento de éxitos no demuestra nada; lo único que lo
+demuestra es pedirle al bucket su lista y comparar clave a clave y byte a byte,
+que es lo que hace `verificar`.
+
+---
+
+## 3 bis. Las imágenes: por qué son WebP
+
+`public/assets` pesaba **637,5 MB en 762 PNG**, 850 KB de media. Hoy pesa
+**36,6 MB**: un 94,3 % menos, y sin cambiar una sola carpeta.
+
+```bash
+npm run imagenes:webp     # convierte y deja el mapa en .medios/webp-convertidas.json
+npm run imagenes:rutas    # comprueba que ninguna ruta del código apunta al vacío
+```
+
+**Por qué WebP y no recomprimir los PNG.** Se midió sobre una muestra repartida
+por todo el árbol, comparando peso *y* error real:
+
+| receta | peso | peor error (RMSE) |
+|---|---|---|
+| PNG sin pérdida | **35 % más grande** | 0 |
+| PNG con paleta | 70 % menos | 3,03 |
+| **WebP q88** | **95 % menos** | **2,95** |
+| WebP sin pérdida | 36 % menos | 0 |
+
+Los PNG ya venían bien comprimidos *como PNG*: por ahí no había nada que
+rascar. WebP q88 pesa la mitad que la paleta de PNG y encima pierde menos.
+
+Cada imagen prueba q88 y, si el error se pasa de 3,5, sube a q94; si aún así se
+pasa, se guarda **WebP sin pérdida** (que sigue siendo un 36 % más ligero).
+Ninguna se degrada por encima del umbral: 747 quedaron en q88 y 14 en sin
+pérdida.
+
+**Dos trampas que costaron dos pasadas enteras, por si vuelven:**
+
+1. En sharp, `png({ effort: 10 })` **activa la paleta sin decirlo**
+   (`lib/output.js:635`). Lo que parecía una recompresión sin pérdida estaba
+   cuantizando todo a 256 colores. Se vio porque el PNG salía con colorType 3
+   en vez de 2.
+2. Medir el error sobre RGBA crudo **miente en cuanto hay transparencia**:
+   debajo de un píxel con alfa 0 el color puede ser cualquier cosa y no se ve.
+   Una conversión sin pérdida ninguna daba RMSE 50. Hay que premultiplicar.
+
+**Lo que NO se convirtió, a propósito:**
+
+- `public/marca/` (4 PNG, 154 KB): iconos de pestaña, de iOS y la imagen de
+  OpenGraph. WhatsApp, Facebook y Twitter no muestran WebP de forma fiable como
+  `og:image`, y un enlace compartido sin imagen es peor que 83 KB de más.
+- Los `.png` que quedan en el código **no son archivos**: son nombres de
+  mentira dentro de software simulado —el adjunto de un correo de phishing, la
+  cuadrícula de archivos de EduOS, el `<img src="robot.png">` que el alumno
+  teclea en la clase de HTML—. Ésos tienen que seguir diciendo `.png`.
+- Los 25 `.jpg` (5,5 MB): son fotos reales ya comprimidas; convertirlas
+  ahorraría ~3 MB de 45. No compensa el riesgo.
+
+**Cómo se comprobó que no se rompió nada.** Las rutas literales, con
+`imagenes:rutas`; el resto —que son nombres sueltos que cada actividad combina
+con su carpeta en tiempo de ejecución— con la batería de jest y con el barrido
+del navegador (`scripts/auditoria/barrido-assets.mjs`), que abre las 235
+entradas y apunta toda imagen que responda 404. Ninguna de las tres puertas
+anteriores ve esto: `tsc` no sabe si un archivo existe, jsdom no descarga
+imágenes y `next build` copia `public/` sin mirarlo.
 
 ---
 
@@ -190,7 +273,7 @@ en escuelas y ferias sin repartir credenciales.
 | `_backups/` | 19 MB | sólo en el equipo (contiene copia de `.env.local`) |
 | `.env.local` | — | sólo en el equipo |
 
-Las **imágenes sí están** (669 MB, 762 PNG), así que quien clone el repo puede
+Las **imágenes sí están** (36,6 MB en WebP, ver §3 bis), así que quien clone el repo puede
 construir un sitio completo salvo los videos.
 
 ---
@@ -230,11 +313,6 @@ sacaría son las 23 pantallas de banco de pruebas (~0,7 MB).
 
 ## 9. Lo que queda pendiente
 
-- **Las imágenes están sin optimizar**: 762 PNG, 669 MB, 850 KB de media. Con
-  el tamaño correcto pesarían una fracción — se vio con la imagen de redes
-  sociales, que pasó de 696 KB a 81 KB sin que se note. Para un alumno con el
-  wifi de una escuela pública, eso es la diferencia entre que una pantalla
-  abra o no.
 - **El progreso del alumno sigue en `localStorage`**, no en Supabase: en un
   equipo compartido, el avance de un alumno se le atribuye al siguiente.
 - **Las páginas no se protegen en el servidor.** La sesión decide a dónde te

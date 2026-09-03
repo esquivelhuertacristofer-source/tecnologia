@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'El lugar',
       titulo: 'El escenario',
       detalle: 'Es la tabla donde ocurre todo: ahí actúa tu personaje cuando le das órdenes.',
-      img: 'ficha-escenario.png',
+      img: 'ficha-escenario.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'Quién obedece',
       titulo: 'El personaje',
       detalle: 'El gato es el objeto que recibe tus órdenes; sin órdenes, se queda quieto.',
-      img: 'ficha-personaje.png',
+      img: 'ficha-personaje.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'Las poses',
       titulo: 'Los disfraces',
       detalle: 'Cada disfraz es una pose distinta; si los cambias rápido, parece que se mueve.',
-      img: 'ficha-disfraces.png',
+      img: 'ficha-disfraces.webp',
       acento: { c: '#f472b6', deep: '#9d174d' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'El arranque',
       titulo: 'La bandera verde',
       detalle: 'Es el botón que pone en marcha el programa. Nada empieza hasta que la presionas.',
-      img: 'ficha-bandera.png',
+      img: 'ficha-bandera.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

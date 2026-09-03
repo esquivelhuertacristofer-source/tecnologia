@@ -45,7 +45,7 @@ import './realOGenerado.css';
  * 60), igual que el resto de N4.
  */
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 type Veredicto = 'compartir' | 'no-compartir' | 'no-seguro';
 type Herramienta = 'imagen' | 'cuenta' | 'cruce';

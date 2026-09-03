@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'Herramienta',
       titulo: 'La palanca Shift',
       detalle: 'Tecla especial que, presionada junto con una letra, la escribe en mayúscula.',
-      img: 'ficha-palanca-shift.png',
+      img: 'ficha-palanca-shift.webp',
       acento: { c: '#32a8ff', deep: '#155e9c' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'Regla',
       titulo: 'Nombre propio',
       detalle: 'Usamos mayúscula al empezar una oración y en los nombres propios, como Sofía o México.',
-      img: 'ficha-nombre-propio.png',
+      img: 'ficha-nombre-propio.webp',
       acento: { c: '#ffd25a', deep: '#ff9d2e' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'Ortografía',
       titulo: 'Los acentos',
       detalle: 'Una rayita sobre una vocal (á, é, í, ó, ú) que cambia cómo suena o el significado de una palabra.',
-      img: 'ficha-los-acentos.png',
+      img: 'ficha-los-acentos.webp',
       acento: { c: '#5ce1e6', deep: '#0e7490' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'Ortografía',
       titulo: 'La letra ñ',
       detalle: 'Letra propia del español, distinta de la n, que no existe en otros idiomas.',
-      img: 'ficha-letra-ene.png',
+      img: 'ficha-letra-ene.webp',
       acento: { c: '#b98cff', deep: '#6d28d9' },
     },
   ],

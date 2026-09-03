@@ -100,7 +100,7 @@ test('portada de objetivos propia, y las imágenes de la práctica están a la v
   /* Sin esta mesa, el encargo de la imagen sería adivinar un nombre. */
   const mesa = within(screen.getByTestId('pgw-recursos'));
   expect(mesa.getByText('robot.png')).toBeInTheDocument();
-  expect(mesa.getByText('taller.png')).toBeInTheDocument();
+  expect(mesa.getByText('taller.webp')).toBeInTheDocument();
   expect(mesa.getByAltText('El robot que sigue la línea negra')).toBeInTheDocument();
 });
 

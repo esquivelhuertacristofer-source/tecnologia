@@ -51,7 +51,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Ochenta cartas a mano',
       detalle:
         'Copiar la carta y cambiarle el nombre parece rápido con dos. Con ochenta, no: se te olvida uno, a dos les pones el mismo nombre, y si al final cambia la hora del evento tienes que corregir ochenta veces. Todo eso pasa porque el nombre está escrito DENTRO de la carta.',
-      img: 'ficha-a-mano.png',
+      img: 'ficha-a-mano.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -61,7 +61,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Un hueco con etiqueta',
       detalle:
         'Un campo combinado se escribe «Nombre», con esas comillas de pico, y no es el nombre de nadie: es una instrucción que dice «aquí va lo que ponga la columna Nombre». La carta deja de hablar de una persona y pasa a ser un molde que sirve para cualquiera.',
-      img: 'ficha-campo.png',
+      img: 'ficha-campo.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -71,7 +71,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'La lista es la que manda',
       detalle:
         'Los datos viven aparte, en una tabla: una columna por campo y un renglón por persona. Cada renglón se convierte en una carta. Si añades a alguien, sale una carta más; si corriges un apellido, se corrige en la suya. No tocas la carta ni una vez.',
-      img: 'ficha-lista.png',
+      img: 'ficha-lista.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -81,7 +81,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Esto ya es programar',
       detalle:
         'Separar el molde de los datos es lo que hace un programa cuando saca mil boletas, mil recibos o mil diplomas: una plantilla, una tabla y una vuelta por cada renglón. Está en el temario de Word porque es el sitio donde se ve por primera vez sin escribir ni una línea de código.',
-      img: 'ficha-programar.png',
+      img: 'ficha-programar.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

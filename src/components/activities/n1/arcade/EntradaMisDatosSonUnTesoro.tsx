@@ -29,7 +29,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'Privados',
       titulo: 'Los tesoros',
       detalle: 'Tu nombre completo, tu dirección, tu teléfono, tu escuela y tus fotos son datos personales: dicen quién eres y dónde encontrarte.',
-      img: 'tesoros.png',
+      img: 'tesoros.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -37,7 +37,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'Sí se puede',
       titulo: 'Lo que sí comparto',
       detalle: 'Tu color favorito, tus dibujos y tu juego preferido sí se comparten: no dicen dónde vives.',
-      img: 'comparto.png',
+      img: 'comparto.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -45,7 +45,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'Solo ustedes',
       titulo: 'La llave secreta',
       detalle: 'La contraseña es la llave del cofre: solo la conocen tú y tus papás. ¡A nadie más se le dice!',
-      img: 'llave.png',
+      img: 'llave.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'A salvo',
       titulo: 'El cofre bien cerrado',
       detalle: 'Si alguien — una persona o un juego — te pide un tesoro, ya conoces el plan: alto… ¡y aviso a mi adulto!',
-      img: 'cofre.png',
+      img: 'cofre.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'Tu gente',
       titulo: 'Conecta con quien sí conoces',
       detalle: 'Tu familia, tu maestra y tus amigos del salón sí son tu gente: a ellos sí los conoces en persona.',
-      img: 'ficha-tu-gente.png',
+      img: 'ficha-tu-gente.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'Desconocidos',
       titulo: 'No todos son quienes dicen ser',
       detalle: 'Un perfil sin foto o un «premio gratis» no se conectan solos: no sabes quién está de verdad ahí.',
-      img: 'ficha-desconocidos.png',
+      img: 'ficha-desconocidos.webp',
       acento: { c: '#fb7185', deep: '#be123c' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'Alto y aviso',
       titulo: 'Si dudas, presiona AYUDA',
       detalle: 'Ante un desconocido nunca respondes solo: presionas el botón de AYUDA y avisas a tu adulto de confianza.',
-      img: 'ficha-alto-y-aviso.png',
+      img: 'ficha-alto-y-aviso.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'Pista',
       titulo: '¿Lo conoces de verdad?',
       detalle: 'Esa pregunta te ayuda a decidir rápido si conectas la clavija o pides ayuda.',
-      img: 'ficha-pista-centralita.png',
+      img: 'ficha-pista-centralita.webp',
       acento: { c: '#7c6cff', deep: '#4c3fcf' },
     },
   ],

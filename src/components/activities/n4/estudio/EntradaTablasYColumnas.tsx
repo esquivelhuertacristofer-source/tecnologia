@@ -41,7 +41,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Filas y columnas',
       detalle:
         'Una tabla es una rejilla: las filas van en horizontal, las columnas en vertical y cada cuadrito es una celda. Sirve para lo que se repite —animales y lo que comen, países y su capital—, porque puesto en párrafos eso se vuelve un revoltijo y en rejilla se entiende de un vistazo.',
-      img: 'ficha-rejilla.png',
+      img: 'ficha-rejilla.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -51,7 +51,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'El encabezado',
       detalle:
         'La fila de arriba no es un dato: dice qué guarda cada columna, y por eso va en negrita. Y de ahí sale la única regla que de verdad importa en una tabla: cada columna guarda el mismo tipo de dato. Si en «Come» pones a veces un alimento y a veces un color, la tabla deja de servir.',
-      img: 'ficha-encabezado.png',
+      img: 'ficha-encabezado.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -61,7 +61,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Dos columnas',
       detalle:
         'Las columnas de texto son otra cosa: reparten un párrafo largo en dos ríos más angostos, como en las revistas y los periódicos. Funcionan porque un renglón muy largo cansa la vista —al terminarlo, el ojo se pierde buscando dónde empieza el siguiente.',
-      img: 'ficha-columnas.png',
+      img: 'ficha-columnas.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -71,7 +71,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Cuándo dejarlo en una',
       detalle:
         'Dos columnas no siempre convienen. Un título partido por la mitad se ve aplastado, y una tabla ancha metida en media hoja queda tan estrecha que ya no se lee. La regla práctica: dos columnas para textos largos; una sola para títulos, tablas e imágenes grandes.',
-      img: 'ficha-cuando-no.png',
+      img: 'ficha-cuando-no.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

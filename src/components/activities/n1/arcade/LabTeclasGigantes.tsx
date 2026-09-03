@@ -25,8 +25,8 @@ const LINEAS = {
   completar: 'Espacio, Enter y borrar: ¡ya tienes tres superpoderes!',
 };
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
-const GLITCH_IMG = '/assets/actividades/n1-teclas-gigantes/glitch.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
+const GLITCH_IMG = '/assets/actividades/n1-teclas-gigantes/glitch.webp';
 
 const SALTOS_META = 5;
 const PUERTAS_META = 5;

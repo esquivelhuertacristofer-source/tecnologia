@@ -7,7 +7,7 @@ export const BRAND = {
   // Identidad
   name:         process.env.NEXT_PUBLIC_BRAND_NAME      ?? 'Tecnia',
   tagline:      process.env.NEXT_PUBLIC_BRAND_TAGLINE   ?? 'Tecnología de primaria a bachillerato',
-  logoPath:     process.env.NEXT_PUBLIC_BRAND_LOGO      ?? '/assets/logo.png',
+  logoPath:     process.env.NEXT_PUBLIC_BRAND_LOGO      ?? '/assets/logo.webp',
   legalEntity:  process.env.NEXT_PUBLIC_LEGAL_ENTITY    ?? 'Tecnia — Plataforma Educativa de Tecnología',
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL   ?? 'contacto@tudominio.com',
 

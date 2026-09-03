@@ -8,7 +8,7 @@ import type * as THREE from 'three';
 import { ControlHtml } from '../../arcade3d/piezas3d';
 import { MOSTRADOR_Y } from '../../arcade3d/EscenaArcade3D';
 
-const BIT_ATRAPA = '/assets/actividades/n1-lluvia-de-letras/bit-atrapa.png';
+const BIT_ATRAPA = '/assets/actividades/n1-lluvia-de-letras/bit-atrapa.webp';
 
 /**
  * Piezas 3D dedicadas para «La lluvia de letras» (N1·U2, parada 4), en WebGL 3D real.

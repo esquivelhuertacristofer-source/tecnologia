@@ -29,7 +29,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'El paquetito',
       titulo: 'El archivo',
       detalle: 'Cuando terminas tu dibujo, la computadora lo convierte en un archivo: un paquetito con todo tu trabajo adentro.',
-      img: 'archivo.png',
+      img: 'archivo.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -37,7 +37,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'Su nombre',
       titulo: 'El nombre',
       detalle: 'Cada archivo lleva un nombre. Con nombre, tu obra se encuentra aunque haya muchas: ¡nunca se pierde!',
-      img: 'nombre.png',
+      img: 'nombre.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -45,7 +45,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'La memoria',
       titulo: 'La bóveda',
       detalle: 'Guardar es meter tu archivo en la memoria de la computadora, una bóveda que lo cuida aunque la apagues.',
-      img: 'boveda.png',
+      img: 'boveda.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'Otra vez',
       titulo: 'Volver a abrir',
       detalle: 'Mañana puedes abrir tu archivo y seguir donde quedaste. Guardar no es despedirse: es volver a encontrarla.',
-      img: 'abrir.png',
+      img: 'abrir.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

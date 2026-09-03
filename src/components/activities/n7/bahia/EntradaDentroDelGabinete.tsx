@@ -32,7 +32,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       numero: 1,
       titulo: 'El CPU',
       detalle: 'Hace todas las operaciones, y se calienta tanto que siempre lleva un disipador encima.',
-      img: 'ficha-cpu.png',
+      img: 'ficha-cpu.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -41,7 +41,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       numero: 3,
       titulo: 'La RAM',
       detalle: 'Guarda lo que estás usando ahora mismo, y se borra por completo al apagar.',
-      img: 'ficha-ram.png',
+      img: 'ficha-ram.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -50,7 +50,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       numero: 4,
       titulo: 'El almacenamiento',
       detalle: 'Aquí se quedan tus archivos aunque apagues: el SSD es rápido, el disco duro es grande.',
-      img: 'ficha-almacenamiento.png',
+      img: 'ficha-almacenamiento.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -59,7 +59,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       numero: 5,
       titulo: 'La tarjeta gráfica',
       detalle: 'Dibuja la imagen cuadro por cuadro: sin ella, los juegos y el video se traban.',
-      img: 'ficha-gpu.png',
+      img: 'ficha-gpu.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],

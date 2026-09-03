@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'Buena señal',
       titulo: 'Dice quién lo hizo',
       detalle: 'Un sitio confiable dice quién lo hizo, no te apura y no te pide datos sin razón.',
-      img: 'ficha-quien.png',
+      img: 'ficha-quien.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'Mala señal',
       titulo: 'Premios increíbles',
       detalle: 'Desconfía de premios enormes, ventanas que saltan y sitios que te presionan.',
-      img: 'ficha-premio.png',
+      img: 'ficha-premio.webp',
       acento: { c: '#f87171', deep: '#b91c1c' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'Nunca',
       titulo: 'Tus datos no se dan',
       detalle: 'Jamás des tu nombre o tu contraseña para "ganar" algo en una página.',
-      img: 'ficha-datos.png',
+      img: 'ficha-datos.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'La idea grande',
       titulo: 'Ante la duda, pregunta',
       detalle: 'Si algo te da mala espina, cierra la página y pregúntale a un adulto.',
-      img: 'ficha-adulto.png',
+      img: 'ficha-adulto.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
   ],

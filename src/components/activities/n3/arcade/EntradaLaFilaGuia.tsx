@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'La base',
       titulo: 'Fila del medio',
       detalle: 'Es la fila donde descansan los dedos entre letra y letra. Se llama fila guía.',
-      img: 'ficha-fila-del-medio.png',
+      img: 'ficha-fila-del-medio.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'Mano izquierda',
       titulo: 'A S D F',
       detalle: 'Meñique en la A, anular en la S, medio en la D e índice en la F.',
-      img: 'ficha-mano-izquierda.png',
+      img: 'ficha-mano-izquierda.webp',
       acento: { c: '#f472b6', deep: '#9d174d' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'Mano derecha',
       titulo: 'J K L Ñ',
       detalle: 'Índice en la J, medio en la K, anular en la L y meñique en la Ñ.',
-      img: 'ficha-mano-derecha.png',
+      img: 'ficha-mano-derecha.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'El truco',
       titulo: 'Las rayitas F y J',
       detalle: 'Esas dos teclas tienen una rayita: te ubican sin mirar el teclado.',
-      img: 'ficha-rayitas.png',
+      img: 'ficha-rayitas.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
   ],

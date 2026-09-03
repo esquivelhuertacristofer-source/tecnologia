@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'Buen trato',
       titulo: 'Netiqueta',
       detalle: 'Tratar a los demás con respeto: sin groserías y sin gritar en mayúsculas.',
-      img: 'ficha-trato.png',
+      img: 'ficha-trato.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'Antes de enviar',
       titulo: 'Piensa dos veces',
       detalle: 'Piensa antes de enviar algo que pueda lastimar a otra persona.',
-      img: 'ficha-nogrites.png',
+      img: 'ficha-nogrites.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'La clave',
       titulo: 'Contraseña fuerte',
       detalle: 'Larga y mezclada: letras, números y símbolos juntos son difíciles de adivinar.',
-      img: 'ficha-fuerte.png',
+      img: 'ficha-fuerte.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad3 = {
       tag: 'La idea grande',
       titulo: 'Y siempre secreta',
       detalle: 'Tu contraseña no se presta ni se comparte: solo la sabes tú y tu familia.',
-      img: 'ficha-secreta.png',
+      img: 'ficha-secreta.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'Territorio',
       titulo: 'Mano izquierda',
       detalle: 'Cubre el lado izquierdo del teclado, con teclas como Q, A, S y F.',
-      img: 'ficha-mano-izquierda.png',
+      img: 'ficha-mano-izquierda.webp',
       acento: { c: '#ff5c8a', deep: '#b91457' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'Territorio',
       titulo: 'Mano derecha',
       detalle: 'Cubre el lado derecho del teclado, con teclas como P, L, Ñ y las flechas de dirección.',
-      img: 'ficha-mano-derecha.png',
+      img: 'ficha-mano-derecha.webp',
       acento: { c: '#32a8ff', deep: '#155e9c' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'Idea clave',
       titulo: 'Las dos manos juntas',
       detalle: 'Escribir con las dos manos es más cómodo que buscar cada letra con un solo dedo.',
-      img: 'ficha-dos-manos-juntas.png',
+      img: 'ficha-dos-manos-juntas.webp',
       acento: { c: '#5ce1e6', deep: '#0e7490' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'En acción',
       titulo: 'Escribiendo una palabra',
       detalle: 'Al escribir una palabra, casi siempre vamos turnando ambas manos, letra por letra.',
-      img: 'ficha-escribiendo-palabra.png',
+      img: 'ficha-escribiendo-palabra.webp',
       acento: { c: '#ffd25a', deep: '#ff9d2e' },
     },
   ],

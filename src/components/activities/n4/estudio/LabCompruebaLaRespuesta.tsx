@@ -51,7 +51,7 @@ import './compruebaLaRespuesta.css';
  * El error nunca borra lo logrado: sólo resta en el puntaje (100 − 6, piso 60).
  */
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 type Fase = 'cerrado' | 'leer' | 'comprobar' | 'corrigiendo' | 'fuente' | 'decidir' | 'fin';
 type TabId = 'acuario' | 'blog' | 'estacion' | 'resultados';

@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'Sí puede',
       titulo: 'Muy buena y rápida',
       detalle: 'Traduce, reconoce fotos y recomienda videos en un abrir y cerrar de ojos.',
-      img: 'ficha-muy-buena-y-rapida.png',
+      img: 'ficha-muy-buena-y-rapida.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'No puede',
       titulo: 'No siente',
       detalle: 'Puede escribir «te quiero», pero no siente cariño de verdad como tú.',
-      img: 'ficha-no-siente.png',
+      img: 'ficha-no-siente.webp',
       acento: { c: '#f472b6', deep: '#9d174d' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'Cómo lo hace',
       titulo: 'Sigue patrones',
       detalle: 'Aprendió de muchísimos ejemplos y repite lo que se repite en ellos.',
-      img: 'ficha-sigue-patrones.png',
+      img: 'ficha-sigue-patrones.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'Qué es',
       titulo: 'Es una herramienta',
       detalle: 'Como un martillo o una calculadora: sirve para una tarea, no es una persona.',
-      img: 'ficha-es-una-herramienta.png',
+      img: 'ficha-es-una-herramienta.webp',
       acento: { c: '#f5a524', deep: '#92400e' },
     },
   ],

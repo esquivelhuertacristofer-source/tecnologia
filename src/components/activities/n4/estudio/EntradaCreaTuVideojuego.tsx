@@ -41,7 +41,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Regla 1 · Moverse',
       detalle:
         'Una regla por cada flecha: «si ¿flecha derecha? entonces mover a la derecha», y lo mismo para las otras tres. Ésta es la regla que te mete a ti dentro del juego: sin ella el muñeco decide solo, con ella decides tú. Si emparejas mal, el muñeco obedece exactamente lo que le pusiste.',
-      img: 'ficha-mover.png',
+      img: 'ficha-mover.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -51,7 +51,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Regla 2 · Puntos',
       detalle:
         'Dentro de la misma C van dos acciones, no una: sumar un punto y esconder la moneda. Lo de esconderla no es adorno. Si la moneda se queda ahí, la sigues tocando sin moverte y el marcador se dispara solo. Ese error no te lo avisa nadie: lo ves en el tablero.',
-      img: 'ficha-puntos.png',
+      img: 'ficha-puntos.webp',
       acento: { c: '#fb923c', deep: '#9a3412' },
     },
     {
@@ -61,7 +61,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Regla 3 · Enemigo',
       detalle:
         '«si ¿tocando al enemigo? entonces volver al inicio». La criaturita ya patrullaba desde que abriste la actividad; lo nuevo es que ahora hace algo. Sin algo que te pueda salir mal no hay juego, y tranquilo: te devuelve al principio del camino, no te quita los puntos ganados.',
-      img: 'ficha-enemigo.png',
+      img: 'ficha-enemigo.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -71,7 +71,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Regla 4 · Ganar',
       detalle:
         '«si ¿puntos = 5? entonces mostrar ¡GANASTE!» y además detener el juego. Es la pregunta naranja de la parada anterior, tal cual, y es la única regla que armas sin ninguna ayuda. Las cuatro van dentro del «por siempre»: fuera de él se comprobarían una sola vez y el juego duraría un parpadeo.',
-      img: 'ficha-ganar.png',
+      img: 'ficha-ganar.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],

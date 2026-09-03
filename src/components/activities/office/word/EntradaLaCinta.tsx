@@ -50,7 +50,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Cajones, no botones sueltos',
       detalle:
         'Arriba, en fila, están las pestañas: Inicio, Insertar, Disposición… Cada una es un cajón distinto, y al abrir una cambian TODAS las herramientas de abajo. No se pierden: están en otro cajón.',
-      img: 'ficha-pestanas.png',
+      img: 'ficha-pestanas.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -60,7 +60,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'El rótulo es la pista',
       detalle:
         'Dentro de una pestaña, los botones vienen en montones separados por una raya, y debajo de cada montón hay un nombre: Portapapeles, Fuente, Párrafo, Estilos. Ese nombre dice para qué sirve lo de encima. Buscar deja de ser acordarse y pasa a ser leer.',
-      img: 'ficha-grupos.png',
+      img: 'ficha-grupos.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -70,7 +70,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: '¿Es de la letra o del párrafo?',
       detalle:
         'Casi todo lo que vas a buscar es una de dos cosas. Si cambia las letras —tamaño, color, negrita— es del grupo Fuente. Si mueve el renglón entero —centrarlo, separarlo, ponerle viñeta— es del grupo Párrafo. Con esa sola pregunta aciertas casi siempre.',
-      img: 'ficha-letra-parrafo.png',
+      img: 'ficha-letra-parrafo.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -80,7 +80,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Un botón hundido te habla',
       detalle:
         'Pon el cursor en cualquier parte del texto y mira la cinta: los botones del formato que ya tiene se ven hundidos. No sólo sirven para hacer cosas, también te dicen cómo está lo que hay debajo del cursor. Eso ahorra muchísimo tiempo.',
-      img: 'ficha-hundido.png',
+      img: 'ficha-hundido.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

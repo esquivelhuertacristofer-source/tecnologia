@@ -37,7 +37,7 @@ const CONFIG: ConfigEntradaUnidad1 = {
       tag: 'CONEXIÓN',
       titulo: 'Cable de video',
       detalle: 'Lleva las imágenes desde el gabinete hasta el monitor.',
-      img: 'ficha-cable-video.png',
+      img: 'ficha-cable-video.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -45,7 +45,7 @@ const CONFIG: ConfigEntradaUnidad1 = {
       tag: 'CONEXIÓN',
       titulo: 'Cable del teclado',
       detalle: 'Une el teclado con el gabinete para que puedas escribir.',
-      img: 'ficha-cable-teclado.png',
+      img: 'ficha-cable-teclado.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaUnidad1 = {
       tag: 'CONEXIÓN',
       titulo: 'Cable del ratón',
       detalle: 'Conecta el ratón para mover el puntero por la pantalla.',
-      img: 'ficha-cable-mouse.png',
+      img: 'ficha-cable-mouse.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -61,7 +61,7 @@ const CONFIG: ConfigEntradaUnidad1 = {
       tag: 'CONEXIÓN',
       titulo: 'Cable de corriente',
       detalle: 'Le da energía eléctrica al gabinete para que todo funcione.',
-      img: 'ficha-cable-corriente.png',
+      img: 'ficha-cable-corriente.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

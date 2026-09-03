@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'Hace miles de años',
       titulo: 'El ábaco',
       detalle: 'Un marco con cuentas que se deslizan: una de las primeras herramientas para calcular.',
-      img: 'ficha-abaco.png',
+      img: 'ficha-abaco.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'Hace ~80 años',
       titulo: 'La computadora gigante',
       detalle: 'Las primeras computadoras electrónicas eran tan grandes que llenaban un cuarto entero.',
-      img: 'ficha-computadora-gigante.png',
+      img: 'ficha-computadora-gigante.webp',
       acento: { c: '#f87171', deep: '#991b1b' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'Hace ~40 años',
       titulo: 'La computadora personal',
       detalle: 'Llegó a las casas y a las escuelas, con su pantalla sobre el escritorio.',
-      img: 'ficha-computadora-personal.png',
+      img: 'ficha-computadora-personal.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad1 = {
       tag: 'Hoy',
       titulo: 'El smartphone',
       detalle: 'Una computadora completa que cabe en la palma de tu mano.',
-      img: 'ficha-smartphone.png',
+      img: 'ficha-smartphone.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

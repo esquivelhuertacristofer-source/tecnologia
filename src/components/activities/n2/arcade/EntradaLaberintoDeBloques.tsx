@@ -20,7 +20,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'El tablero',
       titulo: 'El robot espera',
       detalle: 'El robot no se mueve solo: espera a que armes toda la tira antes de dar el primer paso.',
-      img: 'ficha-robot-espera.png',
+      img: 'ficha-robot-espera.webp',
       acento: { c: '#8b5cf6', deep: '#5b21b6' },
     },
     {
@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'Bloque',
       titulo: 'Los tres bloques',
       detalle: 'Un bloque es una instrucción exacta: avanzar, girar a la izquierda o girar a la derecha.',
-      img: 'ficha-tres-bloques.png',
+      img: 'ficha-tres-bloques.webp',
       acento: { c: '#ffd25a', deep: '#ff9d2e' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'Idea clave',
       titulo: 'La tira de programa',
       detalle: 'Los bloques se colocan en orden sobre la tira de programa antes de que el robot se mueva.',
-      img: 'ficha-tira-programa.png',
+      img: 'ficha-tira-programa.webp',
       acento: { c: '#5ce1e6', deep: '#0e7490' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'Meta',
       titulo: '¡Meta alcanzada!',
       detalle: 'El robot ejecuta los bloques tal cual: si el orden está mal, se estrella o no llega a la meta.',
-      img: 'ficha-meta-alcanzada.png',
+      img: 'ficha-meta-alcanzada.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

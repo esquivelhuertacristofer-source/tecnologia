@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 1,
       titulo: 'Tu dispositivo',
       detalle: 'Aquí empieza todo: tu compu o tu tablet prepara el mensaje y lo manda.',
-      img: 'ficha-dispositivo.png',
+      img: 'ficha-dispositivo.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -39,7 +39,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 2,
       titulo: 'El router',
       detalle: 'El aparato que conecta tu casa o tu escuela con internet: la puerta de salida.',
-      img: 'ficha-router.png',
+      img: 'ficha-router.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -48,7 +48,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 4,
       titulo: 'El servidor',
       detalle: 'Una computadora encendida todo el tiempo que guarda páginas y archivos.',
-      img: 'ficha-servidor.png',
+      img: 'ficha-servidor.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -57,7 +57,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 5,
       titulo: 'La respuesta vuelve',
       detalle: 'El servidor responde y todo regresa a tu pantalla en menos de un segundo.',
-      img: 'ficha-vuelta.png',
+      img: 'ficha-vuelta.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],

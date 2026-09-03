@@ -20,7 +20,7 @@ const CONFIG: ConfigEntradaN2Unidad3 = {
       tag: 'Botón',
       titulo: 'El botón minimizar',
       detalle: 'Guarda la ventana a un lado sin cerrarla; se puede recuperar cuando la necesites.',
-      img: 'ficha-boton-minimizar.png',
+      img: 'ficha-boton-minimizar.webp',
       acento: { c: '#ffd25a', deep: '#ff9d2e' },
     },
     {
@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaN2Unidad3 = {
       tag: 'Botón',
       titulo: 'El botón maximizar',
       detalle: 'Hace que la ventana ocupe toda la pantalla para verla más grande.',
-      img: 'ficha-boton-maximizar.png',
+      img: 'ficha-boton-maximizar.webp',
       acento: { c: '#5ce1e6', deep: '#0e7490' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaN2Unidad3 = {
       tag: 'Botón',
       titulo: 'El botón cerrar',
       detalle: 'Cierra el programa por completo; solo se usa cuando ya no lo necesitas.',
-      img: 'ficha-boton-cerrar.png',
+      img: 'ficha-boton-cerrar.webp',
       acento: { c: '#ff6d7c', deep: '#b91457' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaN2Unidad3 = {
       tag: 'Idea clave',
       titulo: 'Varias ventanas a la vez',
       detalle: 'Puedes tener varios programas abiertos y cambiar entre ellos sin cerrar ninguno.',
-      img: 'ficha-varias-ventanas.png',
+      img: 'ficha-varias-ventanas.webp',
       acento: { c: '#38bdf8', deep: '#155e9c' },
     },
   ],

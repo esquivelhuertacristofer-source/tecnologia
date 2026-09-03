@@ -12,7 +12,7 @@ import { useSfx } from '../../lib/useSfx';
  * sin ningún cambio — la única variación permitida entre unidades es la ruta.
  */
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 interface PasoRuta {
   id: string;
@@ -123,7 +123,7 @@ export function EntradaN2Unidad6Base({ entrada, ...props }: ActivityProps & { en
                   controlsList="nodownload"
                   disablePictureInPicture
                   preload="metadata"
-                  poster={`${assets}/portada.png`}
+                  poster={`${assets}/portada.webp`}
                   src={`${assets}/video-explicativo.mp4`}
                   className="w-full aspect-video"
                   tabIndex={iniciado ? undefined : -1}

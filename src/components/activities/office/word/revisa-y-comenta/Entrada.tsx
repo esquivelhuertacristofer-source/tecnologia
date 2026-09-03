@@ -50,7 +50,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'El texto es de otra persona',
       detalle:
         'Cuando revisas algo que escribió alguien más, borrar y escribir encima es lo peor que puedes hacer: el otro abre su archivo y ya no reconoce lo suyo, y ni siquiera sabe qué le tocaste. Word entero tiene una pestaña —Revisar— dedicada a este problema y a nada más.',
-      img: 'ficha-no-es-tuyo.png',
+      img: 'ficha-no-es-tuyo.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -60,7 +60,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'La raya roja no lo sabe todo',
       detalle:
         'El corrector compara cada palabra con una lista gigante y subraya las que no existen: «aser», «ke», «nesesita». Pero no entiende lo que quisiste decir. «Tubo» y «tuvo» existen las dos, y «aya», «halla» y «haya» también, así que ésas pasan limpias. Que no haya rayas rojas no quiere decir que esté bien escrito.',
-      img: 'ficha-corrector.png',
+      img: 'ficha-corrector.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -70,7 +70,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Preguntar sin tocar',
       detalle:
         'A veces no sabes si algo está mal: sólo no lo entiendes. Para eso está el comentario. Seleccionas el trozo, escribes tu duda al margen y el texto se queda exactamente igual. Es la diferencia entre «te corrijo» y «te pregunto», y en un equipo esa diferencia lo es todo.',
-      img: 'ficha-comentarios.png',
+      img: 'ficha-comentarios.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -80,7 +80,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Todo cambio es una propuesta',
       detalle:
         'Con el control de cambios encendido, lo que escribes sale de tu color y subrayado, y lo que borras se queda tachado en vez de desaparecer. Nada se pierde y todo lleva nombre. Después, quien recibe el documento acepta lo que le convence y rechaza lo demás, uno por uno.',
-      img: 'ficha-control-de-cambios.png',
+      img: 'ficha-control-de-cambios.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

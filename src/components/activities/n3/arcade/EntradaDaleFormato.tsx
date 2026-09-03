@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'Herramienta 1',
       titulo: 'Negrita',
       detalle: 'Hace las letras gruesas para que resalten. Perfecta para un título.',
-      img: 'ficha-negrita.png',
+      img: 'ficha-negrita.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'Herramienta 2',
       titulo: 'Cursiva',
       detalle: 'Inclina las letras: ideal para destacar una sola palabra dentro del texto.',
-      img: 'ficha-cursiva.png',
+      img: 'ficha-cursiva.webp',
       acento: { c: '#f472b6', deep: '#9d174d' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'Herramienta 3',
       titulo: 'Alineación',
       detalle: 'Acomoda el texto a la izquierda, al centro o a la derecha de la hoja.',
-      img: 'ficha-alineacion.png',
+      img: 'ficha-alineacion.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad5 = {
       tag: 'El truco',
       titulo: 'Primero selecciona',
       detalle: 'Pinta el texto y después presiona la herramienta. Sin pintar, no pasa nada.',
-      img: 'ficha-primero-selecciona.png',
+      img: 'ficha-primero-selecciona.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
   ],

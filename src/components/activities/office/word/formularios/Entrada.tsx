@@ -48,7 +48,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Gris quiere decir «aquí sí»',
       detalle:
         'Un control de formulario es un hueco: un trozo del documento marcado en gris donde quien reciba el archivo va a poder escribir. Todo lo demás —el título, los rótulos, la fecha— deja de ser tocable. Un formulario no es una hoja bonita: es una hoja con permisos.',
-      img: 'ficha-huecos.png',
+      img: 'ficha-huecos.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -58,7 +58,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'No todo se contesta escribiendo',
       detalle:
         'Campo de texto para lo que es distinto en cada persona, como el nombre. Lista desplegable cuando las respuestas posibles son tres y no quieres que nadie invente una cuarta. Casilla de verificación para lo que sólo es sí o no. Elegir bien el control es la mitad del trabajo.',
-      img: 'ficha-tres-tipos.png',
+      img: 'ficha-tres-tipos.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -68,7 +68,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Restringir edición',
       detalle:
         'Vive en la pestaña Revisar, no en Insertar: no estás metiendo nada nuevo, estás defendiendo lo que ya hay. Con la regla «Rellenar formularios» el documento deja abiertos los huecos y cierra el resto. Con «Sólo lectura» lo cierra todo, hasta los huecos, y entonces la ficha no se puede contestar.',
-      img: 'ficha-restringir.png',
+      img: 'ficha-restringir.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -78,7 +78,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Proteger no es esconder',
       detalle:
         'El botón de quitar la protección está a la vista y no pide contraseña. Cualquiera que tenga el archivo puede quitarla en un clic. Proteger sirve para que un documento no se estropee sin querer, que es lo que pasa el 99 % de las veces. Para lo que de verdad es secreto hace falta otra cosa.',
-      img: 'ficha-sin-contrasena.png',
+      img: 'ficha-sin-contrasena.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

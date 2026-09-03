@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'El vestuario',
       titulo: 'Dos disfraces',
       detalle: 'Uno con las patas juntas y otro con las patas abiertas: son los dos pasos del gato.',
-      img: 'ficha-dos-disfraces.png',
+      img: 'ficha-dos-disfraces.webp',
       acento: { c: '#f472b6', deep: '#9d174d' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'El truco',
       titulo: 'Alternar disfraces',
       detalle: 'Cambiar rápido de una pose a otra engaña al ojo: eso es animar.',
-      img: 'ficha-alternar.png',
+      img: 'ficha-alternar.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'El programa',
       titulo: 'Mover + repetir',
       detalle: 'Dentro del bucle: avanzar un poco, cambiar de disfraz y esperar un instante.',
-      img: 'ficha-mover-repetir.png',
+      img: 'ficha-mover-repetir.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'El resultado',
       titulo: '¡Cobra vida!',
       detalle: 'Con cinco bloques bien puestos, el gato cruza el escenario caminando.',
-      img: 'ficha-vida.png',
+      img: 'ficha-vida.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
   ],

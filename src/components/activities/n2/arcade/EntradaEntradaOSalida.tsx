@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Entrada',
       titulo: 'El teclado y el mouse',
       detalle: 'Le dan información a la compu: lo que escribes y hacia dónde apuntas.',
-      img: 'ficha-teclado-mouse.png',
+      img: 'ficha-teclado-mouse.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Salida',
       titulo: 'La pantalla y las bocinas',
       detalle: 'Te devuelven un resultado: lo que ves y lo que escuchas.',
-      img: 'ficha-pantalla-bocinas.png',
+      img: 'ficha-pantalla-bocinas.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Entrada y salida',
       titulo: 'La pantalla táctil',
       detalle: 'Hace las dos cosas a la vez: te muestra información y recibe tus toques.',
-      img: 'ficha-pantalla-tactil.png',
+      img: 'ficha-pantalla-tactil.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Entrada',
       titulo: 'El micrófono y la cámara',
       detalle: 'Le dan información a la compu: tu voz y lo que ven.',
-      img: 'ficha-microfono-camara.png',
+      img: 'ficha-microfono-camara.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
   ],

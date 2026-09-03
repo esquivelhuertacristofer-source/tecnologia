@@ -20,7 +20,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'El dial',
       titulo: 'El dial de tamaño',
       detalle: 'Gira el dial para que una palabra crezca de chica a grande, según lo que pida Bit.',
-      img: 'ficha-el-dial-de-tamano.png',
+      img: 'ficha-el-dial-de-tamano.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'El perchero',
       titulo: 'El perchero de colores',
       detalle: 'Cuelga cada palabra en el color que le toca, como si eligieras la ropa que se va a poner.',
-      img: 'ficha-el-perchero-de-colores.png',
+      img: 'ficha-el-perchero-de-colores.webp',
       acento: { c: '#5ce1e6', deep: '#0e7490' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'Idea clave',
       titulo: 'Palabra grande y roja',
       detalle: 'Una palabra grande y roja grita fuerte: así se lee un título o una advertencia.',
-      img: 'ficha-palabra-grande-y-roja.png',
+      img: 'ficha-palabra-grande-y-roja.webp',
       acento: { c: '#ff6d7c', deep: '#d63a52' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaN2Unidad5 = {
       tag: 'Idea clave',
       titulo: 'Palabra chica y azul',
       detalle: 'Una palabra chica y azul puede susurrar un secreto, sin dejar de decir lo mismo.',
-      img: 'ficha-palabra-chica-y-azul.png',
+      img: 'ficha-palabra-chica-y-azul.webp',
       acento: { c: '#32a8ff', deep: '#1e63c4' },
     },
   ],

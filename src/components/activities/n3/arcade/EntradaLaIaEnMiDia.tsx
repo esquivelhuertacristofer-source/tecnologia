@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'Te escucha',
       titulo: 'Asistente de voz',
       detalle: 'Le hablas, te entiende y te contesta: eso es inteligencia artificial.',
-      img: 'ficha-asistente-de-voz.png',
+      img: 'ficha-asistente-de-voz.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'Cambia idiomas',
       titulo: 'Traductor',
       detalle: 'Escribes una palabra y la IA la pasa a otro idioma en un segundo.',
-      img: 'ficha-traductor.png',
+      img: 'ficha-traductor.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'Te sugiere',
       titulo: 'Recomendaciones',
       detalle: 'La pantalla propone videos que podrían gustarte según lo que ya viste.',
-      img: 'ficha-recomendaciones.png',
+      img: 'ficha-recomendaciones.webp',
       acento: { c: '#f472b6', deep: '#9d174d' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad6 = {
       tag: 'Ojo',
       titulo: 'No todo tiene IA',
       detalle: 'Una lámpara o un lápiz funcionan de maravilla sin ninguna inteligencia artificial.',
-      img: 'ficha-no-todo-tiene-ia.png',
+      img: 'ficha-no-todo-tiene-ia.webp',
       acento: { c: '#f5a524', deep: '#92400e' },
     },
   ],

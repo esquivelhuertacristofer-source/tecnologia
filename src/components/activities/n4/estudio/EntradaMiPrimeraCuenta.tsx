@@ -33,7 +33,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 1,
       titulo: 'Con un adulto',
       detalle: 'Una cuenta se abre siempre acompañado: tu mamá, tu papá o tu maestra. El mostrador no abre sin su gafete.',
-      img: 'ficha-adulto.png',
+      img: 'ficha-adulto.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -42,7 +42,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 2,
       titulo: 'Usuario sin datos',
       detalle: 'Tu nombre de usuario lo ven los demás: no lleva apellido, ni domicilio, ni tu escuela y tu salón.',
-      img: 'ficha-usuario.png',
+      img: 'ficha-usuario.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -51,7 +51,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 3,
       titulo: 'Contraseña fuerte',
       detalle: 'Larga, con mayúsculas, números y un símbolo. Y armada con una frase que sólo tú recuerdas.',
-      img: 'ficha-llave.png',
+      img: 'ficha-llave.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -60,7 +60,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 4,
       titulo: 'No se presta',
       detalle: 'Ni al mejor amigo, ni por mensaje. La única persona que la sabe contigo es el adulto que abrió la cuenta.',
-      img: 'ficha-no-se-presta.png',
+      img: 'ficha-no-se-presta.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
   ],

@@ -35,7 +35,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'Escribe',
       titulo: 'Texto Fácil',
       detalle: 'Abre Texto Fácil y guarda una oración.',
-      img: 'texto.png',
+      img: 'texto.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -43,7 +43,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'Dibuja',
       titulo: 'Arte Digital',
       detalle: 'Abre Arte Digital y realiza un dibujo.',
-      img: 'arte.png',
+      img: 'arte.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
     {
@@ -51,7 +51,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'Resuelve',
       titulo: 'Calculadora',
       detalle: 'Abre Calculadora y resuelve 2 + 3.',
-      img: 'calculadora.png',
+      img: 'calculadora.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -59,7 +59,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'Organiza',
       titulo: 'Mis archivos',
       detalle: 'Abre Mis archivos, crea una carpeta y cámbiale el nombre.',
-      img: 'archivos.png',
+      img: 'archivos.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
   ],

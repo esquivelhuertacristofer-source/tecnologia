@@ -32,7 +32,7 @@ import '../n1/arcade/arcade.css';
 import '../arcade3d/arcade3d.css';
 import './lab3d-clases.css';
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 export interface FinalBanco3D {
   insigniaNombre: string;

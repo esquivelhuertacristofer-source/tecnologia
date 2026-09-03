@@ -29,7 +29,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Apuntar',
       titulo: 'El puntero',
       detalle: 'La flecha de la pantalla es tu mano dentro de la computadora. Llévala encima de una burbuja: eso es apuntar.',
-      img: 'puntero.png',
+      img: 'puntero.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -37,7 +37,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Primer poder',
       titulo: 'El clic',
       detalle: 'Aprieta y suelta el botón izquierdo una sola vez. Con un clic atrapas o eliges cosas.',
-      img: 'clic.png',
+      img: 'clic.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -45,7 +45,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Segundo poder',
       titulo: 'El doble clic',
       detalle: 'Dos clics muy rápidos, sin mover el mouse. Con doble clic abres cosas… y revientas burbujas doradas.',
-      img: 'doble-clic.png',
+      img: 'doble-clic.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Tu misión',
       titulo: 'Caza con Bit',
       detalle: 'Mano suave y muñeca apoyada en la mesa: primero apunta y luego haz clic. No hace falta apretar fuerte.',
-      img: 'bit-caza.png',
+      img: 'bit-caza.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

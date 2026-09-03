@@ -20,7 +20,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'El tablero',
       titulo: 'El robot chocado',
       detalle: 'A veces una tira de programa casi funciona, pero tiene un bloque equivocado escondido entre los demás.',
-      img: 'ficha-robot-chocado.png',
+      img: 'ficha-robot-chocado.webp',
       acento: { c: '#ff6d7c', deep: '#b91457' },
     },
     {
@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'Idea clave',
       titulo: 'La lupa de Bit',
       detalle: 'A ese error se le llama bug, y buscarlo con cuidado se llama depurar.',
-      img: 'ficha-lupa-bit.png',
+      img: 'ficha-lupa-bit.webp',
       acento: { c: '#ffd25a', deep: '#ff9d2e' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'Bug',
       titulo: 'El bloque culpable',
       detalle: 'Sigue el camino bloque por bloque para descubrir dónde exactamente falla el robot.',
-      img: 'ficha-bloque-culpable.png',
+      img: 'ficha-bloque-culpable.webp',
       acento: { c: '#8b5cf6', deep: '#5b21b6' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaN2Unidad4 = {
       tag: 'Meta',
       titulo: '¡Corregido!',
       detalle: 'Corrige el bloque culpable y prueba de nuevo: equivocarse es parte normal de programar.',
-      img: 'ficha-corregido.png',
+      img: 'ficha-corregido.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

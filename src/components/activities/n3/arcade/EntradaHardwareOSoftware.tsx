@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'Se toca',
       titulo: 'El cuerpo (hardware)',
       detalle: 'Todo lo que puedes tocar de la computadora: el teclado, la pantalla, las bocinas.',
-      img: 'ficha-hardware.png',
+      img: 'ficha-hardware.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'Se ejecuta',
       titulo: 'La mente (software)',
       detalle: 'Los programas que no se tocan: un juego, un navegador, el sistema operativo.',
-      img: 'ficha-software.png',
+      img: 'ficha-software.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'Por dentro',
       titulo: 'El cerebro de adentro',
       detalle: 'El procesador es una piecita chiquita que hace las cuentas de toda la máquina.',
-      img: 'ficha-cerebro.png',
+      img: 'ficha-cerebro.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'La idea grande',
       titulo: 'Trabajan juntos',
       detalle: 'El hardware es el cuerpo y el software es lo que sabe hacer: se necesitan siempre.',
-      img: 'ficha-juntos.png',
+      img: 'ficha-juntos.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

@@ -14,7 +14,10 @@
     "preview:cf": "npm run build:cf && wrangler dev",
     "deploy:cf": "npm run build:cf && wrangler deploy",
     "medios:subir": "node scripts/cloudflare/medios.mjs subir",
-    "medios:estado": "node scripts/cloudflare/medios.mjs estado"
+    "medios:estado": "node scripts/cloudflare/medios.mjs estado",
+    "medios:verificar": "node scripts/cloudflare/medios.mjs verificar",
+    "imagenes:webp": "node scripts/imagenes/a-webp.mjs",
+    "imagenes:rutas": "node scripts/imagenes/comprobar-rutas.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

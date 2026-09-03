@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'Adelante',
       titulo: 'Luz verde',
       detalle: 'Verde significa adelante: es tu momento de jugar o aprender con la compu. ¡Disfrútalo!',
-      img: 'verde.png',
+      img: 'verde.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'Atención',
       titulo: 'Luz amarilla',
       detalle: 'Amarillo significa atención: el tiempo casi se acaba y toca ir despidiéndose de la pantalla.',
-      img: 'amarillo.png',
+      img: 'amarillo.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'Alto',
       titulo: 'Luz roja',
       detalle: 'Rojo significa alto: llegó el descanso. Estira el cuerpo, parpadea y mira lejos.',
-      img: 'rojo.png',
+      img: 'rojo.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
     {
@@ -52,7 +52,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'De todo',
       titulo: 'El día equilibrado',
       detalle: 'Un buen día tiene de todo: un rato de pantalla, juego afuera, tarea, familia y dormir.',
-      img: 'dia.png',
+      img: 'dia.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
   ],

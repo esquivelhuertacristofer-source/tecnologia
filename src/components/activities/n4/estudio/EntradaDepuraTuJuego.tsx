@@ -42,7 +42,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Observa',
       detalle:
         'Antes de tocar nada, tira de la palanca y mira. ¿Qué hace de raro? No «no funciona»: eso no es una pista. «El marcador sube solo aunque no toque nada» sí lo es. Un síntoma bien dicho ya es medio bug encontrado, y por eso lo primero que hay en la mesa es un cuaderno para anotarlo.',
-      img: 'ficha-observa.png',
+      img: 'ficha-observa.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -52,7 +52,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Acota',
       detalle:
         'Con la lupa en la mano, no revises el programa entero: revisa sólo las reglas que tienen que ver con lo que viste. Si el marcador es el que se porta mal, el bug vive donde se toca el marcador. Toca un bloque con la lupa apagada y Bit te lee lo que hace; enciéndela y ese mismo toque lo acusa.',
-      img: 'ficha-acota.png',
+      img: 'ficha-acota.webp',
       acento: { c: '#a78bfa', deep: '#6d28d9' },
     },
     {
@@ -62,7 +62,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Una sola cosa',
       detalle:
         'Cambia una cosa y sólo una. Si cambias tres a la vez y el juego se arregla, no sabes cuál de las tres era —y si se rompe más, tampoco. Por eso el arreglo no se escribe a mano: eliges entre tres tarjetas, y las dos que no van te dicen qué habría pasado con ellas.',
-      img: 'ficha-uno.png',
+      img: 'ficha-uno.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -72,7 +72,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Vuelve a probar',
       detalle:
         'Arreglar no es haber cambiado algo: es haberlo visto funcionar. La segunda prueba no es un trámite ni se puede saltar —el juego no te deja pasar al siguiente sin ella—, porque un arreglo sin comprobar es exactamente lo mismo que una adivinanza.',
-      img: 'ficha-prueba.png',
+      img: 'ficha-prueba.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],

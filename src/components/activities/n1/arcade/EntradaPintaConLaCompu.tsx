@@ -29,7 +29,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'El pincel',
       titulo: 'El primer trazo',
       detalle: 'En la computadora también se dibuja: el mouse es tu pincel y la pantalla es tu lienzo. Cuando lo arrastras, dejas un trazo.',
-      img: 'trazo.png',
+      img: 'trazo.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -37,7 +37,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'Los sellos',
       titulo: 'Formas que estampan',
       detalle: 'Con los sellos estampas formas completas de un clic: un sol circular, una casa cuadrada, estrellas para el cielo.',
-      img: 'formas.png',
+      img: 'formas.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -45,7 +45,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'El bote mágico',
       titulo: 'El relleno mágico',
       detalle: 'El bote de relleno es mágico: un solo clic… ¡y el color llena todo el espacio cerrado!',
-      img: 'relleno.png',
+      img: 'relleno.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaUnidad4 = {
       tag: 'Sin miedo',
       titulo: 'El botón de deshacer',
       detalle: 'Deshacer borra el último paso sin dejar mancha. En la compu probar no cuesta nada: ¡equivocarse es parte de crear!',
-      img: 'deshacer.png',
+      img: 'deshacer.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

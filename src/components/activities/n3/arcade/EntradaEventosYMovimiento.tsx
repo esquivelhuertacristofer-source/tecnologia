@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'El comienzo',
       titulo: 'Bloque de evento',
       detalle: 'Dice CUÁNDO arranca el programa. El más usado es "al presionar la bandera verde".',
-      img: 'ficha-evento.png',
+      img: 'ficha-evento.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'La acción',
       titulo: 'Mover y girar',
       detalle: 'Mover avanza al gato en la dirección a la que mira; girar le cambia esa dirección.',
-      img: 'ficha-mover.png',
+      img: 'ficha-mover.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'El bucle',
       titulo: 'Repetir (bucle)',
       detalle: 'Si algo se repite, mételo dentro de un "repetir" en vez de copiarlo muchas veces.',
-      img: 'ficha-repetir.png',
+      img: 'ficha-repetir.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad4 = {
       tag: 'A correr',
       titulo: 'Presiona la bandera',
       detalle: 'El programa se lee de arriba hacia abajo, un bloque a la vez, hasta el final.',
-      img: 'ficha-bandera-corre.png',
+      img: 'ficha-bandera-corre.webp',
       acento: { c: '#f472b6', deep: '#9d174d' },
     },
   ],

@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'Secreto',
       titulo: 'Los datos que dicen dónde encontrarte',
       detalle: 'Tu dirección, tu teléfono, tu escuela, tu foto y tu contraseña se guardan con candado.',
-      img: 'ficha-datos-secretos.png',
+      img: 'ficha-datos-secretos.webp',
       acento: { c: '#7c6cff', deep: '#4c3fcf' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'Público',
       titulo: 'Los datos que sí puedes compartir',
       detalle: 'Tu color favorito, tu juego favorito o un dibujo tuyo sí puedes compartirlos sin miedo.',
-      img: 'ficha-datos-publicos.png',
+      img: 'ficha-datos-publicos.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'Antes de responder',
       titulo: 'Piensa antes de escribir',
       detalle: 'Si alguien te pregunta un secreto por chat, la respuesta sigue siendo la misma: candado.',
-      img: 'ficha-antes-de-responder.png',
+      img: 'ficha-antes-de-responder.webp',
       acento: { c: '#38bdf8', deep: '#0e7490' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'Pista',
       titulo: '¿Esto dice dónde encontrarme?',
       detalle: 'Esa pregunta te ayuda a decidir rápido si un dato es secreto o público.',
-      img: 'ficha-pista-candado.png',
+      img: 'ficha-pista-candado.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
   ],

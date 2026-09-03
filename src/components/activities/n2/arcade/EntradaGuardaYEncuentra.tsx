@@ -20,7 +20,7 @@ const CONFIG: ConfigEntradaN2Unidad3 = {
       tag: 'Idea clave',
       titulo: 'Guardar tu trabajo',
       detalle: 'Guardar tu trabajo evita que lo pierdas si cierras el programa o apagas la máquina.',
-      img: 'ficha-guardar-trabajo.png',
+      img: 'ficha-guardar-trabajo.webp',
       acento: { c: '#5ce1e6', deep: '#0e7490' },
     },
     {
@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaN2Unidad3 = {
       tag: 'Idea clave',
       titulo: 'Un buen nombre',
       detalle: 'Un nombre que describe lo que hay dentro te ayuda a encontrar tu trabajo después.',
-      img: 'ficha-buen-nombre.png',
+      img: 'ficha-buen-nombre.webp',
       acento: { c: '#ffd25a', deep: '#ff9d2e' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaN2Unidad3 = {
       tag: 'Idea clave',
       titulo: 'Carpetas como cajones',
       detalle: 'Las carpetas guardan tus archivos como los cajones de un archivero guardan papeles.',
-      img: 'ficha-carpetas-cajones.png',
+      img: 'ficha-carpetas-cajones.webp',
       acento: { c: '#ff6d7c', deep: '#b91457' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaN2Unidad3 = {
       tag: 'Idea clave',
       titulo: 'Encontrar el archivo',
       detalle: 'Para encontrar un archivo, recuerda su nombre y en qué carpeta lo guardaste.',
-      img: 'ficha-encontrar-archivo.png',
+      img: 'ficha-encontrar-archivo.webp',
       acento: { c: '#38bdf8', deep: '#155e9c' },
     },
   ],

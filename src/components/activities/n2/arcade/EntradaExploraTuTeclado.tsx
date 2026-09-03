@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'Zona',
       titulo: 'La zona de letras',
       detalle: 'Ocupan el centro del teclado y son la zona más grande: con ellas escribimos palabras.',
-      img: 'ficha-zona-letras.png',
+      img: 'ficha-zona-letras.webp',
       acento: { c: '#32a8ff', deep: '#155e9c' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'Zona',
       titulo: 'La zona de números',
       detalle: 'Van del 0 al 9, en su propia fila arriba de las letras.',
-      img: 'ficha-zona-numeros.png',
+      img: 'ficha-zona-numeros.webp',
       acento: { c: '#ffd25a', deep: '#ff9d2e' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'Zona',
       titulo: 'Las flechas',
       detalle: 'Cuatro teclas que te mueven dentro de una pantalla sin usar el mouse.',
-      img: 'ficha-flechas.png',
+      img: 'ficha-flechas.webp',
       acento: { c: '#5ce1e6', deep: '#0e7490' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN2Unidad2 = {
       tag: 'Zona',
       titulo: 'Las teclas especiales',
       detalle: 'Espacio, Enter y Borrar no escriben letras: cada una hace su propia acción.',
-      img: 'ficha-teclas-especiales.png',
+      img: 'ficha-teclas-especiales.webp',
       acento: { c: '#b98cff', deep: '#6d28d9' },
     },
   ],

@@ -43,7 +43,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Empieza en hoja nueva',
       detalle:
         'El salto de página es una instrucción: «lo que sigue, empiézalo arriba de una hoja nueva». Lo pones una vez y ahí se queda, pase lo que pase con el texto de arriba. En Word vive en la pestaña Insertar, en el grupo Páginas.',
-      img: 'ficha-salto.png',
+      img: 'ficha-salto.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Con enters se desacomoda',
       detalle:
         'Casi todo el mundo empieza hoja nueva dando Enter hasta que el texto se pasa. Parece que funciona… hasta que alguien añade o quita un renglón más arriba: entonces todo sube o baja y el capítulo vuelve a quedar partido a la mitad. Los espacios no son una instrucción.',
-      img: 'ficha-enters-no.png',
+      img: 'ficha-enters-no.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
     {
@@ -63,7 +63,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Se escribe una vez',
       detalle:
         'Arriba de cada hoja hay una franja que no es parte del texto: el encabezado. Escribes ahí el nombre de tu trabajo y tu grupo una sola vez y aparece solo en todas las hojas. Abajo está su gemelo, el pie de página. Se abren con doble clic en el margen.',
-      img: 'ficha-encabezado.png',
+      img: 'ficha-encabezado.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -73,7 +73,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Se renumeran solos',
       detalle:
         'El número de página no se teclea: se inserta. El programa pone 1 en la primera hoja, 2 en la segunda y 3 en la tercera, y si mañana metes una hoja en medio, los de abajo se corren solos. Si los escribieras a mano, tendrías que corregirlos todos.',
-      img: 'ficha-numeracion.png',
+      img: 'ficha-numeracion.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],

@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaUnidad1 = {
       tag: TEXTOS['tarjeta-evaluacion'],
       titulo: 'Identifica las partes',
       detalle: rango(0, 2),
-      img: 'ficha-reto-identifica.png',
+      img: 'ficha-reto-identifica.webp',
       acento: { c: 'var(--blue)', deep: 'var(--blue-deep)' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaUnidad1 = {
       tag: TEXTOS['tarjeta-evaluacion'],
       titulo: 'Conecta el video',
       detalle: rango(3, 3),
-      img: 'ficha-reto-conecta.png',
+      img: 'ficha-reto-conecta.webp',
       acento: { c: '#ffab00', deep: '#e07800' },
     },
     {
@@ -52,7 +52,7 @@ const CONFIG: ConfigEntradaUnidad1 = {
       tag: TEXTOS['tarjeta-evaluacion'],
       titulo: 'Enciende en orden',
       detalle: rango(4, 6),
-      img: 'ficha-reto-enciende.png',
+      img: 'ficha-reto-enciende.webp',
       acento: { c: '#8b5cf6', deep: '#5b21b6' },
     },
     {
@@ -60,7 +60,7 @@ const CONFIG: ConfigEntradaUnidad1 = {
       tag: TEXTOS['tarjeta-evaluacion'],
       titulo: 'Crea en EduOS',
       detalle: rango(7, 9),
-      img: 'ficha-reto-eduos.png',
+      img: 'ficha-reto-eduos.webp',
       acento: { c: '#17b26a', deep: '#0e7a45' },
     },
   ],

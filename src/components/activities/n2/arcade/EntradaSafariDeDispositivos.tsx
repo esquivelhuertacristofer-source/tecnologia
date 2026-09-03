@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Dispositivo',
       titulo: 'La computadora',
       detalle: 'Recibe información, la procesa con un programa y te devuelve un resultado.',
-      img: 'ficha-computadora.png',
+      img: 'ficha-computadora.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Dispositivo',
       titulo: 'La tablet',
       detalle: 'Hace tareas parecidas a la compu, pero en un tamaño que cabe entre tus manos.',
-      img: 'ficha-tablet.png',
+      img: 'ficha-tablet.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Dispositivo',
       titulo: 'El televisor',
       detalle: 'Recibe información para mostrártela, pero tú no le hablas de vuelta.',
-      img: 'ficha-televisor.png',
+      img: 'ficha-televisor.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN2Unidad1 = {
       tag: 'Dispositivo',
       titulo: 'El robot aspiradora',
       detalle: 'Es una computadora que se mueve sola siguiendo instrucciones.',
-      img: 'ficha-aspiradora.png',
+      img: 'ficha-aspiradora.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

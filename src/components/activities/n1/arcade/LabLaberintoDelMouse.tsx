@@ -29,7 +29,7 @@ const LINEAS = {
   completar: '¡Arrastrar dominado! Tu mano ya no tiembla.',
 } as const;
 
-const PIXEL_IMG = '/assets/actividades/n1-laberinto-del-mouse/pixel.png';
+const PIXEL_IMG = '/assets/actividades/n1-laberinto-del-mouse/pixel.webp';
 
 /* Constelación (reto 1): posiciones en porcentaje de la mesa. */
 const ESTRELLAS = [

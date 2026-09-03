@@ -48,7 +48,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       titulo: 'El que reparte la máquina',
       detalle:
         'Es el primer programa que arranca. Reparte la RAM, da turnos al CPU, guarda tus archivos, habla con la impresora y decide qué puede hacer cada cuenta.',
-      img: 'ficha-reparte.png',
+      img: 'ficha-reparte.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -57,7 +57,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       titulo: 'Sistema o aplicación',
       detalle:
         'El sistema administra la máquina; la aplicación hace una tarea concreta. Recortar una foto es de ella; prestarle la memoria para hacerlo es de él.',
-      img: 'ficha-frontera.png',
+      img: 'ficha-frontera.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -66,7 +66,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       titulo: 'Cuatro puertas, un cuarto',
       detalle:
         'Windows abre los programas desde Inicio, Linux escribiendo en el buscador, Android desde el cajón y iOS buscando. Cambia la puerta, no lo que hay detrás.',
-      img: 'ficha-puertas.png',
+      img: 'ficha-puertas.webp',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -75,7 +75,7 @@ const CONFIG: ConfigEntradaN7Unidad1 = {
       titulo: 'El equipo que no conoces',
       detalle:
         'Al final te sientas frente a un sistema que nadie te enseñó, con las barras en otro sitio y otros nombres. Si entendiste la idea, no necesitas ayuda.',
-      img: 'ficha-desconocido.png',
+      img: 'ficha-desconocido.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],

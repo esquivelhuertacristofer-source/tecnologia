@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'Dibujitos',
       titulo: 'Los íconos',
       detalle: 'Son los dibujitos del escritorio: con doble clic abren un programa o una carpeta.',
-      img: 'ficha-iconos.png',
+      img: 'ficha-iconos.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'Se abre',
       titulo: 'Una ventana',
       detalle: 'Cuando abres algo aparece una ventana, y la puedes mover, agrandar o cerrar.',
-      img: 'ficha-ventana.png',
+      img: 'ficha-ventana.webp',
       acento: { c: '#38bdf8', deep: '#0369a1' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'Abajo',
       titulo: 'La barra de tareas',
       detalle: 'La franja de abajo te muestra el inicio, la hora y todo lo que tienes abierto.',
-      img: 'ficha-barra.png',
+      img: 'ficha-barra.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN3Unidad2 = {
       tag: 'La idea grande',
       titulo: 'Todo en su lugar',
       detalle: 'El escritorio es la mesa de trabajo de la máquina: si conoces sus partes, no te pierdes.',
-      img: 'ficha-orden.png',
+      img: 'ficha-orden.webp',
       acento: { c: '#34d399', deep: '#047857' },
     },
   ],

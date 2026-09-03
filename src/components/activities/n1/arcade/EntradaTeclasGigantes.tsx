@@ -28,7 +28,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Superpoder 1',
       titulo: 'Espacio',
       detalle: 'La tecla más larga del teclado: deja huecos entre las palabras. En este circuito hace saltar a Bit.',
-      img: 'espacio.png',
+      img: 'espacio.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -36,7 +36,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Superpoder 2',
       titulo: 'Enter',
       detalle: 'Enter significa «adelante»: confirma lo que escribiste y baja al siguiente renglón.',
-      img: 'enter.png',
+      img: 'enter.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -44,7 +44,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Superpoder 3',
       titulo: 'Borrar',
       detalle: 'La tecla de la flechita quita lo último que escribiste. Equivocarse está bien: borrar lo arregla.',
-      img: 'borrar.png',
+      img: 'borrar.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -52,7 +52,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'El travieso',
       titulo: 'Glitch',
       detalle: 'Este bicho llenó las palabras de letras que sobran. Tú las vas a limpiar con tus nuevos superpoderes.',
-      img: 'glitch.png',
+      img: 'glitch.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

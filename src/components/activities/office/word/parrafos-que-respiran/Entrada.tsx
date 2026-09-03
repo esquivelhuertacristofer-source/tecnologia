@@ -50,7 +50,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Un muro de letras',
       detalle:
         'Un texto sin separaciones no se lee: se salta. Y no es culpa de quien lo lee. Los ojos necesitan sitios donde descansar y donde volver a arrancar, y si no los hay se pierden de renglón. El aviso mejor escrito del mundo, puesto todo junto, no lo lee nadie.',
-      img: 'ficha-muro.png',
+      img: 'ficha-muro.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -60,7 +60,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Una idea, un párrafo',
       detalle:
         'La primera herramienta del día no está en la cinta: es la tecla Enter. Cada vez que empiezas a hablar de otra cosa —de la hora, del dinero, de lo que hay que llevar— eso es un párrafo nuevo. Separarlos es lo que convierte un bloque en algo que se puede recorrer.',
-      img: 'ficha-parrafos.png',
+      img: 'ficha-parrafos.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -70,7 +70,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Manda el cursor, no la palabra',
       detalle:
         'El interlineado es el espacio entre un renglón y el siguiente. Y aquí está la trampa que confunde a todo el mundo: se aplica al PÁRRAFO donde tienes el cursor, no a la palabra que seleccionaste. Si quieres cambiarlo todo, primero hay que seleccionarlo todo.',
-      img: 'ficha-interlineado.png',
+      img: 'ficha-interlineado.webp',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -80,7 +80,7 @@ const CONFIG: ConfigEntradaN4 = {
       titulo: 'Alineación y sangría',
       detalle:
         'La alineación decide por dónde quedan parejos los renglones: pegados a la izquierda, centrados, a la derecha, o justificados —rectos por los dos lados—. La sangría mete el párrafo hacia dentro y lo separa del borde, para que se vea de un golpe dónde empieza y dónde acaba. Las dos son del párrafo entero.',
-      img: 'ficha-bordes.png',
+      img: 'ficha-bordes.webp',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],

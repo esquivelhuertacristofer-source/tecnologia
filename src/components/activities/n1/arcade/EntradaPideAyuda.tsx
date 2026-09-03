@@ -29,7 +29,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'No es tu culpa',
       titulo: 'La pantalla rara',
       detalle: 'A veces la pantalla muestra cosas raras que confunden o asustan. No es tu culpa y no estás solo.',
-      img: 'rara.png',
+      img: 'rara.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
     {
@@ -37,7 +37,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'Te cuida',
       titulo: 'Mi adulto de confianza',
       detalle: 'Tu adulto de confianza te cuida todos los días: mamá, papá, los abuelos o tu maestra.',
-      img: 'adulto.png',
+      img: 'adulto.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -45,7 +45,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'El superpoder',
       titulo: 'El botón de ayuda',
       detalle: 'Cuando algo te confunde o te pide cosas: ALTO, quieto y sin tocar nada… y AVISO a mi adulto.',
-      img: 'boton.png',
+      img: 'boton.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaUnidad5 = {
       tag: 'El plan',
       titulo: 'Juntos lo revisamos',
       detalle: 'Lo revisan juntos y el adulto decide. Pedir ayuda no es de miedosos: ¡es de valientes!',
-      img: 'juntos.png',
+      img: 'juntos.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
   ],

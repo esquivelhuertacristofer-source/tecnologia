@@ -29,7 +29,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'Los oficios',
       titulo: 'Cada quien lo suyo',
       detalle: 'Cada oficio tiene sus herramientas: la bombera usa la manguera, el doctor su estetoscopio y la constructora su martillo.',
-      img: 'bombera.png',
+      img: 'bombera.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
     {
@@ -37,7 +37,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'La persona sabe',
       titulo: 'La herramienta ayuda',
       detalle: 'La herramienta no hace el trabajo sola: ayuda a la persona que sabe usarla. Elegir la correcta es pensar como profesional.',
-      img: 'doctora.png',
+      img: 'doctora.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -45,7 +45,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'El lío de Glitch',
       titulo: 'El taller revuelto',
       detalle: 'Glitch dejó el taller patas arriba: ¡un doctor con sartén! Tú sabes a quién le toca cada herramienta.',
-      img: 'taller.png',
+      img: 'taller.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaUnidad3 = {
       tag: 'La de todos',
       titulo: 'La computadora',
       detalle: 'Casi todos los oficios usan computadora hoy: la doctora, el maestro, la astronauta… y tú estás aprendiendo a usar la tuya.',
-      img: 'compu.png',
+      img: 'compu.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
   ],

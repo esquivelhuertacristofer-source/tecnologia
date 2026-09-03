@@ -22,7 +22,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'Animar',
       titulo: 'Cuando alguien lo necesita, anímalo',
       detalle: 'Si un compañero pierde, se equivoca o comparte algo, tu buen trato lo anima a seguir.',
-      img: 'ficha-animar.png',
+      img: 'ficha-animar.webp',
       acento: { c: '#7c6cff', deep: '#4c3fcf' },
     },
     {
@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'Calma',
       titulo: 'Si alguien está muy enojado, dale calma',
       detalle: 'Responder con calma evita que una discusión crezca en internet.',
-      img: 'ficha-calma.png',
+      img: 'ficha-calma.webp',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'Avisar',
       titulo: 'Ante el mal trato, avisa',
       detalle: 'Un mensaje grosero o una burla no se responden solos: alto, y aviso a tu adulto de confianza.',
-      img: 'ficha-avisar.png',
+      img: 'ficha-avisar.webp',
       acento: { c: '#fb7185', deep: '#be123c' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaN2Unidad6 = {
       tag: 'El plan del héroe',
       titulo: 'Alto, calma y aviso, en ese orden',
       detalle: 'Ese es el plan que usan los héroes del respeto cuando alguien los trata mal.',
-      img: 'ficha-plan-heroe.png',
+      img: 'ficha-plan-heroe.webp',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
   ],

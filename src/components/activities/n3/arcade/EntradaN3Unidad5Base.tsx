@@ -13,7 +13,7 @@ import { useSfx } from '../../lib/useSfx';
  * unidades es la ruta, que aquí tiene tres paradas.
  */
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 interface PasoRuta {
   id: string;
@@ -124,7 +124,7 @@ export function EntradaN3Unidad5Base({ entrada, ...props }: ActivityProps & { en
                   controlsList="nodownload"
                   disablePictureInPicture
                   preload="metadata"
-                  poster={`${assets}/portada.png`}
+                  poster={`${assets}/portada.webp`}
                   src={`${assets}/video-explicativo.mp4`}
                   className="w-full aspect-video"
                   tabIndex={iniciado ? undefined : -1}

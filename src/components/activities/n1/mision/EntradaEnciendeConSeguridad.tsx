@@ -11,9 +11,9 @@ import { EntradaUnidad1Base, type ConfigEntradaUnidad1 } from './EntradaUnidad1B
  */
 
 const FICHA_POR_KEY: Record<string, { titulo: string; img: string; acento: { c: string; deep: string } }> = {
-  'power-regulator': { titulo: 'Regulador', img: 'ficha-regulador.png', acento: { c: '#8b5cf6', deep: '#5b21b6' } },
-  'power-monitor': { titulo: 'Monitor', img: 'ficha-monitor.png', acento: { c: 'var(--blue)', deep: 'var(--blue-deep)' } },
-  'power-tower': { titulo: 'Gabinete', img: 'ficha-gabinete.png', acento: { c: '#ff7a1a', deep: '#d95800' } },
+  'power-regulator': { titulo: 'Regulador', img: 'ficha-regulador.webp', acento: { c: '#8b5cf6', deep: '#5b21b6' } },
+  'power-monitor': { titulo: 'Monitor', img: 'ficha-monitor.webp', acento: { c: 'var(--blue)', deep: 'var(--blue-deep)' } },
+  'power-tower': { titulo: 'Gabinete', img: 'ficha-gabinete.webp', acento: { c: '#ff7a1a', deep: '#d95800' } },
 };
 
 const CONFIG: ConfigEntradaUnidad1 = {

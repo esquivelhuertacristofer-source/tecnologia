@@ -18,7 +18,7 @@ import { useSfx } from '../../lib/useSfx';
  * justo lo que exige la plantilla.
  */
 
-const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.png';
+const BIT_CARA = '/assets/actividades/n1-enciende-y-apaga/bit-cara.webp';
 
 interface PasoRuta {
   id: string;
@@ -129,7 +129,7 @@ export function EntradaUnidad4Base({ entrada, ...props }: ActivityProps & { entr
                   controlsList="nodownload"
                   disablePictureInPicture
                   preload="metadata"
-                  poster={`${assets}/portada.png`}
+                  poster={`${assets}/portada.webp`}
                   src={`${assets}/video-explicativo.mp4`}
                   className="w-full aspect-video"
                   tabIndex={iniciado ? undefined : -1}

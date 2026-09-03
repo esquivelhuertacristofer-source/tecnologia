@@ -30,7 +30,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'El poder',
       titulo: 'Arrastrar',
       detalle: 'Tres pasos que se hacen juntos: aprieta el botón izquierdo, muévete sin soltarlo y suelta al llegar.',
-      img: 'arrastrar.png',
+      img: 'arrastrar.webp',
       acento: { c: '#56b8ff', deep: '#1e63c4' },
     },
     {
@@ -38,7 +38,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Tu amigo',
       titulo: 'Pixel, el ratoncito',
       detalle: 'El mouse se llama «ratón» porque el primero parecía uno, con su cola-cable. Pixel necesita tu mano firme.',
-      img: 'pixel.png',
+      img: 'pixel.webp',
       acento: { c: '#62e6a5', deep: '#1e8a5a' },
     },
     {
@@ -46,7 +46,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Reto 1',
       titulo: 'Une las estrellas',
       detalle: 'Un solo trazo de la estrella 1 a la 5, sin soltar el botón. Despacio: los movimientos lentos hacen trazos firmes.',
-      img: 'constelacion.png',
+      img: 'constelacion.webp',
       acento: { c: '#ffd25a', deep: '#d99a00' },
     },
     {
@@ -54,7 +54,7 @@ const CONFIG: ConfigEntradaUnidad2 = {
       tag: 'Retos 2 y 3',
       titulo: 'El laberinto del queso',
       detalle: 'Guía a Pixel hasta el queso sin tocar las paredes. Si chocas, no pasa nada: sigues desde donde ibas.',
-      img: 'laberinto.png',
+      img: 'laberinto.webp',
       acento: { c: '#ff7183', deep: '#d63a52' },
     },
   ],

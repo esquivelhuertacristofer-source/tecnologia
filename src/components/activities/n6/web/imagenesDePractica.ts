@@ -55,5 +55,5 @@ const TALLER = `
 
 export const IMAGENES_DE_PRACTICA: readonly RecursoWeb[] = [
   { nombre: 'robot.png', url: comoImagen(ROBOT), descripcion: 'El robot que sigue la línea negra' },
-  { nombre: 'taller.png', url: comoImagen(TALLER), descripcion: 'La mesa del taller, con las herramientas' },
+  { nombre: 'taller.webp', url: comoImagen(TALLER), descripcion: 'La mesa del taller, con las herramientas' },
 ];
