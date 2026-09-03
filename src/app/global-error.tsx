@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import * as Sentry from '@sentry/nextjs';
 
 /*
  * EL ÚLTIMO PARACAÍDAS (3-sep-2026).
@@ -9,9 +8,9 @@ import * as Sentry from '@sentry/nextjs';
  * `error.tsx` sólo atrapa lo que revienta DENTRO del layout raíz. Si lo que
  * falla es el layout mismo —el proveedor de progreso, una fuente, el shell del
  * hub— React no tiene dónde montar aquel componente y Next enseña su pantalla
- * en blanco por defecto: el alumno ve una página vacía sin explicación y
- * Sentry no se entera de nada. Ése era el aviso que el build repetía en cada
- * compilación («you don't have a global error handler set up»).
+ * en blanco por defecto: el alumno ve una página vacía sin explicación y no
+ * queda rastro de nada en ningún registro. Ése era el aviso que el build
+ * repetía en cada compilación («you don't have a global error handler set up»).
  *
  * Este archivo es el único que puede cubrir ese hueco, y por eso trae su
  * propio <html> y <body>: cuando se pinta, el layout raíz ya no existe, así
@@ -26,10 +25,15 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    Sentry.captureException(error, {
-      tags: { 'cen.boundary': 'root-layout', 'cen.handled': 'false' },
-      extra: { digest: error.digest },
-    });
+    /*
+     * A la consola, que en Cloudflare es el registro del Worker (`wrangler
+     * tail` y la pestana de Observability) y en el navegador la consola del
+     * alumno. Antes esto iba a Sentry; se quito el 3-sep-2026 porque no se
+     * usaba y su plugin de build generaba mapas de codigo que nadie subia:
+     * cientos de megas de memoria por nada, y parte de por que el build se
+     * quedaba sin monton en Cloudflare.
+     */
+    console.error('[error del layout raiz]', error, error.digest ? 'digest ' + error.digest : '');
   }, [error]);
 
   return (

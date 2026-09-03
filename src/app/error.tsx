@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import * as Sentry from '@sentry/nextjs';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 
 /*
@@ -21,11 +20,15 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Tag as handled so beforeSend can still forward it, but we know it was caught
-    Sentry.captureException(error, {
-      tags: { 'cen.boundary': 'global', 'cen.handled': 'false' },
-      extra: { digest: error.digest },
-    });
+    /*
+     * A la consola, que en Cloudflare es el registro del Worker (`wrangler
+     * tail` y la pestana de Observability) y en el navegador la consola del
+     * alumno. Antes esto iba a Sentry; se quito el 3-sep-2026 porque no se
+     * usaba y su plugin de build generaba mapas de codigo que nadie subia:
+     * cientos de megas de memoria por nada, y parte de por que el build se
+     * quedaba sin monton en Cloudflare.
+     */
+    console.error('[error de pagina]', error, error.digest ? 'digest ' + error.digest : '');
   }, [error]);
 
   return (

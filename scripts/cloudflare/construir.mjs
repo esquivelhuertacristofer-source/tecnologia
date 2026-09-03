@@ -26,8 +26,21 @@ const medios = path.join(AQUI, 'medios.mjs');
  * «C:\Program Files\nodejs\node.exe» y, pasado por el shell, el espacio parte
  * el comando en dos («"C:\Program" no se reconoce como un comando…»).
  */
+/*
+ * EL MONTÓN DE NODE. El contenedor de Cloudflare Workers Builds le da a Node
+ * un montón de ~2 GB por omisión, y compilar 235 actividades con three.js
+ * dentro se lo come: el build moría con «Ineffective mark-compacts near heap
+ * limit — JavaScript heap out of memory». Se sube a 4 GB, que es holgado sin
+ * pasarse del contenedor. Si alguien ya trae su propio NODE_OPTIONS, manda el
+ * suyo: no es asunto de este guion pisarlo.
+ */
+const ENTORNO = {
+  ...process.env,
+  NODE_OPTIONS: process.env.NODE_OPTIONS || '--max-old-space-size=4096',
+};
+
 function corre(cmd, args, etiqueta, { shell = false } = {}) {
-  const r = spawnSync(cmd, args, { cwd: RAIZ, stdio: 'inherit', shell });
+  const r = spawnSync(cmd, args, { cwd: RAIZ, stdio: 'inherit', shell, env: ENTORNO });
   if (r.status !== 0) throw new Error(`${etiqueta} falló con código ${r.status}`);
 }
 

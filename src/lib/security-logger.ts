@@ -1,5 +1,5 @@
 // Structured security event logger.
-// Events are written to console (picked up by Vercel logs + Sentry).
+// Events are written to console (picked up by the Cloudflare Worker log).
 // Do NOT log passwords, tokens, or full email addresses as PII here.
 
 export type SecurityEventType =

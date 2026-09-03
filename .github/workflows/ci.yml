@@ -1,3 +1,23 @@
+# Integración continua.
+#
+# La regla que sigue este archivo: **fallar donde falla el despliegue**. Un CI
+# que pasa en verde mientras Cloudflare se cae no sirve de nada, y eso es
+# justo lo que pasó el 3-sep-2026 — dos veces:
+#
+#   1. `npm ci` reventaba en Cloudflare por un conflicto de peer dependencies
+#      que en el equipo de trabajo estaba tapado por un `~/.npmrc` con
+#      `legacy-peer-deps=true`. Aquí no se tapa (el runner viene limpio), así
+#      que este paso lo habría cazado el día que se introdujo.
+#   2. El build se quedaba sin memoria en Cloudflare, que le da a Node un
+#      montón de ~2 GB. Los runners de GitHub tienen 16 GB, así que en verde
+#      pasaba sin enterarse. Por eso `NODE_OPTIONS` se fija a 2048: para que
+#      este CI tenga el mismo techo estrecho que el sitio de verdad.
+#
+# Y se construye con `npm run build:cf`, que es literalmente el comando que
+# ejecuta Cloudflare Workers Builds, no un `next build` a secas: así se prueba
+# también el empaquetado de OpenNext, que es donde vive la mitad de los
+# problemas.
+
 name: CI
 
 on:
@@ -6,52 +26,46 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  # Sin esto, `next build` no incrusta la configuración de Supabase y la
+  # plataforma se construye sin poder autenticar a nadie. No son secretos: la
+  # llave publicable está pensada para viajar en el navegador.
+  NEXT_PUBLIC_DEMO_MODE: '0'
+  NEXT_PUBLIC_APP_URL: https://centecnologia.com.mx
+  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
 jobs:
-  test:
-    name: Tests
+  pruebas:
+    name: Pruebas
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # La misma mayor que usa el contenedor de Cloudflare Workers Builds.
+          node-version: '22'
           cache: 'npm'
+      - run: npm ci
+      - name: jest
+        run: npm test -- --ci --maxWorkers=2
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test -- --ci --passWithNoTests
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          NEXT_PUBLIC_SENTRY_DSN: ''
-          INSTITUTIONAL_EMAIL_DOMAIN: test.example.com
-
-  build:
-    name: Build
+  construccion:
+    name: Construcción (como Cloudflare)
     runs-on: ubuntu-latest
-    needs: test
-
+    needs: pruebas
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
+      - run: npm ci
+      - name: build:cf con el montón de Cloudflare
+        run: npm run build:cf
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          NEXT_PUBLIC_SENTRY_DSN: ''
+          # 2 GB, como el contenedor de Workers Builds. Si el build vuelve a
+          # crecer hasta no caber, se entera aquí y no en producción.
+          NODE_OPTIONS: --max-old-space-size=2048
+      - name: ¿cabe el Worker?
+        run: node scripts/cloudflare/medir-worker.mjs

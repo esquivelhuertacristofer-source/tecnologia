@@ -25,8 +25,7 @@
    */
   "name": "tecnologia",
   "main": ".open-next/worker.js",
-  // Tiene que ser 2024-09-23 o posterior para el adaptador; y 2025-08-16 o
-  // posterior para que el SDK de Sentry pueda enviar (necesita `https.request`).
+  // Tiene que ser 2024-09-23 o posterior para el adaptador de OpenNext.
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {

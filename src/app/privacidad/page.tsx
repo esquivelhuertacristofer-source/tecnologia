@@ -232,7 +232,6 @@ export default function PrivacidadPage() {
               <li>Cifrado en tránsito (TLS 1.3) y en reposo (AES-256) mediante infraestructura Supabase</li>
               <li>Autenticación con contraseña hasheada (bcrypt) y tokens de sesión seguros</li>
               <li>Acceso a datos restringido por roles (Row Level Security en base de datos)</li>
-              <li>Monitoreo de errores y alertas de seguridad mediante Sentry</li>
               <li>Actualizaciones periódicas de dependencias y revisiones de seguridad</li>
             </ul>
           </section>

@@ -46,15 +46,6 @@ const supabaseMock = {
 jest.mock("@/lib/supabase-browser", () => ({ supabase: supabaseMock }));
 jest.mock("./src/lib/supabase-browser", () => ({ supabase: supabaseMock }));
 
-// ── Sentry mock (disable in tests) ──────────────────────────────────────────
-jest.mock("@sentry/nextjs", () => ({
-  captureException: jest.fn(),
-  captureMessage: jest.fn(),
-  init: jest.fn(),
-  flush: jest.fn().mockResolvedValue(true),
-  withScope: jest.fn((cb) => cb({ setTag: jest.fn(), setExtra: jest.fn() })),
-}));
-
 // ── Next.js router mock ──────────────────────────────────────────────────────
 jest.mock("next/navigation", () => ({
   useRouter: () => ({

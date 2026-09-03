@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
 
 /*
  * El proyecto de Supabase, para la CSP. Se lee de la variable cuando existe
@@ -9,6 +8,22 @@ import { withSentryConfig } from "@sentry/nextjs";
 const SUPABASE_HOST = (process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tnobteemrdhcqqmjwxbt.supabase.co').replace(/\/+$/, '');
 
 const nextConfig: NextConfig = {
+  /*
+   * EL BUILD SE QUEDABA SIN MEMORIA EN CLOUDFLARE (3-sep-2026).
+   *
+   * El contenedor de Workers Builds le da a Node un montón de ~2 GB, y
+   * compilar 235 actividades con three.js dentro se lo come: el build moría
+   * con «Ineffective mark-compacts near heap limit» a los 2 minutos. Aquí no
+   * pasaba porque este equipo tiene bastante más RAM, que es exactamente la
+   * clase de diferencia que sólo se ve al salir de la máquina de uno.
+   *
+   * Esta bandera hace que webpack suelte los datos intermedios de cada módulo
+   * en vez de retenerlos hasta el final. Cuesta algo de tiempo de compilación
+   * y baja el pico de memoria, que es lo que aquí hace falta.
+   */
+  experimental: {
+    webpackMemoryOptimizations: true,
+  },
   /*
    * `standalone` es para servirla nosotros (un contenedor, un servidor propio):
    * empaqueta node_modules y un `server.js`. En Vercel sobra —ellos hacen su
@@ -75,7 +90,7 @@ const nextConfig: NextConfig = {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       `img-src 'self' data: blob: ${SUPABASE_HOST} https://i.pravatar.cc`,
       "font-src 'self' data: https://fonts.gstatic.com",
-      `connect-src 'self' ${SUPABASE_HOST} ${SUPABASE_HOST.replace('https://', 'wss://')} https://*.sentry.io https://cloudflareinsights.com`,
+      `connect-src 'self' ${SUPABASE_HOST} ${SUPABASE_HOST.replace('https://', 'wss://')} https://cloudflareinsights.com`,
       // Los videos se sirven desde el mismo dominio (`/assets/**`, worker de
       // medios sobre R2), así que 'self' basta.
       "media-src 'self'",
@@ -117,35 +132,4 @@ const nextConfig: NextConfig = {
    */
 };
 
-export default withSentryConfig(nextConfig, {
-  // Silent during CI to avoid noise
-  silent: !process.env.CI,
-
-  // Use tunnel to bypass ad blockers
-  tunnelRoute: "/monitoring",
-
-  // Source maps: upload to Sentry, then delete from the build to prevent exposure
-  sourcemaps: {
-    disable: false,
-    deleteSourcemapsAfterUpload: true,
-  },
-
-  /*
-   * `reactComponentAnnotation` se apagó el 16-ago-2026: mete atributos
-   * `data-sentry-*` en CADA elemento JSX en build, y dentro del `<Canvas>` de
-   * react-three-fiber esos elementos (`<mesh>`, `<group>`, los de drei…) no
-   * son nodos DOM reales — son objetos de Three. El reconciler de R3F truena
-   * intentando poner esa propiedad ("R3F: Cannot set 'data-sentry-source-file'.
-   * Ensure it is an object before setting 'sentry-source-file'"), y la escena
-   * entera se queda sin dibujar: pantalla negra en TODO laboratorio 3D en
-   * producción, confirmado con Playwright contra tecnia-plataforma.vercel.app.
-   * No hay lista segura de componentes a excluir — son decenas de piezas
-   * compartidas (armazones) y crecen cada semana — así que se apaga entera.
-   */
-  reactComponentAnnotation: {
-    enabled: false,
-  },
-
-  // Don't auto-instrument Vercel Cron (we manage that manually)
-  automaticVercelMonitors: false,
-});
+export default nextConfig;

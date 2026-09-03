@@ -65,7 +65,7 @@ const config: Config = {
   // que el rig 3D —y con él el composer— sí se importa dentro de jsdom aunque
   // nunca llegue a dibujar.
   transformIgnorePatterns: [
-    "/node_modules/(?!(@sentry|@react-three/postprocessing|n8ao|maath|three)/)",
+    "/node_modules/(?!(@react-three/postprocessing|n8ao|maath|three)/)",
   ],
 };
 
