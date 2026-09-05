@@ -12,6 +12,8 @@ import { OFFICE_CURRICULO, type AppOfficeId } from '@/data/curriculo';
 import { MODULOS_OFFICE } from '@/data/niveles';
 import { progresoRepo } from '@/lib/progreso';
 import type { ActivityResult } from '@/types/activity-contract';
+import AutoReporteDificultad from '@/components/estudio/AutoReporteDificultad';
+import { useTelemetriaActividad } from '@/components/estudio/useTelemetriaActividad';
 import { CenHubRoot, HubTopbar, HubFooter, usePerfil } from './shell';
 
 /**
@@ -34,6 +36,9 @@ export default function CenActividadOfficeHost({ app, id }: { app: string; id: s
   const [Comp, setComp] = useState<ComponenteOffice | null>(null);
   const [savedState, setSavedState] = useState<unknown>(undefined);
   const [estadoListo, setEstadoListo] = useState(false);
+  // Estudio de impacto (§5 y §9): mismo enganche que en el host de niveles.
+  const { identidad: identidadEstudio, marcarFin } = useTelemetriaActividad(id);
+  const [completada, setCompletada] = useState(false);
 
   const registrada = getOfficeRegistrada(id);
   const esApp = OFFICE_CURRICULO.some((a) => a.id === app);
@@ -71,8 +76,10 @@ export default function CenActividadOfficeHost({ app, id }: { app: string; id: s
       });
       void progresoRepo.clearEstadoActividad(id);
       toast.success('¡Completado! 🎉');
+      marcarFin({ score: result.score, errores: result.errores });
+      setCompletada(true);
     },
-    [id],
+    [id, marcarFin],
   );
 
   const marca = MODULOS_OFFICE.find((m) => m.id === app);
@@ -144,6 +151,15 @@ export default function CenActividadOfficeHost({ app, id }: { app: string; id: s
             </div>
           )}
         </div>
+      </div>
+
+      <div className="container" style={{ paddingBottom: '48px' }}>
+        {/* Auto-reporte de dificultad (§9 del estudio de impacto). */}
+        <AutoReporteDificultad
+          actividadId={id}
+          identidad={identidadEstudio}
+          visible={completada}
+        />
       </div>
 
       <HubFooter />

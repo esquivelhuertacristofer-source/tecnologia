@@ -1,0 +1,279 @@
+{
+  "id": "salida",
+  "version": "2026-09-05-provisional",
+  "titulo": "Para cerrar",
+  "instrucciones": "Queremos ver cómo te fue. No hay calificación. Responde lo que creas.",
+  "cierre": "Gracias, ya puedes continuar.",
+  "reactivos": [
+    {
+      "tipo": "opcion_multiple",
+      "id": "S01",
+      "paraleloDe": "E01",
+      "competencia": "alfabetizacion_digital",
+      "dificultad": "facil",
+      "enunciado": "¿Con cuál de estas partes señalas y haces clic en la pantalla?",
+      "opciones": [
+        "Con la bocina, que sirve para oír",
+        "Con la pantalla, que sirve para ver",
+        "Con el mouse, que sirve para señalar",
+        "Con la impresora, que sirve para imprimir"
+      ],
+      "correctaIdx": 2
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S02",
+      "paraleloDe": "E02",
+      "competencia": "ciudadania_digital",
+      "dificultad": "facil",
+      "enunciado": "Alguien que no conoces te escribe en un juego y te pide una foto tuya. ¿Qué haces?",
+      "opciones": [
+        "No se la mandas y se lo cuentas a un adulto de confianza",
+        "Se la mandas para que no se enoje contigo",
+        "Le mandas la foto de otra persona de tu salón",
+        "Le pides que él te mande una foto suya primero"
+      ],
+      "correctaIdx": 0
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S03",
+      "paraleloDe": "E03",
+      "competencia": "pensamiento_computacional",
+      "dificultad": "facil",
+      "enunciado": "Alguien escribe los pasos para salir de casa así: 1) ponerse los zapatos, 2) ponerse los calcetines, 3) abrir la puerta. ¿Qué está mal?",
+      "opciones": [
+        "Faltan pasos: se necesitan por lo menos seis",
+        "Sobra el tercer paso, porque la puerta ya está abierta",
+        "Nada: los pasos funcionan en ese mismo orden",
+        "El orden: los calcetines van antes que los zapatos"
+      ],
+      "correctaIdx": 3
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S04",
+      "paraleloDe": "E04",
+      "competencia": "datos_e_informacion",
+      "dificultad": "facil",
+      "enunciado": "Quieres comparar de un vistazo cuántos libros leyó cada compañero este mes. ¿Qué te sirve mejor?",
+      "opciones": [
+        "Un párrafo que cuente lo que leyó cada uno",
+        "Una gráfica de barras con un compañero en cada barra",
+        "Una foto de la portada de todos los libros",
+        "Una lista con los títulos de los libros escritos en desorden"
+      ],
+      "correctaIdx": 1
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S05",
+      "paraleloDe": "E05",
+      "competencia": "productividad_office",
+      "dificultad": "facil",
+      "enunciado": "Escribiste un texto y quieres separar dos ideas en párrafos distintos. ¿Qué usas?",
+      "opciones": [
+        "El botón de guardar el archivo con otro nombre",
+        "La tecla que borra la última letra escrita",
+        "La tecla Enter, para empezar un renglón nuevo",
+        "El botón que cierra la ventana del programa"
+      ],
+      "correctaIdx": 2
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S06",
+      "paraleloDe": "E06",
+      "competencia": "ia_y_criterio",
+      "dificultad": "facil",
+      "enunciado": "Una inteligencia artificial te ayuda a escribir un texto para la escuela. ¿Qué es lo correcto?",
+      "opciones": [
+        "Revisarlo, corregirlo con tus palabras y decir que la usaste",
+        "Entregarlo tal cual y no mencionar que la usaste",
+        "Pedirle que lo haga más largo y entregarlo así",
+        "Borrar el texto y no entregar nada al maestro"
+      ],
+      "correctaIdx": 0
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S07",
+      "paraleloDe": "E07",
+      "competencia": "alfabetizacion_digital",
+      "dificultad": "media",
+      "enunciado": "Quieres tener juntos todos los trabajos de una materia para encontrarlos rápido. ¿Qué haces?",
+      "opciones": [
+        "Cambiar el fondo de pantalla de la computadora",
+        "Guardar cada uno con el mismo nombre exacto",
+        "Dejarlos en el escritorio, todos revueltos",
+        "Crear una carpeta con el nombre de la materia"
+      ],
+      "correctaIdx": 3
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S08",
+      "paraleloDe": "E08",
+      "competencia": "ciudadania_digital",
+      "dificultad": "media",
+      "enunciado": "¿Por qué no conviene usar la misma contraseña en todas tus cuentas?",
+      "opciones": [
+        "Porque el sistema no permite repetir contraseñas",
+        "Porque si descubren una, entran a todas las demás",
+        "Porque cada cuenta cobra por usar contraseñas",
+        "Porque las contraseñas se borran cada cierto tiempo"
+      ],
+      "correctaIdx": 1
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S09",
+      "paraleloDe": "E09",
+      "competencia": "pensamiento_computacional",
+      "dificultad": "media",
+      "enunciado": "Un dibujo debe repetirse en las cuatro esquinas de la pantalla. ¿Qué conviene usar?",
+      "opciones": [
+        "Una repetición que dibuje la figura cuatro veces",
+        "Cuatro sonidos distintos, uno por cada esquina",
+        "Una instrucción que espere cuatro segundos",
+        "Un texto que diga «cuatro esquinas» en la pantalla"
+      ],
+      "correctaIdx": 0
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S10",
+      "paraleloDe": "E10",
+      "competencia": "datos_e_informacion",
+      "dificultad": "media",
+      "enunciado": "En una lista con las temperaturas de la semana quieres saber cuál fue el día más caluroso. ¿Qué haces?",
+      "opciones": [
+        "Sumar todas las temperaturas de la semana",
+        "Contar cuántos días tiene la lista completa",
+        "Buscar el valor más alto y ver a qué día pertenece",
+        "Ordenar los días de la semana por su nombre, alfabéticamente"
+      ],
+      "correctaIdx": 2
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S11",
+      "paraleloDe": "E11",
+      "competencia": "productividad_office",
+      "dificultad": "media",
+      "enunciado": "Vas a exponer con diapositivas y quieres que el público te siga. ¿Qué conviene?",
+      "opciones": [
+        "Leer palabra por palabra todo lo que está escrito",
+        "Meter la mayor cantidad de texto posible por lámina",
+        "Cambiar de tipo de letra y de color en cada lámina",
+        "Una idea por lámina, con una imagen que la apoye"
+      ],
+      "correctaIdx": 3
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S12",
+      "paraleloDe": "E12",
+      "competencia": "ia_y_criterio",
+      "dificultad": "media",
+      "enunciado": "Le pides a una IA la fecha de un hecho histórico y te da una que no coincide con tu libro. ¿Qué haces?",
+      "opciones": [
+        "Comprobarlo en otra fuente antes de usar el dato",
+        "Usar la fecha de la IA porque es más moderna",
+        "Usar la del libro sin comprobar nada más",
+        "Cambiar la pregunta hasta que coincida con el libro"
+      ],
+      "correctaIdx": 0
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S13",
+      "paraleloDe": "E13",
+      "competencia": "alfabetizacion_digital",
+      "dificultad": "dificil",
+      "enunciado": "¿Cuál de estos es software y no hardware?",
+      "opciones": [
+        "La memoria del equipo, donde se guardan todos los archivos",
+        "El sistema operativo que arranca al encender",
+        "La tarjeta que conecta el equipo a la red",
+        "El cable que une la pantalla con el equipo"
+      ],
+      "correctaIdx": 1
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S14",
+      "paraleloDe": "E14",
+      "competencia": "ciudadania_digital",
+      "dificultad": "dificil",
+      "enunciado": "¿Qué es la huella digital que dejas en internet?",
+      "opciones": [
+        "El dibujo de tu dedo que pide el celular para abrirse",
+        "Una marca que aparece impresa en las fotos que tomas",
+        "El rastro de lo que publicas, buscas y compartes en línea",
+        "Un archivo que guarda las contraseñas de tus cuentas"
+      ],
+      "correctaIdx": 2
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S15",
+      "paraleloDe": "E15",
+      "competencia": "pensamiento_computacional",
+      "dificultad": "dificil",
+      "enunciado": "Un programa debe avisar «lleno» sólo cuando el número de personas llega a 30. ¿Qué necesita?",
+      "opciones": [
+        "Una lista con el nombre de las treinta personas",
+        "Una repetición que cuente hasta treinta y se detenga",
+        "Un dibujo que represente el lugar ya lleno",
+        "Una condición que compare el número con 30"
+      ],
+      "correctaIdx": 3
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S16",
+      "paraleloDe": "E16",
+      "competencia": "datos_e_informacion",
+      "dificultad": "dificil",
+      "enunciado": "En una hoja de cálculo cambias un dato y varios resultados cambian solos. ¿Por qué?",
+      "opciones": [
+        "Porque el programa guardó una copia de seguridad",
+        "Porque esos resultados venían de fórmulas, no de números escritos",
+        "Porque la hoja se ordenó de nuevo automáticamente",
+        "Porque el archivo se volvió a abrir desde el inicio"
+      ],
+      "correctaIdx": 1
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S17",
+      "paraleloDe": "E17",
+      "competencia": "productividad_office",
+      "dificultad": "dificil",
+      "enunciado": "¿Para qué sirve una plantilla en un procesador de textos?",
+      "opciones": [
+        "Para revisar la ortografía de todo el documento de una vez",
+        "Para reducir el tamaño del archivo al guardarlo",
+        "Para partir de un documento con el formato ya hecho",
+        "Para imprimir varias copias del mismo documento"
+      ],
+      "correctaIdx": 2
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "S18",
+      "paraleloDe": "E18",
+      "competencia": "ia_y_criterio",
+      "dificultad": "dificil",
+      "enunciado": "¿Por qué una inteligencia artificial puede dar una respuesta equivocada con mucha seguridad?",
+      "opciones": [
+        "Porque predice el texto más probable, no comprueba si es cierto",
+        "Porque siempre necesita conexión a internet para responder",
+        "Porque no puede leer preguntas escritas en español",
+        "Porque sólo responde bien si la pregunta es muy corta"
+      ],
+      "correctaIdx": 0
+    }
+  ]
+}

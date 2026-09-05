@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { registrarConsentimiento } from "@/lib/estudio/consentimiento";
+import { registrarAccionDocente } from "@/lib/estudio/bitacora";
 import Link from "next/link";
 import { dmSans, manrope } from "@/app/fonts";
 import { PERFIL_DEMO, savePerfilDemo } from "@/data/niveles";
@@ -74,8 +76,23 @@ export default function CenLogin() {
             return;
         }
 
+        /*
+         * CONSENTIMIENTO (§4 del estudio de impacto). Se registra DESPUÉS de
+         * autenticar, porque hasta aquí no se sabe a qué cuenta ligarlo, y
+         * ANTES de redirigir, porque después esta página deja de existir.
+         *
+         * No se espera a que termine ni se mira el resultado: `registrarConsentimiento`
+         * no lanza y ya se anotó localmente. Un fallo del registro no puede
+         * dejar a nadie fuera de la plataforma.
+         */
+        void registrarConsentimiento(
+            resultado.rol === "docente" || resultado.rol === "admin" ? "docente" : "alumno",
+        );
+
         setStatus("Entrando a la plataforma…");
         if (resultado.rol === "docente" || resultado.rol === "admin") {
+            // §10: el inicio de sesión del docente es la primera métrica de adopción.
+            registrarAccionDocente("inicio_sesion");
             savePerfilDocente({ nombre: resultado.nombre });
             window.location.href = "/hub/docente";
             return;
@@ -166,6 +183,23 @@ export default function CenLogin() {
                                     <label className="remember"><input type="checkbox" name="remember" /> Mantener mi sesión</label>
                                     <a className="help-link" href="#" onClick={handleHelp}>¿Olvidaste tu contraseña?</a>
                                 </div>
+
+                                {/*
+                                  * La casilla de consentimiento. `required` la hace
+                                  * obligatoria de verdad: `checkValidity()` de arriba
+                                  * ya no deja enviar el formulario sin ella, y el
+                                  * navegador enseña el aviso él solo.
+                                  */}
+                                <label className="remember consent-check">
+                                    <input type="checkbox" name="consentimiento" required />
+                                    <span>
+                                        He leído y acepto el{" "}
+                                        <a className="help-link" href="/privacidad" target="_blank" rel="noreferrer">
+                                            Aviso de Privacidad
+                                        </a>
+                                        . Si eres menor de edad, pídeselo a tu papá, mamá o tutor.
+                                    </span>
+                                </label>
 
                                 <button className="submit-button" type="submit" disabled={entering}>Entrar a CEN</button>
                                 <div className="form-status" aria-live="polite">{status}</div>

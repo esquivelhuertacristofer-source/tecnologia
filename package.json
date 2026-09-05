@@ -17,7 +17,8 @@
     "medios:estado": "node scripts/cloudflare/medios.mjs estado",
     "medios:verificar": "node scripts/cloudflare/medios.mjs verificar",
     "imagenes:webp": "node scripts/imagenes/a-webp.mjs",
-    "imagenes:rutas": "node scripts/imagenes/comprobar-rutas.mjs"
+    "imagenes:rutas": "node scripts/imagenes/comprobar-rutas.mjs",
+    "estudio:exportar": "node scripts/estudio/exportar.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -65,6 +66,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^16.3.4",
+    "fake-indexeddb": "^6.2.5",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "postcss": "^8.5.6",

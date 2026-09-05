@@ -1,0 +1,259 @@
+/**
+ * Estudio de impacto — la piel del cuestionario.
+ *
+ * DELIBERADAMENTE SOBRIA, y va contra el estilo del resto de la plataforma.
+ * Aquí no hay color pleno de videojuego, ni brillos, ni insignias, ni
+ * celebración: esto no es una actividad, es un instrumento de medición, y
+ * todo lo que emocione al alumno mientras contesta es una variable que se
+ * cuela en el dato. Se queda el azul profundo de la casa para que no parezca
+ * otra aplicación, y nada más.
+ *
+ * NINGÚN COLOR SIGNIFICA NADA. No hay verde ni rojo en ninguna regla de este
+ * archivo, y es a propósito: el día que alguien añada un `.ec-opcion.correcta`
+ * habrá roto la regla de «sin retroalimentación» sin tocar una línea de
+ * lógica.
+ */
+
+.estudio-cuestionario {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: #061a35;
+  overflow-y: auto;
+  font-family: 'Epilogue', ui-sans-serif, system-ui, sans-serif;
+  color: #eaf2ff;
+}
+
+.ec-panel {
+  width: min(46rem, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  border-radius: 1.25rem;
+  background: #0b2d5b;
+  box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.35);
+}
+
+/* ─── Portada y cierre ───────────────────────────────────────────────────── */
+
+.ec-portada {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: center;
+  align-items: center;
+}
+
+.ec-titulo {
+  margin: 0;
+  font-size: clamp(1.5rem, 4vw, 2.125rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.ec-instrucciones,
+.ec-cierre {
+  margin: 0;
+  font-size: clamp(1.0625rem, 2.4vw, 1.25rem);
+  line-height: 1.55;
+  max-width: 34rem;
+}
+
+.ec-nota {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #9fc0e8;
+}
+
+/* ─── Avance: cuántas van, nunca cuántas se acertaron ────────────────────── */
+
+.ec-avance {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ec-avance-texto {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #9fc0e8;
+  letter-spacing: 0.02em;
+}
+
+.ec-avance-barra {
+  height: 0.375rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.ec-avance-relleno {
+  height: 100%;
+  border-radius: 999px;
+  background: #22d3ee;
+  transition: width 0.25s ease;
+}
+
+/* ─── El reactivo ────────────────────────────────────────────────────────── */
+
+.ec-reactivo {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0; /* sin esto, un fieldset no deja encoger a sus hijos */
+}
+
+.ec-enunciado {
+  padding: 0;
+  font-size: clamp(1.125rem, 2.8vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 1.25rem;
+}
+
+.ec-opciones {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.ec-opcion {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  width: 100%;
+  /* 3,5rem de alto mínimo: el objetivo táctil recomendado para manos
+     pequeñas, y lo que evita que un niño pulse la opción de al lado. */
+  min-height: 3.5rem;
+  padding: 0.875rem 1.125rem;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0.875rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  font: inherit;
+  font-size: clamp(1rem, 2.2vw, 1.0625rem);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.ec-opcion:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Elegida ≠ correcta. Sólo dice «esto es lo que vas a mandar». */
+.ec-opcion-elegida,
+.ec-opcion-elegida:hover {
+  border-color: #22d3ee;
+  background: rgba(34, 211, 238, 0.14);
+}
+
+.ec-letra {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.ec-opcion-elegida .ec-letra {
+  background: #22d3ee;
+  color: #062033;
+}
+
+.ec-opcion-texto { flex: 1 1 auto; }
+
+/* La escala de actitud: cinco pasos en fila, uno por etiqueta. */
+.ec-escala {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+
+.ec-escala .ec-opcion {
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.75rem 0.375rem;
+  text-align: center;
+  font-size: 0.9375rem;
+}
+
+@media (max-width: 34rem) {
+  .ec-escala { grid-template-columns: 1fr; }
+  .ec-escala .ec-opcion { flex-direction: row; text-align: left; }
+}
+
+/* ─── Pie ────────────────────────────────────────────────────────────────── */
+
+.ec-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ec-boton {
+  min-height: 3rem;
+  padding: 0.75rem 2rem;
+  border: 0;
+  border-radius: 999px;
+  background: #f5a524;
+  color: #2a1a00;
+  font: inherit;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.ec-boton:hover:not(:disabled) { filter: brightness(1.08); }
+
+.ec-boton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ec-boton-grande {
+  font-size: 1.1875rem;
+  padding: 0.9375rem 2.75rem;
+}
+
+/* Discreto a propósito: es una salida, no una invitación. */
+.ec-saltar {
+  border: 0;
+  background: none;
+  color: #9fc0e8;
+  font: inherit;
+  font-size: 0.9375rem;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.ec-saltar:hover:not(:disabled) { color: #eaf2ff; }
+.ec-saltar:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Foco visible en todo lo pulsable: hay alumnos que navegan con teclado. */
+.ec-opcion:focus-visible,
+.ec-boton:focus-visible,
+.ec-saltar:focus-visible {
+  outline: 3px solid #22d3ee;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ec-avance-relleno,
+  .ec-opcion,
+  .ec-boton { transition: none; }
+}

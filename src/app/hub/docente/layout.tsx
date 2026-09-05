@@ -7,6 +7,7 @@ import DocenteMobileNav from '@/components/docente/DocenteMobileNav';
 import { getPerfilDocente, getGruposDocente, getAlumnosDelDocente, haySesionDocente, savePerfilDocente } from '@/lib/docente/queries';
 import { sesionActual } from '@/lib/auth/sesion';
 import { COLOR } from '@/components/docente/temaDocente';
+import BitacoraDocente from '@/components/estudio/BitacoraDocente';
 
 export default function DocenteLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -77,6 +78,9 @@ export default function DocenteLayout({ children }: { children: React.ReactNode 
           style={{ backgroundImage: 'linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)', backgroundSize: '60px 60px' }}
         />
       </div>
+
+      {/* Estudio de impacto (§10): registro de adopción docente. No pinta nada. */}
+      <BitacoraDocente />
 
       <DocenteMobileNav nombre={perfil.nombre} />
       <DocenteSidebar nombre={perfil.nombre} totalGrupos={totalGrupos} totalAlumnos={totalAlumnos} />

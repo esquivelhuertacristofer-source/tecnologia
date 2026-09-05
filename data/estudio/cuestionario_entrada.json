@@ -1,0 +1,261 @@
+{
+  "id": "entrada",
+  "version": "2026-09-05-provisional",
+  "titulo": "Antes de empezar",
+  "instrucciones": "Antes de empezar queremos saber qué ya sabes. No hay calificación. Responde lo que creas.",
+  "cierre": "Gracias, ya puedes continuar.",
+  "reactivos": [
+    {
+      "tipo": "opcion_multiple",
+      "id": "E01",
+      "competencia": "alfabetizacion_digital",
+      "dificultad": "facil",
+      "enunciado": "¿Con cuál de estas partes escuchas la música o la voz de un video?",
+      "opciones": [
+        "Con el teclado, que sirve para escribir",
+        "Con la bocina, que sirve para oír",
+        "Con el mouse, que sirve para señalar",
+        "Con la pantalla, que sirve para ver"
+      ],
+      "correctaIdx": 1
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E02",
+      "competencia": "ciudadania_digital",
+      "dificultad": "facil",
+      "enunciado": "Un juego en línea te pide tu nombre completo y la calle donde vives. ¿Qué es lo mejor que puedes hacer?",
+      "opciones": [
+        "Escribir los datos que pide para poder seguir jugando",
+        "Dárselos solamente a los compañeros con los que juegas",
+        "Escribir el nombre y la dirección de otra persona",
+        "No darlos y avisarle a un adulto de confianza"
+      ],
+      "correctaIdx": 3
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E03",
+      "competencia": "pensamiento_computacional",
+      "dificultad": "facil",
+      "enunciado": "Alguien escribe los pasos para hacer un sándwich así: 1) poner el jamón, 2) sacar el pan, 3) cerrar el pan. ¿Qué está mal?",
+      "opciones": [
+        "El orden: el pan se saca antes de poner el jamón",
+        "El número de pasos: hacen falta muchos más de tres",
+        "El material: un sándwich no se prepara con pan",
+        "Nada: los pasos están bien tal como se escribieron"
+      ],
+      "correctaIdx": 0
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E04",
+      "competencia": "datos_e_informacion",
+      "dificultad": "facil",
+      "enunciado": "Quieres mostrar de un vistazo cuántos compañeros prefieren cada deporte. ¿Qué te sirve mejor?",
+      "opciones": [
+        "Un texto largo que describa lo que prefiere cada uno",
+        "Una fotografía del grupo tomada en el patio",
+        "Una gráfica de barras con un deporte en cada barra",
+        "Una lista con los nombres escritos en desorden"
+      ],
+      "correctaIdx": 2
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E05",
+      "competencia": "productividad_office",
+      "dificultad": "facil",
+      "enunciado": "Escribiste un texto y quieres que el título se note más que el resto. ¿Qué cambias?",
+      "opciones": [
+        "El tamaño y el grosor de la letra del título",
+        "El nombre con el que se guarda el archivo",
+        "El color del fondo del escritorio del equipo",
+        "La hora que muestra el reloj de la computadora"
+      ],
+      "correctaIdx": 0
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E06",
+      "competencia": "ia_y_criterio",
+      "dificultad": "facil",
+      "enunciado": "Un asistente de inteligencia artificial responde una pregunta de tu tarea. ¿Qué conviene hacer con esa respuesta?",
+      "opciones": [
+        "Copiarla en el cuaderno tal como salió, sin leerla",
+        "Creerla siempre, porque la escribió una computadora",
+        "Borrar la pregunta y buscar otra más sencilla",
+        "Leerla con calma y comprobarla en otra fuente"
+      ],
+      "correctaIdx": 3
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E07",
+      "competencia": "alfabetizacion_digital",
+      "dificultad": "media",
+      "enunciado": "Guardaste un trabajo y no recuerdas en qué carpeta quedó. ¿Qué es lo más rápido para encontrarlo?",
+      "opciones": [
+        "Apagar el equipo y volverlo a encender",
+        "Buscarlo por su nombre en el buscador del sistema",
+        "Abrir uno por uno todos los programas que hay instalados",
+        "Cambiar el fondo de pantalla y volver a mirar"
+      ],
+      "correctaIdx": 1
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E08",
+      "competencia": "ciudadania_digital",
+      "dificultad": "media",
+      "enunciado": "¿Cuál de estas contraseñas es la más difícil de adivinar para otra persona?",
+      "opciones": [
+        "La fecha de tu cumpleaños escrita con números",
+        "El nombre de tu mascota seguido de tu edad",
+        "Una frase larga con números y signos que sólo tú sabes",
+        "Los ocho primeros números del teclado, en orden"
+      ],
+      "correctaIdx": 2
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E09",
+      "competencia": "pensamiento_computacional",
+      "dificultad": "media",
+      "enunciado": "Un personaje tiene que avanzar veinte pasos. ¿Qué instrucción evita escribir «avanza» veinte veces?",
+      "opciones": [
+        "Una instrucción que lo haga esperar unos segundos",
+        "Una instrucción que cambie el color del personaje",
+        "Una instrucción que reproduzca un sonido al avanzar",
+        "Una instrucción que repita «avanza» veinte veces"
+      ],
+      "correctaIdx": 3
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E10",
+      "competencia": "datos_e_informacion",
+      "dificultad": "media",
+      "enunciado": "En una tabla con las calificaciones del grupo quieres saber el promedio. ¿Qué tienes que hacer?",
+      "opciones": [
+        "Sumar todas las calificaciones y dividir entre cuántas son",
+        "Buscar cuál es la calificación más alta de toda la tabla",
+        "Contar cuántos alumnos aparecen en la lista",
+        "Ordenar los nombres por orden alfabético"
+      ],
+      "correctaIdx": 0
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E11",
+      "competencia": "productividad_office",
+      "dificultad": "media",
+      "enunciado": "Preparas una presentación para exponer frente al grupo. ¿Qué hace que se entienda mejor?",
+      "opciones": [
+        "Escribir en cada diapositiva todo lo que vas a decir",
+        "Usar la letra más pequeña que quepa para que entre todo",
+        "Poner pocas ideas por diapositiva y apoyarlas con imágenes",
+        "Repetir el mismo texto en todas las diapositivas"
+      ],
+      "correctaIdx": 2
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E12",
+      "competencia": "ia_y_criterio",
+      "dificultad": "media",
+      "enunciado": "Le pides a una IA un dato sobre un animal y te da uno que no aparece en ningún libro ni página confiable. ¿Qué es lo más probable?",
+      "opciones": [
+        "Que acabas de descubrir un dato que nadie conocía",
+        "Que la IA se equivocó y hay que verificarlo",
+        "Que todos los libros están mal escritos",
+        "Que la IA no entendió el idioma de la pregunta"
+      ],
+      "correctaIdx": 1
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E13",
+      "competencia": "alfabetizacion_digital",
+      "dificultad": "dificil",
+      "enunciado": "¿Cuál es la diferencia entre hardware y software?",
+      "opciones": [
+        "El hardware son los programas y el software las piezas de la máquina",
+        "Son dos nombres distintos para exactamente lo mismo",
+        "El hardware es lo que se ve en la pantalla al encender",
+        "El hardware son las piezas físicas y el software los programas"
+      ],
+      "correctaIdx": 3
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E14",
+      "competencia": "ciudadania_digital",
+      "dificultad": "dificil",
+      "enunciado": "Publicaste una foto y al rato la borraste. ¿Por qué conviene pensarlo antes de publicar?",
+      "opciones": [
+        "Porque alguien pudo guardarla o compartirla antes de borrarla",
+        "Porque borrar una publicación tarda varios días en aplicarse",
+        "Porque sólo se puede borrar una publicación al mes",
+        "Porque al borrarla se borra también de tu propio equipo"
+      ],
+      "correctaIdx": 0
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E15",
+      "competencia": "pensamiento_computacional",
+      "dificultad": "dificil",
+      "enunciado": "Un programa debe mostrar «aprobado» sólo cuando la calificación es 6 o más. ¿Qué necesita el programa?",
+      "opciones": [
+        "Una repetición que recorra todas las calificaciones",
+        "Una condición que compare la calificación con 6",
+        "Una lista con los nombres de todo el grupo",
+        "Un dibujo que represente el resultado final"
+      ],
+      "correctaIdx": 1
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E16",
+      "competencia": "datos_e_informacion",
+      "dificultad": "dificil",
+      "enunciado": "En una hoja de cálculo, ¿qué ventaja tiene escribir una fórmula en vez del resultado ya calculado?",
+      "opciones": [
+        "Que el archivo ocupa menos espacio al guardarse",
+        "Que impide que otra persona pueda copiar la hoja de cálculo",
+        "Que el resultado se actualiza solo al cambiar los datos",
+        "Que permite cambiar el color de las celdas"
+      ],
+      "correctaIdx": 2
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E17",
+      "competencia": "productividad_office",
+      "dificultad": "dificil",
+      "enunciado": "En un documento largo, ¿qué ventaja tiene usar estilos de título en vez de sólo agrandar la letra?",
+      "opciones": [
+        "Que se genera el índice solo y se cambian todos a la vez",
+        "Que el documento se imprime bastante más rápido",
+        "Que corrige las faltas de ortografía del texto",
+        "Que reduce el espacio que ocupa el archivo al guardarlo"
+      ],
+      "correctaIdx": 0
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "E18",
+      "competencia": "ia_y_criterio",
+      "dificultad": "dificil",
+      "enunciado": "Un sistema de inteligencia artificial aprendió con datos donde casi todos los ingenieros eran hombres. ¿Qué puede pasar?",
+      "opciones": [
+        "Nada: los datos son datos y no afectan al resultado",
+        "Que el sistema tarde bastante más de lo normal en responder",
+        "Que necesite más energía para dar cada respuesta",
+        "Que repita ese sesgo y proponga sobre todo a hombres"
+      ],
+      "correctaIdx": 3
+    }
+  ]
+}

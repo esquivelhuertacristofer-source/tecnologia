@@ -1,0 +1,37 @@
+{
+  "id": "actitud_entrada",
+  "version": "2026-09-05-provisional",
+  "titulo": "Antes de empezar",
+  "instrucciones": "Y ahora cuéntanos qué piensas. No hay respuestas buenas ni malas.",
+  "cierre": "Gracias, ya puedes continuar.",
+  "reactivos": [
+    {
+      "tipo": "escala",
+      "id": "A01",
+      "competencia": "actitud_gusto",
+      "enunciado": "¿Qué tanto te gusta la tecnología?",
+      "etiquetas": ["Nada", "Poco", "Algo", "Bastante", "Mucho"]
+    },
+    {
+      "tipo": "escala",
+      "id": "A02",
+      "competencia": "actitud_autoeficacia",
+      "enunciado": "¿Qué tan seguro te sientes de poder resolver problemas de tecnología?",
+      "etiquetas": ["Nada", "Poco", "Algo", "Bastante", "Mucho"]
+    },
+    {
+      "tipo": "escala",
+      "id": "A03",
+      "competencia": "actitud_utilidad",
+      "enunciado": "¿Qué tan útil crees que es la tecnología para tu vida?",
+      "etiquetas": ["Nada", "Poco", "Algo", "Bastante", "Mucho"]
+    },
+    {
+      "tipo": "escala",
+      "id": "A04",
+      "competencia": "actitud_continuidad",
+      "enunciado": "¿Qué tanto te gustaría seguir aprendiendo sobre esto?",
+      "etiquetas": ["Nada", "Poco", "Algo", "Bastante", "Mucho"]
+    }
+  ]
+}

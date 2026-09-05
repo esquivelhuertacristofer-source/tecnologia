@@ -44,6 +44,7 @@ const config: Config = {
   testTimeout: 90_000,
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
+    "^@datos/(.*)$": "<rootDir>/data/$1",
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
   },
   testPathIgnorePatterns: ["/node_modules/", "/.next/", "/dist/"],

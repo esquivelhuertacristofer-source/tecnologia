@@ -54,10 +54,14 @@ next-env.d.ts
 #   auditoria/   el barrido con navegador que el runbook manda pasar antes de
 #                entregar; un guion de calidad que no viaja no lo usa nadie.
 #   imagenes/    la conversion a WebP y sus comprobaciones.
+#   estudio/     la exportacion de datos para la universidad (§11). Si no
+#                viaja, la exportacion depende de que alguien conserve un
+#                archivo suelto en su equipo.
 scripts/*
 !scripts/cloudflare/
 !scripts/auditoria/
 !scripts/imagenes/
+!scripts/estudio/
 
 # Docs con credenciales — gestionar sólo en variables de entorno, nunca versionar valores reales
 docs/CREDENCIALES*.md

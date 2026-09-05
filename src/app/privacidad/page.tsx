@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import FooterLegal from '../../components/FooterLegal';
+import { VERSION_AVISO } from '@/lib/estudio/config';
 
 export const metadata = { title: `Aviso de Privacidad — ${process.env.NEXT_PUBLIC_BRAND_NAME ?? 'Plataforma'}` };
 
@@ -23,7 +24,18 @@ export default function PrivacidadPage() {
           <div className="space-y-2">
             <p className="text-xs font-black uppercase tracking-[0.3em] text-[#FF8C00]">Documento Legal</p>
             <h1 className="text-4xl font-black text-[#011C40] tracking-tight">Aviso de Privacidad</h1>
-            <p className="text-[#64748B] font-medium">Última actualización: mayo 2026</p>
+            {/*
+              * LA VERSIÓN, VISIBLE (§4 del estudio de impacto). Hasta hoy sólo
+              * había una fecha en prosa, y una fecha en prosa no acredita nada:
+              * el registro de consentimiento guarda `VERSION_AVISO`, y quien
+              * acepta tiene que poder ver en la pantalla la misma etiqueta que
+              * quedó guardada con su nombre. Cuando el texto cambie de forma
+              * sustancial se sube esa constante, y a todo el mundo se le vuelve
+              * a pedir el consentimiento.
+              */}
+            <p className="text-[#64748B] font-medium">
+              Última actualización: mayo 2026 · versión <span className="font-mono">{VERSION_AVISO}</span>
+            </p>
             <p className="text-xs text-[#94A3B8]">
               Elaborado conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP),
               su Reglamento y los Lineamientos del Aviso de Privacidad publicados en el DOF.

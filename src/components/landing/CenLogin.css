@@ -167,3 +167,31 @@
 @media (prefers-reduced-motion: reduce) {
   .cen-login, .cen-login *, .cen-login *::before, .cen-login *::after { transition-duration: .001ms !important; }
 }
+
+/*
+ * Casilla de consentimiento (§4 del estudio de impacto).
+ *
+ * Va debajo de las opciones del formulario y ocupa dos renglones: `.remember`
+ * es `inline-flex` con centrado vertical, que se ve mal cuando el texto se
+ * parte. Aquí se alinea arriba para que la casilla quede a la altura de la
+ * primera línea, como en cualquier formulario legal.
+ */
+.cen-login .consent-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 14px 0 4px;
+    font-size: 13.5px;
+    line-height: 1.45;
+    text-align: left;
+}
+
+.cen-login .consent-check input {
+    flex: 0 0 auto;
+    margin-top: 2px;
+}
+
+.cen-login .consent-check a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}

@@ -1,0 +1,91 @@
+/**
+ * Estudio de impacto — la tira del auto-reporte de dificultad (§9).
+ *
+ * Discreta a propósito. No compite con la actividad recién terminada ni con su
+ * celebración: es una pregunta de paso, y si el alumno no la ve, no pasa nada.
+ * Sin capa oscura, sin sombra fuerte y sin animación de entrada llamativa.
+ */
+
+.ard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin: 1.25rem auto 0;
+  padding: 0.875rem 1.25rem;
+  max-width: 34rem;
+  border: 1px solid rgba(11, 45, 91, 0.14);
+  border-radius: 0.875rem;
+  background: rgba(255, 255, 255, 0.72);
+  font-family: 'Epilogue', ui-sans-serif, system-ui, sans-serif;
+}
+
+.ard-pregunta {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0c3b49;
+}
+
+.ard-gracias {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0c3b49;
+}
+
+.ard-botones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ard-boton {
+  /* 2,5rem de alto: se contesta de un toque, también con el dedo. */
+  min-height: 2.5rem;
+  padding: 0.5rem 1.125rem;
+  border: 1.5px solid rgba(11, 45, 91, 0.2);
+  border-radius: 999px;
+  background: #fff;
+  color: #0c3b49;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.ard-boton:hover {
+  border-color: #155e75;
+  background: #f2f6f7;
+}
+
+/*
+ * Los tres botones se ven IGUAL. Ni el «Fácil» es verde ni el «Difícil» rojo:
+ * en cuanto un color sugiere que una respuesta es mejor, el alumno contesta lo
+ * que cree que se espera de él y el dato deja de valer.
+ */
+
+.ard-saltar {
+  border: 0;
+  background: none;
+  color: #64748b;
+  font: inherit;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+  padding: 0.375rem;
+}
+
+.ard-saltar:hover { color: #0c3b49; }
+
+.ard-boton:focus-visible,
+.ard-saltar:focus-visible {
+  outline: 3px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ard-boton { transition: none; }
+}

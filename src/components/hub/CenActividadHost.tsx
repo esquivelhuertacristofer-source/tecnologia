@@ -19,6 +19,8 @@ import { cargarActividad } from '@/components/activities/cargadores';
 import type { ActivityResult } from '@/types/activity-contract';
 import { CURRICULO } from '@/data/curriculo';
 import { progresoRepo } from '@/lib/progreso';
+import AutoReporteDificultad from '@/components/estudio/AutoReporteDificultad';
+import { useTelemetriaActividad } from '@/components/estudio/useTelemetriaActividad';
 import { CenHubRoot, HubTopbar, HubFooter, usePerfil } from './shell';
 
 interface EventoContrato {
@@ -46,6 +48,14 @@ export default function CenActividadHost({ n, id }: { n: number; id: string }) {
   const [progreso, setProgreso] = useState(0);
   const [eventos, setEventos] = useState<EventoContrato[]>([]);
   const [verContrato, setVerContrato] = useState(false);
+  /*
+   * ESTUDIO DE IMPACTO (§5 y §9). Enganchado aquí, en el host, y no en cada
+   * actividad: dos archivos —éste y el de Office— miden las 235 clases sin
+   * tocar ninguna. El hook apunta `inicio` al entrar, `fin` al completar y
+   * `abandono` si el alumno se va sin terminar.
+   */
+  const { identidad: identidadEstudio, marcarFin } = useTelemetriaActividad(id);
+  const [completada, setCompletada] = useState(false);
 
   const registrada = getActividadRegistrada(id);
   const valida = registrada !== undefined && registrada.meta.nivel === n;
@@ -99,7 +109,11 @@ export default function CenActividadHost({ n, id }: { n: number; id: string }) {
     });
     void progresoRepo.clearEstadoActividad(id);
     toast.success('¡Completado! 🎉');
-  }, [id, registrar]);
+    // La medición va al final y no puede lanzar: `marcarFin` se traga sus
+    // propios fallos, así que nada de esto altera lo de arriba.
+    marcarFin({ score: result.score, errores: result.errores });
+    setCompletada(true);
+  }, [id, registrar, marcarFin]);
 
   if (!valida) {
     return (
@@ -205,6 +219,13 @@ export default function CenActividadHost({ n, id }: { n: number; id: string }) {
       )}
 
       <div className="container" style={{ paddingBottom: '72px' }}>
+        {/* ─── Auto-reporte de dificultad (§9 del estudio) ─── */}
+        <AutoReporteDificultad
+          actividadId={id}
+          identidad={identidadEstudio}
+          visible={completada}
+        />
+
         {/* ─── Navegación entre ejercicios de la unidad ─── */}
         {(anterior || siguiente) && (
           <nav className="act-nav" aria-label="Navegación entre ejercicios">

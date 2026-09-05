@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { dmSans, manrope } from '@/app/fonts';
 import { progresoRepo } from '@/lib/progreso';
 import type { PerfilAlumno } from '@/lib/progreso/repo';
+import PuertaEstudio from '@/components/estudio/PuertaEstudio';
 import './CenHub.css';
 
 /** Observa los `.reveal` del árbol y les enciende la animación al entrar en viewport. */
@@ -68,6 +69,14 @@ export function CenHubRoot({ children }: { children: ReactNode }) {
   return (
     <div ref={rootRef} className={`cen-hub ${dmSans.variable} ${manrope.variable}`}>
       {children}
+      {/*
+       * Estudio de impacto. Va DESPUÉS de `children` y no envolviéndolos: el
+       * hub se pinta y funciona aunque la puerta no llegue a resolver nada.
+       * Está aquí, en la cáscara compartida del alumno, porque cubre de una
+       * vez el hub, los niveles, las salas de Office y las actividades — y
+       * ninguna pantalla del docente, que no usa este componente.
+       */}
+      <PuertaEstudio />
     </div>
   );
 }
