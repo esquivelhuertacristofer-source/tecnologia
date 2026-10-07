@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityProps } from '@/types/activity-contract';
 import { reproducirTono } from '../../n1/mision/audio';
@@ -295,7 +296,7 @@ export function LabCazaElError(props: ActivityProps & { alSalir?: () => void }) 
     <>
       {ronda === 1 && culpaSenalada && !corregido && nivel.opciones && (
         <div className="pasos-bandeja" aria-label="Opciones para reemplazar el bloque">
-          {nivel.opciones.map((tipo, i) => (
+          {ordenDeOpciones(nivel.opciones!.length, `caza-${nivelIdx}`).map((k) => nivel.opciones![k]).map((tipo, i) => (
             <button
               key={`op-${nivelIdx}-${i}-${tipo}`}
               type="button"

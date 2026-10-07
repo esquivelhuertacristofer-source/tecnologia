@@ -1,14 +1,17 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { EditorCodigo } from '../codigo/ventana/EditorCodigo';
 import '../codigo/ventana/ventanaCodigo.css';
 import { caja, propiedadesEscritas } from './consulta';
 import { VistaPagina } from './VistaPagina';
+import { analizarPagina } from './pagina';
+import { ANCHO_MOVIL } from './subconjunto';
 import type { ProblemaWeb } from './errores';
 import type { Estudio } from './useEstudioWeb';
 import type { EfectoWeb, EventoPagina, HerramientaWeb, Publicacion, RecursoWeb, Vista } from './tiposWeb';
 import './estudioWeb.css';
+import { barajadas } from '@/lib/ordenDeOpciones';
 
 /**
  * TECNIA WEB · EL ESTUDIO
@@ -174,7 +177,30 @@ function Inspector({ estudio, resaltada }: { estudio: Estudio; resaltada: boolea
   );
 }
 
-function Encargo({ estudio }: { estudio: Estudio }) {
+/** La meta del encargo, pintada con la misma vista y las mismas hojas que la página del alumno. */
+function Modelo({ html, estudio, recursos }: { html: string; estudio: Estudio; recursos?: readonly RecursoWeb[] }) {
+  const pagina = useMemo(
+    () =>
+      analizarPagina({
+        html,
+        archivo: 'modelo.html',
+        hojas: estudio.archivos.filter((a) => a.lenguaje === 'css').map((a) => ({ nombre: a.nombre, texto: a.texto })),
+        recursos,
+        ancho: ANCHO_MOVIL,
+      }),
+    [html, estudio.archivos, recursos],
+  );
+  return (
+    <figure className="web-encargo-modelo" data-testid="web-modelo">
+      <figcaption>Así se tiene que ver (con tus palabras)</figcaption>
+      <div className="web-encargo-modelo-marco" aria-hidden="true">
+        <VistaPagina pagina={pagina} recursos={recursos} ancho={ANCHO_MOVIL} testId="web-modelo-vista" />
+      </div>
+    </figure>
+  );
+}
+
+function Encargo({ estudio, recursos }: { estudio: Estudio; recursos?: readonly RecursoWeb[] }) {
   const encargo = estudio.encargo;
   if (!encargo) return null;
   const { paso, indice, total, hecho, pistaVisible, eleccion } = encargo;
@@ -187,10 +213,11 @@ function Encargo({ estudio }: { estudio: Estudio }) {
       </div>
       <h3 className="web-encargo-titulo">{paso.titulo}</h3>
       <p className="web-encargo-instruccion">{paso.instruccion}</p>
+      {paso.modelo && !hecho && <Modelo html={paso.modelo} estudio={estudio} recursos={recursos} />}
 
       {paso.logro.tipo === 'eleccion' && (
         <div className="web-encargo-opciones">
-          {paso.logro.opciones.map((o, i) => (
+          {barajadas(paso.logro.opciones, paso.id).map(([o, i]) => (
             <button
               key={o}
               type="button"
@@ -430,7 +457,7 @@ export function EstudioWeb({
         </div>
 
         <aside className="web-lateral">
-          <Encargo estudio={estudio} />
+          <Encargo estudio={estudio} recursos={recursos} />
           {inspector && <Inspector estudio={estudio} resaltada={senalado === 'inspector'} />}
           {publicacion && <Publicar estudio={estudio} publicacion={publicacion} resaltada={senalado === 'publicar'} />}
         </aside>

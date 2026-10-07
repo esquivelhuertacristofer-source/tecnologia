@@ -43,28 +43,41 @@ function comoDiseno(h: Historia, pagina: string): Diseno {
 }
 
 describe('n6-carteles-e-infografias · guion', () => {
+  // La infografía de la encuesta (§69.14), jugada bien. La barra de la bici
+  // nace una casilla más arriba a propósito: así «misma base» llega después
+  // de «barras» y no a la vez.
   const acciones: Accion[] = [
-    accion('nuevo-texto', { pagina: PAG_N6, id: 't1', texto: 'Feria de Ciencias', col: 0, fila: 1, cols: 8, filas: 2 }),
+    accion('nuevo-texto', { pagina: PAG_N6, id: 't1', texto: '¿Cómo llegamos a la escuela?', col: 0, fila: 0, cols: 8, filas: 2 }),
     accion('tamano', { pagina: PAG_N6, capa: 't1', pt: 44 }),
     accion('centrar', { pagina: PAG_N6, capa: 't1', eje: 'h' }),
-    accion('nuevo-texto', { pagina: PAG_N6, id: 't2', texto: '12 de septiembre, patio central', col: 2, fila: 10, cols: 8, filas: 2, pt: 16 }),
+    accion('nueva-forma', { pagina: PAG_N6, id: 'b1', figura: 'rect', col: 1, fila: 5, cols: 2, filas: 6 }),
+    accion('nueva-forma', { pagina: PAG_N6, id: 'b2', figura: 'rect', col: 4, fila: 7, cols: 2, filas: 4 }),
+    accion('nueva-forma', { pagina: PAG_N6, id: 'b3', figura: 'rect', col: 7, fila: 8, cols: 2, filas: 3 }),
+    accion('nueva-forma', { pagina: PAG_N6, id: 'b4', figura: 'rect', col: 10, fila: 8, cols: 2, filas: 2 }),
+    accion('redimensionar', { pagina: PAG_N6, capa: 'b4', col: 10, fila: 9, cols: 2, filas: 2 }),
+    accion('nuevo-texto', { pagina: PAG_N6, id: 'l1', texto: 'Caminando 12', col: 0, fila: 11, cols: 3, filas: 2, pt: 16 }),
+    accion('nuevo-texto', { pagina: PAG_N6, id: 'l2', texto: 'Autobús 8', col: 3, fila: 11, cols: 3, filas: 2, pt: 16 }),
+    accion('nuevo-texto', { pagina: PAG_N6, id: 'l3', texto: 'Coche 6', col: 6, fila: 11, cols: 3, filas: 2, pt: 16 }),
+    accion('nuevo-texto', { pagina: PAG_N6, id: 'l4', texto: 'Bici 4', col: 9, fila: 11, cols: 3, filas: 2, pt: 16 }),
+    accion('relleno', { pagina: PAG_N6, capa: 'b1', color: 'naranja' }),
+    accion('nuevo-texto', { pagina: PAG_N6, id: 'f', texto: 'Fuente: encuesta del 6.º B', col: 0, fila: 14, cols: 12, filas: 2, pt: 12 }),
     accion('fondo', { pagina: PAG_N6, color: 'tinta' }),
   ];
 
   it('el lienzo vacío no cumple ningún encargo', () => {
     const d = comoDiseno(nuevaHistoria(DOC_N6), PAG_N6);
-    expect(GUION_N6[0].comprueba(d)).toBe(false);
+    expect(GUION_N6.map((p) => p.comprueba(d))).toEqual(GUION_N6.map(() => false));
   });
 
   it('se puede terminar y cada encargo se cumple en su momento, no antes', () => {
-    // Cuántas acciones de `acciones` hacen falta para que cada paso pase de
-    // falso a cierto (paso 0 tras la 1.ª acción, paso 1 tras la 3.ª, etc.).
-    const puntos = [1, 3, 4, 5];
+    // Cuántas acciones de `acciones` hacen falta para que cada paso pase de falso a cierto.
+    const puntos = [1, 3, 7, 8, 12, 13, 14, 15];
+    expect(puntos).toHaveLength(GUION_N6.length);
     for (let paso = 0; paso < GUION_N6.length; paso += 1) {
       const dAntes = comoDiseno(correr(DOC_N6, acciones.slice(0, puntos[paso] - 1)), PAG_N6);
-      expect(GUION_N6[paso].comprueba(dAntes)).toBe(false);
+      expect([GUION_N6[paso].id, GUION_N6[paso].comprueba(dAntes)]).toEqual([GUION_N6[paso].id, false]);
       const dDespues = comoDiseno(correr(DOC_N6, acciones.slice(0, puntos[paso])), PAG_N6);
-      expect(GUION_N6[paso].comprueba(dDespues)).toBe(true);
+      expect([GUION_N6[paso].id, GUION_N6[paso].comprueba(dDespues)]).toEqual([GUION_N6[paso].id, true]);
     }
     const final = correr(DOC_N6, acciones);
     expect(GUION_N6.every((p) => p.comprueba(comoDiseno(final, PAG_N6)))).toBe(true);

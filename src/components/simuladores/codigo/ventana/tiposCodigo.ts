@@ -139,6 +139,12 @@ export interface Ejecucion {
   estadoMaquina: Estado | null;
   /** Las líneas que ha escrito el programa, en orden. */
   salida: string[];
+  /**
+   * Cuáles de esas líneas son el eco de un `input` (pregunta + respuesta), por
+   * índice. Ver `Maquina.ecos`: para distinguir lo que el programa contesta de
+   * lo que pregunta.
+   */
+  ecos: number[];
   variables: Vistazo[];
   pilaDeLlamadas: { funcion: string; linea: number }[];
   error: ErrorPy | null;
@@ -149,12 +155,35 @@ export interface Ejecucion {
   pasos: number;
   /** Lo que `input()` está preguntando, o `null`. */
   pregunta: string | null;
+  /* ── M4 (§69.21): proyectos de varios archivos ── */
+  /** De qué archivo es `linea` (y el error): `null` = el principal. Con eso la ventana abre su pestaña. */
+  archivo: string | null;
+  /** Qué archivo se corrió: `null` = el principal; un módulo si se pulsó ▶ con su pestaña abierta. */
+  corrio: string | null;
+  /** Lo que el programa escribió con `open(…, "w")`, en orden. */
+  escritos: { nombre: string; texto: string }[];
+}
+
+/** Un archivo del proyecto que no es el principal (M4): un módulo `.py` o unos datos. */
+export interface ArchivoProyecto {
+  nombre: string;
+  texto: string;
+  /** Viene dado por la clase y no se cambia. */
+  soloLectura?: boolean;
+}
+
+/** Una pestaña de la ventana. `clave` es lo que se le pasa a `abrir`: `null` es el principal. */
+export interface PestanaCodigo {
+  nombre: string;
+  clave: string | null;
+  tipo: 'programa' | 'modulo' | 'datos' | 'generado';
 }
 
 export const EJECUCION_VACIA: Ejecucion = {
   fase: 'libre',
   estadoMaquina: null,
   salida: [],
+  ecos: [],
   variables: [],
   pilaDeLlamadas: [],
   error: null,
@@ -162,6 +191,9 @@ export const EJECUCION_VACIA: Ejecucion = {
   lineaSenalada: 0,
   pasos: 0,
   pregunta: null,
+  archivo: null,
+  corrio: null,
+  escritos: [],
 };
 
 /* ── El guion de la clase ───────────────────────────────────────────────────*/
@@ -221,6 +253,29 @@ export interface PanelCodigoProps {
   texto: string;
   /** Llevar el cursor del alumno a una línea y enfocarla. */
   senalarLinea: (linea: number) => void;
+  /**
+   * «Vuelve a mirar si el encargo está hecho.»
+   *
+   * Para los paneles cuyo botón cambia algo que el predicado del guion lee y
+   * que no es ni el texto ni la ejecución —el tablero del juez—. Ver el
+   * comentario largo en `useCodigo.ts`.
+   */
+  revisar: () => void;
+  /**
+   * El id del encargo en que va el alumno, o `null` al terminar.
+   *
+   * Opcional porque las pruebas pintan paneles sueltos. Lo necesitó el juez
+   * (§68.4): en una clase que mezcla problemas con encargos de exploración, el
+   * tablero tiene que saber si el encargo de ahora es uno de sus problemas, y
+   * adivinarlo por «el primero sin aceptar» enseñaba el problema equivocado.
+   */
+  encargoId?: string | null;
+  /**
+   * Los otros archivos del proyecto, por nombre, como están ahora (M4, §69.21):
+   * los módulos que el alumno escribe y los datos. El juez los necesita para
+   * correr un programa que importa. Ausente en una clase de un solo archivo.
+   */
+  proyecto?: Readonly<Record<string, string>>;
 }
 
 /** Una herramienta que aporta la clase y el armazón no trae. */

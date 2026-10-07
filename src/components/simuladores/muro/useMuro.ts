@@ -7,7 +7,11 @@ import {
   type AutorMuro,
   type ComentarioMuro,
   type ConsecuenciaMuro,
+  type ContactoMuro,
   type CopiaMuro,
+  type EvidenciaMuro,
+  type MensajeMuro,
+  type MotivoReporte,
   type ImagenMuro,
   type PerfilMuro,
   type PublicacionMuro,
@@ -53,9 +57,14 @@ import {
 export type ResultadoPublicar = 'publicada' | 'vacia';
 export type ResultadoAccion = 'ok' | 'no-existe' | 'borrada';
 export type ResultadoComentar = 'ok' | 'no-existe' | 'borrada' | 'vacio';
+/** §69.1 · `oculto`: es de alguien bloqueado, así que ya no se ve (ni se captura ni se reporta). */
+export type ResultadoCaptura = 'ok' | 'no-existe' | 'borrada' | 'oculto';
+export type ResultadoMensaje = 'ok' | 'vacio' | 'no-existe' | 'bloqueado';
 
 export interface DatosPublicar {
   texto: string;
+  /** §69.2 · La actividad puede fijar el id para reconocer después lo publicado. Si choca, se genera uno. */
+  id?: string;
   /** Si se omite, publica como `opciones.alumno`. */
   autor?: AutorMuro;
   imagen?: ImagenMuro;
@@ -73,6 +82,8 @@ export interface OpcionesMuro {
   publicaciones?: PublicacionMuro[];
   /** Quién es "yo": el autor por omisión al publicar o comentar sin indicar otro. */
   alumno: AutorMuro;
+  /** §69.1 · A quién se le puede escribir en privado. Se lee una vez, al montar. */
+  contactos?: ContactoMuro[];
 }
 
 export interface Muro {
@@ -84,7 +95,8 @@ export interface Muro {
   darMeGusta: (id: string) => ResultadoAccion;
   comentar: (id: string, texto: string, autor?: AutorMuro) => ResultadoComentar;
   compartir: (id: string) => ResultadoAccion;
-  reportar: (id: string) => ResultadoAccion;
+  /** `motivo` (§69.1) es opcional: las clases de antes reportan sin él. */
+  reportar: (id: string, motivo?: MotivoReporte) => ResultadoAccion;
   /** Marca `borrada: true`. Nunca quita el elemento del arreglo. */
   borrar: (id: string) => ResultadoAccion;
   cambiarVisibilidad: (id: string, v: Visibilidad) => ResultadoAccion;
@@ -94,6 +106,23 @@ export interface Muro {
    *  autor sin publicaciones da un perfil con `publicaciones: []`. */
   perfilDe: (autor: AutorMuro, opciones?: { bio?: string; visibilidad?: Visibilidad[] }) => PerfilMuro;
   reiniciar: (publicaciones?: PublicacionMuro[]) => void;
+
+  // ── §69.1 ──
+  /** Ids de autores bloqueados. `visibles()` ya los oculta. */
+  bloqueados: string[];
+  bloquear: (autorId: string) => void;
+  desbloquear: (autorId: string) => void;
+  /** Reporta un comentario con un motivo. Se puede volver a reportar con otro. */
+  reportarComentario: (publicacionId: string, comentarioId: string, motivo: MotivoReporte) => ResultadoCaptura;
+  /** Las capturas tomadas, en orden. */
+  evidencias: EvidenciaMuro[];
+  /** Copia el texto de una publicación o de uno de sus comentarios. No duplica. */
+  capturar: (publicacionId: string, comentarioId?: string) => ResultadoCaptura;
+  contactos: ContactoMuro[];
+  mensajes: MensajeMuro[];
+  enviarMensaje: (contactoId: string, texto: string, adjuntos?: string[]) => ResultadoMensaje;
+  /** La actividad responde por el contacto (la consecuencia de haberle escrito). */
+  responderComo: (contactoId: string, texto: string) => void;
 }
 
 const ACCIONES_POR_DEFECTO: AccionMuro[] = ['me-gusta', 'comentar', 'compartir', 'reportar', 'borrar'];
@@ -124,17 +153,32 @@ export function useMuro(opciones: OpcionesMuro): Muro {
     return `${prefijo}${contador.current}`;
   }, []);
 
+  const [bloqueados, setBloqueados] = useState<string[]>([]);
+  const bloqRef = useRef(bloqueados);
+  useEffect(() => {
+    bloqRef.current = bloqueados;
+  });
+  const [evidencias, setEvidencias] = useState<EvidenciaMuro[]>([]);
+  const evRef = useRef(evidencias);
+  useEffect(() => {
+    evRef.current = evidencias;
+  });
+  const [contactos] = useState<ContactoMuro[]>(() => opciones.contactos ?? []);
+  const [mensajes, setMensajes] = useState<MensajeMuro[]>([]);
+
   const visibles = useCallback(
-    (opts?: { incluirBorradas?: boolean; visibilidad?: Visibilidad[] }) => publicacionesVisibles(publicaciones, opts),
-    [publicaciones],
+    (opts?: { incluirBorradas?: boolean; visibilidad?: Visibilidad[] }) =>
+      publicacionesVisibles(publicaciones, { ...opts, ocultarAutores: bloqueados }),
+    [publicaciones, bloqueados],
   );
 
   const publicar = useCallback(
     (datos: DatosPublicar): ResultadoPublicar => {
       const limpio = datos.texto.trim();
       if (limpio === '') return 'vacia';
+      const libre = datos.id && !pubRef.current.some((p) => p.id === datos.id);
       const nueva: PublicacionMuro = {
-        id: nuevoId('p'),
+        id: libre ? (datos.id as string) : nuevoId('p'),
         autor: datos.autor ?? alumnoRef.current,
         texto: limpio,
         imagen: datos.imagen,
@@ -190,13 +234,93 @@ export function useMuro(opciones: OpcionesMuro): Muro {
     return 'ok';
   }, []);
 
-  const reportar = useCallback((id: string): ResultadoAccion => {
+  const reportar = useCallback((id: string, motivo?: MotivoReporte): ResultadoAccion => {
     const actual = pubRef.current.find((p) => p.id === id);
     if (!actual) return 'no-existe';
     if (actual.borrada) return 'borrada';
-    setPublicaciones((prev) => prev.map((p) => (p.id === id ? { ...p, reportada: true } : p)));
+    setPublicaciones((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, reportada: true, ...(motivo ? { motivoReporte: motivo } : {}) } : p)),
+    );
     return 'ok';
   }, []);
+
+  /** Lo que el alumno VE: existe, no está borrada y nadie de los dos autores está bloqueado. */
+  const buscarVisible = useCallback(
+    (publicacionId: string, comentarioId?: string): { r: ResultadoCaptura; autor?: AutorMuro; texto?: string } => {
+      const pub = pubRef.current.find((p) => p.id === publicacionId);
+      if (!pub) return { r: 'no-existe' };
+      if (pub.borrada) return { r: 'borrada' };
+      if (bloqRef.current.includes(pub.autor.id)) return { r: 'oculto' };
+      if (!comentarioId) return { r: 'ok', autor: pub.autor, texto: pub.texto };
+      const com = pub.comentarios.find((c) => c.id === comentarioId);
+      if (!com) return { r: 'no-existe' };
+      if (bloqRef.current.includes(com.autor.id)) return { r: 'oculto' };
+      return { r: 'ok', autor: com.autor, texto: com.texto };
+    },
+    [],
+  );
+
+  const reportarComentario = useCallback(
+    (publicacionId: string, comentarioId: string, motivo: MotivoReporte): ResultadoCaptura => {
+      const { r } = buscarVisible(publicacionId, comentarioId);
+      if (r !== 'ok') return r;
+      setPublicaciones((prev) =>
+        prev.map((p) =>
+          p.id === publicacionId
+            ? { ...p, comentarios: p.comentarios.map((c) => (c.id === comentarioId ? { ...c, motivoReporte: motivo } : c)) }
+            : p,
+        ),
+      );
+      return 'ok';
+    },
+    [buscarVisible],
+  );
+
+  const capturar = useCallback(
+    (publicacionId: string, comentarioId?: string): ResultadoCaptura => {
+      const { r, autor, texto } = buscarVisible(publicacionId, comentarioId);
+      if (r !== 'ok' || !autor || texto === undefined) return r;
+      const ya = evRef.current.some((e) => e.publicacionId === publicacionId && e.comentarioId === comentarioId);
+      if (ya) return 'ok';
+      const nueva: EvidenciaMuro = { id: nuevoId('e'), publicacionId, comentarioId, autor, texto };
+      // El ref se adelanta a propósito: dos capturas en el mismo tic no se duplican.
+      evRef.current = [...evRef.current, nueva];
+      setEvidencias((prev) => [...prev, nueva]);
+      return 'ok';
+    },
+    [buscarVisible, nuevoId],
+  );
+
+  const bloquear = useCallback((autorId: string) => {
+    bloqRef.current = bloqRef.current.includes(autorId) ? bloqRef.current : [...bloqRef.current, autorId];
+    setBloqueados((prev) => (prev.includes(autorId) ? prev : [...prev, autorId]));
+  }, []);
+  const desbloquear = useCallback((autorId: string) => {
+    bloqRef.current = bloqRef.current.filter((x) => x !== autorId);
+    setBloqueados((prev) => prev.filter((x) => x !== autorId));
+  }, []);
+
+  const enviarMensaje = useCallback(
+    (contactoId: string, texto: string, adjuntos: string[] = []): ResultadoMensaje => {
+      if (!contactos.some((c) => c.id === contactoId)) return 'no-existe';
+      if (bloqRef.current.includes(contactoId)) return 'bloqueado';
+      const limpio = texto.trim();
+      if (limpio === '' && adjuntos.length === 0) return 'vacio';
+      const validos = adjuntos.filter((a) => evRef.current.some((e) => e.id === a));
+      const nuevo: MensajeMuro = { id: nuevoId('m'), conversacion: contactoId, delAlumno: true, texto: limpio, adjuntos: validos };
+      setMensajes((prev) => [...prev, nuevo]);
+      return 'ok';
+    },
+    [contactos, nuevoId],
+  );
+
+  const responderComo = useCallback(
+    (contactoId: string, texto: string) => {
+      const nuevo: MensajeMuro = { id: nuevoId('m'), conversacion: contactoId, delAlumno: false, texto, adjuntos: [] };
+      setMensajes((prev) => [...prev, nuevo]);
+    },
+    [nuevoId],
+  );
 
   const borrar = useCallback((id: string): ResultadoAccion => {
     const actual = pubRef.current.find((p) => p.id === id);
@@ -273,6 +397,11 @@ export function useMuro(opciones: OpcionesMuro): Muro {
   const reiniciar = useCallback((nuevas?: PublicacionMuro[]) => {
     contador.current = 0;
     setPublicaciones(nuevas ?? inicialRef.current);
+    bloqRef.current = [];
+    setBloqueados([]);
+    evRef.current = [];
+    setEvidencias([]);
+    setMensajes([]);
   }, []);
 
   return {
@@ -288,5 +417,15 @@ export function useMuro(opciones: OpcionesMuro): Muro {
     inyectarConsecuencia,
     perfilDe,
     reiniciar,
+    bloqueados,
+    bloquear,
+    desbloquear,
+    reportarComentario,
+    evidencias,
+    capturar,
+    contactos,
+    mensajes,
+    enviarMensaje,
+    responderComo,
   };
 }

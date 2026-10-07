@@ -241,7 +241,7 @@ export function LabGestionaTuProyecto(props: ActivityProps & { alSalir?: () => v
                     type="button"
                     data-testid="archivar-por-hacer"
                     onClick={() => archivarPorHacer(false)}
-                    className="px-3 py-2 rounded-lg bg-rose-500 text-white font-semibold text-xs mb-2"
+                    className="px-3 py-2 rounded-lg bg-slate-700 text-white font-semibold text-xs mb-2"
                   >
                     Archivar «Por hacer»
                   </button>
@@ -252,7 +252,7 @@ export function LabGestionaTuProyecto(props: ActivityProps & { alSalir?: () => v
                         type="button"
                         data-testid="archivar-con-destino"
                         onClick={() => archivarPorHacer(true)}
-                        className="px-3 py-2 rounded-lg bg-emerald-500 text-slate-950 font-semibold text-xs"
+                        className="px-3 py-2 rounded-lg bg-slate-700 text-white font-semibold text-xs"
                       >
                         Mudar tarjetas y archivar
                       </button>

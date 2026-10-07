@@ -25,6 +25,9 @@ import { LabEquilibrioDigital } from './LabEquilibrioDigital';
  * (regla de la casa: "no inventes capacidades que nadie pide" — si una
  * segunda clase llegara a necesitarlo, ahí sí pasaría a ser un armazón
  * compartido, no antes).
+ *
+ * 6-oct-2026 (§69.16): el teléfono ya se usa de verdad (apps, avisos,
+ * Bienestar digital, Hora de dormir) y la entrada dejó de dictar las respuestas.
  */
 
 const CONFIG: ConfigEntradaN7Situacion = {
@@ -33,12 +36,12 @@ const CONFIG: ConfigEntradaN7Situacion = {
   ruta: RUTA_N7_CIUDADANIA_DIGITAL_CRITICA,
   parada: 3,
   globo:
-    'Tu teléfono no va a dejar de sonar nunca — ni debería. La pregunta no es cuánto lo usas, es si sabes elegir cuándo un aviso puede esperar y cuándo no. Eso es el equilibrio digital, y hoy lo vas a practicar aviso por aviso.',
+    'Tu teléfono no va a dejar de sonar nunca — ni debería. La pregunta no es cuánto lo usas, es si sabes elegir cuándo un aviso puede esperar y cuándo no. Eso es el equilibrio digital, y hoy lo vas a practicar con tu propio teléfono.',
   arranqueSub:
-    'Es viernes en la noche. Tienes tarea pendiente y el teléfono suena cada pocos minutos: vas a decidir, aviso por aviso, qué puede esperar y qué no.',
+    'Es viernes en la noche. Tienes tarea pendiente y el teléfono suena cada pocos minutos. Vas a mirar qué hizo tu teléfono la semana pasada y a dejarlo trabajando para ti.',
   stats: [
-    { etiqueta: 'Avisos a decidir', valor: '5', acento: '#22d3ee' },
-    { etiqueta: 'Trampa de atención', valor: '1', acento: '#f87171' },
+    { etiqueta: 'Misiones', valor: '3', acento: '#22d3ee' },
+    { etiqueta: 'Ejercicios de tarea', valor: '5', acento: '#f87171' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
   letrero: 'Antes de que suene el teléfono',
@@ -67,7 +70,7 @@ const CONFIG: ConfigEntradaN7Situacion = {
       numero: 3,
       titulo: 'No toda urgencia es urgencia de verdad',
       detalle:
-        'Un "cofre por tiempo limitado" está diseñado para que **sientas prisa** aunque no exista ningún límite real. Reconocerlo es una habilidad.',
+        'Algunos avisos están diseñados para que **sientas prisa** aunque no exista ningún límite real. Reconocerlos es una habilidad.',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -76,13 +79,13 @@ const CONFIG: ConfigEntradaN7Situacion = {
       numero: 4,
       titulo: 'Silenciar no es lo mismo que desconectarte',
       detalle:
-        'Puedes bajarle el volumen a lo que puede esperar y **dejar sonando** lo que de verdad importa — como tu familia.',
+        'Lo silenciado **sigue llegando**: te espera en el centro de notificaciones sin interrumpirte. Tú decides cuándo lo miras.',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre Tecnia Avisos',
-  ctaDetalle: 'Viernes en la noche, tarea pendiente y el teléfono sonando. Decide, aviso por aviso, qué puede esperar.',
+  ctaDetalle: 'Tres misiones en tu teléfono, con tus datos de la semana. Ninguna resta puntos.',
   assetsPendientes: false,
 };
 

@@ -115,7 +115,7 @@ export function crearGuion(): GuionDiapos {
         'Subir al escenario',
       ],
       requisitos: 'Lo que guardaste en el navegador. Ya está aquí, en la galería de fuentes.',
-      ayuda: 'El panel de Bit, a la derecha, tiene la tabla del salón y las seis frases para elegir.',
+      ayuda: 'El panel de Bit, a la derecha, tiene la tabla del salón y te dice si tu frase la sostiene.',
     },
 
     pasos: [
@@ -131,8 +131,8 @@ export function crearGuion(): GuionDiapos {
         id: 'lo-que-vas-a-sostener',
         titulo: 'Lo que vas a sostener',
         instruccion:
-          'En la diapositiva 2, escribe como título UNA de las frases que la tabla del salón puede sostener. Mira el panel de Bit.',
-        pista: 'Esa frase no la sostiene tu tabla. Vuelve a mirar los números antes de elegir.',
+          'En la diapositiva 2, escribe como título una frase tuya que la tabla del salón pueda sostener. Mira los números primero.',
+        pista: 'Lee lo que dice el panel de Bit de tu frase: trae los números. Y la tabla sólo habla de tu salón, esta semana.',
         logro: { tipo: 'documento', comprueba: (m) => afirmacionDe(m)?.sostenida === true },
         aprendido: 'Elegiste lo que vas a sostener. Ahora la gráfica tiene que hablar de eso mismo.',
       },
@@ -141,7 +141,7 @@ export function crearGuion(): GuionDiapos {
         titulo: 'La gráfica que habla de eso',
         instruccion:
           'En la misma diapositiva, usa Insertar → Gráfico y elige el tipo que habla de lo que acabas de escribir — no el que se ve más bonito.',
-        pista: 'Barras compara cantidades. Líneas es cómo cambia con los días. Pastel es partes de un total.',
+        pista: 'Piensa de qué habla tu frase: de cosas que se comparan, de días que cambian o de partes de un total.',
         senal: { pestana: 'insertar', grupo: 'ilustraciones', control: 'gráfico' },
         logro: { tipo: 'documento', comprueba: (m) => sostiene(afirmacionDe(m), tipoDeGraficoDe(m)) },
         aprendido: 'Tu frase y tu gráfica dicen lo mismo. Eso es sostener algo.',
@@ -176,7 +176,7 @@ export function crearGuion(): GuionDiapos {
         id: 'que-proponen',
         titulo: '¿Qué proponen?',
         instruccion: 'Elige la propuesta que se deduce de tu propia gráfica.',
-        pista: 'Vuelve a mirar lo que escribiste en el E4: la propuesta tiene que hablar de eso mismo.',
+        pista: 'Vuelve a leer tu frase de la diapositiva 2: la propuesta tiene que hablar de eso mismo.',
         logro: { tipo: 'control', control: 'propuesta-correcta' },
         aprendido: 'Dijiste algo, lo sostuviste con tus datos, y dijiste hasta dónde llegaba. Eso es un proyecto.',
       },

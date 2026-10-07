@@ -89,3 +89,5 @@
   font-weight: 700;
 }
 .dsg-panel-extra { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+/* §69.14: lo que mide la forma seleccionada, en casillas. */
+.dsg-medida { align-self: center; font-size: 12.5px; font-weight: 800; color: #fed7aa; padding: 0 4px; }

@@ -216,8 +216,15 @@ function CapaPintada({
             rec?.fondo ?? 'repeating-linear-gradient(45deg,#334155,#334155 8px,#1e293b 8px,#1e293b 16px)',
           backgroundSize: `${entera.cols * celda}px ${entera.filas * celda}px`,
           backgroundPosition: `${-capa.recorte.izquierda * celda}px ${-capa.recorte.arriba * celda}px`,
+          filter: rec?.movida ? 'blur(2.4px)' : undefined,
         }}
+        data-movida={rec?.movida ? 'si' : undefined}
       >
+        {rec?.glifo && rec.movida && (
+          <span className="dis-glifo" aria-hidden="true" style={{ transform: 'translate(9%, -4%)', opacity: 0.45 }}>
+            {rec.glifo}
+          </span>
+        )}
         {rec?.glifo && <span className="dis-glifo">{rec.glifo}</span>}
       </div>
     );

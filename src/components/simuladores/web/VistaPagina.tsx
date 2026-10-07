@@ -65,6 +65,8 @@ export interface VistaPaginaProps {
   /** Se pinta con este ancho declarado. */
   ancho?: number;
   className?: string;
+  /** Por defecto `wpv` (y `wpv-lienzo` dentro); el modelo del encargo lleva otro para no confundirse con la vista del alumno. */
+  testId?: string;
 }
 
 /** Lo que un efecto de la clase cambia en un nodo. */
@@ -89,7 +91,7 @@ function encimaDe(pagina: PaginaAnalizada, efectos: readonly EfectoWeb[] | undef
   return mapa;
 }
 
-export function VistaPagina({ pagina, recursos, efectos, onEvento, seleccion = null, onSeleccionar, ancho, className }: VistaPaginaProps) {
+export function VistaPagina({ pagina, recursos, efectos, onEvento, seleccion = null, onSeleccionar, ancho, className, testId = 'wpv' }: VistaPaginaProps) {
   /* El ratón encima es estado del navegador simulado, no de la página: por eso
    * vive aquí y no en el análisis. `:hover` se resuelve en la cascada y aquí
    * sólo se elige cuál de los dos juegos de propiedades se pinta. */
@@ -281,8 +283,8 @@ export function VistaPagina({ pagina, recursos, efectos, onEvento, seleccion = n
   const enBlanco = hijos.every((h) => typeof h === 'string' && h.trim() === '');
 
   return (
-    <div className={`wpv${className ? ` ${className}` : ''}`} data-testid="wpv" style={ancho === undefined ? undefined : { width: `${ancho}px` }}>
-      <div className="wpv-lienzo" data-testid="wpv-lienzo">
+    <div className={`wpv${className ? ` ${className}` : ''}`} data-testid={testId} style={ancho === undefined ? undefined : { width: `${ancho}px` }}>
+      <div className="wpv-lienzo" data-testid={`${testId}-lienzo`}>
         {enBlanco ? <p className="wpv-vacia">Tu página todavía no tiene nada dentro. Escribe algo en el editor y aparecerá aquí.</p> : hijos}
       </div>
     </div>

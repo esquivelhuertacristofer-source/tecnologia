@@ -18,7 +18,8 @@
     "medios:verificar": "node scripts/cloudflare/medios.mjs verificar",
     "imagenes:webp": "node scripts/imagenes/a-webp.mjs",
     "imagenes:rutas": "node scripts/imagenes/comprobar-rutas.mjs",
-    "estudio:exportar": "node scripts/estudio/exportar.mjs"
+    "estudio:exportar": "node scripts/estudio/exportar.mjs",
+    "altas": "node scripts/altas/alta-masiva.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

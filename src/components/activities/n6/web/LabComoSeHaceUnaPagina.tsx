@@ -191,8 +191,8 @@ export const GUION: GuionWeb = {
       id: 'arreglala',
       titulo: 'Y ahora arréglala leyendo',
       instruccion:
-        'Abajo, en «Lo que hay que arreglar», está escrito qué pasa y en qué línea. Púlsalo: el editor te lleva ahí. Vuelve a poner </h1> al final del título.',
-      pista: 'Al final del texto del título, escribe otra vez </h1>. La lista de abajo se queda vacía sola.',
+        'Abajo, en «Lo que hay que arreglar», está escrito qué pasa y en qué línea. Púlsalo: el editor te lleva ahí. Arréglala con lo que dice el aviso.',
+      pista: 'El aviso dice qué etiqueta se quedó abierta. ¿Qué hay que escribir para cerrarla, y en qué sitio? Cuando esté bien, la lista de abajo se queda vacía sola.',
       senal: { control: 'problemas' },
       logro: { tipo: 'pagina', comprueba: (p) => existe(p, 'h1') && p.errores === 0 },
       aprendido: 'El aviso dice el archivo, la línea y el arreglo. Leerlo es más rápido que probar cosas hasta que salga.',
@@ -201,8 +201,9 @@ export const GUION: GuionWeb = {
       id: 'una-linea-mas',
       titulo: 'Escribe una línea nueva',
       instruccion:
-        'Debajo del párrafo que ya hay, escribe otro: <p>Aquí cuentas qué hacen en el club</p>. Tiene que abrir con <p> y cerrar con </p>, como el de arriba.',
-      pista: 'Copia la forma del párrafo de la línea 9 y cambia lo de dentro. Escríbelo antes de </body>.',
+        'Añade debajo un segundo párrafo que cuente qué hacen en el club, como en el modelo: al menos doce letras.',
+      pista: 'Mira cómo está hecho el párrafo de la línea 9: copia su forma y cambia lo de dentro. Escríbelo antes de </body>.',
+      modelo: PLANTILLA_HTML.replace('</p>\n</body>', '</p>\n  <p>Armamos robots con motores y sensores, y en mayo vamos a la feria.</p>\n</body>'),
       senal: { archivo: 'index.html', linea: 9, control: 'editor' },
       logro: {
         tipo: 'pagina',

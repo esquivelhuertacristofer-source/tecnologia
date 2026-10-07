@@ -2,10 +2,12 @@
 
 import type { ActivityProps } from '@/types/activity-contract';
 import {
+  arrancar,
   nuevoBloque,
   pila,
   programaDe,
   recorrer,
+  siguiente,
   type BloquePuesto,
   type CategoriaBloques,
   type EventoBloques,
@@ -14,6 +16,7 @@ import {
 } from '@/components/simuladores/bloques';
 import { SalaBloques, type ClaseBloques, type EncargoBloques, type EscenarioProps } from './SalaBloques';
 import { CaraDeTexto } from './CaraDeTexto';
+import { traducir } from './traduccionPython';
 import './bloquesVsCodigo.css';
 
 /**
@@ -101,27 +104,67 @@ export const PROGRAMA_INICIAL: Programa = programaDe(
 
 /* ─────────────────────────────── el mundo ──────────────────────────────────── */
 
+/** Un `repetir` abierto: en qué vuelta va y cuál es el primer bloque de su boca. */
+interface BucleAbierto {
+  id: string;
+  vuelta: number;
+  primero: string | null;
+}
+
 export interface MundoTexto {
   /** La consola: lo que ha escrito la corrida actual. */
   salida: string[];
-  /** El contador de vuelta del `for`, contado por la clase — `bloques` no
-   *  tiene semántica de variable (ver `arbolBloques.ts:46-58`). */
-  vuelta: number;
+  /**
+   * La variable `vuelta` del `for`, como en Python (§69.12): empieza en 0,
+   * cambia una vez por vuelta y es UNA sola —un `for` dentro de otro la
+   * reescribe—. `null` mientras no ha corrido ningún `repetir`.
+   */
+  vuelta: number | null;
+  /** Los `repetir` abiertos, del de fuera al de dentro. */
+  bucles: BucleAbierto[];
   /** El encargo 6: cuántas veces intentó escribir en la cara de sólo lectura. */
   intentosDeEscribir: number;
 }
 
-export const MUNDO_INICIAL: MundoTexto = { salida: [], vuelta: 0, intentosDeEscribir: 0 };
+export const MUNDO_INICIAL: MundoTexto = { salida: [], vuelta: null, bucles: [], intentosDeEscribir: 0 };
+
+export const AVISO_SIN_VUELTA = 'Error: «vuelta» todavía no existe';
+
+/**
+ * El intérprete avisa `entra` UNA vez por bucle, no por vuelta. La vuelta
+ * nueva se reconoce porque vuelve a correr el primer bloque de la boca: ese
+ * bucle suma uno, y los de dentro de él ya terminaron.
+ */
+function anotarPaso(m: MundoTexto, nodoId: string): MundoTexto {
+  for (let k = m.bucles.length - 1; k >= 0; k--) {
+    if (m.bucles[k].primero === nodoId) {
+      const bucle = { ...m.bucles[k], vuelta: m.bucles[k].vuelta + 1 };
+      return { ...m, bucles: [...m.bucles.slice(0, k), bucle], vuelta: bucle.vuelta };
+    }
+  }
+  const tope = m.bucles[m.bucles.length - 1];
+  if (tope && tope.primero === null) {
+    return { ...m, bucles: [...m.bucles.slice(0, -1), { ...tope, primero: nodoId }] };
+  }
+  return m;
+}
 
 /** Puro: sólo lee el evento, nunca el reloj ni el DOM. */
 export function reducirTexto(m: MundoTexto, e: EventoBloques): MundoTexto {
-  if (e.tipo === 'entra') return { ...m, vuelta: 0 };
+  if (e.tipo === 'entra') {
+    const tras = anotarPaso(m, e.nodoId);
+    if (!e.vueltas || e.vueltas <= 0) return tras;
+    const fuera = tras.bucles.findIndex((b) => b.id === e.nodoId);
+    const abiertos = fuera === -1 ? tras.bucles : tras.bucles.slice(0, fuera);
+    return { ...tras, bucles: [...abiertos, { id: e.nodoId, vuelta: 0, primero: null }], vuelta: 0 };
+  }
   if (e.tipo === 'accion') {
-    if (e.accion === 'decir') return { ...m, salida: [...m.salida, String(e.args.que ?? '')] };
+    const tras = anotarPaso(m, e.nodoId);
+    if (e.accion === 'decir') return { ...tras, salida: [...tras.salida, String(e.args.que ?? '')] };
     if (e.accion === 'decir-vuelta') {
-      const vuelta = m.vuelta + 1;
-      return { ...m, vuelta, salida: [...m.salida, String(vuelta)] };
+      return { ...tras, salida: [...tras.salida, tras.vuelta === null ? AVISO_SIN_VUELTA : String(tras.vuelta)] };
     }
+    return tras;
   }
   return m;
 }
@@ -135,6 +178,57 @@ function preguntarTexto(): boolean {
 
 function primerDecir(programa: Programa): BloquePuesto | null {
   return programa.pilas[0]?.bloques[0] ?? null;
+}
+
+/** Lo que diría la consola con este programa, corrido sin pantalla. */
+export function salidaDe(programa: Programa): string[] {
+  let mundo = MUNDO_INICIAL;
+  let estado = arrancar(programa, CATALOGO, { pila: 'p-main' });
+  while (!estado.fin) {
+    const paso = siguiente(estado, preguntarTexto);
+    estado = paso.estado;
+    if (paso.evento) mundo = reducirTexto(mundo, paso.evento);
+  }
+  return mundo.salida;
+}
+
+function decirConTexto(programa: Programa, texto: string): number {
+  return recorrer(programa).filter((b) => b.ficha === 'decir' && String(b.args?.que ?? '') === texto).length;
+}
+
+/**
+ * Encargo 3: una palabra sale tres veces seguidas y la dice UN solo bloque.
+ * Devuelve el índice donde empiezan las tres, o -1.
+ */
+export function tresVecesConUnBloque(programa: Programa): number {
+  const salida = salidaDe(programa);
+  for (let i = 0; i + 2 < salida.length; i++) {
+    const x = salida[i];
+    if (x !== '' && salida[i + 1] === x && salida[i + 2] === x && decirConTexto(programa, x) === 1) return i;
+  }
+  return -1;
+}
+
+/** Encargo 4: después de las tres, otra cosa UNA sola vez. */
+export function despuesUnaVez(programa: Programa): boolean {
+  const salida = salidaDe(programa);
+  const i = tresVecesConUnBloque(programa);
+  if (i === -1) return false;
+  // Si la misma palabra sale más de tres veces, las tres «seguidas» pueden ser las últimas.
+  let fin = i + 3;
+  while (salida[fin] === salida[i]) fin += 1;
+  const otra = salida[fin];
+  return otra !== undefined && otra !== '' && otra !== salida[i] && salida.filter((s) => s === otra).length === 1;
+}
+
+/** Encargo 5: el programa se da en texto. */
+export const TEXTO_A_ARMAR = ['print("Cuenta")', 'for vuelta in range(4):', '    print(vuelta)', 'print("Ya")'].join('\n');
+
+/** La cara de texto del programa dice lo mismo que `TEXTO_A_ARMAR` (sin contar mayúsculas de lo que se dice). */
+export function armaElTexto(programa: Programa): boolean {
+  const lineas = traducir(programa, CATALOGO).texto.split('\n').slice(1);
+  const pedido = TEXTO_A_ARMAR.split('\n');
+  return lineas.length === pedido.length && lineas.every((l, i) => l.trimEnd().toLowerCase() === pedido[i].toLowerCase());
 }
 
 const GUION: readonly EncargoBloques<MundoTexto>[] = [
@@ -168,31 +262,14 @@ const GUION: readonly EncargoBloques<MundoTexto>[] = [
     aprendido: 'No traduces tú: el texto es el mismo programa mirado de otro lado.',
   },
   {
-    id: 'linea-nueva',
-    titulo: 'Una línea nueva',
-    instruccion: 'Agrega un segundo bloque de «decir» al final del guion y ejecuta.',
-    pista: 'Toca «decir» en la paleta y después toca la pista «y aquí la siguiente», al final del guion. Después dale a ▶.',
-    logro: {
-      tipo: 'estado',
-      comprueba: (ctx) =>
-        recorrer(ctx.programa).filter((b) => b.ficha === 'decir').length >= 2 && ctx.mundo.salida.length >= 2,
-    },
-    aprendido: 'Un bloque más es una línea más. Siempre.',
-  },
-  {
-    id: 'boca-y-sangria',
-    titulo: 'La boca y la sangría',
+    id: 'tres-veces',
+    titulo: 'Tres veces, un solo bloque',
     instruccion:
-      'Pon «repetir _ veces» al final del guion, elige 3, y suelta un «decir» DENTRO de su boca. Ejecuta.',
-    pista: 'Primero «repetir _ veces» al final. Después «decir» otra vez, pero suéltalo dentro de la boca del repetir, no debajo.',
+      'Haz que la consola diga una misma palabra TRES veces seguidas, pero usando UN solo bloque «decir» para esa palabra. Hay un bloque que repite lo que lleva dentro: «repetir _ veces», en Repetir. Cuando salga, mira qué le pasó a esa línea en la cara de la derecha.',
+    pista: 'Tres «decir» iguales en fila no valen: tiene que ser uno solo. ¿Dónde tiene que estar para que el «repetir» lo repita?',
     logro: {
       tipo: 'estado',
-      comprueba: (ctx) => {
-        const repetirConDecir = recorrer(ctx.programa).some(
-          (b) => b.ficha === 'repetir' && (b.ramas?.cuerpo?.some((h) => h.ficha === 'decir') ?? false),
-        );
-        return repetirConDecir && ctx.mundo.salida.length >= 5;
-      },
+      comprueba: (ctx) => ctx.parte !== null && tresVecesConUnBloque(ctx.parte.programa) !== -1,
     },
     aprendido: 'Lo que en bloques está dentro de una boca, en texto está corrido cuatro espacios a la derecha.',
   },
@@ -200,20 +277,29 @@ const GUION: readonly EncargoBloques<MundoTexto>[] = [
     id: 'dentro-y-fuera',
     titulo: 'Dentro y fuera',
     instruccion:
-      'Pon otro «decir» abajo del todo, fuera del repetir, y ejecuta. Cuenta: el de adentro salió tres veces y el de afuera una. Ahora mira las dos líneas de la derecha: la única diferencia son cuatro espacios.',
-    pista: 'Suelta el nuevo «decir» en la pista que está DESPUÉS del bloque «repetir», no dentro de su boca.',
+      'Ahora haz que, DESPUÉS de las tres veces, la consola diga otra cosa UNA sola vez. Ejecuta y compara en la cara de la derecha la línea que sale tres veces con la que sale una.',
+    pista: 'Si la palabra nueva sale tres veces, está en el mismo sitio que la otra. ¿Dónde tendría que ir para correr una sola vez?',
     logro: {
       tipo: 'estado',
-      comprueba: (ctx) => {
-        const tronco = ctx.programa.pilas[0]?.bloques ?? [];
-        const indice = tronco.findIndex((b) => b.ficha === 'repetir');
-        if (indice === -1) return false;
-        const dentro = tronco[indice].ramas?.cuerpo?.some((h) => h.ficha === 'decir') ?? false;
-        const fuera = tronco.slice(indice + 1).some((b) => b.ficha === 'decir');
-        return dentro && fuera && ctx.mundo.salida.length >= 6;
-      },
+      comprueba: (ctx) => ctx.parte !== null && despuesUnaVez(ctx.parte.programa),
     },
-    aprendido: 'Cuatro espacios deciden si algo pasa una vez o tres, y en texto nadie te avisa.',
+    aprendido:
+      'En bloques, la diferencia es estar dentro o fuera de la boca. En texto son cuatro espacios al principio de la línea, y nadie te avisa si te faltan.',
+  },
+  {
+    id: 'lee-y-arma',
+    titulo: 'Ahora al revés: lee y arma',
+    instruccion:
+      'Este programa te lo doy escrito en Python, y tú lo armas en bloques. Cuando la cara de la derecha diga exactamente esto, ejecútalo. Antes de pulsar ▶, adivina qué números van a salir.',
+    codigo: TEXTO_A_ARMAR,
+    pista:
+      'Puedes quitar bloques con la ✕. Fíjate en qué líneas tienen cuatro espacios al principio: ésas van dentro de la boca. «print(vuelta)» es el bloque «decir el número de vuelta».',
+    logro: {
+      tipo: 'estado',
+      comprueba: (ctx) => ctx.parte !== null && armaElTexto(ctx.parte.programa),
+    },
+    aprendido:
+      'Leíste Python y lo convertiste en bloques. Y salió 0, 1, 2, 3: «range(4)» da cuatro vueltas, pero Python empieza a contar en 0.',
   },
   {
     id: 'intenta-escribir',
@@ -276,6 +362,7 @@ export const CLASE: ClaseBloques<MundoTexto> = {
       'Ejecutar un programa y ver encenderse el bloque y su línea a la vez.',
       'Cambiar los bloques y ver el texto reescribirse solo.',
       'Meter un bloque dentro de un repetir y encontrar los cuatro espacios.',
+      'Leer un programa escrito en Python y armarlo tú en bloques.',
       'Descubrir por qué la misma línea, corrida cuatro espacios, sale tres veces o una.',
     ],
   },
@@ -287,7 +374,7 @@ export const CLASE: ClaseBloques<MundoTexto> = {
   mundoInicial: MUNDO_INICIAL,
   preguntar: preguntarTexto,
   reducir: reducirTexto,
-  reiniciarMundoAlCorrer: (m) => ({ ...m, salida: [], vuelta: 0 }),
+  reiniciarMundoAlCorrer: (m) => ({ ...m, salida: [], vuelta: null, bucles: [] }),
   manejarAccion: (id, { establecerMundo }) => {
     if (id === 'intento-escribir') {
       establecerMundo((m) => ({ ...m, intentosDeEscribir: m.intentosDeEscribir + 1 }));

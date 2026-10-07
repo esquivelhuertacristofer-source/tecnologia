@@ -15,6 +15,9 @@ import { LabPrivacidadEnRedes } from './LabPrivacidadEnRedes';
  * `simuladores/muro/`; se construyó al final porque usa la pieza más
  * elaborada del armazón — `perfilDe()` y sus `pistas` — que las dos
  * anteriores no necesitaban.
+ *
+ * 6-oct-2026 (§69.15): ya no da pistas de la solución — ni cuántas
+ * publicaciones delatan algo ni cuáles. La clase son tres misiones en el muro.
  */
 
 const CONFIG: ConfigEntradaN7Situacion = {
@@ -25,10 +28,10 @@ const CONFIG: ConfigEntradaN7Situacion = {
   globo:
     'Cada publicación tuya que sigue pública deja una pista suelta. Junta suficientes pistas y cualquiera arma un mapa de tu vida sin que tú se lo hayas contado directo. Vamos a auditar tu perfil.',
   arranqueSub:
-    'Tu perfil ya tiene publicaciones de hace meses. Vas a revisarlas una por una: cuáles se quedan, cuáles cambian de audiencia y cuáles ya no deberían estar ahí.',
+    'Tu perfil ya tiene publicaciones de hace meses. Vas a mirarlo como lo vería un desconocido, a decidir qué se queda y qué no, y a resolver lo que pase cuando alguien ya lo había visto.',
   stats: [
-    { etiqueta: 'Publicaciones a auditar', valor: '3', acento: '#22d3ee' },
-    { etiqueta: 'Pistas que sueltan', valor: '3', acento: '#f87171' },
+    { etiqueta: 'Misiones', valor: '3', acento: '#22d3ee' },
+    { etiqueta: 'Publicaciones tuyas', valor: '5', acento: '#f87171' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
   letrero: 'Antes de auditar',
@@ -39,7 +42,7 @@ const CONFIG: ConfigEntradaN7Situacion = {
       numero: 1,
       titulo: 'Una pista no es todo el dato',
       detalle:
-        'Nadie publica su dirección completa de golpe. **Publica pedazos** —el nombre de la escuela, el de la mascota, la hora en que llega sola a casa— y quien junta suficientes, arma el resto.',
+        'Nadie publica su dirección completa de golpe. **Publica pedazos**, cada uno inofensivo por separado, y quien junta suficientes arma el resto.',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -69,7 +72,7 @@ const CONFIG: ConfigEntradaN7Situacion = {
   ],
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre Tecnia Muro',
-  ctaDetalle: 'Revisa tus tres publicaciones más reveladoras y decide, una por una, qué hacer con cada una.',
+  ctaDetalle: 'Tres misiones dentro de tu propio perfil. Ninguna resta puntos: lo que cuesta es lo que pasa después.',
   assetsPendientes: false,
 };
 

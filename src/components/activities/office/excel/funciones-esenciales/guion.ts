@@ -6,7 +6,6 @@ import {
   formatoDe,
   guardaUnaRegla,
   mismoNumero,
-  rangosEn,
   usaFuncion,
   vale,
   valorDe,
@@ -153,6 +152,14 @@ export const FILA_MAS_DE_300 = 18;
 export const FILA_ENTRADAS_TOTAL = 19;
 
 /**
+ * §69.7 · el error sembrado: la tesorera escribió el total de Entradas con lo
+ * pagado corrido una fila. Cada categoría queda emparejada con el importe del
+ * renglón de abajo: da 3170 en vez de 4310, y no marca ningún error.
+ */
+export const FORMULA_DE_LA_TESORERA = `=SUMAR.SI(${RANGO_CATEGORIA},"Entradas",E${FILA_PRIMERA + 1}:E${FILA_ULTIMA + 1})`;
+export const TOTAL_DE_LA_TESORERA = 700 + 38 * 65; // 3170: la guía y las tortas
+
+/**
  * El bloque 29, todo derivado de `RELOJ.ahora` — nada tecleado a mano. La
  * salida es tres semanas después de esta clase, el mismo tipo de plazo que
  * manejaba `n7-funcion-si`.
@@ -193,6 +200,7 @@ export function libroDeLosGastos(): Libro {
     [`A${FILA_REGALOS}`]: suelta('Gasto promedio en Regalos (categoría que no existe)'),
     [`A${FILA_MAS_DE_300}`]: suelta('Total de lo que costó más de 300 pesos por artículo'),
     [`A${FILA_ENTRADAS_TOTAL}`]: suelta('Total en Entradas'),
+    [`B${FILA_ENTRADAS_TOTAL}`]: suelta(FORMULA_DE_LA_TESORERA),
   };
 
   GASTOS.forEach((g, i) => {
@@ -239,8 +247,6 @@ export function libroDeLosGastos(): Libro {
 /* ── lo que el maestro le pregunta al libro ─────────────────────────────────*/
 
 const motorDe = (libro: Libro) => crearMotor(libro, RELOJ);
-const rangoEn = (libro: Libro, hoja: string, direccion: string): string =>
-  rangosEn(libro, hoja, direccion).join();
 
 /**
  * ¿Se entera esta celda de que aquélla cambió? El mismo truco de
@@ -255,14 +261,50 @@ function seEntera(libro: Libro, hoja: string, celda: string, otraCelda: string, 
 }
 
 /** Encargo 1: cuánto se fue en Transporte, sin partir la tabla. */
+/** Las filas de la tabla cuyos gastos cumplen la pregunta. */
+const filasDonde = (cumple: (g: (typeof GASTOS)[number]) => boolean): number[] =>
+  GASTOS.flatMap((g, i) => (cumple(g) ? [FILA_PRIMERA + i] : []));
+
+const FILAS_TRANSPORTE = filasDonde((g) => g.categoria === 'Transporte');
+const FILAS_COMIDA = filasDonde((g) => g.categoria === 'Comida');
+const FILAS_ENTRADAS = filasDonde((g) => g.categoria === 'Entradas');
+const FILAS_MAS_DE_300 = filasDonde((g) => g.precio > 300);
+
+/**
+ * §69.7 · ¿la respuesta se entera EXACTAMENTE de los renglones que la pregunta
+ * dice, y de ninguno más? Se toca cada renglón de la tabla, uno por uno —uno
+ * más en «Cuántos», o la categoría cambiada—, y la celda tiene que cambiar
+ * sólo con los de `filas`. Juzga lo que la fórmula hace, no cómo se escribió:
+ * pasa con el encabezado dentro del rango o con `$`, y no pasa con un rango
+ * corrido ni con un número tecleado.
+ */
+export function cuentaSoloEstosRenglones(
+  libro: Libro,
+  celda: string,
+  filas: readonly number[],
+  toque: 'cuantos' | 'categoria',
+): boolean {
+  const antes = valorDe(motorDe(libro), HOJA_SALIDA, celda);
+  if (typeof antes !== 'number') return false;
+  return GASTOS.every((g, i) => {
+    const fila = FILA_PRIMERA + i;
+    const otro =
+      toque === 'cuantos'
+        ? aplicar(libro, { comando: 'escribir', args: { hoja: HOJA_SALIDA, celda: `C${fila}`, crudo: String(g.cuantos + 1) } })
+        : aplicar(libro, { comando: 'escribir', args: { hoja: HOJA_SALIDA, celda: `B${fila}`, crudo: 'Otra' } });
+    const despues = valorDe(motorDe(otro), HOJA_SALIDA, celda);
+    const cambio = typeof despues !== 'number' || !mismoNumero(antes, despues);
+    return cambio === filas.includes(fila);
+  });
+}
+
 export function totalEnTransporteEstaPuesto(libro: Libro): boolean {
   const motor = motorDe(libro);
   const celda = `B${FILA_TRANSPORTE}`;
   return (
     usaFuncion(libro, HOJA_SALIDA, celda, 'SUMAR.SI') &&
-    rangoEn(libro, HOJA_SALIDA, celda) === `${RANGO_CATEGORIA},${RANGO_PAGADO}` &&
     vale(motor, HOJA_SALIDA, celda, TOTAL_TRANSPORTE) &&
-    seEntera(libro, HOJA_SALIDA, celda, `D${FILA_PRIMERA}`, '9999')
+    cuentaSoloEstosRenglones(libro, celda, FILAS_TRANSPORTE, 'cuantos')
   );
 }
 
@@ -273,8 +315,8 @@ export function cuantosGastosEnComidaEstaPuesto(libro: Libro): boolean {
   const celda = `B${FILA_COMIDA}`;
   return (
     usaFuncion(libro, HOJA_SALIDA, celda, 'CONTAR.SI') &&
-    rangoEn(libro, HOJA_SALIDA, celda) === RANGO_CATEGORIA &&
-    vale(motor, HOJA_SALIDA, celda, CUANTOS_EN_COMIDA)
+    vale(motor, HOJA_SALIDA, celda, CUANTOS_EN_COMIDA) &&
+    cuentaSoloEstosRenglones(libro, celda, FILAS_COMIDA, 'categoria')
   );
 }
 
@@ -285,8 +327,8 @@ export function promedioEnEntradasEstaPuesto(libro: Libro): boolean {
   const celda = `B${FILA_ENTRADAS_PROMEDIO}`;
   return (
     usaFuncion(libro, HOJA_SALIDA, celda, 'PROMEDIO.SI') &&
-    rangoEn(libro, HOJA_SALIDA, celda) === `${RANGO_CATEGORIA},${RANGO_PAGADO}` &&
-    vale(motor, HOJA_SALIDA, celda, PROMEDIO_ENTRADAS)
+    vale(motor, HOJA_SALIDA, celda, PROMEDIO_ENTRADAS) &&
+    cuentaSoloEstosRenglones(libro, celda, FILAS_ENTRADAS, 'cuantos')
   );
 }
 
@@ -297,8 +339,15 @@ export function promedioDeRegalosNoExiste(libro: Libro): boolean {
   const celda = `B${FILA_REGALOS}`;
   return (
     usaFuncion(libro, HOJA_SALIDA, celda, 'PROMEDIO.SI') &&
-    rangoEn(libro, HOJA_SALIDA, celda) === `${RANGO_CATEGORIA},${RANGO_PAGADO}` &&
-    errorDe(motor, HOJA_SALIDA, celda) === '#¡DIV/0!'
+    errorDe(motor, HOJA_SALIDA, celda) === '#¡DIV/0!' &&
+    // busca de verdad Regalos en la categoría: si el camión pasa a ser un
+    // regalo, deja de ser un error y promedia el camión
+    vale(
+      motorDe(aplicar(libro, { comando: 'escribir', args: { hoja: HOJA_SALIDA, celda: `B${FILA_PRIMERA}`, crudo: 'Regalos' } })),
+      HOJA_SALIDA,
+      celda,
+      GASTOS[0].cuantos * GASTOS[0].precio,
+    )
   );
 }
 
@@ -309,8 +358,8 @@ export function masDe300EstaPuesto(libro: Libro): boolean {
   const celda = `B${FILA_MAS_DE_300}`;
   return (
     usaFuncion(libro, HOJA_SALIDA, celda, 'SUMAR.SI') &&
-    rangoEn(libro, HOJA_SALIDA, celda) === `${RANGO_PRECIO},${RANGO_PAGADO}` &&
-    vale(motor, HOJA_SALIDA, celda, TOTAL_MAS_DE_300)
+    vale(motor, HOJA_SALIDA, celda, TOTAL_MAS_DE_300) &&
+    cuentaSoloEstosRenglones(libro, celda, FILAS_MAS_DE_300, 'cuantos')
   );
 }
 
@@ -328,8 +377,8 @@ export function totalEnEntradasEstaPuesto(libro: Libro): boolean {
   const celda = `B${FILA_ENTRADAS_TOTAL}`;
   return (
     usaFuncion(libro, HOJA_SALIDA, celda, 'SUMAR.SI') &&
-    rangoEn(libro, HOJA_SALIDA, celda) === `${RANGO_CATEGORIA},${RANGO_PAGADO}` &&
-    vale(motor, HOJA_SALIDA, celda, TOTAL_ENTRADAS)
+    vale(motor, HOJA_SALIDA, celda, TOTAL_ENTRADAS) &&
+    cuentaSoloEstosRenglones(libro, celda, FILAS_ENTRADAS, 'cuantos')
   );
 }
 
@@ -418,14 +467,14 @@ export const GUION_FUNCIONES_ESENCIALES: GuionHojas = {
       'Vas a contestar preguntas sobre una lista larga sin partirla en pedazos —SUMAR.SI, CONTAR.SI y PROMEDIO.SI suman, cuentan y reparten sólo lo que cumple una condición— y vas a descubrir que una fecha, por dentro, es un número disfrazado.',
     vasAHacer: [
       'Sumar, contar y promediar por categoría sin tocar la tabla de gastos',
-      'Provocar el error de escribir un criterio sin comillas, y arreglarlo',
-      'Cazar un rango desalineado que da un número y está mal, sin avisar',
+      'Contestar las preguntas de la tesorera con fórmulas que nadie te dicta',
+      'Encontrar por qué un total suyo no cuadra, aunque no marque ningún error',
       'Escribir =HOY() y =AHORA(), y quitarle el disfraz a una fecha',
     ],
     requisitos:
       'Las clases pasadas del grado Intermedio: escribir una fórmula a mano y usar $ cuando hace falta. Es el mismo archivo de siempre, tres semanas antes de la salida.',
     ayuda:
-      'Los criterios de texto van entre comillas, y los que llevan un signo de comparación (">300") también, aunque adentro sólo haya un número. Para arreglar una fórmula ya escrita, doble clic en su celda o F2. El formato de una celda se cambia desde «Formato de número», en Inicio → Número.',
+      'Los criterios de texto van entre comillas, y los que llevan un signo de comparación también, aunque adentro sólo haya un número. Para arreglar una fórmula ya escrita, doble clic en su celda o F2. El formato de una celda se cambia desde «Formato de número», en Inicio → Número.',
   },
 
   pasos: [
@@ -433,21 +482,21 @@ export const GUION_FUNCIONES_ESENCIALES: GuionHojas = {
       id: 'cuanto-en-transporte',
       titulo: 'Cuánto se fue en Transporte',
       instruccion:
-        'La tesorera ya le puso categoría a cada gasto —columna B— y ahora quiere el total de Transporte sin sumar a mano ni partir la tabla. Primero, a propósito: ponte en **B14** y escribe **=SUMAR.SI(B4:B11,Transporte,E4:E11)** —así, **sin las comillas** de «Transporte»— y mira qué contesta. Después corrígela dejando **=SUMAR.SI(B4:B11,"Transporte",E4:E11)**, con las comillas puestas.',
+        'La tesorera ya le puso categoría a cada gasto —columna B— y te pregunta: **¿cuánto se fue en Transporte?** Contéstale en **B14** con una fórmula que lea la tabla, sin sumar a mano ni partirla. La herramienta se llama **SUMAR.SI** y pide tres cosas, separadas por comas: dónde buscar la categoría, qué categoría buscar y qué sumar de los renglones que la cumplan.',
       pista:
-        'SUMAR.SI lleva tres huecos separados por comas: el rango donde busca la categoría (B4:B11), el criterio que tiene que cumplir ("Transporte", entre comillas porque es texto) y el rango que suma si cumple (E4:E11). Sin las comillas, la hoja busca una celda llamada Transporte y no la encuentra.',
+        'En orden: el rango de las categorías, la palabra que buscas y el rango de lo pagado. Si la hoja contesta #¿NOMBRE?, es que no vio una palabra: salió a buscar una celda que se llamara así. Las palabras van entre comillas.',
       senal: { control: 'celda:B14' },
       logro: { tipo: 'documento', comprueba: totalEnTransporteEstaPuesto },
       aprendido:
-        'Sin comillas salió **#¿NOMBRE?**: la hoja no vio la palabra «Transporte», salió a buscar una celda o un rango que se llamara así y no encontró ninguno — el mismo error y la misma causa que ya viste con `SI`. Con las comillas puestas, **4980**. Y ahí está la idea entera del bloque: `SUMA` suma todo lo que le des; `SUMAR.SI` mira un rango —la categoría— y decide, renglón por renglón, si ese renglón entra a la cuenta. No partiste la tabla en cuatro y aun así sacaste el total de una sola categoría.',
+        'Salió **4980**: el camión y el estacionamiento. La palabra va entre comillas porque, sin ellas, la hoja contesta **#¿NOMBRE?**: no ve la palabra «Transporte», sale a buscar una celda o un rango que se llame así y no encuentra ninguno — el mismo error y la misma causa que ya viste con `SI`. Y ahí está la idea entera del bloque: `SUMA` suma todo lo que le des; `SUMAR.SI` mira un rango —la categoría— y decide, renglón por renglón, si ese renglón entra a la cuenta. No partiste la tabla en cuatro y aun así sacaste el total de una sola categoría.',
     },
     {
       id: 'cuantos-gastos-en-comida',
       titulo: 'Cuántos gastos hay en Comida',
       instruccion:
-        'Ahora sin sumar nada, sólo contar. Ponte en **B15** y escribe **=CONTAR.SI(B4:B11,"Comida")**.',
+        'Otra pregunta: **¿cuántos gastos hay en Comida?** No cuánto costaron: cuántos son. Contéstalo en **B15**. La herramienta es **CONTAR.SI**, la misma idea que SUMAR.SI pero contando renglones.',
       pista:
-        'CONTAR.SI lleva sólo DOS huecos: el rango y el criterio. No hay un tercer rango que sumar, porque no está sumando nada — está contando renglones.',
+        'Si no hay nada que sumar, sobra una de las tres cosas que pedía SUMAR.SI. CONTAR.SI sólo necesita dónde buscar y qué buscar.',
       senal: { control: 'celda:B15' },
       logro: { tipo: 'documento', comprueba: cuantosGastosEnComidaEstaPuesto },
       aprendido:
@@ -457,9 +506,9 @@ export const GUION_FUNCIONES_ESENCIALES: GuionHojas = {
       id: 'promedio-en-entradas',
       titulo: 'El gasto promedio en Entradas',
       instruccion:
-        'Ponte en **B16** y escribe **=PROMEDIO.SI(B4:B11,"Entradas",E4:E11)**.',
+        '**¿Cuánto costó, en promedio, cada gasto de Entradas?** Contéstalo en **B16**. La herramienta es **PROMEDIO.SI**: pide lo mismo que SUMAR.SI, pero reparte en vez de sumar.',
       pista:
-        'Misma forma que SUMAR.SI: rango del criterio, criterio entre comillas, rango de lo que se promedia. Sólo cambia el nombre de la función y lo que hace con los números que encuentra.',
+        'Las mismas tres cosas que en SUMAR.SI. Y el promedio es entre los gastos de Entradas, no entre los ocho de la tabla: si te sale un número chiquito, estás repartiendo entre todos.',
       senal: { control: 'celda:B16' },
       logro: { tipo: 'documento', comprueba: promedioEnEntradasEstaPuesto },
       aprendido:
@@ -469,9 +518,9 @@ export const GUION_FUNCIONES_ESENCIALES: GuionHojas = {
       id: 'promedio-que-no-existe',
       titulo: 'El promedio de una categoría que no existe',
       instruccion:
-        'Prueba algo a propósito: en **B17** escribe **=PROMEDIO.SI(B4:B11,"Regalos",E4:E11)**. «Regalos» no es ninguna de las cuatro categorías de la tabla. Mira qué contesta.',
+        'La tesorera te pregunta: «¿y en promedio cuánto gastamos en **Regalos**?». En la tabla no hay ninguna categoría Regalos. Contéstale en **B17** con la misma herramienta, buscando Regalos, y mira qué te responde la hoja.',
       pista:
-        'Es la misma fórmula del encargo anterior, cambiando sólo el criterio. No hay ningún renglón con esa categoría: eso es justo lo que hay que ver.',
+        'Es la misma forma del encargo anterior, buscando otra palabra. No hay ningún renglón con esa categoría: lo que conteste la hoja es justo lo que hay que ver.',
       senal: { control: 'celda:B17' },
       logro: { tipo: 'documento', comprueba: promedioDeRegalosNoExiste },
       aprendido:
@@ -481,9 +530,9 @@ export const GUION_FUNCIONES_ESENCIALES: GuionHojas = {
       id: 'mas-de-300-por-articulo',
       titulo: 'Los gastos de más de 300 pesos',
       instruccion:
-        'Esta vez el criterio no es una palabra, es un número con un signo delante. Ponte en **B18** y escribe **=SUMAR.SI(D4:D11,">300",E4:E11)** — el criterio compara el PRECIO (columna D) y suma lo pagado (columna E) de los que cumplen.',
+        '**¿Cuánto se pagó en total por los artículos que cuestan más de 300 pesos cada uno?** Contéstalo en **B18** con SUMAR.SI. Esta vez lo que se busca no es una categoría: es una comparación con el precio de cada artículo.',
       pista:
-        'El criterio ">300" va completo entre comillas, con el signo de mayor que adentro. Sin las comillas la hoja no acepta la fórmula: un signo de comparación solo no es un valor, es una instrucción, y las instrucciones se escriben en texto.',
+        'Ahora el rango donde se busca es el del Precio, y lo que se suma sigue siendo lo pagado. El criterio con un signo de comparación también va entre comillas, con el signo adentro: un signo solo no es un valor, es una instrucción, y las instrucciones se escriben en texto.',
       senal: { control: 'celda:B18' },
       logro: { tipo: 'documento', comprueba: masDe300EstaPuesto },
       aprendido:
@@ -491,15 +540,15 @@ export const GUION_FUNCIONES_ESENCIALES: GuionHojas = {
     },
     {
       id: 'total-en-entradas-bien-alineado',
-      titulo: 'El mismo total, bien alineado',
+      titulo: 'El total que no cuadra',
       instruccion:
-        'Falta el total en Entradas. Ponte en **B19** y escribe **=SUMAR.SI(B4:B11,"Entradas",E4:E11)** — los dos rangos, el de la categoría y el de lo pagado, tienen que empezar y terminar en el mismo renglón.',
+        'La tesorera ya escribió el total de Entradas en **B19**, y no le cuadra: sus recibos dicen 3610 de las entradas y 700 de la guía. La fórmula no marca ningún error. **Encuentra qué tiene mal y arréglala** — sin borrarla para escribir el número.',
       pista:
-        'B4:B11 y E4:E11: los dos van de la fila 4 a la fila 11, ni una fila más arriba ni una más abajo en ninguno de los dos. Si los corres, la cuenta cambia de pareja en cada renglón y el resultado sale mal sin que nada te avise.',
+        'Doble clic en B19 para ver su fórmula. Compara sus dos rangos: ¿empiezan y terminan en la misma fila? Si no, cada categoría queda emparejada con el importe de otro renglón.',
       senal: { control: 'celda:B19' },
       logro: { tipo: 'documento', comprueba: totalEnEntradasEstaPuesto },
       aprendido:
-        'Salió **4310**, y aquí va el peligro de verdad del bloque: si alguno de los dos rangos se corre una sola fila —por ejemplo E3:E10 en vez de E4:E11—, `SUMAR.SI` **no se rompe**. Sigue emparejando cada categoría con un importe, sólo que el importe equivocado, y escupe un número que se ve completamente normal y está mal. Ningún error, ninguna alarma: la única defensa es escribir los dos rangos con cuidado y revisar que empiecen y terminen igual. Eso cierra el bloque 25.',
+        'Salió **4310**, y la fórmula de la tesorera daba **3170** con lo pagado corrido una fila (E5:E12 en vez de E4:E11). Ése es el peligro de verdad del bloque: si alguno de los dos rangos se corre una sola fila, `SUMAR.SI` **no se rompe**. Sigue emparejando cada categoría con un importe, sólo que el importe equivocado, y escupe un número que se ve completamente normal y está mal. Ningún error, ninguna alarma: la única defensa es escribir los dos rangos con cuidado y revisar que empiecen y terminen igual. Eso cierra el bloque 25.',
     },
     {
       id: 'hoy-es-un-numero',
@@ -529,13 +578,13 @@ export const GUION_FUNCIONES_ESENCIALES: GuionHojas = {
       id: 'faltan-estos-dias',
       titulo: 'Cuántos días faltan',
       instruccion:
-        'Ya tienes hoy y la salida, las dos como fechas. Ponte en **B12** y resta una de otra: **=B11-B10**. Antes de dejarla así, prueba una trampa: cambia la fórmula por **=B11-A4** —la fecha de la salida menos el nombre de Ana— y mira qué contesta. Después vuelve a dejarla como se pedía: **=B11-B10**.',
+        'Ya tienes hoy y la salida, las dos como fechas. **¿Cuántos días faltan para la salida?** Contéstalo en **B12** con una fórmula que use esas dos celdas, para que mañana se actualice sola.',
       pista:
-        'Restar dos fechas da los días que hay entre ellas, porque por dentro son dos números. Restarle un nombre no se puede: un texto no tiene un número escondido que restar, y la hoja te lo va a decir con un error.',
+        'Si una fecha por dentro es un número, ¿qué operación entre dos números te dice cuánto hay de uno a otro? Si te sale #¡VALOR!, tomaste una celda con texto: un nombre no tiene un número escondido que restar.',
       senal: { control: 'celda:B12' },
       logro: { tipo: 'documento', comprueba: faltanLosDiasQueFaltan },
       aprendido:
-        `=B11-A4 contestó **#¡VALOR!**: «Ana Karen Solís» no es un número ni se puede convertir en uno, así que no hay nada que restar. En cambio =B11-B10 dio **${DIAS_FALTAN}**, los días que faltan para la salida, y salió de una resta sencilla porque las dos celdas —por dentro— son números. Ésa es la razón completa de que restar fechas funcione: no es magia del calendario, es aritmética normal sobre el número que cada fecha esconde.`,
+        `La resta dio **${DIAS_FALTAN}**, los días que faltan para la salida, y salió de una resta sencilla porque las dos celdas —por dentro— son números. Si le restas un nombre (=B11-A4), la hoja contesta **#¡VALOR!**: «Ana Karen Solís» no es un número ni se puede convertir en uno. Ésa es la razón completa de que restar fechas funcione: no es magia del calendario, es aritmética normal sobre el número que cada fecha esconde.`,
     },
     {
       id: 'la-salida-pierde-el-disfraz',
@@ -576,7 +625,7 @@ export const GUION_FUNCIONES_ESENCIALES: GuionHojas = {
   ],
 
   cierre:
-    'Sumaste, contaste y promediaste por categoría sin partir la tabla de gastos en cuatro, viste por qué el criterio va entre comillas aunque sea un número, y cazaste un rango desalineado antes de que te engañara con un número que se veía bien. Después descubriste, desde los dos lados, que una fecha es un número disfrazado: escribiste =HOY() y saliste con cinco cifras en vez de un día, la vestiste con el formato Fecha, le quitaste el mismo disfraz a la fecha de la salida, y restaste las dos para saber cuántos días faltan. Y con =AHORA() te llevaste la hora de propina. Lo que sigue es aprender a elegir la gráfica correcta para estos mismos datos — y las que mienten.',
+    'Sumaste, contaste y promediaste por categoría sin partir la tabla de gastos en cuatro, viste por qué el criterio va entre comillas aunque sea un número, y encontraste el rango corrido de la tesorera, que daba un número que se veía bien. Después descubriste, desde los dos lados, que una fecha es un número disfrazado: escribiste =HOY() y saliste con cinco cifras en vez de un día, la vestiste con el formato Fecha, le quitaste el mismo disfraz a la fecha de la salida, y restaste las dos para saber cuántos días faltan. Y con =AHORA() te llevaste la hora de propina. Lo que sigue es aprender a elegir la gráfica correcta para estos mismos datos — y las que mienten.',
 };
 
 export default GUION_FUNCIONES_ESENCIALES;

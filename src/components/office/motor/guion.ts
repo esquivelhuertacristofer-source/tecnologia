@@ -94,6 +94,24 @@ export interface PasoClase<TDoc = NodoPM, TPestana extends string = PestanaId> {
   logro: Logro<TDoc, TPestana>;
   /** La frase que se lleva el alumno al acertar. Es la clase, en una línea. */
   aprendido: string;
+  /**
+   * §69.8 · Opcional: lo que el documento tiene MAL para este encargo, leído
+   * después de cada cambio que no lo cumple. Sirve a los encargos de ELEGIR,
+   * donde la señal no puede nombrar el botón (sería dar la respuesta) y por eso
+   * la guarda del desvío no ve nada: sin esto, probar los cinco tipos al tanteo
+   * salía gratis. Cada `clave` se cobra una sola vez, y sólo si `cuesta`: una
+   * elección defendible pero no la mejor avisa sin restar.
+   */
+  equivocado?: (doc: TDoc) => Equivocacion | null;
+}
+
+/** Qué está mal, dicho para el alumno (§69.8). */
+export interface Equivocacion {
+  /** Una por cada error distinto: se cobra una vez por clave. */
+  clave: string;
+  titulo: string;
+  motivo: string;
+  cuesta: boolean;
 }
 
 /**

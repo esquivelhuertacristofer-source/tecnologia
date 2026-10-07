@@ -289,6 +289,12 @@ export interface Recurso {
    * corrige aquí: medido al construir, documentado en el informe final.
    */
   tipoMedia?: TipoPista;
+  /**
+   * La foto salió movida (6-oct-2026, PLAN-CALIDAD fase A). Se DIBUJA movida
+   * —desenfoque y un glifo fantasma corrido—, para que el alumno lo descubra
+   * mirando y no leyendo una etiqueta: antes el nombre decía «(movida)».
+   */
+  movida?: boolean;
 }
 
 /** Cuánto se ha recortado por cada lado, **en casillas** (§39, como Diapos). */

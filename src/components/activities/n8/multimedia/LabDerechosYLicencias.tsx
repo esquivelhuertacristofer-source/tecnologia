@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useLabActividad } from '../../lib/useLabActividad';
 import { VentanaBase } from '../../../simuladores/VentanaBase';
 
@@ -981,7 +982,7 @@ function McqBloque({
     <div className="flex flex-col gap-3">
       <p className="text-sm text-slate-200 leading-relaxed">{pregunta}</p>
       <div className="flex flex-col gap-2" data-testid="opciones-mcq">
-        {opciones.map((op) => (
+        {ordenDeOpciones(opciones.length, pregunta).map((idx) => opciones[idx]).map((op) => (
           <button
             key={op.id}
             type="button"

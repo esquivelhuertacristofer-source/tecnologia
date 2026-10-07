@@ -28,6 +28,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import Image from 'next/image';
 import { reproducirTono } from '../n1/mision/audio';
+import { useGloboDeBit } from '../n1/arcade/ArcadeSala';
 import '../n1/arcade/arcade.css';
 import '../arcade3d/arcade3d.css';
 import './lab3d-clases.css';
@@ -76,6 +77,9 @@ export function SalaBanco3D({
   alSalir,
   children,
 }: SalaBanco3DProps) {
+  /* El globo de Bit se recoge igual que en ArcadeSala: medido el 12-sep-2026,
+   * seguía tapando el lienzo y el botón del contrato a los 20 s. */
+  const { pantallaRef, retratoRef, recogido } = useGloboDeBit(bit);
   return (
     <div className="arcade-n1 arcade3d lab3d-sala">
       <div className="sala">
@@ -100,15 +104,15 @@ export function SalaBanco3D({
           )}
         </header>
 
-        <div className="escena3d">
+        <div className="escena3d" ref={pantallaRef}>
           {/* Con la mecánica terminada el lienzo se desmonta entero, igual que
               en el arcade: la pantalla final tiene que quedar limpia y no
               transparentar la geometría por detrás. */}
           {final ? null : banco}
 
           {bit && !final && (
-            <div className="bit-puesto">
-              <span className="bit-retrato">
+            <div className="bit-puesto" data-recogido={recogido ? 'si' : undefined}>
+              <span className="bit-retrato" ref={retratoRef}>
                 <Image src={BIT_CARA} alt="" fill sizes="62px" className="object-cover" />
               </span>
               <p className="bit-globo" key={bit} aria-live="polite">

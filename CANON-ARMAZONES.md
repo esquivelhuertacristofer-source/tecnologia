@@ -370,21 +370,21 @@ Columna **armazón**: `CÓDIGO` · `IA` · `WEB` · `BLOQUES` · `MURO` · `DISE
 
 | # | id | unidad | armazón | qué hace |
 |---|---|---|---|---|
-| 12 | `n6-carteles-e-infografias` | Diseño y multimedia | **DISEÑO** | Un cartel con jerarquía: qué va grande, qué va arriba, qué sobra. |
+| 12 | `n6-carteles-e-infografias` | Diseño y multimedia | **DISEÑO** | Un cartel con jerarquía: qué va grande, qué va arriba, qué sobra. Desde el §69.14, una infografía de verdad: las barras de una encuesta, proporcionales, con base común, etiquetas, la respuesta destacada y la fuente, juzgadas en casillas. |
 | 13 | `n6-edita-imagen-y-video` | Diseño y multimedia | **DISEÑO** | Recorta, ajusta y monta tres clips con música en la línea de tiempo. |
-| 14 | `n6-crea-con-ia` | Diseño y multimedia | **IA** | Generador con marca: pide una imagen, la usa y la cita. |
-| 15 | `n6-que-es-un-robot` | Robótica y STEAM | **3D** | Señala sensores y actuadores sobre un robot y ve qué hace cada uno. |
-| 16 | `n6-programa-un-microbit` | Robótica y STEAM | **BLOQUES** | Programa la placa en bloques; el escenario es la placa en pantalla. |
-| 17 | `n6-reto-robot` | Robótica y STEAM | **BLOQUES** | Resuelve un recorrido con sensores; escenario de arena, sin 3D. |
-| 18 | `n6-como-se-hace-una-pagina` | Mi primera página web | **WEB** | Ve el código detrás de una página y cambia una línea. |
-| 19 | `n6-html-basico` | Mi primera página web | **WEB** | Etiquetas de estructura: títulos, párrafos, listas, imagen y enlace. |
-| 20 | `n6-publica-tu-pagina` | Mi primera página web | **WEB** | Publica en un dominio de práctica y comparte la dirección. |
-| 21 | `n6-bloques-vs-codigo` | De bloques a texto | **BLOQUES** | El mismo programa en las dos ventanas a la vez, línea contra bloque. |
-| 22 | `n6-primeras-lineas-python` | De bloques a texto | **CÓDIGO** | `print`, una variable y un `if`: el primer archivo `.py`. |
-| 23 | `n6-contrasenas-fuertes` | Ciberseguridad | **MURO** | Crea contraseña, ve el medidor y activa la verificación en dos pasos. |
-| 24 | `n6-privacidad-en-juegos` | Ciberseguridad | **MURO** | Ajusta quién ve qué y comprueba en el muro que cambió. |
-| 25 | `n6-alto-al-ciberacoso` | Ciberseguridad | **MURO** | Recibe, reconoce, reporta y bloquea; y avisa a un adulto. |
-| 26 | `n6-proyecto-integrador` | Proyecto integrador | **ÚNICA** | Cierre de primaria: investigar, analizar, diseñar y presentar. |
+| 14 | `n6-crea-con-ia` | Diseño y multimedia | **IA** | Generador con marca: pide una imagen, la usa y la cita. **Reescrita el 6-oct-2026** (§69.3) sobre la pieza `simuladores/generador` (Tecnia Imagina): la imagen sale de la petición —lo que no se pide lo decide el generador, lo prohibido a veces se cuela, la misma petición nunca da lo mismo—, el comité juzga con `cumple` y la firma se compara contra la generación de la que salió la imagen. Ya no usa el armazón `asistente`. |
+| 15 | `n6-que-es-un-robot` | Robótica y STEAM | **3D** | Clasifica siete piezas por su oficio y las monta en un carrito; el sensor de distancia ve con un rayo (§69.6), así que sólo sirve donde mira a la caja. Bit describe la pieza y no dice la charola. |
+| 16 | `n6-programa-un-microbit` | Robótica y STEAM | **BLOQUES** | Programa la placa en bloques; el escenario es la placa en pantalla. Qué sombrero corre lo descubre el alumno (§69.11): el juez corre sin pantalla la pila del botón que pide el encargo y pide haberlo pulsado con ella ya armada. |
+| 17 | `n6-reto-robot` | Robótica y STEAM | **BLOQUES** | Un programa, dos mapas (§69.10): el juez corre el programa en los dos sin pintarlos y pide llegar sin chocar, así que contar pasos no basta y hace falta un «si» dentro de un «repetir». Escenario de arena, sin 3D. |
+| 18 | `n6-como-se-hace-una-pagina` | Mi primera página web | **WEB** | Ve el código detrás de una página y cambia una línea. El párrafo nuevo se pide con un modelo de cómo debe verse (`PasoWeb.modelo`, §69.13), no con la línea. |
+| 19 | `n6-html-basico` | Mi primera página web | **WEB** | Etiquetas de estructura: títulos, párrafos, listas, imagen y enlace. Desde el §69.13 ninguna línea dictada: cada encargo nombra la etiqueta y trae el modelo de la página que hay que conseguir. |
+| 20 | `n6-publica-tu-pagina` | Mi primera página web | **WEB** | Publica en un dominio de práctica y comparte la dirección. Los datos que delatan están repartidos en tres sitios (§69.13), y los arreglos se piden leyendo los avisos, sin decirlos. |
+| 21 | `n6-bloques-vs-codigo` | De bloques a texto | **BLOQUES** | El mismo programa en las dos ventanas a la vez, línea contra bloque. Desde el §69.12 también al revés: un encargo da el programa EN TEXTO y el alumno lo arma en bloques; la variable `vuelta` cuenta como en Python (desde 0, una vez por vuelta). |
+| 22 | `n6-primeras-lineas-python` | De bloques a texto | **CÓDIGO + JUEZ** | `print`, una variable y un `if`: el primer archivo `.py`; el juez cambia el nombre de la caja (§69.22). |
+| 23 | `n6-contrasenas-fuertes` | Ciberseguridad | **MURO** | Crea contraseña, ve el medidor y activa la verificación en dos pasos. **Reescrita el 6-oct-2026** (§69.4): las llaves se ARMAN con fichas (`ArmadorDeLlave`, sin un solo campo para escribir: la regla del §24 sigue) y la máquina las ataca con dos pasos nuevos —piezas conocidas y a lo bruto, con una paciencia de mil millones—; E2, E3, E4 y E6 juzgan la llave armada. |
+| 24 | `n6-privacidad-en-juegos` | Ciberseguridad | **MURO** | Ajusta quién ve qué y comprueba en el muro que cambió. **Reescrita el 6-oct-2026** (§69.2): tres misiones dentro del muro, con el selector de audiencia en la publicación y en el compositor, y el motivo «Me pide datos personales». |
+| 25 | `n6-alto-al-ciberacoso` | Ciberseguridad | **MURO** | Recibe, reconoce, reporta y bloquea; y avisa a un adulto. **Reescrita el 6-oct-2026** (§69.1): las dos misiones pasan dentro del muro, que gana bloquear, capturar, reportar con motivo y mensajes privados. |
+| 26 | `n6-proyecto-integrador` | Proyecto integrador | **ÚNICA** | Cierre de primaria: investigar, analizar, diseñar y presentar. **6-oct-2026** (§69.5): el E4 ya no compara contra seis frases fijas; `juezDeAfirmaciones.ts` juzga la frase que el alumno escribe contra la tabla (sostenida / falsa / fuera de alcance / no entiendo) y de ella salen la gráfica del E5 y la propuesta del E9. |
 
 ### N7 · Bajo el cofre — 17
 
@@ -393,17 +393,17 @@ Columna **armazón**: `CÓDIGO` · `IA` · `WEB` · `BLOQUES` · `MURO` · `DISE
 | 27 | `n7-binario-y-unidades` | Arquitectura y sistemas | **SO** | Calculadora en modo programador y los tamaños reales del explorador. |
 | 28 | `n7-sistemas-operativos` | Arquitectura y sistemas | **SO** | El mismo escritorio en cuatro pieles: Windows, Android, iOS, Linux. |
 | 29 | `n7-diagnostica-y-soluciona` | Arquitectura y sistemas | **3D** | El equipo no arranca: mide, abre, cambia la pieza y comprueba. |
-| 30 | `n7-variables-y-tipos` | Python I | **CÓDIGO** | Guarda datos en variables y ve qué pasa al mezclar tipos. |
-| 31 | `n7-entrada-y-salida` | Python I | **CÓDIGO** | `input` y `print`: el programa pregunta y responde. |
-| 32 | `n7-condicionales-python` | Python I | **CÓDIGO** | `if`/`elif`/`else` y el error de sangría en su línea. |
-| 33 | `n7-bucles-python` | Python I | **CÓDIGO** | `for` y `while`, y el bucle infinito con su ⏹. |
-| 34 | `n7-retos-python` | Python I | **CÓDIGO** | Cinco retos cortos con pruebas que pasan o no. |
+| 30 | `n7-variables-y-tipos` | Python I | **CÓDIGO + JUEZ** | Guarda datos en variables y ve qué pasa al mezclar tipos. **Reescrita el 6-oct-2026** (§69.19): cuatro exploraciones con la meta dicha y tres problemas que el juez prueba **cambiando los datos de arriba de la celda** (`datos`, nuevo en el juez: no hay `input` todavía). |
+| 31 | `n7-entrada-y-salida` | Python I | **CÓDIGO + JUEZ** | `input` y `print`: el programa pregunta y responde. **Reescrita el 12-sep-2026** (§68.4) con el juez de programas: tres problemas, 12 casos –9 ocultos– que teclean los datos y comparan sólo lo que imprime `print`, un manual con ejemplos de otros temas y el archivo partido en celdas `# %%`. |
+| 32 | `n7-condicionales-python` | Python I | **CÓDIGO + JUEZ** | `if`/`elif`/`else` y el error de sangría en su línea. **Reescrita el 12-sep-2026** (§68.5): cuatro problemas de La Serpiente, 20 casos –12 ocultos– en las fronteras y en el orden del `elif`; el intérprete encadena comparaciones como Python desde ese día. |
+| 33 | `n7-bucles-python` | Python I | **CÓDIGO + JUEZ** | `for` y `while`, y el bucle infinito con su ⏹. **Reescrita el 6-oct-2026** (§69.17): cuatro problemas del entrenamiento, 16 casos –12 ocultos– en el 0, el 1 y justo en la meta; el juez gana `repiteElUltimo` (el último dato de `lee` se repite cero o más veces). |
+| 34 | `n7-retos-python` | Python I | **CÓDIGO + JUEZ** | Cinco retos cortos con pruebas que pasan o no. **Reescrita el 6-oct-2026** (§69.18): tres retos con juez que juntan la unidad, 15 casos –10 ocultos– en las fronteras (100 y 500), el grupo vacío y el candado a la primera; los totales del descuento elegidos para que tres maneras de escribir el 10 % den lo mismo. |
 | 35 | `n7-html-estructura` | Desarrollo web I | **WEB** | Estructura semántica: cabecera, secciones, pie. |
 | 36 | `n7-css-estilo` | Desarrollo web I | **WEB** | Colores, tipografías y el modelo de cajas con el inspector. |
 | 37 | `n7-tu-sitio-personal` | Desarrollo web I | **WEB** | Proyecto de tres páginas enlazadas con estilo propio. |
-| 38 | `n7-privacidad-en-redes` | Ciudadanía crítica | **MURO** | Recorre los ajustes reales y deja la cuenta como la quiere. |
+| 38 | `n7-privacidad-en-redes` | Ciudadanía crítica | **MURO** | Recorre los ajustes reales y deja la cuenta como la quiere. **Reescrita el 6-oct-2026** (§69.15): tres misiones en el muro —la auditoría con «Así te ve un desconocido» (cerrar de más no vale), el reto viral de preguntas de seguridad (se reporta por datos personales) y la cuenta que ya lo había visto (captura → adulto con la captura → bloqueo)—; pestaña «Bloqueados» nueva, en la clase. |
 | 39 | `n7-riesgos-y-marco-legal` | Ciudadanía crítica | **MURO** | Conversaciones directas: reconocer el patrón, cortar, guardar prueba, denunciar. |
-| 40 | `n7-equilibrio-digital` | Ciudadanía crítica | **SO** | Panel de tiempo de uso: mira el suyo y pone límites. |
+| 40 | `n7-equilibrio-digital` | Ciudadanía crítica | **SO** | Panel de tiempo de uso: mira el suyo y pone límites. **Reescrita el 6-oct-2026** (§69.16): el armazón SO es un explorador de archivos, así que el teléfono («Tecnia Avisos»: apps, banners, centro de notificaciones, Bienestar digital, Hora de dormir) vive en la clase; tres misiones juzgadas por el estado del teléfono y una tarde con reloj que avanza con lo que haces. |
 | 41 | `n7-como-aprende-la-ia` | IA I | **IA** | Banco de entrenamiento con datos torcidos a propósito. |
 | 42 | `n7-buenos-prompts` | IA I | **IA** | Cuaderno de prompts: el mismo encargo de cinco maneras. |
 | 43 | `n7-verifica-a-la-ia` | IA I | **IA** | Comparador: trocea la respuesta y busca cada afirmación. |
@@ -412,7 +412,7 @@ Columna **armazón**: `CÓDIGO` · `IA` · `WEB` · `BLOQUES` · `MURO` · `DISE
 
 | # | id | unidad | armazón | qué hace |
 |---|---|---|---|---|
-| 44 | `n8-listas-y-diccionarios` | Python II | **CÓDIGO** | Guarda muchos datos y búscalos por posición y por clave. |
+| 44 | `n8-listas-y-diccionarios` | Python II | **CÓDIGO + JUEZ** | Guarda muchos datos y búscalos por posición y por clave. **Reescrita el 6-oct-2026** (§69.20): cinco problemas que el juez prueba **cambiando la lista o el diccionario de arriba de la celda** (`datos`) —una cosa, cinco, vacía, un producto en 0—, una exploración y un cierre. |
 | 45 | `n8-funciones-python` | Python II | **CÓDIGO** | `def`, parámetros y retorno; la misma idea que el bloque propio. |
 | 46 | `n8-proyectos-consola` | Python II | **CÓDIGO** | Un juego de consola, una calculadora y un bot de respuestas. |
 | 47 | `n8-buenas-practicas` | Python II | **CÓDIGO** | Nombres, comentarios y depurar leyendo el error, no adivinando. |
@@ -429,7 +429,7 @@ Columna **armazón**: `CÓDIGO` · `IA` · `WEB` · `BLOQUES` · `MURO` · `DISE
 | 58 | `n8-habitos-de-proteccion` | Redes y ciberseguridad | **SO** | Actualizaciones, copias, permisos y el centro de seguridad. |
 | 59 | `n8-imagen-con-capas` | Multimedia | **DISEÑO** | Capas, máscara y orden: lo de arriba tapa lo de abajo. |
 | 60 | `n8-video-y-audio` | Multimedia | **DISEÑO** | Guion, cortes y música en la línea de tiempo. |
-| 61 | `n8-disena-tu-videojuego` | Multimedia | **BLOQUES** | Mecánica, niveles y probarlo con alguien que no lo hizo. |
+| 61 | `n8-disena-tu-videojuego` | Multimedia | **JUEGOS** (sobre BLOQUES) | Mecánica, niveles y probarlo con alguien que no lo hizo. **Construida el 12-sep-2026** con Tecnia Juegos (`simuladores/juego/`, §67): el armazón 17, que también reclama `n5-juego-con-niveles` y `n4-crea-tu-videojuego`. |
 | 62 | `n8-derechos-y-licencias` | Multimedia | **NAVEGADOR** | Busca imágenes con filtro de licencia y lee lo que permite. |
 | 63 | `n8-genera-con-ia` | IA II | **IA** | Generador: texto, imagen y audio, y de dónde salió cada uno. |
 | 64 | `n8-sesgos-y-errores` | IA II | **IA** | Banco de entrenamiento sesgado: se ve el sesgo en la salida. |
@@ -442,9 +442,9 @@ Columna **armazón**: `CÓDIGO` · `IA` · `WEB` · `BLOQUES` · `MURO` · `DISE
 | 66 | `n9-boceta-tu-app` | Desarrollo de aplicaciones | **DISEÑO** | Pantallas, flujo y qué pasa al tocar cada cosa. |
 | 67 | `n9-construye-low-code` | Desarrollo de aplicaciones | **BLOQUES** | Diseñador de pantalla más bloques, como App Inventor. |
 | 68 | `n9-pruebas-con-usuarios` | Desarrollo de aplicaciones | **DISEÑO** | Da el prototipo a alguien, mira dónde tropieza, apunta y arregla. |
-| 69 | `n9-busqueda-y-ordenamiento` | Algoritmos y datos | **CÓDIGO** | Dos algoritmos paso a paso y cuántas comparaciones cuesta cada uno. |
+| 69 | `n9-busqueda-y-ordenamiento` | Algoritmos y datos | **CÓDIGO + JUEZ** | Dos algoritmos y cuánto trabajo cuesta cada uno. **Reescrita el 12-sep-2026** (§68.2): seis problemas, 30 casos –18 ocultos–, y cuatro de los seis devuelven un número de trabajo (comparaciones, intercambios, pasadas), que es lo que deja a `sorted()` sin atajo. |
 | 70 | `n9-bases-de-datos-iniciales` | Algoritmos y datos | **CÓDIGO** | Tablas, registros y la primera consulta; modo SQL. |
-| 71 | `n9-datos-con-python` | Algoritmos y datos | **CÓDIGO** | Lee un archivo, cuenta, ordena y saca una conclusión. |
+| 71 | `n9-datos-con-python` | Algoritmos y datos | **CÓDIGO + JUEZ** | Limpia, filtra, agrega y saca una conclusión. **Reescrita el 12-sep-2026** (§68.3): seis problemas, 31 casos –19 ocultos– sobre registros con `None`, y un cero oculto en cinco de los seis, porque confundir «no entregó» con «sacó cero» es el error de datos que no revienta. |
 | 72 | `n9-trabajo-colaborativo` | Nube y colaboración | **NUBE** | Dos personas en el mismo archivo, historial y choques. |
 | 73 | `n9-gestiona-tu-proyecto` | Nube y colaboración | **NUBE** | Tablero de tareas: columnas, dueños y fechas. |
 | 74 | `n9-sensores-iot` | Robótica e IoT | **3D** | Coloca sensores en el espacio y ve qué mide cada uno. |
@@ -462,11 +462,11 @@ Columna **armazón**: `CÓDIGO` · `IA` · `WEB` · `BLOQUES` · `MURO` · `DISE
 
 | # | id | unidad | armazón | qué hace |
 |---|---|---|---|---|
-| 84 | `n10-python-intermedio` | Programación aplicada | **CÓDIGO** | Archivos, módulos y una librería; el programa crece. |
-| 85 | `n10-problemas-de-concurso` | Programación aplicada | **CÓDIGO** | Problemas con juez: entrada, salida y tiempo. |
+| 84 | `n10-python-intermedio` | Programación aplicada | **CÓDIGO + JUEZ + M4** | Archivos, módulos y una librería; el programa crece. **Reescrita el 6-oct-2026** (§69.21) junto con **M4**: proyecto de tres archivos en pestañas (`import`, `open`/`with`, `math`, `statistics`); tres problemas que el juez prueba cambiando el CSV, probando el módulo por su cuenta (`principal`) y revisando el archivo escrito (`escribe`). |
+| 85 | `n10-problemas-de-concurso` | Programación aplicada | **CÓDIGO + JUEZ** | Problemas con juez: enunciado, casos visibles y ocultos, veredicto. **Reescrita el 12-sep-2026** con la pieza `simuladores/juez/` (§68): seis problemas, 29 casos –20 de ellos ocultos– y un encargo final en el que el alumno escribe la prueba. |
 | 86 | `n10-analisis-con-codigo` | Programación aplicada | **CÓDIGO** | Analiza un conjunto de datos y dibuja el resultado. |
 | 87 | `n10-modela-tus-datos` | Bases de datos y SQL | **CÓDIGO** | Tablas, campos y relaciones; el esquema en el panel fijo. |
-| 88 | `n10-consultas-sql` | Bases de datos y SQL | **CÓDIGO** | `SELECT`, filtros y una unión; salida en rejilla. |
+| 88 | `n10-consultas-sql` | Bases de datos y SQL | **CÓDIGO + JUEZ** | `SELECT`, filtros y una unión; salida en rejilla. **Reescrita el 12-sep-2026** (§68.1), primera clase de `juezSql.ts`: siete problemas, 21 casos –14 de ellos ocultos– y la siembra de un caso oculto es OTRA tabla, que es lo que tumba el encargo que se regalaba porque los datos estaban en orden alfabético. Deuda viva: el video publicado es de la tanda vieja y narra otra clase. |
 | 89 | `n10-conecta-tus-datos` | Bases de datos y SQL | **OFFICE** | La consulta aterriza en la hoja: `VentanaHojas` con datos de fuera. |
 | 90 | `n10-proyecto-web-real` | Desarrollo web integral | **WEB** | Un sitio de verdad con HTML, CSS y JS. |
 | 91 | `n10-publica-tu-sitio` | Desarrollo web integral | **WEB** | Publicación, dominio y qué revisar antes de dar la dirección. |
@@ -525,7 +525,8 @@ Las tres integradoras comparten forma. Si al construirlas resulta que las tres p
 **Las que parecían 3D y no lo son, con el motivo:**
 
 - `n6-programa-un-microbit` y `n6-reto-robot` → **BLOQUES**. Lo que se enseña es el programa; la placa es un dibujo y la arena, una cuadrícula. El simulador de MakeCode es SVG plano y le sobra.
-- `n8-disena-tu-videojuego` → **BLOQUES**. Mecánicas y niveles, no volumen.
+- `n10-problemas-de-concurso` → **CÓDIGO + JUEZ** (12-sep-2026). El juez (`simuladores/juez/`) no es un armazón: no monta ventana ni gobierna sala. Es una pieza que se le cuelga a CÓDIGO y a DATOS y que da lo que ninguno de los dos tenía —preguntar «esto funciona» sin mirar el texto del alumno—. Reclama las 14 clases de la familia F2, las que dictan la solución.
+- `n8-disena-tu-videojuego` → **JUEGOS sobre BLOQUES** (12-sep-2026). Mecánicas y niveles, no volumen: Tecnia Juegos corre los guiones de Tecnia Bloques por actor y por tic, con físicas 2D, sprites de píxel, editor de nivel y jugador de prueba automático.
 - `n7-binario-y-unidades` → **SO**. Es una calculadora, y una calculadora es software.
 - Todo lo que es una pantalla —correo, chat, muro, navegador, editor— es software y se construye como software. Ésa es la regla, y de las 104 la cumplen 97.
 

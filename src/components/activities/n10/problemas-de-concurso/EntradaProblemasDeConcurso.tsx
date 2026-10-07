@@ -18,6 +18,17 @@ import { LabProblemasDeConcurso } from './LabProblemasDeConcurso';
  * `EntradaN4Base` porque es la plantilla que ya usa el resto de N10 sobre
  * este mismo armazón (`n10-python-intermedio`, `n10-consultas-sql`,
  * `n10-ia-copiloto`), no un componente nuevo.
+ *
+ * REESCRITA EL 12-sep-2026 con la clase nueva sobre **el juez** (§68): seis
+ * problemas juzgados por casos —nueve visibles y veinte ocultos—, tres pistas
+ * en escalera por problema y un encargo final en el que el alumno escribe el
+ * caso de prueba que desenmascara una solución rota. La versión anterior
+ * dictaba el código dentro del enunciado.
+ *
+ * El video se regrabó el 12-sep-2026 con la clase del juez (33 escenas, 5:42,
+ * 18 imágenes) y la bandera volvió a `false`. El anterior explicaba los cinco
+ * problemas dictados de la versión vieja: enseñaba otra clase
+ * (`video-contra-laboratorio`).
  */
 
 const RUTA_N10_PROGRAMACION: PasoRuta[] = (getUnidad('n10-programacion-aplicada')?.actividades ?? []).map((a) => ({
@@ -33,57 +44,57 @@ const CONFIG: ConfigEntradaN4 = {
   ruta: RUTA_N10_PROGRAMACION,
   parada: Math.max(1, RUTA_N10_PROGRAMACION.findIndex((p) => p.id === ACTIVIDAD) + 1),
   globo:
-    'TecniMarket organiza cada año un torneo interno de programación para su equipo júnior: problemas breves, contra el reloj, resueltos con Python real. Hoy vas a resolver los cinco de la primera ronda — los mismos que enfrenta cualquier candidato antes de llegar a la final.',
+    'TecniMarket abre su torneo interno de programación. Seis problemas y un juez: le mandas tu programa y lo corre con datos que tú no has visto. Que funcione con el ejemplo no significa nada — eso lo descubres en el primer envío.',
   arranqueSub:
-    'Vas a resolver cinco problemas cortos: contar quién avanza de ronda, encontrar el mejor tiempo sin usar ninguna función nativa y confirmarlo con ella, invertir una lista de finalistas a mano, sumar los dígitos de un folio, y escribir tu propia función para decidir qué números de mesa son válidos para la final.',
+    'Hoy nadie te dice qué teclear. Cada problema trae su descripción, un par de ejemplos y un juez que llama a tu función con casos ocultos. Escribes, envías, lees el veredicto y vuelves a intentarlo — y al final escribes tú el caso de prueba que desenmascara una solución con un error.',
   stats: [
-    { etiqueta: 'Problemas', valor: '5', acento: '#38bdf8' },
-    { etiqueta: 'Encargos', valor: '8', acento: '#10b981' },
+    { etiqueta: 'Problemas', valor: '6', acento: '#38bdf8' },
+    { etiqueta: 'Casos ocultos', valor: '20', acento: '#10b981' },
     { etiqueta: 'Insignia', valor: '1', acento: '#a78bfa' },
   ],
-  letrero: 'Cinco problemas, un torneo, un intérprete real',
+  letrero: 'Seis problemas, un juez, veinte casos que no vas a ver',
   fichas: [
     {
-      key: 'que-es-un-problema-de-concurso',
+      key: 'que-es-un-juez',
       tag: 'Concepto 1',
       numero: 1,
-      titulo: 'Qué es un problema de concurso',
+      titulo: 'Qué es un juez',
       detalle:
-        'Un enunciado breve, unos datos de entrada y una respuesta exacta esperada — sin margen de error, sin "más o menos". Se resuelve contra el reloj, y aquí lo comprueba el mismo intérprete que corre tu código.',
+        'No revisa tu texto: corre tu programa. Le pasa unos datos, mira lo que imprime y lo compara con la respuesta exacta. Ni «casi», ni «se entiende la idea»: o contesta lo que debe, o no.',
       acento: { c: '#38bdf8', deep: '#0284c7' },
     },
     {
-      key: 'el-algoritmo-antes-que-el-atajo',
+      key: 'los-casos-ocultos',
       tag: 'Concepto 2',
       numero: 2,
-      titulo: 'El algoritmo antes que el atajo',
+      titulo: 'Los casos que no ves',
       detalle:
-        'A veces la función nativa ya existe —como min()—, pero un problema de concurso te pide escribir el algoritmo por dentro: es lo que demuestra que entiendes cómo funciona, no sólo que sabes llamarla.',
+        'De cada problema conoces un par de ejemplos; el resto están ocultos. Sabes cómo se llaman —«justo en el corte», «la carrera se canceló»— pero no sus datos. Copiar la respuesta del ejemplo no aprueba nada.',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
-      key: 'clasificar-no-solo-calcular',
+      key: 'el-caso-limite',
       tag: 'Concepto 3',
       numero: 3,
-      titulo: 'Clasificar, no sólo calcular',
+      titulo: 'El caso límite',
       detalle:
-        'Varios problemas de concurso no piden un solo número: piden separar una lista en dos grupos según una regla, como decidir qué números de mesa son primos y cuáles no.',
+        'La lista vacía, el cero, el empate, el uno. Casi ningún programa falla en el caso normal: falla en el borde — y el borde suele estar escrito en el enunciado sin que nadie lo lea dos veces.',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
-      key: 'probar-antes-de-confiar',
+      key: 'escribir-la-prueba',
       tag: 'Concepto 4',
       numero: 4,
-      titulo: 'Probar antes de confiar',
+      titulo: 'Escribir la prueba, no sólo pasarla',
       detalle:
-        'Antes de aplicar tu función a todos los datos, la pruebas con uno o dos casos de los que ya conoces la respuesta. Si falla ahí, lo sabes de inmediato — no después de clasificar cien datos mal.',
+        'Al final te toca el otro lado: te dan una solución con un error y tienes que encontrar el dato con el que se equivoca. Un caso de prueba que no distingue lo correcto de lo incorrecto no prueba nada.',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
   ],
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Entra al torneo',
   ctaDetalle:
-    'Cinco problemas: contar con una condición, encontrar un mínimo a mano y confirmarlo con la librería, invertir una lista sin atajos, sumar dígitos con aritmética entera, y clasificar una lista completa con tu propia función — probada antes con casos conocidos.',
+    'Seis problemas: contar con una condición, buscar un mínimo, invertir una lista, sumar cifras, decidir si un número es primo y desempatar a un campeón. Cada envío vuelve con un veredicto que dice cuántos casos pasan y por qué falla el que falla.',
   assetsPendientes: false,
 };
 

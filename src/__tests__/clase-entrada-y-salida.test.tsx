@@ -1,34 +1,42 @@
 /**
- * N7 · «Entrada y salida» — el banco de la clase.
+ * N7 · «Entrada y salida» — la clase jugada entera sobre el juez de programas
+ * (§68.4).
  *
- * Aquí «jugar mal» tiene una forma propia que las otras dos no tienen: **no
- * contestar**. El programa se queda esperando, y hay que comprobar que ni ▶ ni
- * ⏭ se saltan la pregunta, que no se cuela un `None` en la caja y que el
- * encargo no se da por hecho. Más lo de siempre: candados, confundir los dos
- * errores y fallar la pregunta final. Y el recorrido entero, contestando de
- * verdad en la consola.
+ * Jugando MAL antes que bien (`jugar-mal-a-proposito`): no contestar nunca,
+ * contestar en blanco, que el eco de la propia pregunta no cuente como saludo,
+ * enviar la celda vacía, la coma que mete un espacio, un dato de más, y fallar
+ * la pregunta final. Después, el recorrido de punta a punta contestando en la
+ * consola **y** enviando al juez.
+ *
+ * Lo que vigila y el test del juez no puede:
+ *
+ * - **▶ corre la celda del encargo**, así que al probar el problema 3 no vuelve
+ *   a preguntar lo del 1.
+ * - **El panel cambia con el encargo**: tablero en los problemas, ficha abierta
+ *   y buzón en la exploración, y el tablero no pierde sus veredictos al
+ *   esconderse.
+ * - **Ningún dato oculto se asoma al DOM.**
  */
 
-import { fireEvent, render, screen } from '@testing-library/react';
-import { LabEntradaYSalida } from '@/components/activities/python/LabEntradaYSalida';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import { LabEntradaYSalida, PLANTILLA } from '@/components/activities/python/LabEntradaYSalida';
 
-const CABEZA = [
-  '# entrevista.py · el programa te entrevista',
-  'print("Hola. Voy a hacerte tres preguntas.")',
-  '',
-  '# ↓ de aquí para abajo escribes tú',
-].join('\n');
+const py = (...l: string[]) => l.join('\n');
 
-const archivo = (...mias: string[]) => [CABEZA, ...mias].join('\n');
+function enCeldas(programas: Partial<Record<'Calentamiento' | 'Problema 1' | 'Problema 2' | 'Problema 3', string>>): string {
+  const lineas = PLANTILLA.split('\n');
+  for (const [celda, programa] of Object.entries(programas)) {
+    const i = lineas.findIndex((l) => l.startsWith(`# %% ${celda}`));
+    lineas.splice(i + 1, 0, ...(programa as string).split('\n'));
+  }
+  return lineas.join('\n');
+}
 
-const PIDE_NOMBRE = 'nombre = input("¿Cómo te llamas? ")';
-const SALUDA = 'print("Encantado, " + nombre + ".")';
-const PIDE_EDAD = 'edad = input("¿Cuántos años tienes? ")';
-const SUMA_MAL = 'print(edad + 1)';
-const SUMA_BIEN = 'print(int(edad) + 1)';
-const PIDE_CIUDAD = 'ciudad = input("¿De qué ciudad eres? ")';
-const FRASE = 'print(nombre, "tiene", edad, "años y vive en", ciudad)';
-const FICHA = 'print(f"FICHA · {nombre} · {edad} años · {ciudad}")';
+const SALUDO = py('nombre = input("¿Cómo te llamas? ")', 'print("Hola,", nombre)');
+const EDAD_MAL = py('edad = input("¿Cuántos años tienes? ")', 'print(edad + 1)');
+const EDAD_BIEN = py('edad = int(input("¿Cuántos años tienes? "))', 'print(f"El año que viene cumples {edad + 1}.")');
+const EN_2030 = py('n = input("¿Nombre? ")', 'a = int(input("¿Año? "))', 'print(f"{n}, en 2030 cumples {2030 - a} años.")');
+const TIENDITA = py('p = float(input("¿Precio? "))', 'c = int(input("¿Piezas? "))', 'print(f"Pagas {p * c} pesos.")');
 
 function montar() {
   const onProgress = jest.fn();
@@ -50,51 +58,27 @@ function montar() {
     fase: () => screen.getByTestId('cod').getAttribute('data-fase'),
     escribir: (texto: string) => fireEvent.change(screen.getByTestId('cod-area'), { target: { value: texto } }),
     ejecutar: () => fireEvent.click(screen.getByTestId('cod-ejecutar')),
-    paso: () => fireEvent.click(screen.getByTestId('cod-paso')),
-    /** Contestar en la consola, que es lo que hace el alumno de verdad. */
     contestar: (respuesta: string) => {
       fireEvent.change(screen.getByTestId('cod-entrada'), { target: { value: respuesta } });
       fireEvent.click(screen.getByTestId('cod-responder'));
     },
+    /** Ejecuta y contesta, en orden, lo que el programa vaya preguntando. */
+    correr: (...respuestas: string[]) => {
+      api.ejecutar();
+      for (const r of respuestas) {
+        if (!screen.queryByTestId('cod-entrada')) return;
+        api.contestar(r);
+      }
+    },
+    enviar: () => fireEvent.click(screen.getByTestId('jz-enviar')),
+    veredicto: () => screen.getByTestId('jz-veredicto'),
     encargo: () => screen.getByTestId('cod-encargo').getAttribute('data-paso'),
     logrado: () => screen.queryByTestId('cod-logrado'),
     siguiente: () => fireEvent.click(screen.getByText('Siguiente encargo →')),
-    buzon: (caja: string) => document.querySelector(`[data-buzon="${caja}"]`),
+    panel: () => screen.getByTestId('cod-panel'),
+    tableroVisible: () => !(screen.getByTestId('jz-panel').parentElement as HTMLElement).hidden,
   };
   return api;
-}
-
-/** Ejecuta y contesta, en orden, todo lo que el programa vaya preguntando. */
-function correrContestando(lab: ReturnType<typeof montar>, ...respuestas: string[]) {
-  lab.ejecutar();
-  for (const r of respuestas) {
-    if (!screen.queryByTestId('cod-entrada')) return;
-    lab.contestar(r);
-  }
-}
-
-/** Los siete primeros encargos, jugados bien. */
-function llegarAlUltimoEncargo(lab: ReturnType<typeof montar>) {
-  lab.escribir(archivo(PIDE_NOMBRE));
-  correrContestando(lab, 'Sofi');
-  lab.siguiente();
-  lab.escribir(archivo(PIDE_NOMBRE, SALUDA));
-  correrContestando(lab, 'Sofi');
-  lab.siguiente();
-  lab.escribir(archivo(PIDE_NOMBRE, SALUDA, PIDE_EDAD, SUMA_MAL));
-  correrContestando(lab, 'Sofi', '13');
-  lab.siguiente();
-  lab.escribir(archivo(PIDE_NOMBRE, SALUDA, PIDE_EDAD, SUMA_BIEN));
-  correrContestando(lab, 'Sofi', '13');
-  lab.siguiente();
-  correrContestando(lab, 'Sofi', 'trece');
-  lab.siguiente();
-  lab.escribir(archivo(PIDE_NOMBRE, SALUDA, PIDE_EDAD, SUMA_BIEN, PIDE_CIUDAD, FRASE));
-  correrContestando(lab, 'Sofi', '13', 'Toluca');
-  lab.siguiente();
-  lab.escribir(archivo(PIDE_NOMBRE, SALUDA, PIDE_EDAD, SUMA_BIEN, PIDE_CIUDAD, FRASE, FICHA));
-  correrContestando(lab, 'Sofi', '13', 'Toluca');
-  lab.siguiente();
 }
 
 describe('antes de entrar', () => {
@@ -104,154 +88,193 @@ describe('antes de entrar', () => {
     expect(screen.getByText('Insignia · Pregunta y responde')).toBeInTheDocument();
     expect(screen.queryByTestId('cod-area')).toBeNull();
     lab.entrar();
-    expect(lab.encargo()).toBe('pregunta');
-  });
-});
-
-describe('el buzón, que es el panel de esta clase', () => {
-  it('aparece al escribir el input, y al contestar enseña la respuesta CON comillas y su tipo', () => {
-    const lab = montar().entrar();
-    expect(screen.getByTestId('cod-panel').textContent).toContain('Todavía no le has pedido nada');
-
-    /* La fila nace al escribir la línea, antes de ejecutar nada. */
-    lab.escribir(archivo(PIDE_NOMBRE, SALUDA, PIDE_EDAD, SUMA_BIEN));
-    expect(lab.buzon('nombre')?.textContent).toContain('sin contestar');
-    expect(lab.buzon('edad')?.textContent).toContain('¿Cuántos años tienes?');
-
-    correrContestando(lab, 'Sofi', '13');
-    /* Las comillas son el argumento entero de la clase: escribió 13 y llegó
-     * el texto '13'. */
-    expect(lab.buzon('edad')?.textContent).toContain("'13'");
-    expect(document.querySelector('[data-buzon="edad"] .pyc-tipo')?.textContent).toBe('str');
-
-    /* Y la fila lleva a su línea del editor, como la del panel de N6. */
-    fireEvent.click(lab.buzon('edad') as HTMLElement);
-    expect(lab.area()).toHaveFocus();
+    expect(lab.encargo()).toBe('que-te-pregunte');
+    expect(lab.area().value).toBe(PLANTILLA);
   });
 });
 
 describe('jugando mal a propósito', () => {
-  it('la cabecera tiene candado y borrar el archivo entero no borra nada', () => {
+  it('no contestar deja el programa esperando; contestar en blanco no cuenta; el eco de la pregunta no es un saludo', () => {
     const lab = montar().entrar();
-    const original = lab.area().value;
-    lab.escribir('');
-    expect(lab.area().value).toBe(original);
-    expect(screen.getByTestId('cod-aviso').textContent).toContain('candado');
-  });
-
-  it('no contestar nunca deja el programa esperando, sin None en la caja y sin cerrar el encargo', () => {
-    const lab = montar().entrar();
-    lab.escribir(archivo(PIDE_NOMBRE));
+    lab.escribir(enCeldas({ Calentamiento: 'nombre = input("¿Cómo te llamas? ")' }));
     lab.ejecutar();
     expect(lab.fase()).toBe('esperando');
-
-    /* Ni ▶ ni ⏭ se saltan la pregunta. */
     lab.ejecutar();
-    lab.paso();
     expect(lab.fase()).toBe('esperando');
-    expect(lab.salida()).not.toContain('None');
-    expect(screen.getByTestId('cod-aviso').textContent).toContain('Contesta abajo');
     expect(lab.logrado()).toBeNull();
 
-    /* Y contestar con espacios en blanco tampoco vale como contestar. */
-    lab.contestar('   ');
-    expect(lab.fase()).toBe('terminada');
-    expect(lab.logrado()).toBeNull();
-
-    lab.ejecutar();
+    /* Contestó y el programa terminó, pero no saludó: en la consola «Sofi»
+     * sólo sale en el eco de su propia pregunta. */
     lab.contestar('Sofi');
+    expect(lab.fase()).toBe('terminada');
+    expect(lab.salida()).toContain('Sofi');
+    expect(lab.logrado()).toBeNull();
+
+    lab.escribir(enCeldas({ Calentamiento: SALUDO }));
+    lab.correr('   ');
+    expect(lab.logrado()).toBeNull();
+
+    lab.correr('Sofi');
     expect(lab.logrado()).not.toBeNull();
   });
 
-  it('los dos errores de la clase son distintos: uno lo causa el código y el otro el dato', () => {
+  it('convertir a la primera no se salta el encargo de romperlo: pide sumar sin convertir', () => {
     const lab = montar().entrar();
-    lab.escribir(archivo(PIDE_NOMBRE, SALUDA, PIDE_EDAD, SUMA_MAL));
+    lab.escribir(enCeldas({ Calentamiento: SALUDO }));
+    lab.correr('Sofi');
+    lab.siguiente();
+    expect(lab.encargo()).toBe('lo-que-llega-es-texto');
 
-    /* Con el código mal escrito: TypeError, contestes lo que contestes. */
-    correrContestando(lab, 'Sofi', '13');
+    lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_BIEN }));
+    lab.correr('13');
+    expect(lab.logrado()).toBeNull();
+
+    lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_MAL }));
+    lab.correr('13');
     expect(screen.getByTestId('cod-error').textContent).toContain('TypeError');
-
-    /* Con el código bien y el dato mal: ValueError. El programa es el mismo. */
-    lab.escribir(archivo(PIDE_NOMBRE, SALUDA, PIDE_EDAD, SUMA_BIEN));
-    correrContestando(lab, 'Sofi', 'trece');
-    expect(screen.getByTestId('cod-error').textContent).toContain('ValueError');
-    expect(screen.getByTestId('cod-error').textContent).toContain('trece');
+    expect(lab.logrado()).not.toBeNull();
   });
 
-  it('fallar la pregunta del final resta seis puntos; romper el programa tres veces, cero', () => {
+  it('▶ corre sólo la celda del encargo: en el problema 1 no pregunta el nombre del calentamiento', () => {
     const lab = montar().entrar();
-    llegarAlUltimoEncargo(lab);
-    expect(lab.encargo()).toBe('que-trae-input');
+    lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_MAL }));
+    lab.correr('Sofi');
+    lab.siguiente();
+    lab.ejecutar();
+    expect(lab.salida()).toContain('¿Cuántos años tienes?');
+    expect(lab.salida()).not.toContain('¿Cómo te llamas?');
+  });
 
-    fireEvent.click(screen.getByText('El tipo que escriban: int si escriben un número'));
+  it('en el problema 1: la celda vacía, la coma que mete un espacio y un dato de más, rechazados y explicados', () => {
+    const lab = montar().entrar();
+    lab.escribir(enCeldas({ Calentamiento: SALUDO }));
+    lab.correr('Sofi');
+    lab.siguiente();
+    lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_MAL }));
+    lab.correr('13');
+    lab.siguiente();
+    expect(lab.encargo()).toBe('el-anio-que-viene');
+    expect(lab.tableroVisible()).toBe(true);
+
+    /* Con el programa que se rompe. */
+    lab.enviar();
+    expect(lab.veredicto().getAttribute('data-aceptado')).toBe('no');
+    expect(lab.veredicto().textContent).toContain('0 de 4 casos');
+
+    lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': py('e = input()', 'print("El año que viene cumples", int(e) + 1, ".")') }));
+    lab.enviar();
+    expect(lab.veredicto().textContent).toContain('«El año que viene cumples 14 .» y tenía que decir «El año que viene cumples 14.»');
+
+    lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': py('e = int(input())', 'x = input()', 'print(f"El año que viene cumples {e + 1}.")') }));
+    lab.enviar();
+    expect(lab.veredicto().textContent).toContain('tu programa pidió un 2.º dato');
+    expect(lab.logrado()).toBeNull();
+
+    /* Ningún dato de los ocultos en la pantalla: ni sus edades ni sus frases. */
+    const texto = lab.panel().textContent ?? '';
+    expect(texto).not.toMatch(/cumples 10\.|cumples 101\.|cumples 1\./);
+  });
+
+  it('fallar la pregunta del final resta seis puntos', () => {
+    const lab = montar().entrar();
+    llegarAlCierre(lab);
+    fireEvent.click(screen.getByText('Python se equivocó al multiplicar un número con decimales.'));
     expect(lab.logrado()).toBeNull();
     expect(lab.onScore).toHaveBeenLastCalledWith(94);
-
-    fireEvent.click(screen.getByText('Siempre str, aunque escriban un número'));
+    fireEvent.click(screen.getByText('El precio llegó como texto y nunca lo convirtió: multiplicar un texto por 3 lo repite tres veces.'));
     expect(lab.onComplete.mock.calls[0][0]).toMatchObject({ score: 94, stars: 3 });
   });
 });
 
+/** Juega bien los seis primeros encargos. */
+function llegarAlCierre(lab: ReturnType<typeof montar>) {
+  lab.escribir(enCeldas({ Calentamiento: SALUDO }));
+  lab.correr('Sofi');
+  lab.siguiente();
+  lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_MAL }));
+  lab.correr('13');
+  lab.siguiente();
+  lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_BIEN }));
+  lab.enviar();
+  lab.siguiente();
+  lab.correr('trece');
+  lab.siguiente();
+  lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_BIEN, 'Problema 2': EN_2030 }));
+  lab.enviar();
+  lab.siguiente();
+  lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_BIEN, 'Problema 2': EN_2030, 'Problema 3': TIENDITA }));
+  lab.enviar();
+  lab.siguiente();
+}
+
 describe('el recorrido de punta a punta, como un alumno', () => {
-  it('los ocho encargos, contestando en la consola, hasta la pantalla de cierre', () => {
+  it('los siete encargos, contestando en la consola y enviando al juez, hasta la pantalla de cierre', () => {
     const lab = montar().entrar();
 
-    // 1 · que te pregunte
-    expect(lab.encargo()).toBe('pregunta');
-    lab.escribir(archivo(PIDE_NOMBRE));
-    lab.ejecutar();
-    expect(lab.salida()).toContain('¿Cómo te llamas?');
-    lab.contestar('Sofi');
-    expect(lab.fase()).toBe('terminada');
+    // 1 · que te pregunte — ficha del manual abierta y buzón, sin tablero
+    expect(lab.encargo()).toBe('que-te-pregunte');
+    expect(lab.tableroVisible()).toBe(false);
+    const manual = within(screen.getByTestId('jz-fuera')).getByTestId('jz-manual') as HTMLDetailsElement;
+    expect(manual.open).toBe(true);
+    expect(manual.textContent).toContain('mascota');
+    expect(lab.panel().textContent).toContain('Todavía no le has pedido nada');
+    lab.escribir(enCeldas({ Calentamiento: SALUDO }));
+    lab.correr('Sofi');
+    expect(lab.salida()).toContain('Hola, Sofi');
+    expect(lab.logrado()).not.toBeNull();
     lab.siguiente();
 
-    // 2 · que te conteste
-    expect(lab.encargo()).toBe('contesta');
-    lab.escribir(archivo(PIDE_NOMBRE, SALUDA));
-    correrContestando(lab, 'Sofi');
-    expect(lab.salida()).toContain('Encantado, Sofi.');
+    // 2 · lo que llega es texto — el buzón enseña las comillas
+    expect(lab.encargo()).toBe('lo-que-llega-es-texto');
+    lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_MAL }));
+    lab.correr('13');
+    expect(document.querySelector('[data-buzon="edad"]')?.textContent).toContain("'13'");
+    expect(document.querySelector('[data-buzon="edad"] .pyc-tipo')?.textContent).toBe('str');
     lab.siguiente();
 
-    // 3 · lo que llega es texto
-    expect(lab.encargo()).toBe('llega-texto');
-    lab.escribir(archivo(PIDE_NOMBRE, SALUDA, PIDE_EDAD, SUMA_MAL));
-    correrContestando(lab, 'Sofi', '13');
-    expect(lab.fase()).toBe('error');
-    expect(screen.getByTestId('cod-error').textContent).toContain('no se puede sumar un texto y un número');
+    // 3 · problema 1 — tablero con su ficha plegada
+    expect(lab.encargo()).toBe('el-anio-que-viene');
+    expect(lab.tableroVisible()).toBe(true);
+    const plegada = within(screen.getByTestId('jz-panel')).getByTestId('jz-manual') as HTMLDetailsElement;
+    expect(plegada.open).toBe(false);
+    expect(lab.panel().textContent).toContain('Tu programa lee, en este orden');
+    lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_BIEN }));
+    lab.enviar();
+    expect(lab.veredicto().getAttribute('data-aceptado')).toBe('si');
+    expect(lab.logrado()).not.toBeNull();
     lab.siguiente();
 
-    // 4 · conviértelo
-    expect(lab.encargo()).toBe('conviertelo');
-    lab.escribir(archivo(PIDE_NOMBRE, SALUDA, PIDE_EDAD, SUMA_BIEN));
-    correrContestando(lab, 'Sofi', '13');
-    expect(lab.salida()).toContain('14');
+    // 4 · el dato que no vale — sin tocar el código; el buzón vuelve
+    expect(lab.encargo()).toBe('el-dato-que-no-vale');
+    expect(lab.tableroVisible()).toBe(false);
+    lab.correr('trece');
+    expect(screen.getByTestId('cod-error').textContent).toContain('ValueError');
     lab.siguiente();
 
-    // 5 · contesta mal a propósito (sin tocar una línea)
-    expect(lab.encargo()).toBe('contesta-mal');
-    correrContestando(lab, 'Sofi', 'trece');
-    expect(lab.fase()).toBe('error');
+    // 5 · problema 2 — el tablero conservó el 1 aceptado y enseña el 2
+    expect(lab.encargo()).toBe('en-2030');
+    expect(lab.tableroVisible()).toBe(true);
+    expect(screen.getByTestId('jz-solapa-el-anio-que-viene').getAttribute('data-estado')).toBe('aceptado');
+    expect(screen.getByTestId('jz-solapa-en-2030').getAttribute('aria-current')).toBe('true');
+    lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_BIEN, 'Problema 2': EN_2030 }));
+    lab.enviar();
+    expect(lab.veredicto().getAttribute('data-aceptado')).toBe('si');
     lab.siguiente();
 
-    // 6 · tres datos en una línea
-    expect(lab.encargo()).toBe('tres-datos');
-    lab.escribir(archivo(PIDE_NOMBRE, SALUDA, PIDE_EDAD, SUMA_BIEN, PIDE_CIUDAD, FRASE));
-    correrContestando(lab, 'Sofi', '13', 'Toluca');
-    expect(lab.salida()).toContain('Sofi tiene 13 años y vive en Toluca');
+    // 6 · problema 3 — ▶ no vuelve a preguntar lo de los otros
+    expect(lab.encargo()).toBe('la-tiendita');
+    lab.escribir(enCeldas({ Calentamiento: SALUDO, 'Problema 1': EDAD_BIEN, 'Problema 2': EN_2030, 'Problema 3': TIENDITA }));
+    lab.correr('12.5', '3');
+    expect(lab.salida()).toContain('Pagas 37.5 pesos.');
+    expect(lab.salida()).not.toContain('¿Año?');
+    lab.enviar();
+    expect(lab.veredicto().getAttribute('data-aceptado')).toBe('si');
     lab.siguiente();
 
-    // 7 · la ficha
-    expect(lab.encargo()).toBe('la-ficha');
-    lab.escribir(archivo(PIDE_NOMBRE, SALUDA, PIDE_EDAD, SUMA_BIEN, PIDE_CIUDAD, FRASE, FICHA));
-    correrContestando(lab, 'Sofi', '13', 'Toluca');
-    expect(lab.salida()).toContain('FICHA · Sofi · 13 años · Toluca');
-    lab.siguiente();
+    // 7 · para cerrar
+    expect(lab.encargo()).toBe('para-cerrar');
+    fireEvent.click(screen.getByText('El precio llegó como texto y nunca lo convirtió: multiplicar un texto por 3 lo repite tres veces.'));
 
-    // 8 · de qué tipo es lo que trae input
-    expect(lab.encargo()).toBe('que-trae-input');
-    fireEvent.click(screen.getByText('Siempre str, aunque escriban un número'));
-
-    expect(screen.getByText('Pregunta y responde')).toBeInTheDocument();
     expect(screen.getByText('Insignia · Pregunta y responde')).toBeInTheDocument();
     expect(lab.onProgress).toHaveBeenLastCalledWith(1);
     expect(lab.onComplete).toHaveBeenCalledTimes(1);

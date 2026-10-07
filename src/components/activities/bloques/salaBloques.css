@@ -201,11 +201,14 @@
 
 /* ───────────────────────────── el panel del encargo ───────────────────────── */
 
+/* §69.10: el panel es lo último de la sala, y la cara de Bit (bit-puesto, esquina
+   inferior izquierda, ~62 px) se quedaba encima del arranque del texto aun con el
+   globo recogido. El margen izquierdo le deja su sitio. */
 .blqs-panel {
   border-radius: 16px;
   border: 2px solid #2b3a7a;
   background: linear-gradient(170deg, #101a44, #070c22);
-  padding: 14px 16px;
+  padding: 14px 16px 14px 88px;
   color: #e8f0ff;
 }
 .blqs-panel[data-hecho='si'] {
@@ -250,6 +253,29 @@
   font-weight: 600;
   line-height: 1.44;
   color: #cfe0ff;
+}
+
+/* Flota a la derecha: abajo a la izquierda vive el globo de Bit, y lo tapaba. */
+.blqs-panel-codigo {
+  float: right;
+  max-width: 46%;
+  margin: 0 0 8px 18px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #0a1224;
+  border: 1px solid rgba(167, 139, 250, 0.45);
+  color: #e9e3ff;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.blqs-panel::after {
+  content: '';
+  display: block;
+  clear: both;
 }
 
 .blqs-panel-opciones {

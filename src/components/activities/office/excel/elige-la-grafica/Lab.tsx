@@ -3,10 +3,8 @@
 import { useCallback } from 'react';
 import VentanaHojas from '@/components/office/VentanaHojas';
 import type { ActivityProps } from '@/types/activity-contract';
-import { CINTA_EXCEL_BASICO } from '../../tecniaHojas';
-import { CONTROLES_ELIGE_GRAFICA } from './controles';
+import { CINTA_ELIGE_GRAFICA, CONTROLES_ELIGE_GRAFICA } from './controles';
 import { GUION_ELIGE_LA_GRAFICA } from './guion';
-import PanelGraficas from './PanelGraficas';
 
 /**
  * Laboratorio de `n6-elige-la-grafica` (temario, bloques 37 · 38). La cuarta
@@ -48,10 +46,9 @@ export function LabEligeLaGrafica({
 
   return (
     <VentanaHojas
-      cinta={CINTA_EXCEL_BASICO}
+      cinta={CINTA_ELIGE_GRAFICA}
       guion={GUION_ELIGE_LA_GRAFICA}
       controles={CONTROLES_ELIGE_GRAFICA}
-      panelFijo={{ titulo: 'Gráficas', Cuerpo: PanelGraficas }}
       onAvance={onProgress}
       onTerminado={alTerminar}
       onSalir={alSalir}

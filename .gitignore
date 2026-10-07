@@ -57,11 +57,15 @@ next-env.d.ts
 #   estudio/     la exportacion de datos para la universidad (§11). Si no
 #                viaja, la exportacion depende de que alguien conserve un
 #                archivo suelto en su equipo.
+#   altas/       el alta masiva de una escuela. Es el guion que crea las
+#                cuentas de los ninos: si no viaja, cada colegio nuevo depende
+#                de que alguien se acuerde de donde lo guardo.
 scripts/*
 !scripts/cloudflare/
 !scripts/auditoria/
 !scripts/imagenes/
 !scripts/estudio/
+!scripts/altas/
 
 # Docs con credenciales — gestionar sólo en variables de entorno, nunca versionar valores reales
 docs/CREDENCIALES*.md
@@ -120,3 +124,7 @@ tsconfig.tsbuildinfo
 /scratchpad/
 *.log
 scripts/auditoria/assets-rotos.json
+
+# Altas masivas: estos archivos llevan contrasenas en claro y listas de menores.
+credenciales-*.csv
+/listas/

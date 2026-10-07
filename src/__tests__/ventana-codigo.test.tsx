@@ -103,9 +103,10 @@ describe('el coloreado, que es una función pura del texto', () => {
     expect(buscar('def saluda():', 'saluda')).toBe('definicion');
     expect(buscar('total = 0', 'total')).toBe('nombre');
     expect(buscar('# nota', '# nota')).toBe('comentario');
-    /* `import` existe en Python y aquí no: se pinta avisando, no como una
-     * variable cualquiera. */
-    expect(buscar('import random', 'import')).toBe('prohibida');
+    /* `class` existe en Python y aquí no: se pinta avisando, no como una
+     * variable cualquiera. `import` lo era hasta M4 (§69.21) y ahora es palabra. */
+    expect(buscar('class Perro:', 'class')).toBe('prohibida');
+    expect(buscar('import random', 'import')).toBe('palabra');
   });
 
   it('un programa a medio escribir sigue coloreando lo de arriba y no pierde un carácter', () => {

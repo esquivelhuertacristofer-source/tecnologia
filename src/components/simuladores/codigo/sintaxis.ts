@@ -31,13 +31,24 @@
  * 1. **`:` que falta.** `if x > 3` sin dos puntos es el error número uno del
  *    primer día, y merece su frase, no un «no se esperaba nl».
  * 2. **`=` donde iba `==`.** `if x = 3:` es el número dos, y también.
- * 3. **Comparación encadenada.** `0 < x < 10` se detecta y se explica en vez de
- *    leerse como `(0 < x) < 10`, que daría un resultado correcto a ratos. Un
- *    motor que acierta a ratos es peor que uno que no sabe.
+ * 3. **Comparación encadenada.** `0 < x < 10` se lee **como en Python**:
+ *    `0 < x and x < 10`, con `x` evaluado una sola vez. Hasta el 12-sep-2026
+ *    se detectaba y se rechazaba —leerla como `(0 < x) < 10` habría acertado a
+ *    ratos—, pero rechazar Python válido tampoco es neutral: el juez de §68.4
+ *    mide sus salidas con CPython, y una solución correcta se habría rechazado
+ *    por usar la forma que cualquier libro de Python enseña.
  *
- * Y la palabra prohibida (`import`, `class`, `try`…) se caza aquí, con la frase
- * que le toca en `subconjunto.ts`, antes de que llegue a parecer un nombre de
- * variable.
+ * Y la palabra prohibida (`class`, `try`…) se caza aquí, con la frase que le
+ * toca en `subconjunto.ts`, antes de que llegue a parecer un nombre de variable.
+ *
+ * ── M4 (§69.21): `import`, `from`, `with` y `modulo.nombre` ─────────────────
+ *
+ * Hasta el 6-oct-2026 las tres primeras eran palabras prohibidas y el punto
+ * exigía paréntesis detrás. Ahora `import x [as y]`, `from x import a [as b]`,
+ * `with expr as f:` y `x.nombre` sin llamar son sentencias y expresiones de
+ * verdad. Qué módulos existen y qué traen lo decide la máquina al ejecutar, no
+ * esto: aquí sólo se decide si está bien escrito, y los dos errores de escritura
+ * que de verdad se cometen tienen su frase — `import clima.py` y `from x import *`.
  */
 
 import { type ErrorPy, fallo, Tropiezo } from './errores';
@@ -69,12 +80,22 @@ export type Expr = Sitio &
     | { t: 'neg'; arg: Expr }
     | { t: 'no'; arg: Expr }
     | { t: 'comp'; op: OpComp; izq: Expr; der: Expr }
+    /** `a < b <= c`: `args` tiene uno más que `ops`, y cada término se evalúa una vez. */
+    | { t: 'cadena'; ops: OpComp[]; args: Expr[] }
     | { t: 'logica'; op: 'and' | 'or'; izq: Expr; der: Expr }
     | { t: 'indice'; obj: Expr; indice: Expr }
     | { t: 'rebanada'; obj: Expr; desde: Expr | null; hasta: Expr | null }
     | { t: 'llamada'; fn: Expr; args: Expr[] }
     | { t: 'metodo'; obj: Expr; nombre: string; args: Expr[] }
+    /** `math.pi`, `clima.UMBRAL`: un nombre de un módulo, sin llamarlo. */
+    | { t: 'atributo'; obj: Expr; nombre: string }
   );
+
+/** `import clima as c` → `{ nombre: 'clima', alias: 'c' }`. */
+export interface Importado {
+  nombre: string;
+  alias: string | null;
+}
 
 export type Destino = Sitio &
   ({ t: 'nombre'; nombre: string } | { t: 'indice'; obj: Expr; indice: Expr });
@@ -92,6 +113,9 @@ export type Sent = Sitio &
     | { t: 'rompe' }
     | { t: 'sigue' }
     | { t: 'pasa' }
+    | { t: 'importa'; modulos: Importado[] }
+    | { t: 'desde'; modulo: string; nombres: Importado[] }
+    | { t: 'con'; expr: Expr; nombre: string; cuerpo: Sent[] }
   );
 
 export type Analisis = { ok: true; programa: Sent[] } | { ok: false; error: ErrorPy };
@@ -297,6 +321,18 @@ class Analizador {
           this.i += 1;
           this.exigirNl();
           return { ...this.sitio(f), t: 'pasa' };
+        case 'import':
+          return this.sentImporta();
+        case 'from':
+          return this.sentDesde();
+        case 'with':
+          return this.sentCon();
+        case 'as':
+          throw fallo('sintaxis', '«as» va detrás de un «import» o de un «with», y aquí no hay ninguno', {
+            linea: f.linea,
+            columna: f.col,
+            pista: 'se escribe: import statistics as st   —  o  with open("datos.csv") as f:',
+          });
         case 'elif':
         case 'else':
           throw fallo('sintaxis', `este «${f.texto}» no tiene ningún «if» delante`, {
@@ -425,6 +461,114 @@ class Analizador {
     return { ...this.sitio(f), t: 'def', nombre: n.texto, params, cuerpo: this.bloque(f.linea, 'def') };
   }
 
+  /* ── M4: import, from, with ──────────────────────────────────────────── */
+
+  /** Un nombre nuevo que el programa va a usar: ni palabra de Python ni otra cosa. */
+  private nombreNuevo(mensaje: string, pista: string): string {
+    const n = this.mirar();
+    if (n.tipo !== 'nombre' || PALABRAS_CLAVE.has(n.texto) || PALABRAS_PROHIBIDAS[n.texto]) {
+      throw fallo('sintaxis', mensaje, { linea: n.linea, columna: n.col, pista });
+    }
+    this.i += 1;
+    return n.texto;
+  }
+
+  /**
+   * El nombre de un módulo, sin `.py` y sin puntos.
+   *
+   * `import clima.py` es el error que comete cualquiera que acaba de ver el
+   * archivo en su pestaña, y sin esta frase el alumno leería «el módulo clima no
+   * tiene "py"», que es cierto y manda a buscar un `py` que no existe.
+   */
+  private nombreDeModulo(): string {
+    const nombre = this.nombreNuevo('aquí va el nombre de un módulo', 'por ejemplo: import math   —  o  import clima');
+    if (this.esOp('.')) {
+      const punto = this.mirar();
+      const sig = this.fichas[this.i + 1];
+      const conPy = sig !== undefined && sig.tipo === 'nombre' && sig.texto === 'py';
+      throw fallo('sintaxis', conPy ? 'un módulo se importa sin el «.py»' : 'aquí los nombres de módulo no llevan punto', {
+        linea: punto.linea,
+        columna: punto.col,
+        pista: conPy
+          ? `el archivo se llama ${nombre}.py, pero se importa así: import ${nombre}`
+          : `se importa así: import ${nombre}`,
+      });
+    }
+    return nombre;
+  }
+
+  private alias(): string | null {
+    if (!this.tragarPalabra('as')) return null;
+    return this.nombreNuevo('después de «as» va el nombre con el que lo vas a llamar', 'por ejemplo: import statistics as st');
+  }
+
+  private sentImporta(): Sent {
+    const f = this.comer();
+    const modulos: Importado[] = [];
+    for (;;) {
+      const nombre = this.nombreDeModulo();
+      modulos.push({ nombre, alias: this.alias() });
+      if (!this.tragarOp(',')) break;
+    }
+    this.exigirNl();
+    return { ...this.sitio(f), t: 'importa', modulos };
+  }
+
+  private sentDesde(): Sent {
+    const f = this.comer();
+    const modulo = this.nombreDeModulo();
+    if (!this.tragarPalabra('import')) {
+      const g = this.mirar();
+      throw fallo('sintaxis', 'a este «from» le falta el «import»', {
+        linea: g.linea,
+        columna: g.col,
+        pista: `se escribe: from ${modulo} import lo_que_necesitas`,
+      });
+    }
+    if (this.esOp('*')) {
+      const g = this.mirar();
+      throw fallo('sintaxis', 'aquí no se importa todo de golpe con «*»', {
+        linea: g.linea,
+        columna: g.col,
+        pista: `escribe los nombres que vas a usar, separados por comas: from ${modulo} import uno, otro`,
+      });
+    }
+    const nombres: Importado[] = [];
+    for (;;) {
+      const nombre = this.nombreNuevo(
+        `después de «import» va lo que quieres traer de «${modulo}»`,
+        `por ejemplo: from ${modulo} import uno, otro`,
+      );
+      nombres.push({ nombre, alias: this.alias() });
+      if (!this.tragarOp(',')) break;
+    }
+    this.exigirNl();
+    return { ...this.sitio(f), t: 'desde', modulo, nombres };
+  }
+
+  private sentCon(): Sent {
+    const f = this.comer();
+    const expr = this.expresion();
+    if (!this.tragarPalabra('as')) {
+      const g = this.mirar();
+      throw fallo('sintaxis', 'a este «with» le falta el «as» con el nombre del archivo abierto', {
+        linea: g.linea,
+        columna: g.col,
+        pista: 'se escribe: with open("datos.csv") as f:',
+      });
+    }
+    const nombre = this.nombreNuevo('después de «as» va el nombre del archivo abierto', 'por ejemplo: with open("datos.csv") as f:');
+    if (this.esOp(',')) {
+      const g = this.mirar();
+      throw fallo('sintaxis', 'aquí un «with» abre un solo archivo', {
+        linea: g.linea,
+        columna: g.col,
+        pista: 'para dos archivos, pon un «with» dentro del otro',
+      });
+    }
+    return { ...this.sitio(f), t: 'con', expr, nombre, cuerpo: this.bloque(f.linea, 'with') };
+  }
+
   private sentRetorna(): Sent {
     const f = this.comer();
     if (this.mirar().tipo === 'nl' || this.mirar().tipo === 'fin') {
@@ -500,6 +644,13 @@ class Analizador {
         pista: 'cambia los elementos de uno en uno con lista[i] = ... dentro de un «for»',
       });
     }
+    if (e.t === 'atributo') {
+      throw fallo('sintaxis', 'aquí no se le puede cambiar el valor a algo de un módulo', {
+        linea: e.linea,
+        columna: e.col,
+        pista: 'guárdalo en una variable tuya y cambia ésa',
+      });
+    }
     if (e.t === 'llamada' || e.t === 'metodo') {
       throw fallo('sintaxis', 'no se le puede dar un valor al resultado de una función', {
         linea: e.linea,
@@ -552,15 +703,15 @@ class Analizador {
     if (!op) return izq;
     const f = this.fichas[this.i - 1];
     const der = this.suma();
-    /* La cadena `0 < x < 10`, cazada aquí: ver la cabecera del archivo. */
-    if (this.leerOpComparacionMirando()) {
-      throw fallo('sintaxis', 'aquí no se pueden encadenar dos comparaciones', {
-        linea: f.linea,
-        columna: f.col,
-        pista: 'escríbelo con «and»: en vez de 0 < x < 10, escribe 0 < x and x < 10',
-      });
+    if (!this.leerOpComparacionMirando()) return { ...this.sitio(f), t: 'comp', op, izq, der };
+    /* La cadena `0 < x < 10`: ver la cabecera del archivo. */
+    const ops: OpComp[] = [op];
+    const args: Expr[] = [izq, der];
+    for (let otro = this.leerOpComparacion(); otro; otro = this.leerOpComparacion()) {
+      ops.push(otro);
+      args.push(this.suma());
     }
-    return { ...this.sitio(f), t: 'comp', op, izq, der };
+    return { ...this.sitio(f), t: 'cadena', ops, args };
   }
 
   private leerOpComparacion(): OpComp | null {
@@ -680,11 +831,10 @@ class Analizador {
         }
         this.i += 1;
         if (!this.esOp('(')) {
-          throw fallo('sintaxis', `«${n.texto}» tiene que llamarse con paréntesis`, {
-            linea: n.linea,
-            columna: n.col,
-            pista: `escribe ${n.texto}() con sus paréntesis, aunque no lleve nada dentro`,
-          });
+          /* `math.pi`. Si lo de la izquierda no es un módulo, la máquina da la
+           * frase de antes: «upper» tiene que llamarse con paréntesis. */
+          e = { ...this.sitio(f), t: 'atributo', obj: e, nombre: n.texto };
+          continue;
         }
         this.comer();
         e = { ...this.sitio(f), t: 'metodo', obj: e, nombre: n.texto, args: this.argumentos() };

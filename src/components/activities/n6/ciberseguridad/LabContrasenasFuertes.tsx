@@ -5,13 +5,11 @@ import type { ActivityProps } from '@/types/activity-contract';
 import { useLabActividad } from '../../lib/useLabActividad';
 import { VentanaBase } from '../../../simuladores/VentanaBase';
 import { useNavegador, VentanaNavegador, paginaDe, type MapaSitios, type PaginaWeb } from '../../../simuladores/navegador';
+import { ArmadorDeLlave } from './ArmadorDeLlave';
 import {
-  BOLSA_PALABRAS,
   DICCIONARIO_COMUN,
-  combinacionesDeFrase,
   intentarAdivinar,
   reutilizada,
-  sacarPalabras,
   type Intento,
   type PasoAtaque,
   type PerfilPublico,
@@ -57,6 +55,14 @@ const URL_NOTICIA = 'clipzone.mx/noticia';
 const URL_EMERGENTE = 'soporte-nivelmax.mx/verificacion';
 
 const NOMBRE_CUENTA: Record<CuentaId, string> = { juego: 'NivelMax', escuela: 'Aula Tecnia', videos: 'ClipZone' };
+const CUENTAS: CuentaId[] = ['juego', 'escuela', 'videos'];
+
+/** Lo que cualquiera ve en el perfil de Dani en NivelMax (§69.4). Ninguna
+ *  palabra está en la bolsa: si lo estuviera, una ficha de la bolsa podría
+ *  caer como «dato suyo» sin serlo. */
+export const PERFIL_DANI: PerfilPublico = { nombre: 'Dani', mascota: 'Rocky', equipo: 'Halcones', juego: 'DinoRally', anios: [2014] };
+
+const atacar = (llave: string) => intentarAdivinar(llave, PERFIL_DANI, DICCIONARIO_COMUN);
 
 interface PersonajeMarcador {
   id: string;
@@ -119,9 +125,11 @@ const LINEAS = {
   e1AciertoDisfraz1: 'Mira bien ésta. Tiene mayúscula, número y símbolo — y aun así cayó.',
   e1AciertoDisfraz2: 'El programa le quitó el disfraz. Sin la arroba y sin el cero, dice password.',
   e1Fallo: 'Vuelve a leer el informe. La máquina dice exactamente en qué paso cayó — no hay límite de intentos.',
-  e2Intro: 'Ahora te toca a ti, y no vas a escribir nada. Vas a sacar cuatro palabras de una bolsa.',
-  e2Acierto: 'Mira el informe: no está en la lista, no es un dato tuyo, no es un disfraz. Y a lo bruto habría que probar miles de millones de combinaciones.',
-  e3Intro: 'Tienes tres cuentas abiertas en tres pestañas. Ponle llave a cada una.',
+  e2Intro: 'Ahora te toca a ti, y no se teclea nada: la llave se arma con fichas. Arma una que la máquina no pueda tumbar, y pruébala.',
+  e2Acierto: 'Ésa aguanta: no está en la lista, no es un dato de Dani, no es un disfraz, y son más combinaciones de las que la máquina tiene paciencia de probar.',
+  e2SinCaida: 'A la primera. Antes de seguir, arma otra con la mascota de Dani y mira qué le pasa: probar no cuesta nada.',
+  e3Intro: 'Tienes tres cuentas abiertas en tres pestañas. Ponle llave a cada una, y que ninguna caiga en la máquina.',
+  llaveCae: (cuenta: string) => `Esa llave cae en la máquina: la puerta de ${cuenta} sigue abierta. Arma otra.`,
   e3Acierto: 'Las tres cuentas tienen llave, y ninguna cae en la máquina.',
   e4Intro: 'Noticia de hoy: el sitio de videos perdió su lista de contraseñas.',
   e4ReveloReutilizada: 'Mira lo que acaba de pasar con las otras dos cuentas: la misma llave abría las tres.',
@@ -151,19 +159,21 @@ function etiquetaPaso(paso: PasoAtaque | null): string {
       return 'un dato de su perfil';
     case 'disfraz':
       return 'un disfraz de una palabra común';
+    case 'piezas':
+      return 'piezas que la máquina ya conocía';
     default:
-      return 'a lo bruto (y no cayó)';
+      return 'a lo bruto';
   }
 }
 
 function describirIntento(i: Intento): string {
   if (!i.cae) return `No cayó · a lo bruto habría que probar demasiadas combinaciones.`;
-  return `Cayó por: ${etiquetaPaso(i.paso)} · intento nº ${i.intento}`;
+  return `Cayó por: ${etiquetaPaso(i.paso)} · intento nº ${i.intento.toLocaleString('es-MX')}`;
 }
 
 interface ContenidoDinamico {
   resultadosE1: Record<string, Intento | null>;
-  fraseE2: string[] | null;
+  pruebasE2: { llave: string; intento: Intento }[];
   llaves: Record<CuentaId, string | null>;
   fase: Fase;
   intrusionRevelada: boolean;
@@ -176,7 +186,12 @@ interface ContenidoDinamico {
 }
 
 function construirMapa(c: ContenidoDinamico): MapaSitios {
-  const gestionDesbloqueada = c.fase === 'e4' ? c.intrusionRevelada : c.fase !== 'e1' && c.fase !== 'e2' && c.fase !== 'e3';
+  const gestionDesbloqueada = c.fase === 'e3' || (c.fase === 'e4' ? c.intrusionRevelada : c.fase !== 'e1' && c.fase !== 'e2');
+  const accionLlave = (cuenta: CuentaId) => ({ id: `cambiar-llave-${cuenta}`, etiqueta: c.llaves[cuenta] ? 'Cambiar la llave' : 'Poner llave' });
+  const filaMaquina = (cuenta: CuentaId) => {
+    const llave = c.llaves[cuenta];
+    return llave ? [{ etiqueta: 'En la máquina', valor: describirIntento(atacar(llave)) }] : [];
+  };
 
   const paginaMaquina: PaginaWeb = {
     url: URL_MAQUINA,
@@ -200,27 +215,23 @@ function construirMapa(c: ContenidoDinamico): MapaSitios {
 
   const paginaFrases: PaginaWeb = {
     url: URL_FRASES,
-    pestana: 'Bolsa de palabras',
-    titulo: 'La bolsa de palabras',
+    pestana: 'Mesa de pruebas',
+    titulo: 'La mesa de pruebas',
     autor: null,
     fecha: null,
     cuerpo: {
       tipo: 'ficha',
       datos: [
-        { etiqueta: 'Tu frase', valor: c.fraseE2 ? c.fraseE2.join(' ') : 'Todavía no sacaste ninguna.' },
-        ...(c.fraseE2
-          ? [
-              {
-                etiqueta: 'Informe de la máquina',
-                valor: `No cayó · no está en la lista, no es un dato tuyo, no es un disfraz. A lo bruto: ${combinacionesDeFrase(
-                  BOLSA_PALABRAS.length,
-                  c.fraseE2.length,
-                ).toLocaleString('es-MX')} combinaciones.`,
-              },
-            ]
-          : []),
+        {
+          etiqueta: 'Cómo funciona',
+          valor:
+            'Armas una llave con fichas y la máquina la ataca en orden: la lista de las más usadas, los datos del perfil de Dani, el disfraz, y al final a lo bruto. Esta máquina se rinde a los mil millones de intentos.',
+        },
+        ...(c.pruebasE2.length === 0
+          ? [{ etiqueta: 'Tus pruebas', valor: 'Todavía no probaste ninguna.' }]
+          : c.pruebasE2.map((p, i) => ({ etiqueta: `Prueba ${i + 1} · ${p.llave}`, valor: describirIntento(p.intento) }))),
       ],
-      acciones: [{ id: 'sacar-palabras', etiqueta: 'Sacar cuatro palabras', hecha: Boolean(c.fraseE2) }],
+      acciones: [{ id: 'armar-prueba', etiqueta: 'Armar una llave' }],
     },
   };
 
@@ -234,11 +245,16 @@ function construirMapa(c: ContenidoDinamico): MapaSitios {
       tipo: 'ficha',
       datos: [
         { etiqueta: 'Cuenta', valor: 'Dani' },
+        {
+          etiqueta: 'Perfil público',
+          valor: `Mascota: ${PERFIL_DANI.mascota} · Equipo: ${PERFIL_DANI.equipo} · Juega ${PERFIL_DANI.juego} desde ${PERFIL_DANI.anios[0]}`,
+        },
         { etiqueta: 'Llave', valor: c.llaves.juego ?? 'Sin llave todavía' },
+        ...filaMaquina('juego'),
         ...(c.intrusionJuego ? [{ etiqueta: 'Sesiones abiertas', valor: 'Un dispositivo que no reconoces sigue conectado.' }] : []),
       ],
       acciones: [
-        ...(gestionDesbloqueada ? [{ id: 'cambiar-llave-juego', etiqueta: 'Cambiar la llave' }] : []),
+        ...(gestionDesbloqueada ? [accionLlave('juego')] : []),
         ...(c.intrusionJuego ? [{ id: 'cerrar-sesiones-juego', etiqueta: 'Cerrar sesiones', hecha: c.sesionesJuegoCerradas }] : []),
       ],
     },
@@ -259,13 +275,14 @@ function construirMapa(c: ContenidoDinamico): MapaSitios {
       datos: [
         { etiqueta: 'Cuenta', valor: 'Dani' },
         { etiqueta: 'Llave', valor: c.llaves.escuela ?? 'Sin llave todavía' },
+        ...filaMaquina('escuela'),
         {
           etiqueta: 'Verificación en dos pasos',
           valor: c.dosFactor.activo ? `Activada (${c.dosFactor.tipo === 'app' ? 'app de códigos' : 'código por teléfono'})` : 'Desactivada',
         },
       ],
       acciones: [
-        ...(gestionDesbloqueada ? [{ id: 'cambiar-llave-escuela', etiqueta: 'Cambiar la llave' }] : []),
+        ...(gestionDesbloqueada ? [accionLlave('escuela')] : []),
         // El bloque de activación se queda en pantalla incluso después de la
         // fase 'e5' (una vez activada, y en las fases siguientes): el pliego
         // pide que «Activar verificación en dos pasos» sea un botón que SIGUE
@@ -299,8 +316,9 @@ function construirMapa(c: ContenidoDinamico): MapaSitios {
       datos: [
         { etiqueta: 'Cuenta', valor: 'Dani' },
         { etiqueta: 'Llave', valor: c.llaves.videos ?? 'Sin llave todavía' },
+        ...filaMaquina('videos'),
       ],
-      acciones: gestionDesbloqueada ? [{ id: 'cambiar-llave-videos', etiqueta: 'Cambiar la llave' }] : [],
+      acciones: gestionDesbloqueada ? [accionLlave('videos')] : [],
     },
     senales: c.cuentasComprometidas.has('videos')
       ? [{ id: 'alerta-videos', tono: 'alerta', texto: 'Esta página perdió su lista de contraseñas.', explica: 'No fue nada que hicieras tú: cambia la llave para cerrar esa puerta.' }]
@@ -359,7 +377,9 @@ export function LabContrasenasFuertes(props: ActivityProps & { alSalir?: () => v
   const [resultadosE1, setResultadosE1] = useState<Record<string, Intento | null>>({});
   const [acertadosE1, setAcertadosE1] = useState<Record<string, boolean>>({});
 
-  const [fraseE2, setFraseE2] = useState<string[] | null>(null);
+  const [pruebasE2, setPruebasE2] = useState<{ llave: string; intento: Intento }[]>([]);
+  /** Qué está armando el alumno: la mesa de pruebas (E2) o la llave de una cuenta. */
+  const [armador, setArmador] = useState<null | 'prueba' | CuentaId>(null);
 
   const [llaves, setLlaves] = useState<Record<CuentaId, string | null>>({ juego: null, escuela: null, videos: null });
   const [intrusionRevelada, setIntrusionRevelada] = useState(false);
@@ -382,7 +402,7 @@ export function LabContrasenasFuertes(props: ActivityProps & { alSalir?: () => v
 
   const mapa = construirMapa({
     resultadosE1,
-    fraseE2,
+    pruebasE2,
     llaves,
     fase,
     intrusionRevelada,
@@ -466,13 +486,19 @@ export function LabContrasenasFuertes(props: ActivityProps & { alSalir?: () => v
   }
 
   // ── E2 ────────────────────────────────────────────────────────────────
-  function sacarFrase() {
-    const nueva = sacarPalabras(BOLSA_PALABRAS, 4, Math.random);
-    setFraseE2(nueva);
+  function probarEnMesa(llave: string, intento: Intento) {
+    const nuevas = [...pruebasE2, { llave, intento }];
+    setPruebasE2(nuevas);
+    if (fase !== 'e2') return;
+    if (intento.cae) {
+      decir(`Cayó. ${intento.motivo}`);
+      return;
+    }
     if (!e2AvanzadoRef.current) {
       e2AvanzadoRef.current = true;
       labActividad.avanzar();
       decir(LINEAS.e2Acierto);
+      if (!nuevas.some((p) => p.intento.cae)) decir(LINEAS.e2SinCaida);
     }
   }
 
@@ -484,12 +510,24 @@ export function LabContrasenasFuertes(props: ActivityProps & { alSalir?: () => v
   }
 
   // ── E3 ────────────────────────────────────────────────────────────────
-  function fijarLlaves(nuevas: Record<CuentaId, string>) {
+  function guardarLlave(cuentaId: CuentaId, llave: string, intento: Intento) {
+    setArmador(null);
+    if (fase === 'e3') ponerLlaveE3(cuentaId, llave, intento);
+    else cambiarLlave(cuentaId, llave, intento);
+  }
+
+  function ponerLlaveE3(cuentaId: CuentaId, llave: string, intento: Intento) {
+    const nuevas = { ...llaves, [cuentaId]: llave };
     setLlaves(nuevas);
-    if (!e3AvanzadoRef.current) {
-      e3AvanzadoRef.current = true;
-      labActividad.avanzar();
+    if (intento.cae) {
+      decir(LINEAS.llaveCae(NOMBRE_CUENTA[cuentaId]));
+      return;
     }
+    decir(`${NOMBRE_CUENTA[cuentaId]} ya tiene llave.`);
+    const todas = CUENTAS.every((cu) => nuevas[cu] && !atacar(nuevas[cu]!).cae);
+    if (!todas || e3AvanzadoRef.current) return;
+    e3AvanzadoRef.current = true;
+    labActividad.avanzar();
     llaveFiltradaOriginalRef.current = nuevas.videos;
     decir(LINEAS.e3Acierto);
     decir(LINEAS.e4Intro);
@@ -501,19 +539,6 @@ export function LabContrasenasFuertes(props: ActivityProps & { alSalir?: () => v
     // la cuenta de ClipZone; lo que de verdad mueve el encargo es "Seguir"
     // en el panel de Bit, no haber leído la página.
     setFase('e4');
-  }
-
-  function elegirMismaFrase() {
-    const frase = sacarPalabras(BOLSA_PALABRAS, 4, Math.random).join(' ');
-    fijarLlaves({ juego: frase, escuela: frase, videos: frase });
-  }
-
-  function elegirFrasesDistintas() {
-    fijarLlaves({
-      juego: sacarPalabras(BOLSA_PALABRAS, 4, Math.random).join(' '),
-      escuela: sacarPalabras(BOLSA_PALABRAS, 4, Math.random).join(' '),
-      videos: sacarPalabras(BOLSA_PALABRAS, 4, Math.random).join(' '),
-    });
   }
 
   // ── E4 ────────────────────────────────────────────────────────────────
@@ -531,17 +556,21 @@ export function LabContrasenasFuertes(props: ActivityProps & { alSalir?: () => v
   }
 
   // ── Cambiar llave — compartido entre E4 y E6 ───────────────────────────
-  function cambiarLlave(cuentaId: CuentaId) {
-    const nueva = sacarPalabras(BOLSA_PALABRAS, 4, Math.random).join(' ');
+  function cambiarLlave(cuentaId: CuentaId, nueva: string, intento: Intento) {
     const llavesNuevas = { ...llaves, [cuentaId]: nueva };
     setLlaves(llavesNuevas);
+    if (intento.cae) {
+      decir(LINEAS.llaveCae(NOMBRE_CUENTA[cuentaId]));
+      return;
+    }
     decir(`Cambiaste la llave de ${NOMBRE_CUENTA[cuentaId]}.`);
 
     if (fase === 'e4' && intrusionRevelada) {
       const filtrada = llaveFiltradaOriginalRef.current;
       const quedaAlguna =
         filtrada !== null && (llavesNuevas.juego === filtrada || llavesNuevas.escuela === filtrada || llavesNuevas.videos === filtrada);
-      if (!quedaAlguna && !e4AvanzadoRef.current) {
+      const algunaCae = CUENTAS.some((cu) => llavesNuevas[cu] && atacar(llavesNuevas[cu]!).cae);
+      if (!quedaAlguna && !algunaCae && !e4AvanzadoRef.current) {
         e4AvanzadoRef.current = true;
         labActividad.avanzar();
         decir(LINEAS.e4Cierre);
@@ -641,16 +670,23 @@ export function LabContrasenasFuertes(props: ActivityProps & { alSalir?: () => v
   // ── Despachador de acciones de ficha (páginas Y ventana emergente) ─────
   function manejarAccionFicha(id: string) {
     if (id.startsWith('probar-')) return probarPersonaje(id.slice('probar-'.length));
-    if (id === 'sacar-palabras') return sacarFrase();
-    if (id === 'cambiar-llave-juego') return cambiarLlave('juego');
-    if (id === 'cambiar-llave-escuela') return cambiarLlave('escuela');
-    if (id === 'cambiar-llave-videos') return cambiarLlave('videos');
+    if (id === 'armar-prueba') return setArmador('prueba');
+    if (id === 'cambiar-llave-juego') return setArmador('juego');
+    if (id === 'cambiar-llave-escuela') return setArmador('escuela');
+    if (id === 'cambiar-llave-videos') return setArmador('videos');
     if (id === 'cerrar-sesiones-juego') return cerrarSesionesJuego();
     if (id === 'factor-app') return elegirFactor('app');
     if (id === 'factor-sms') return elegirFactor('sms');
     if (id === 'factor-pregunta') return elegirFactor('pregunta');
     if (id === 'activar-2-pasos') return activarDosPasos();
     if (id === 'dar-codigo') return darCodigoE6();
+  }
+
+  function otrasLlaves(cuenta: CuentaId) {
+    const otras = CUENTAS.filter((cu) => cu !== cuenta && llaves[cu]).map((cu) => ({ etiqueta: NOMBRE_CUENTA[cu], llave: llaves[cu]! }));
+    const deLaMesa = [...pruebasE2].reverse().find((p) => !p.intento.cae);
+    if (deLaMesa && !otras.some((o) => o.llave === deLaMesa.llave)) otras.push({ etiqueta: 'la mesa de pruebas', llave: deLaMesa.llave });
+    return otras;
   }
 
   function terminar() {
@@ -670,8 +706,8 @@ export function LabContrasenasFuertes(props: ActivityProps & { alSalir?: () => v
           </p>
           <h2 className="text-2xl font-extrabold text-white mb-2">Insignia: Una llave por puerta</h2>
           <p className="text-slate-300 max-w-xl mx-auto">
-            Viste el ataque por dentro y sabes por qué un símbolo al final no salva a nadie. Armaste una llave larga con
-            cuatro palabras que no tienen nada que ver. Y cuando una página perdió su lista no fue culpa tuya: sólo
+            Viste el ataque por dentro y sabes por qué un símbolo al final no salva a nadie. Armaste llaves que la máquina no
+            pudo tumbar. Y cuando una página perdió su lista no fue culpa tuya: sólo
             tuviste que cambiar una puerta, porque las otras dos tenían su propia llave.
           </p>
           {alSalir && (
@@ -689,7 +725,7 @@ export function LabContrasenasFuertes(props: ActivityProps & { alSalir?: () => v
   return (
     <VentanaBase marca="Tecnia Navegador" subtitulo="Contraseñas fuertes y 2 pasos">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 p-4 sm:p-6">
-        <div>
+        <div className="relative">
           <VentanaNavegador
             pestanas={navegador.pestanas.map((p) => ({ id: p.id, activa: p.id === navegador.activaId, titulo: paginaDe(mapa, p.url).pestana }))}
             pagina={navegador.paginaActual}
@@ -722,6 +758,17 @@ export function LabContrasenasFuertes(props: ActivityProps & { alSalir?: () => v
             emergentes={navegador.emergentes}
             onCerrarEmergente={manejarCerrarEmergente}
           />
+          {armador && (
+            <ArmadorDeLlave
+              key={armador}
+              titulo={armador === 'prueba' ? 'Mesa de pruebas · Arma una llave' : `${NOMBRE_CUENTA[armador]} · ${llaves[armador] ? 'Cambiar la llave' : 'Poner llave'}`}
+              perfil={PERFIL_DANI}
+              otras={armador === 'prueba' ? [] : otrasLlaves(armador)}
+              onProbar={armador === 'prueba' ? probarEnMesa : undefined}
+              onGuardar={armador === 'prueba' ? undefined : (llave, intento) => guardarLlave(armador, llave, intento)}
+              onCerrar={() => setArmador(null)}
+            />
+          )}
         </div>
 
         <div className="bg-[#0b1220] border border-cyan-500/30 rounded-2xl p-5 flex flex-col gap-4 h-fit" data-testid="bit-panel">
@@ -763,22 +810,13 @@ export function LabContrasenasFuertes(props: ActivityProps & { alSalir?: () => v
             </div>
           )}
 
-          {fase === 'e2' && fraseE2 && (
+          {fase === 'e2' && pruebasE2.some((p) => !p.intento.cae) && (
             <button type="button" onClick={continuarAE3} className="px-4 py-3 rounded-xl bg-cyan-500 text-slate-950 font-bold">
               Seguir
             </button>
           )}
 
-          {fase === 'e3' && (
-            <div className="flex flex-col gap-2">
-              <button type="button" onClick={elegirMismaFrase} className="px-4 py-3 rounded-xl bg-slate-700 text-white font-semibold text-left">
-                Usar la misma frase en las tres cuentas
-              </button>
-              <button type="button" onClick={elegirFrasesDistintas} className="px-4 py-3 rounded-xl bg-emerald-500 text-slate-950 font-bold text-left">
-                Sacar una frase distinta para cada cuenta
-              </button>
-            </div>
-          )}
+          {fase === 'e3' && <p className="text-sm text-slate-300">Ve a cada pestaña y ponle llave a la cuenta.</p>}
 
           {fase === 'e4' && !intrusionRevelada && (
             <button type="button" onClick={seguirE4} className="px-4 py-3 rounded-xl bg-cyan-500 text-slate-950 font-bold">
@@ -883,8 +921,8 @@ function PortadaObjetivos({ onEmpezar }: { onEmpezar: () => void }) {
           <span className="text-xs uppercase tracking-wide text-cyan-300 font-bold">Lo que vas a hacer</span>
           <ol className="list-decimal list-inside text-slate-200 mt-2 space-y-1">
             <li>Ver cómo adivina un programa, paso por paso</li>
-            <li>Sacar tu frase de cuatro palabras</li>
-            <li>Ponerle llave a tus tres cuentas</li>
+            <li>Armar con fichas una llave que la máquina no tumbe</li>
+            <li>Ponerle llave a las tres cuentas de Dani</li>
             <li>Aguantar una filtración y arreglarla</li>
             <li>Encender la segunda llave y no dar el código</li>
           </ol>

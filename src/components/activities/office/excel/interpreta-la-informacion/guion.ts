@@ -1,6 +1,6 @@
 import { crearMotor } from '@/components/office/motor-hojas/formula/calculo';
-import { vinculoEnCelda, vinculoRoto } from '@/components/office/motor-hojas/comandos';
-import { crudoDe, errorDe, guardaUnaRegla, vale } from '@/components/office/motor-hojas/consultas';
+import { aplicar, vinculoEnCelda, vinculoRoto } from '@/components/office/motor-hojas/comandos';
+import { crudoDe, errorDe, guardaUnaRegla, mismoNumero, vale, valorDe } from '@/components/office/motor-hojas/consultas';
 import { verificar } from '@/components/office/motor-hojas/verificar';
 import { RELOJ_DE_LA_CLASE, type GuionHojas } from '@/components/office/motor-hojas/guion';
 import type { Celda, Libro } from '@/components/office/motor-hojas/modelo';
@@ -229,10 +229,28 @@ export function libroDeLasCuentas(): Libro {
 
 const motorDe = (libro: Libro) => crearMotor(libro, RELOJ);
 
-/** Encargo 2: el Total de Camila deja de ser un número a mano. */
+/**
+ * §69.9 · ¿la celda se entera si cambia `otra`? Distingue una regla que lee
+ * su fila de `=150` o `=900-300`, que «guardan una regla» y dan el número
+ * justo sin leer nada.
+ */
+function seEntera(libro: Libro, hoja: string, celda: string, otra: string): boolean {
+  const antes = valorDe(motorDe(libro), hoja, celda);
+  const viejo = Number(crudoDe(libro, hoja, otra));
+  const cambiado = aplicar(libro, { comando: 'escribir', args: { hoja, celda: otra, crudo: String(viejo + 7) } });
+  const despues = valorDe(motorDe(cambiado), hoja, celda);
+  return typeof antes === 'number' && typeof despues === 'number' && !mismoNumero(antes, despues);
+}
+
+/** Encargo 2: el Total de Camila deja de ser un número a mano, y calcula con SU fila. */
 export function elNumeroDeCamilaEstaCorregido(libro: Libro): boolean {
   const motor = motorDe(libro);
-  return guardaUnaRegla(libro, HOJA_CUOTAS, CELDA_CAMILA) && vale(motor, HOJA_CUOTAS, CELDA_CAMILA, TOTAL_CORRECTO_CAMILA);
+  return (
+    guardaUnaRegla(libro, HOJA_CUOTAS, CELDA_CAMILA) &&
+    vale(motor, HOJA_CUOTAS, CELDA_CAMILA, TOTAL_CORRECTO_CAMILA) &&
+    seEntera(libro, HOJA_CUOTAS, CELDA_CAMILA, `B${FILA_CAMILA}`) &&
+    seEntera(libro, HOJA_CUOTAS, CELDA_CAMILA, `C${FILA_CAMILA}`)
+  );
 }
 
 /** Encargo 4: el `#¡REF!` de Torneos, arreglado quitando la referencia rota. */
@@ -242,7 +260,9 @@ export function elRefEstaArreglado(libro: Libro): boolean {
   return (
     guardaUnaRegla(libro, HOJA_TORNEOS, CELDA_TORNEO_ROTO) &&
     !crudoDe(libro, HOJA_TORNEOS, CELDA_TORNEO_ROTO).includes('REF') &&
-    vale(motor, HOJA_TORNEOS, CELDA_TORNEO_ROTO, NETO_TORNEO_ROTO)
+    vale(motor, HOJA_TORNEOS, CELDA_TORNEO_ROTO, NETO_TORNEO_ROTO) &&
+    seEntera(libro, HOJA_TORNEOS, CELDA_TORNEO_ROTO, `B${FILA_TORNEO_ROTO}`) &&
+    seEntera(libro, HOJA_TORNEOS, CELDA_TORNEO_ROTO, `C${FILA_TORNEO_ROTO}`)
   );
 }
 
@@ -350,14 +370,16 @@ export const GUION_INTERPRETA_LA_INFORMACION: GuionHojas = {
       senal: { control: 'hoja:h2' },
       logro: { tipo: 'control', control: 'mostrar-formulas' },
       aprendido:
-        'Cuatro de los cinco Totales dicen `=B*C`: son reglas, y si cambiara el número de meses o la cuota, se recalcularían solas. Uno —el de Camila— dice sólo `140`, sin el `=` que distingue una regla de un dato. Ésa es la avería más común del mundo real: en medio de una columna de fórmulas, un número escrito a mano no avisa de nada, se ve exactamente igual que las demás celdas hasta que levantas la tapa.',
+        'Con la tapa levantada, cada Total enseña lo que guarda: una regla empieza con `=` y se recalcula sola si cambian los meses o la cuota; un dato es un número quieto. Ésa es la avería más común del mundo real: en medio de una columna de fórmulas, un número escrito a mano no avisa de nada, se ve exactamente igual que las demás celdas hasta que levantas la tapa. Mira bien la columna: no todas son reglas.',
     },
     {
       id: 'corrige-el-numero-a-mano',
-      titulo: 'Corrige el número de Camila',
-      instruccion: `Con las fórmulas todavía a la vista, ponte en **${CELDA_CAMILA}** y escribe **=B${FILA_CAMILA}*C${FILA_CAMILA}**, igual que sus vecinas.`,
-      pista: 'Es la misma fórmula que ya tienen las otras cuatro filas: meses por cuota, con el «=» delante.',
-      senal: { control: `celda:${CELDA_CAMILA}` },
+      titulo: 'El Total escrito a mano',
+      instruccion:
+        'Con las fórmulas a la vista, uno de los Totales no es una regla: alguien lo escribió a mano y ya no cuadra con sus meses. **Encuéntralo y haz que calcule como sus vecinas**, para que se entere solo si un día cambian los meses o la cuota.',
+      pista:
+        'Busca el Total que se ve como un número suelto, sin «=». Sus vecinas multiplican dos celdas de su misma fila: ¿cuáles? Un número escrito con «=» delante tampoco vale: tiene que leer la fila.',
+      senal: { control: 'hoja:h2' },
       logro: { tipo: 'documento', comprueba: elNumeroDeCamilaEstaCorregido },
       aprendido: `Salió **${TOTAL_CORRECTO_CAMILA}**, diez pesos más que el 140 que había — el Total recaudado de abajo se movió solo, de 790 a ${TOTAL_CUOTAS_CORRECTO}, sin que tocaras esa celda. Ahí está el costo real de un número a mano en medio de una columna de fórmulas: no se ve mal, sólo está mal, y arrastra a todo lo que suma sobre él.`,
     },
@@ -386,9 +408,10 @@ export const GUION_INTERPRETA_LA_INFORMACION: GuionHojas = {
     {
       id: 'arregla-el-ref',
       titulo: 'Un #¡REF! cuenta que alguien borró algo',
-      instruccion: `Ve a la hoja **Torneos**. En **${CELDA_TORNEO_ROTO}** hay un \`#¡REF!\` metido dentro de la fórmula. Bórralo dejando sólo la cuenta de verdad: **=B${FILA_TORNEO_ROTO}-C${FILA_TORNEO_ROTO}**.`,
+      instruccion:
+        'El parte del libro dijo que hay dos errores. **Uno está en la hoja Torneos**: encuéntralo y arréglalo editando su fórmula, para que siga calculando el neto. Escribir el número a mano no lo arregla.',
       pista:
-        'El `#¡REF!` no es el error completo, es un PEDAZO de la fórmula: alguien borró una columna que esta cuenta usaba, y lo borrado se quedó ahí, visible, como un hueco. Quítalo y deja sólo lo cobrado menos lo gastado.',
+        'Un `#¡REF!` dentro de una fórmula es el hueco de algo que alguien borró: la columna que esa cuenta usaba ya no está. Doble clic en la celda para ver su fórmula, quita el pedazo roto y deja la cuenta que tiene sentido para un neto: lo cobrado menos lo gastado.',
       senal: { control: 'hoja:h3' },
       logro: { tipo: 'documento', comprueba: elRefEstaArreglado },
       aprendido: `Salió **${NETO_TORNEO_ROTO}**. Un \`#¡REF!\` cuenta siempre la misma historia: alguien borró una fila, una columna o una hoja entera que una fórmula necesitaba, y lo borrado se queda a la vista dentro de la regla, en vez de desaparecer en silencio. No se repara escribiendo un número: se repara editando la fórmula, porque el error estaba en la REGLA, no en el dato.`,
@@ -396,9 +419,9 @@ export const GUION_INTERPRETA_LA_INFORMACION: GuionHojas = {
     {
       id: 'arregla-el-div0',
       titulo: 'Un #¡DIV/0! cuenta que falta un dato',
-      instruccion: `Ve a la hoja **Resumen**. La Cuota promedio mensual da \`#¡DIV/0!\` porque a **B4** —Meses transcurridos— nunca le escribieron nada. Van **${MESES_TRANSCURRIDOS}** meses de este ciclo: escríbelo ahí, sin tocar la fórmula de abajo.`,
+      instruccion: `El otro error está en **Resumen**: la cuota promedio mensual da \`#¡DIV/0!\`. Su fórmula está bien escrita; **lo que falta es un dato**. El tesorero dejó dicho que van **${MESES_TRANSCURRIDOS}** meses de este ciclo: encuentra dónde falta y complétalo, sin tocar la fórmula.`,
       pista:
-        'El problema no está en =B3/B4: esa fórmula está bien escrita. Está en que B4 se quedó vacía, y una hoja vacía en una división vale 0. Escribe el número en B4, no cambies B5.',
+        'Dividir entre una celda vacía es dividir entre 0. Mira la fórmula del promedio: ¿entre qué celda divide, y qué dice la etiqueta de al lado de esa celda?',
       senal: { control: 'hoja:h4' },
       logro: { tipo: 'documento', comprueba: elDiv0EstaArreglado },
       aprendido: `Con el dato puesto, la Cuota promedio mensual salió sola: **${CUOTA_PROMEDIO}**. Compáralo con el \`#¡REF!\` de hace un momento: ahí sobraba un pedazo roto dentro de la fórmula; aquí faltaba un dato afuera de ella. Uno se arregla editando la regla; el otro, rellenando el hueco. Confundir los dos es tapar un error sin haber entendido qué lo causó.`,

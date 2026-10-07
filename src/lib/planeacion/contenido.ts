@@ -8336,7 +8336,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'SUMAR.SI, CONTAR.SI y PROMEDIO.SI en acción',
         duracionMin: 20,
         descripcion:
-          'Actividad digital: el alumno usa las tres funciones condicionales sobre la tabla de gastos de la salida, provoca a propósito el error de escribir el criterio sin comillas, prueba un criterio numérico con comparador para confirmar que también lleva comillas, y caza un rango corrido que da un número que parece correcto pero no lo es. Cierra formateando =HOY() como fecha, quitándole el mismo disfraz a la fecha de la salida, y restando ambas para saber cuántos días faltan.',
+          'Actividad digital: el alumno contesta con las tres funciones condicionales las preguntas de la tesorera sobre la tabla de gastos (la fórmula no se le dicta: se le nombra la función y qué pide), usa un criterio numérico con comparador, que también lleva comillas, y encuentra el rango corrido de un total que la tesorera dejó escrito, que da un número que parece correcto pero no lo es. La plataforma juzga la fórmula por lo que hace —de qué renglones se entera—, así que acepta cualquier forma correcta de escribirla. Cierra formateando =HOY() como fecha, quitándole el mismo disfraz a la fecha de la salida, y restando ambas para saber cuántos días faltan.',
         actividadSugerida: 'La actividad digital — el ejercicio principal de esta clase, con los encargos de funciones y el de la fecha disfrazada.',
       },
       {
@@ -8419,7 +8419,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'Elegir bien, elegir mal, y ver la diferencia',
         duracionMin: 24,
         descripcion:
-          'Actividad digital: el alumno elige mal la gráfica dos veces a propósito para ver la respuesta dejar de leerse aunque los datos no hayan cambiado, construye la misma gráfica dos veces cortando el eje en una de ellas para comparar cómo la misma diferencia real se ve casi nada en una versión y enorme en la otra, y arma un pastel de veinte porciones ilegible y otro con datos que no suman ningún total coherente.',
+          'Actividad digital: el alumno elige él mismo, entre cinco, la gráfica que contesta cada una de cuatro preguntas de la feria (la plataforma no nombra el tipo y cobra la elección que no contesta, diciendo por qué), elige mal la gráfica dos veces a propósito para ver la respuesta dejar de leerse aunque los datos no hayan cambiado, construye la misma gráfica dos veces cortando el eje en una de ellas para comparar cómo la misma diferencia real se ve casi nada en una versión y enorme en la otra, y arma un pastel de veinte porciones ilegible y otro con datos que no suman ningún total coherente.',
         actividadSugerida: 'La actividad digital — el ejercicio principal, con los cuatro encargos de elección correcta/incorrecta y manipulación visual.',
       },
       {
@@ -8573,7 +8573,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n6-carteles-e-infografias': {
     actividadId: 'n6-carteles-e-infografias',
     objetivo:
-      'Que el alumno construya un cartel desde un lienzo vacío aplicando cuatro reglas de diseño: un título que se lee primero porque está agrandado y centrado con la herramienta de centrado (no calculado a ojo), información de apoyo debajo que es estrictamente más chica que el título para crear una jerarquía visual real, y un fondo de color cuidando no usar más de cuatro colores distintos en todo el cartel — sabiendo que el editor cuadricula el lienzo, así que un elemento está centrado exacto o no lo está, sin términos medios.',
+      'Que el alumno convierta los datos de una encuesta del salón en una infografía que contesta su pregunta de un vistazo: la pregunta de título, grande y centrada con la herramienta; una barra por dato con la altura proporcional a su número (que calcula él a partir de una sola escala dada), todas sobre la misma base y del mismo ancho, cada una con su etiqueta; la respuesta destacada con un color distinto; la fuente de los datos en letra chica, y el cartel con jerarquía y no más de cuatro colores — sabiendo que el editor cuadricula el lienzo, así que una barra mide lo que vale o no lo mide.',
     materiales: [],
     fases: [
       {
@@ -8587,8 +8587,8 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'Construir el cartel, encargo por encargo',
         duracionMin: 15,
         descripcion:
-          'Actividad digital: el alumno completa los cuatro encargos sobre el lienzo vacío — título agrandado y centrado con la herramienta, texto de apoyo estrictamente más chico, fondo de color, y control de que no haya más de cuatro colores distintos en total.',
-        actividadSugerida: 'La actividad digital — el ejercicio principal, con los cuatro encargos de diseño del cartel.',
+          'Actividad digital: el alumno completa los ocho encargos sobre el lienzo vacío con los datos de la encuesta «¿Cómo llegas a la escuela?» (caminando 12, autobús 8, coche 6, bici 4). Se le da una sola escala («12 alumnos son 6 casillas») y calcula las otras tres alturas; la plataforma comprueba que sean proporcionales, que compartan base y ancho, que cada etiqueta lleve el número de SU barra, que la más alta destaque, que la fuente esté abajo y en letra más chica, y que el cartel no pase de cuatro colores.',
+        actividadSugerida: 'La actividad digital — el ejercicio principal, con los ocho encargos de la infografía.',
       },
       {
         titulo: 'Centrado exacto vs. centrado a ojo',
@@ -8724,7 +8724,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n6-crea-con-ia': {
     actividadId: 'n6-crea-con-ia',
     objetivo:
-      'Que el alumno use el Estudio de Generación —no un chat de texto libre— para construir una petición de imagen con cuatro piezas (qué, cómo, para dónde, qué no), compare el resultado de usar sólo una pieza contra usar las cuatro, descarte imágenes que no cumplen la petición, confirme que pedir exactamente lo mismo dos veces nunca produce el mismo resultado, y firme la imagen elegida con tres datos: herramienta usada, petición exacta y fecha — entendiendo la cita como parte necesaria de crear con IA, no como un trámite opcional.',
+      'Que el alumno traduzca un encargo real (el fondo del cartel de la Feria de Ciencias) en una petición a un generador de imágenes que diga todo lo que hace falta —qué, cómo, para dónde y qué no—, compruebe que lo que no pide lo decide la máquina y que lo que prohíbe a veces se cuela, revise cada imagen contra el encargo antes de usarla, confirme que la misma petición nunca da lo mismo dos veces, y firme la imagen con la herramienta, la petición que de verdad la generó y la fecha — entendiendo la cita como parte necesaria de crear con IA, no como un trámite opcional.',
     materiales: [],
     fases: [
       {
@@ -8738,8 +8738,8 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'Armar la petición y elegir con criterio',
         duracionMin: 18,
         descripcion:
-          'Actividad digital: el alumno arma una petición con las cuatro piezas en el Estudio de Generación, compara el resultado de una sola pieza contra las cuatro juntas, descarta dos imágenes que no cumplen lo pedido (una con letras revueltas, otra con una persona que pidió que no saliera), repite exactamente la misma petición para comprobar que el resultado nunca es idéntico, y firma la imagen elegida con herramienta, petición y fecha.',
-        actividadSugerida: 'La actividad digital — el ejercicio principal, con los siete encargos del Estudio de Generación.',
+          'Actividad digital en Tecnia Imagina: el alumno lee el encargo de la Profe Ávila, prueba el generador con una sola pieza y ve lo que decide la máquina, pide todo lo que exige el comité (incluido lo que NO quiere: texto, personas, marcas), pide lo mismo otra vez y compara las dos tandas, revisa las imágenes de cerca y pone en el cartel una que cumpla —el comité rechaza la que no y dice qué le falta—, y firma con la herramienta, la petición de la que salió esa imagen (elegida de su propio historial) y la fecha. Las imágenes salen de la petición, no de un guion: si cambia la petición, cambia lo que sale.',
+        actividadSugerida: 'La actividad digital — el ejercicio principal, con los seis encargos del comité.',
       },
       {
         titulo: 'Por qué se cita una imagen generada',
@@ -8750,12 +8750,12 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
       },
     ],
     teoriaIntro:
-      'El objetivo no es que el alumno se vuelva experto en herramientas de IA generativa, sino que aprenda dos hábitos que le van a servir con cualquier herramienta de este tipo que use en el futuro: pedir con precisión (las cuatro piezas) y citar con honestidad (los tres datos). El Estudio de Generación, al ser guiado en vez de un chat libre, obliga a estructurar la petición en partes — eso es intencional, porque a esta edad conviene aprender la estructura antes que la libertad total de un prompt abierto.',
+      'El objetivo no es que el alumno se vuelva experto en herramientas de IA generativa, sino que aprenda tres hábitos que le van a servir con cualquier herramienta de este tipo: pedir con precisión (las cuatro piezas), revisar antes de usar (el generador no obedece del todo) y citar con honestidad (los tres datos). Tecnia Imagina, al armar la petición con piezas en vez de un chat libre, obliga a estructurarla en partes — a esta edad conviene aprender la estructura antes que la libertad total de un prompt abierto. Pero lo que sale NO está escrito de antemano: lo decide la petición, como en un generador real.',
     teoriaSecciones: [
       {
         subtitulo: 'Las cuatro piezas de una buena petición',
         contenido:
-          'Qué (el sujeto), cómo (estilo, colores, ambiente), para dónde (el uso que le van a dar, por ejemplo "fondo de un cartel") y qué no (lo que hay que evitar) no son cuatro casillas burocráticas: son las cuatro preguntas que cualquier persona necesitaría contestar para dibujar exactamente lo que el alumno tiene en mente. Cuando falta una pieza, la IA "adivina" esa parte, y el resultado se aleja de lo que se buscaba — por eso con una sola pieza salen imágenes genéricas y con las cuatro salen imágenes más cercanas a la intención real.',
+          'Qué (el sujeto), cómo (estilo, colores, ambiente), para dónde (el uso que le van a dar, por ejemplo "fondo de un cartel") y qué no (lo que hay que evitar) no son cuatro casillas burocráticas: son las cuatro preguntas que cualquier persona necesitaría contestar para dibujar exactamente lo que el alumno tiene en mente. Cuando falta una pieza, la IA "adivina" esa parte, y el resultado se aleja de lo que se buscaba — por eso con una sola pieza el estilo, la forma y lo que trae encima los decide la máquina. Y aun con las cuatro, lo prohibido a veces se cuela: pedir bien no exime de mirar.',
       },
       {
         subtitulo: 'Citar una imagen generada: honestidad sobre el origen',
@@ -8798,9 +8798,10 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
     rubrica:
       'Domina (arma una petición con las cuatro piezas, descarta imágenes que no cumplen lo pedido y firma con los tres datos sin ayuda) · En proceso (arma la petición con apoyo parcial y necesita recordatorio para citar completo) · Inicia (necesita ayuda para completar las cuatro piezas y no entiende por qué se debe citar la imagen)',
     tips: [
-      'Antes de dejarlos usar las cuatro piezas, pide que primero prueben con una sola (por ejemplo sólo "qué") para que vean con sus propios ojos la diferencia — el contraste enseña más que la explicación.',
-      'Cuando descarten la imagen con letras revueltas o la persona no deseada, pregúntales específicamente qué parte de la petición no se cumplió — así practican revisar contra su propia instrucción, no sólo "esta no me gustó".',
-      'Revisa la firma final de cada alumno antes de que la den por terminada — un error común es poner la fecha de hoy pero olvidar copiar la petición exacta que usaron, y sin eso la cita queda incompleta.',
+      'El encargo de la Profe Ávila no se dicta: pide a dos o tres alumnos que lean en voz alta qué piezas encontraron en su mensaje. «Sin texto» y «sin personas» son las que más se olvidan, porque están dichas de forma indirecta.',
+      'Cuando el comité les rechace una imagen, pregúntales qué parte del encargo no cumplía y si estaba o no en su petición — así practican revisar contra la instrucción, no sólo «esta no me gustó».',
+      'En la firma, la petición se elige del propio historial: si alguien puso en el cartel una imagen que salió de una petición corta, la firma correcta es ESA petición. Es la idea central: se cita lo que de verdad pasó, no lo que debió pasar.',
+      'Para cerrar, pide a dos alumnos que hayan pedido cosas distintas que comparen pantallas: otra petición, otras imágenes. Y si alguien repitió su petición, que enseñe sus dos tandas.',
     ],
   },
 
@@ -8845,7 +8846,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
       {
         subtitulo: 'Por qué la posición del sensor es parte del diseño, no un detalle',
         contenido:
-          'El sensor de distancia montado en el techo del carrito sigue siendo, técnicamente, el mismo sensor que funcionaba al frente — pero apunta hacia arriba, no hacia el obstáculo. Este es el concepto central de la clase: diseñar un robot no es sólo elegir las piezas correctas, es decidir dónde va cada una para que su campo de percepción o de acción coincida con lo que el robot necesita hacer. Es una idea que vuelve constantemente en robótica real, desde un dron hasta un coche autónomo.',
+          'El sensor de distancia montado en el techo del carrito sigue siendo, técnicamente, el mismo sensor que funcionaba al frente — pero apunta hacia arriba, no hacia el obstáculo. Este es el concepto central de la clase: diseñar un robot no es sólo elegir las piezas correctas, es decidir dónde va cada una para que su campo de percepción o de acción coincida con lo que el robot necesita hacer. Es una idea que vuelve constantemente en robótica real, desde un dron hasta un coche autónomo. En el laboratorio no es una regla escrita: el sensor lanza un rayo recto hacia donde mira, y el carrito se detiene sólo si ese rayo encuentra la caja.',
       },
     ],
     evaluacion: [
@@ -8901,7 +8902,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'Programar, romper y arreglar el orden',
         duracionMin: 20,
         descripcion:
-          'Actividad digital: el alumno programa los tres guiones en el simulador de micro:bit, ve un guion vacío avisar en vez de fallar sin explicación, provoca a propósito un resultado equivocado cambiando el orden de los bloques dentro de un guion, lo corrige, y decide qué evento dispara cada guion final.',
+          'Actividad digital: el alumno programa los tres guiones en el simulador de micro:bit, ve un guion vacío avisar en vez de fallar sin explicación, provoca a propósito un resultado equivocado cambiando el orden de los bloques dentro de un guion, lo corrige, y decide qué evento dispara cada guion final. La plataforma no le dice bajo qué sombrero va cada bloque —se le pide «que al pulsar A salga una cara feliz»— y comprueba el guion del botón que pulsó, así que una cara puesta bajo el sombrero equivocado no cuenta. Para corregir el orden se le piden los mismos dos bloques, sin quitar ninguno: sólo puede cambiar la secuencia.',
         actividadSugerida: 'La actividad digital — el ejercicio principal, con la programación de los tres guiones y la corrección de orden.',
       },
       {
@@ -8970,7 +8971,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n6-reto-robot': {
     actividadId: 'n6-reto-robot',
     objetivo:
-      'Que el alumno mueva a un robot por una cuadrícula hasta chocar con un límite a propósito, y aprenda a usar un bloque "si" que pregunte "¿hay pared adelante?" antes de girar, de modo que el robot llegue a la meta sin volver a chocar, y que al quitarle la pregunta al bloque "si" descubra que sin la condición la respuesta es siempre "que no" — entendiendo así que un condicional sin una pregunta real no decide nada.',
+      'Que el alumno lleve a un robot a la bandera en un mapa con paredes, compruebe que ese mismo programa falla en otro mapa, y construya un solo programa que llegue en los dos sin chocar ni cambiarlo —para lo cual necesita un bloque "si" que pregunte "¿hay pared adelante?" antes de cada paso, dentro de un "repetir"—, y que al quitarle la pregunta al "si" descubra que sin la condición la respuesta es siempre "que no", entendiendo así que un condicional sin una pregunta real no decide nada.',
     materiales: [],
     fases: [
       {
@@ -8984,7 +8985,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'Del choque a la pregunta "¿hay pared adelante?"',
         duracionMin: 22,
         descripcion:
-          'Actividad digital: el alumno mueve al robot por la cuadrícula hasta chocar con un límite a propósito, luego le enseña a preguntar "¿hay pared adelante?" con un bloque "si" antes de girar, y llega a la meta sin volver a chocar. Termina quitándole la pregunta al "si" para descubrir que sin ella la respuesta es siempre que no.',
+          'Actividad digital: el alumno lleva al robot a la bandera en el Mapa 1, prueba el mismo programa en el Mapa 2 y lo ve fallar, y arma un solo programa que llegue en los dos sin chocar (la plataforma lo corre en los dos mapas para juzgarlo, así que una ruta contada no basta). Nadie le dicta los bloques: se le nombran "si", "¿hay pared adelante?" y "repetir". Termina quitándole la pregunta al "si" para descubrir que sin ella la respuesta es siempre que no.',
         actividadSugerida: 'La actividad digital — el ejercicio principal, con el choque inicial, la incorporación del condicional y la prueba sin condición.',
       },
       {
@@ -9069,7 +9070,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'Editar, romper y reparar leyendo el error',
         duracionMin: 15,
         descripcion:
-          'Actividad digital: el alumno cambia el nombre del club de robótica y el nombre de la pestaña, viendo el resultado actualizarse al momento sin guardar. Luego borra a propósito el cierre </h1> y observa el párrafo de abajo volverse gigante, lee el aviso del programa que indica archivo, línea y arreglo, repara la etiqueta, y escribe una línea nueva por su cuenta.',
+          'Actividad digital: el alumno cambia el nombre del club de robótica y el nombre de la pestaña, viendo el resultado actualizarse al momento sin guardar. Luego borra a propósito el cierre </h1> y observa el párrafo de abajo volverse gigante, lee el aviso del programa que indica archivo, línea y arreglo, repara la etiqueta, y escribe un párrafo nuevo por su cuenta. Para ese párrafo la plataforma le enseña un modelo pequeño de cómo tiene que verse la página, nunca el código.',
         actividadSugerida: 'La actividad digital — el ejercicio principal, con los siete encargos del editor en vivo.',
       },
       {
@@ -9152,7 +9153,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'Construir con las cinco etiquetas',
         duracionMin: 20,
         descripcion:
-          'Actividad digital: el alumno llena el cuerpo vacío de la página con título, párrafo, lista de tres proyectos con viñetas reales, imagen y enlace, aprendiendo en el proceso a describir la imagen con palabras (alt) aunque se vea bien, y a escribir enlaces que digan a dónde llevan en vez de "pincha aquí".',
+          'Actividad digital: el alumno llena el cuerpo vacío de la página con título, párrafo, lista de tres proyectos con viñetas reales, imagen y enlace, aprendiendo en el proceso a describir la imagen con palabras (alt) aunque se vea bien, y a escribir enlaces que digan a dónde llevan en vez de "pincha aquí". Ningún encargo le dicta el código: cada uno nombra la etiqueta que se usa (h1, p, ul y li, img con src y alt, a con href, h2) y le enseña, en pequeño, cómo tiene que verse la página; el alumno escribe las líneas.',
         actividadSugerida: 'La actividad digital — el ejercicio principal, con los siete encargos de construcción de la página.',
       },
       {
@@ -9235,7 +9236,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'Las cinco revisiones antes de publicar',
         duracionMin: 20,
         descripcion:
-          'Actividad digital: el alumno revisa la página terminada y encuentra los cuatro problemas — quita los datos personales sin llevarse por delante el resto del contenido, arregla el enlace al estilo con la letra de más (viendo la página llenarse de color de golpe al corregirlo), resuelve los dos avisos amarillos, y le pone nombre a la pestaña. Sólo entonces se habilita el panel de publicar.',
+          'Actividad digital: el alumno revisa la página terminada y encuentra los cuatro problemas — quita los datos personales sin llevarse por delante el resto del contenido —el teléfono, la calle y la hora están repartidos en tres sitios distintos de la página, mezclados con información que sí va—, arregla el enlace al estilo leyendo el error rojo (viendo la página llenarse de color de golpe al corregirlo), resuelve los dos avisos amarillos, y le pone nombre a la pestaña. Sólo entonces se habilita el panel de publicar.',
         actividadSugerida: 'La actividad digital — el ejercicio principal, con las cinco revisiones y los tres pasos de publicación.',
       },
       {
@@ -9306,7 +9307,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n6-bloques-vs-codigo': {
     actividadId: 'n6-bloques-vs-codigo',
     objetivo:
-      'Que el alumno arme un programa con bloques y observe, en la misma ventana, cómo se reescribe automáticamente en Python —el bloque que corre y su línea correspondiente se encienden a la vez—, y que al meter un bloque dentro de la boca de un "repetir" y sacar otro fuera, descubra que la única diferencia visible en el texto de Python son cuatro espacios de sangría, entendiendo la indentación como la forma en que el texto representa lo que en bloques se ve como "estar dentro" o "estar fuera".',
+      'Que el alumno arme un programa con bloques y observe, en la misma ventana, cómo se reescribe automáticamente en Python —el bloque que corre y su línea correspondiente se encienden a la vez—, y que al meter un bloque dentro de la boca de un "repetir" y sacar otro fuera, descubra que la única diferencia visible en el texto de Python son cuatro espacios de sangría, entendiendo la indentación como la forma en que el texto representa lo que en bloques se ve como "estar dentro" o "estar fuera"; y que lea un programa corto escrito en Python y lo arme en bloques.',
     materiales: [],
     fases: [
       {
@@ -9320,7 +9321,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'Meter y sacar un bloque del "repetir"',
         duracionMin: 20,
         descripcion:
-          'Actividad digital: el alumno arma un programa con bloques y observa cómo se reescribe en Python en tiempo real, con el bloque activo y su línea de código encendiéndose juntos durante la ejecución. El ejercicio central es meter un bloque dentro de la boca de un "repetir" y luego sacar otro fuera, comparando el texto de Python antes y después para notar que la única diferencia son cuatro espacios de sangría.',
+          'Actividad digital: el alumno arma un programa con bloques y observa cómo se reescribe en Python en tiempo real, con el bloque activo y su línea de código encendiéndose juntos durante la ejecución. El ejercicio central es meter un bloque dentro de la boca de un "repetir" y luego sacar otro fuera, comparando el texto de Python antes y después para notar que la única diferencia son cuatro espacios de sangría. Nadie le dice dónde va cada bloque: se le pide «que una palabra salga tres veces con un solo bloque» y «que después salga otra una sola vez», y la plataforma lo comprueba por lo que dice la consola. Al final recibe un programa escrito en Python y lo arma en bloques; al correrlo sale 0, 1, 2, 3 y descubre que Python cuenta desde 0.',
         actividadSugerida: 'La actividad digital — el ejercicio principal, con el armado de bloques y la comparación de indentación en Python.',
       },
       {
@@ -9389,33 +9390,33 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n6-primeras-lineas-python': {
     actividadId: 'n6-primeras-lineas-python',
     objetivo:
-      'Que el alumno trabaje su primer archivo .py real: ejecute un programa ya escrito observándolo correr despacio línea por línea, escriba su propio print, guarde su nombre en una variable, rompa el programa a propósito quitando comillas para aprender a leer el error resultante con su línea y su pista, lo repare, y termine haciendo que el programa decida solo con un if y un else.',
+      'Que el alumno trabaje su primer archivo .py real: ejecute un programa ya escrito observándolo correr despacio línea por línea, escriba una línea propia, haga un saludo con lo que guarda una variable que funcione con cualquier nombre —un juez lo prueba cambiando el dato—, rompa el programa a propósito quitando comillas para aprender a leer el error con su línea y su pista, lo repare, y haga que el programa decida solo con un if y un else que el juez prueba con nombres de 6 y 7 letras justas.',
     materiales: [],
     fases: [
       {
         titulo: 'Tu primer archivo de verdad',
-        duracionMin: 6,
+        duracionMin: 5,
         descripcion:
-          'Presenta el momento como un hito: después de programar con bloques, hoy van a escribir en un archivo .py real, el mismo tipo de archivo que usan programadores profesionales. Pregunta qué esperan que sea distinto o difícil, para que lleguen con curiosidad en vez de miedo.',
-        actividadSugerida: 'Introducción motivacional sobre el paso de bloques a un archivo .py real.',
+          'Presenta el momento como un hito: después de programar con bloques, hoy van a escribir en un archivo .py real, el mismo tipo de archivo que usan programadores profesionales. Avisa de la regla del día: al final, un juez va a probar sus programas con nombres que ellos no escribieron. Pregunta qué creen que significa eso, para que lleguen con curiosidad en vez de miedo.',
+        actividadSugerida: 'Introducción motivacional sobre el paso de bloques a un archivo .py real, y la regla del juez.',
       },
       {
         titulo: 'Ejecutar, escribir, romper y decidir',
-        duracionMin: 25,
+        duracionMin: 30,
         descripcion:
-          'Actividad digital: el alumno ejecuta un programa ya escrito viéndolo correr línea por línea, escribe su propio print, guarda su nombre en una variable, quita las comillas a propósito para romper el programa y aprende a leer el error con su línea y su pista, lo repara, y termina programando una decisión con if y else.',
-        actividadSugerida: 'La actividad digital — el ejercicio principal, con los seis pasos desde ejecutar hasta programar el if/else.',
+          'Actividad digital: el alumno ejecuta un programa ya escrito viéndolo correr línea por línea, escribe una línea propia, hace el saludo con la caja nombre y lo manda al juez, quita las comillas a propósito y lee el error, lo arregla hasta que el juez vuelve a aceptarlo, y programa la decisión de «largo o corto». Ronda por los lugares: quien escribió «Sofi» dentro del saludo verá que el juez lo rechaza con otros nombres sin decirle cuáles; no le digas la línea, pregúntale a quién saludaría su programa si la caja dijera «Ana».',
+        actividadSugerida: 'La actividad digital — ocho encargos, dos de ellos con juez.',
       },
       {
-        titulo: 'Leer un error de Python en voz alta',
-        duracionMin: 9,
+        titulo: 'Leer un error y un rechazo en voz alta',
+        duracionMin: 10,
         descripcion:
-          'Pide a un alumno que lea en voz alta el mensaje de error que le salió al quitar las comillas, señalando la línea que menciona. Cierra con la pregunta: "¿qué te dijo el error que tenías que hacer?" — reforzando que Python, igual que el editor de HTML de la unidad anterior, da pistas específicas, no adivinanzas.',
-        actividadSugerida: 'Lectura en voz alta y discusión grupal de un mensaje de error real de Python.',
+          'Pide a un alumno que lea en voz alta el mensaje de error que le salió al quitar las comillas, señalando la línea que menciona: «no existe ninguna variable llamada…». Pregunta: ¿por qué Python buscó una caja? Después, a otro que lea un rechazo del juez en el Problema 2. Si alguien cayó en «seis letras justas», escribe en el pizarrón «Camila» y cuenten las letras juntos: ¿6 es «más de 6»? Cierra con la pregunta de la clase: lo que decide la frase no es el if, que no cambió, sino el dato que había en la caja.',
+        actividadSugerida: 'Lectura en voz alta de un error de Python y de un rechazo del juez, y conteo de la frontera en el pizarrón.',
       },
     ],
     teoriaIntro:
-      'Esta es la clase donde el alumno deja de "usar bloques que ya sabe" y empieza a escribir texto que él mismo produce, con todo el riesgo de errores de sintaxis que eso implica. El objetivo pedagógico no es que domine Python en veinticinco minutos, sino que pierda el miedo al error de sintaxis: que aprenda que un error con línea y mensaje es información útil, siguiendo exactamente la misma lógica que ya vio con HTML en la unidad anterior. El if/else final es la primera decisión que el programa toma solo, escrita en texto puro.',
+      'Esta es la clase donde el alumno deja de "usar bloques que ya sabe" y empieza a escribir texto que él mismo produce, con todo el riesgo de errores que eso implica. El objetivo pedagógico no es que domine Python en treinta minutos, sino dos cosas: que pierda el miedo al error —un error con línea y mensaje es información útil, igual que en el editor de HTML de la unidad anterior— y que entienda para qué sirve una variable. Por eso el saludo y la decisión los prueba un juez cambiando el nombre de la caja: un programa que saluda a Sofi escribiendo «Sofi» no saluda a nadie más, y la máquina se lo dice.',
     teoriaSecciones: [
       {
         subtitulo: 'Ver el programa correr despacio, línea por línea',
@@ -9423,9 +9424,14 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
           'Antes de escribir nada propio, el alumno observa un programa ya terminado ejecutarse paso a paso. Esto es deliberado: separa dos habilidades distintas (leer/entender código ajeno vs. escribir código propio) para que la primera no se mezcle con la ansiedad de la segunda. Ver "qué hace cada línea" antes de tener que producir una línea propia baja la carga cognitiva del resto de la clase.',
       },
       {
-        subtitulo: 'Romper con comillas a propósito: el error de sintaxis más común',
+        subtitulo: 'El juez cambia el dato: para qué sirve una variable',
         contenido:
-          'Olvidar una comilla es, con diferencia, uno de los errores más frecuentes que comete cualquier persona empezando en Python — y por eso la actividad lo provoca a propósito en vez de esperar que ocurra por accidente y frustre al alumno sin contexto. El mensaje de error de Python, con su número de línea, es la misma clase de pista que ya vieron con el editor de HTML: leerlo con calma resuelve el problema más rápido que intentar arreglarlo a ciegas.',
+          'Ninguna instrucción dicta la línea que hay que escribir: se nombran las herramientas (print, la caja, if, else, len) y los moldes son de otro tema (una mascota, la montaña rusa). El juez corre el programa del alumno varias veces cambiando lo que guarda la caja nombre, y sólo enseña el nombre del caso que falla («seis letras justas»), nunca el dato. Así, escribir la respuesta a mano pasa el ejemplo y cae en los demás. Es la idea central de la variable, comprobada y no sólo explicada.',
+      },
+      {
+        subtitulo: 'Romper con comillas a propósito',
+        contenido:
+          'Olvidar una comilla es, con diferencia, uno de los errores más frecuentes al empezar en Python — y por eso la actividad lo provoca a propósito en vez de esperar que ocurra por accidente. Sin comillas, Python busca una caja con ese nombre y no la encuentra; con un nombre de dos palabras, ni siquiera entiende la línea. El mensaje de error, con su número de línea, es la misma clase de pista que ya vieron con HTML. Y la clase no da por arreglado el programa cuando la caja roja se va, sino cuando el juez vuelve a aceptarlo.',
       },
     ],
     evaluacion: [
@@ -9440,28 +9446,28 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         correctaIdx: 1,
       },
       {
-        pregunta: 'Al quitar las comillas de un texto en Python a propósito, ¿qué es lo más útil que puede hacer el alumno?',
+        pregunta: 'Un alumno escribe el saludo con el nombre «Sofi» puesto a mano dentro del print. ¿Qué pasa cuando lo manda al juez?',
         opciones: [
-          'Cerrar el programa y empezar de cero',
-          'Leer el mensaje de error, que incluye la línea y una pista de qué corregir',
-          'Ignorar el error porque no afecta el resultado',
-          'Cambiar todo el programa por uno distinto',
+          'El juez lo acepta, porque con Sofi la salida es correcta',
+          'El juez lo rechaza: cambia el nombre de la caja y el programa sigue saludando a Sofi',
+          'El juez marca un error de sintaxis en esa línea',
+          'El juez corrige la línea por él',
         ],
         correctaIdx: 1,
       },
       {
-        pregunta: '¿Qué le permite al programa un bloque if/else al final de la actividad?',
+        pregunta: 'El programa dice «largo» si el nombre tiene más de 6 letras. ¿Qué debe escribir con «Camila»?',
         opciones: [
-          'Repetir una acción varias veces',
-          'Guardar un texto en una variable',
-          'Tomar una decisión distinta según una condición',
-          'Imprimir texto en pantalla sin ninguna condición',
+          'Tu nombre es largo.',
+          'Tu nombre es corto.',
+          'Las dos frases',
+          'Ninguna, porque 6 no es un número válido',
         ],
-        correctaIdx: 2,
+        correctaIdx: 1,
       },
     ],
     rubrica:
-      'Domina (escribe su propio print y variable sin ayuda, lee y repara el error de comillas por su cuenta, y programa el if/else correctamente) · En proceso (completa la mayoría de los pasos con 1-2 pistas, especialmente al leer el error) · Inicia (necesita que se le indique cada línea y no logra interpretar el mensaje de error sin ayuda)',
+      'Domina (su saludo y su decisión pasan el juez a la primera o tras leer un rechazo, lee y repara el error de comillas por su cuenta, y explica que lo que decide la frase es el dato de la caja) · En proceso (pasa los dos problemas con 1-2 pistas, o escribió el nombre a mano y lo corrigió al ver el rechazo) · Inicia (necesita que se le indique la línea y no logra interpretar el error ni el rechazo del juez sin ayuda)',
     tips: [
       'Cuando quiten las comillas a propósito, no les digas qué falta — pídeles que lean el mensaje completo en voz alta primero, casi siempre Python ya les dio la respuesta exacta.',
       'Si un alumno se frustra con el error de sintaxis, recuérdale que es el mismo tipo de error que ya resolvieron con HTML en la unidad anterior — el patrón de "leer, no adivinar" ya lo conocen.',
@@ -9474,7 +9480,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n6-contrasenas-fuertes': {
     actividadId: 'n6-contrasenas-fuertes',
     objetivo:
-      'Que el alumno pruebe tres contraseñas de personajes de ficción en la máquina de adivinar y descubra en qué paso caen (la lista de contraseñas comunes, un dato de su perfil público, o un disfraz obvio de una palabra simple), construya su propia frase de cuatro palabras como contraseña fuerte, le ponga llave a sus tres cuentas abiertas (juego, escuela, videos), repare sin culpa una filtración cuando el sitio de videos pierde su lista de contraseñas, y active la verificación en dos pasos aprendiendo a no entregar nunca un código a una ventana emergente que dice ser soporte del juego.',
+      'Que el alumno pruebe tres contraseñas de personajes de ficción en la máquina de adivinar y descubra en qué paso caen (la lista de contraseñas comunes, un dato de su perfil público, o un disfraz obvio de una palabra simple), arme con fichas —sin teclear ninguna contraseña— llaves que la máquina ataca hasta encontrar una que no puede tumbar (y vea caer las que llevan datos del perfil o pocas palabras), le ponga llave a las tres cuentas de Dani (juego, escuela, videos), repare sin culpa una filtración cuando el sitio de videos pierde su lista de contraseñas, y active la verificación en dos pasos aprendiendo a no entregar nunca un código a una ventana emergente que dice ser soporte del juego.',
     materiales: [],
     fases: [
       {
@@ -9488,7 +9494,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'La máquina de adivinar y tu propia frase',
         duracionMin: 14,
         descripcion:
-          'Actividad digital: el alumno prueba tres contraseñas de personajes de ficción en la máquina de adivinar y ve en qué paso caen (lista común, dato de perfil, o disfraz obvio), construye su propia frase de cuatro palabras, protege sus tres cuentas abiertas, repara una filtración del sitio de videos, y activa la verificación en dos pasos.',
+          'Actividad digital: el alumno prueba tres contraseñas de personajes de ficción en la máquina de adivinar y ve en qué paso caen (lista común, dato de perfil, o disfraz obvio), arma llaves con fichas en la mesa de pruebas y las ve atacar (la mascota con un año cae aunque vaya separada, tres palabras de la bolsa caen, cuatro aguantan), protege las tres cuentas de Dani con llaves que no caen, repara una filtración del sitio de videos, y activa la verificación en dos pasos. Ninguna contraseña se teclea: todo es de un personaje.',
         actividadSugerida: 'La actividad digital — el ejercicio principal, con la máquina de adivinar y la protección de las tres cuentas.',
       },
       {
@@ -9505,7 +9511,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
       {
         subtitulo: 'Por qué una frase de cuatro palabras es más fuerte que una palabra disfrazada',
         contenido:
-          'Cambiar una "a" por un "4" o añadir un signo de exclamación al final de una palabra común (lo que la actividad llama "disfraz") es la primera técnica que casi todo el mundo intenta, y también la primera que una máquina de adivinar moderna prueba. Una frase de cuatro palabras sin relación obvia entre sí es más larga, más difícil de adivinar por fuerza bruta, y —lo más importante para esta edad— más fácil de recordar que una combinación de símbolos aleatorios, porque el alumno puede inventarla con sentido propio.',
+          'Cambiar una "a" por un "4" o añadir un signo de exclamación al final de una palabra común (lo que la actividad llama "disfraz") es la primera técnica que casi todo el mundo intenta, y también la primera que una máquina de adivinar moderna prueba. Una frase de cuatro palabras sin relación obvia entre sí no es fuerte por larga: lo es porque tiene cuatro piezas que la máquina no puede saber. Aunque conozca todas las palabras de la bolsa, cuatro son miles de millones de combinaciones; tres ya no le alcanzan, y una pieza que es un dato del perfil (la mascota, el año) no cuenta, porque ya la sabe. Es eso lo que el alumno ve caer en la mesa de pruebas. Y —lo más importante para esta edad— es más fácil de recordar que una combinación de símbolos aleatorios, porque el alumno puede inventarla con sentido propio.',
       },
       {
         subtitulo: 'Filtración sin culpa, y por qué el código de 2FA nunca se comparte',
@@ -9557,138 +9563,162 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n6-privacidad-en-juegos': {
     actividadId: 'n6-privacidad-en-juegos',
     objetivo:
-      'Que el alumno entre a Tecnia Muro, encuentre una publicación propia ya marcada como "Público" que revela sus horarios de juego, observe cómo un desconocido comenta algo que sólo pudo saber por haberla leído —la consecuencia llega un turno después, nunca como advertencia inmediata al publicar—, ajuste la visibilidad de esa publicación, y practique publicar de nuevo eligiendo la audiencia antes de publicar entre público, sólo amigos o sólo yo.',
+      'Que el alumno lea su propio perfil como lo ve un desconocido y cierre, cambiando la audiencia en el selector de cada publicación, lo que revela cuándo juega y a qué escuela va sin esconder lo que no hace falta; que reconozca en un desconocido amable que pide datos una señal de alerta y actúe —no darle datos, reportarlo con el motivo correcto, bloquearlo y contárselo a un adulto—; y que publique eligiendo la audiencia antes, entendiendo que lo que ya vio alguien no se des-ve.',
     materiales: [],
     fases: [
       {
-        titulo: '¿Quién puede ver lo que publicas?',
-        duracionMin: 7,
+        titulo: '¿Quién lee lo que publico?',
+        duracionMin: 5,
         descripcion:
-          'Pregunta al grupo si alguna vez han pensado, antes de publicar algo en un juego o red, quién exactamente lo va a poder ver. La mayoría no lo ha pensado de forma explícita — ese es el punto de partida: hoy van a practicar hacerse esa pregunta antes, no después.',
-        actividadSugerida: 'Pregunta abierta sobre el hábito de pensar en la audiencia antes de publicar.',
+          'Pregunta al grupo qué sabría un desconocido de cada uno si sólo leyera lo que tienen en público. Lean juntos las fichas de los tres niveles de audiencia.',
+        actividadSugerida: 'Conversación breve y lectura de las fichas de la entrada.',
       },
       {
-        titulo: 'La publicación que reveló demasiado',
-        duracionMin: 12,
+        titulo: 'Misión 1: tu perfil habla de más',
+        duracionMin: 8,
         descripcion:
-          'Actividad digital: el alumno entra a Tecnia Muro, encuentra la publicación propia en "Público" con los horarios de juego, observa el comentario del desconocido que llega un turno después revelando que la leyó, ajusta la visibilidad, y practica publicar de nuevo eligiendo la audiencia (público, sólo amigos, sólo yo) antes de publicar.',
-        actividadSugerida: 'La actividad digital — el ejercicio principal, con el hallazgo de la publicación y el ajuste de audiencia.',
+          'Actividad digital: con «Así te ve un desconocido», el alumno descubre que su perfil público dice su horario de juego y su escuela, y lo cierra desde el selector de audiencia de cada publicación (o borrando). El dragón tiene que seguir público: quien lo esconde también, ve que la misión no se cierra y Bit le pregunta qué tenía de peligroso.',
+        actividadSugerida: 'La misión 1 del laboratorio.',
       },
       {
-        titulo: 'La consecuencia llega después, no al momento',
-        duracionMin: 6,
+        titulo: 'Misión 2: el desconocido amable',
+        duracionMin: 8,
         descripcion:
-          'Discute por qué el comentario del desconocido aparece un turno después y no como una advertencia inmediata al publicar. Pregunta: "en la vida real, ¿cuánto tiempo puede pasar antes de que alguien use algo que publicaste?" — conecta con que la privacidad se decide antes de publicar, no se puede deshacer fácilmente después.',
-        actividadSugerida: 'Discusión grupal sobre el retraso entre publicar algo y sufrir su consecuencia.',
+          'Actividad digital: Jugador_Nocturno escribe «¡juegas muy bien! ¿en qué escuela vas? pásame tu whats». Si el alumno le contesta, insiste y pide más. La misión se cumple reportándolo con «Me pide datos personales», bloqueándolo y contándoselo a un adulto por Mensajes.',
+        actividadSugerida: 'La misión 2 del laboratorio.',
+      },
+      {
+        titulo: 'Misión 3 y cierre: elige antes de publicar',
+        duracionMin: 9,
+        descripcion:
+          'Actividad digital: el alumno invita a sus amigos a su torneo. Quien publica en público ve comentar a un desconocido en segundos, y cambiar la audiencia después no lo deshace: hay que borrar y publicar bien. Cierra preguntando por qué la amabilidad de Jugador_Nocturno no lo volvía de confianza.',
+        actividadSugerida: 'La misión 3 y una conversación de cierre.',
       },
     ],
     teoriaIntro:
-      'El diseño de esta actividad es deliberadamente incómodo de una forma útil: no hay una alerta roja que diga "esto es peligroso" en el momento de publicar. La consecuencia (el comentario del desconocido) llega un turno después, imitando lo que pasa en la vida real: nadie te avisa al instante que compartiste algo de más, te enteras después, si es que te enteras. Esto es más formativo que una advertencia inmediata, porque enseña al alumno a anticipar el riesgo antes de publicar, en vez de depender de que el sistema lo detenga.',
+      'La privacidad no es esconderlo todo: es elegir, antes, qué sabe de ti cada quien. Por eso la clase no premia cerrar todo el perfil (el dragón tiene que seguir público) y sí premia leer lo que dicen juntas las publicaciones. Todo pasa dentro de la red social simulada: la audiencia se cambia donde se cambia en una de verdad, y cada misión se cumple leyendo el muro. Como en el resto de las clases de ciudadanía digital, equivocarse no resta puntos: el costo es la consecuencia.',
     teoriaSecciones: [
       {
-        subtitulo: 'Por qué la consecuencia llega un turno después',
+        subtitulo: 'Las pistas se suman',
         contenido:
-          'Si el programa marcara en rojo "esto es peligroso" apenas el alumno da clic en publicar, aprendería a evitar la alerta, no a pensar en la audiencia. Al retrasar la consecuencia un turno, la actividad reproduce honestamente cómo funciona la privacidad en la vida real: uno no sabe quién vio algo, ni cuándo, ni qué va a hacer con esa información — el único momento de control real es antes de publicar, eligiendo la audiencia con cuidado.',
+          'Ninguna publicación sola parece peligrosa. «Juego de 6 a 8» y «primer día en la Secundaria 14», juntas y en público, dicen a qué hora estás en línea y dónde estás de día. La vista «Así te ve un desconocido» junta esas pistas como lo haría alguien que lee todo tu perfil.',
       },
       {
-        subtitulo: 'Tres audiencias, tres decisiones distintas',
+        subtitulo: 'El desconocido amable',
         contenido:
-          'Público, sólo amigos y sólo yo no son sinónimos de "más o menos privado" en una escala vaga — son tres decisiones distintas según lo que se va a compartir. Los horarios de cuándo se está en casa jugando son un dato que tiene sentido reservar a "sólo amigos" como mucho, mientras que compartir un logro de un juego con todo el mundo puede ser perfectamente razonable. El profesor debe ayudar al grupo a distinguir que la pregunta correcta no es "¿qué tan privado soy?" sino "¿este dato en particular, quién necesita verlo?".',
+          'Quien busca datos casi nunca empieza siendo grosero: empieza halagando («juegas muy bien»). La señal no es el tono, es lo que pide: la escuela, el teléfono, dónde vives. A esa edad, la respuesta es no dar datos, bloquear, reportar y contárselo a un adulto, aunque la persona parezca simpática.',
+      },
+      {
+        subtitulo: 'Lo que ya se vio no se des-ve',
+        contenido:
+          'Cambiar la audiencia después de publicar evita que lo vea gente nueva, pero no borra a quien ya lo leyó. Por eso la misión 3 mide con qué audiencia nació la publicación.',
       },
     ],
     evaluacion: [
       {
-        pregunta: '¿Por qué el comentario del desconocido aparece un turno después de la publicación, y no como una advertencia inmediata?',
+        pregunta: 'Tienes en público tu horario de juego y una foto con el uniforme de tu escuela. ¿Qué conviene hacer?',
         opciones: [
-          'Es un error del programa que debería corregirse',
-          'Porque imita cómo funciona realmente la privacidad: no hay aviso inmediato, la consecuencia llega después',
-          'Porque el desconocido tarda en escribir su comentario',
-          'Porque Tecnia Muro revisa las publicaciones cada cierto tiempo',
+          'Borrar toda la cuenta',
+          'Cambiar esas dos publicaciones a Sólo amigos y dejar en público lo que no dice nada de ti',
+          'Nada: nadie lee esas cosas',
+          'Poner todas las publicaciones en Sólo yo',
         ],
         correctaIdx: 1,
       },
       {
-        pregunta: '¿Cuál es el mejor momento para decidir quién puede ver una publicación?',
+        pregunta: 'Alguien que no conoces te escribe «¡juegas muy bien! ¿en qué escuela vas?». ¿Qué haces?',
         opciones: [
-          'Después de publicar, si algo sale mal',
-          'Antes de publicar, eligiendo la audiencia con cuidado',
-          'Nunca, todas las publicaciones deben ser públicas',
-          'Sólo cuando alguien comenta algo incómodo',
+          'Le contesto porque fue amable',
+          'Le doy la escuela pero no mi dirección',
+          'No le doy datos, lo bloqueo, lo reporto y se lo cuento a un adulto',
+          'Le pido sus datos primero',
         ],
-        correctaIdx: 1,
+        correctaIdx: 2,
       },
       {
-        pregunta: 'Publicar los horarios de cuándo estás jugando (y por tanto en casa) en "Público", ¿qué riesgo tiene?',
+        pregunta: 'Publicaste en Público y lo cambiaste a Sólo amigos un minuto después. ¿Qué pasó con quien ya lo había visto?',
         opciones: [
-          'Ninguno, es información sin importancia',
-          'Que cualquier desconocido puede saber cuándo estás disponible o en casa',
-          'Que el juego se vuelve más lento',
-          'Que se borra automáticamente después de un día',
+          'Ya lo vio: cambiar la audiencia no borra lo que ya leyó',
+          'Se le borra de la memoria',
+          'Recibe un aviso para que lo olvide',
+          'No pudo verlo, porque lo cambiaste rápido',
         ],
-        correctaIdx: 1,
+        correctaIdx: 0,
       },
     ],
     rubrica:
-      'Domina (identifica la publicación riesgosa sin ayuda, ajusta la visibilidad correctamente y elige la audiencia con criterio antes de publicar de nuevo) · En proceso (identifica el riesgo con 1-2 pistas y necesita apoyo para elegir la audiencia adecuada) · Inicia (necesita que se le indique el problema y no distingue entre las tres audiencias disponibles)',
+      'Domina (cumple las tres misiones sin esconder el dragón, reporta con el motivo correcto a la primera y publica el torneo para sus amigos desde el principio) · En proceso (cumple las misiones tras descubrir alguna consecuencia, como el desconocido que insiste o el comentario en su torneo público) · Inicia (necesita acompañamiento para leer qué revela su perfil, o le contesta al desconocido con datos)',
     tips: [
-      'No adelantes el problema de la publicación — deja que el alumno primero lea el comentario del desconocido y se sorprenda, esa sorpresa es la que hace memorable la lección de "piensa antes de publicar".',
-      'Cuando practiquen publicar de nuevo, pídeles que digan en voz alta por qué eligieron esa audiencia específica para ese contenido en particular, no sólo que la seleccionen.',
-      'Evita el tono de "nunca publiques nada" — el objetivo es elegir audiencia con criterio, no dejar de compartir; refuerza que compartir está bien cuando se elige a quién.',
+      'Si alguien esconde las tres publicaciones, no le digas que se equivocó: pregúntale qué decía el dragón que fuera peligroso.',
+      'Cuando un alumno le conteste a Jugador_Nocturno, deja que lea su respuesta («¿y vives cerca?») antes de comentar nada: esa insistencia es la lección.',
+      'Recuerda en voz alta que la amabilidad no vuelve de confianza a un desconocido, sin asustar: se trata de saber qué hacer, no de tener miedo.',
     ],
   },
 
   'n6-alto-al-ciberacoso': {
     actividadId: 'n6-alto-al-ciberacoso',
     objetivo:
-      'Que el alumno publique un dibujo propio en Tecnia Muro, reciba un turno después un comentario cruel de otra persona, y practique decidir entre tres respuestas posibles —contestar igual, quedarse callado, o reportar y bloquear— entendiendo que equivocarse en esta decisión no baja el puntaje ni cierra el paso (se explica y la decisión sigue abierta a intentarlo de nuevo), y que interiorice, con esas palabras exactas repetidas cinco veces a lo largo de la actividad, que "no es tu culpa".',
+      'Que el alumno ejecute dentro de una red social simulada el protocolo ante el ciberacoso —no contestar, guardar la prueba antes de que desaparezca, reportar con el motivo correcto, bloquear a la persona y contárselo a un adulto de confianza con la prueba— y que, como testigo, no amplifique una burla contra otra persona, la reporte y le escriba en privado; todo evaluado por lo que quedó hecho en el muro, sin que equivocarse le reste puntos, y con la frase «no es tu culpa» repetida cinco veces con esas palabras exactas.',
     materiales: [],
     fases: [
       {
         titulo: 'Antes de empezar: esto puede pasar, y hay qué hacer',
         duracionMin: 6,
         descripcion:
-          'Abre la clase con calma, sin dramatismo: explica que hoy van a practicar qué hacer si alguien escribe algo cruel en algo que publicaron, en un espacio seguro de práctica. Deja claro desde el inicio que la actividad no busca asustar, sino dar herramientas concretas para una situación que, si llega a pasar de verdad, tiene una respuesta clara.',
-        actividadSugerida: 'Introducción tranquila y directa, dejando espacio para preguntas antes de empezar la actividad.',
+          'Abre la clase con calma, sin dramatismo: hoy van a practicar qué hacer si alguien escribe algo cruel en algo que publicaron, en una red social de práctica. Lean juntos las cuatro fichas de la entrada; la cuarta trae el protocolo completo, con el paso que más se olvida: guardar la prueba antes de bloquear.',
+        actividadSugerida: 'Lectura de las fichas de la entrada y espacio para preguntas, sin forzar a nadie a contar nada.',
       },
       {
-        titulo: 'Decidir cómo responder',
+        titulo: 'Misión 1: te pasa a ti',
         duracionMin: 12,
         descripcion:
-          'Actividad digital: el alumno publica su dibujo, recibe el comentario cruel un turno después, y decide entre contestar igual, quedarse callado, o reportar y bloquear. Si elige una opción que no es la más recomendable, la actividad no penaliza ni cierra el paso — explica por qué y deja la decisión abierta para reconsiderar.',
-        actividadSugerida: 'La actividad digital — el ejercicio principal, con la publicación, el comentario cruel y las tres opciones de respuesta.',
+          'Actividad digital: Uriel comenta algo cruel en el dibujo de Sofi. La misión dice el resultado —que deje de molestarla y que un adulto pueda ayudarla, con pruebas— y no los pasos: el alumno descubre en el muro dónde capturar, reportar, bloquear y escribir. Si bloquea primero, el comentario desaparece y ya no hay prueba; si reporta con «no me gusta», la plataforma no hace nada; si le escribe a Mamá sin la captura, Mamá pregunta qué pasó. Nada de eso resta puntos: se arregla dentro del muro.',
+        actividadSugerida: 'La misión 1 del laboratorio, individual o en parejas.',
+      },
+      {
+        titulo: 'Misión 2: le pasa a Lía',
+        duracionMin: 8,
+        descripcion:
+          'Actividad digital: Mateo publica una foto de Lía para burlarse y ya lleva 23 «me gusta». La misión pide hacer lo que haría un buen amigo. Quien le da «me gusta» ve que la burla crece; quien comparte, que ya no se puede deshacer. Se cumple reportándola como acoso, sin dejar el «me gusta» puesto, y escribiéndole a Lía en privado.',
+        actividadSugerida: 'La misión 2 del laboratorio.',
       },
       {
         titulo: 'No es tu culpa',
-        duracionMin: 10,
+        duracionMin: 9,
         descripcion:
-          'Cierra la clase reforzando, con calma y sin prisa, que ninguna publicación "merece" un comentario cruel — quien comenta así es responsable de su propia crueldad, nunca la persona que publicó. Da espacio para que quien quiera comparta (sin obligar a nadie) si algo parecido le ha pasado, y refuerza a quién acudir: un adulto de confianza.',
-        actividadSugerida: 'Cierre grupal de reforzamiento emocional, con espacio abierto y sin presión para compartir experiencias.',
+          'Cierra la clase reforzando, con calma y sin prisa, que ninguna publicación «merece» un comentario cruel: quien comenta así es responsable de su propia crueldad, nunca la persona que publicó. Pregunta qué pasó cuando alguien bloqueó antes de guardar la prueba, y por qué la misión pedía un adulto y no sólo a Valentina. Refuerza a quién acudir.',
+        actividadSugerida: 'Cierre grupal, con espacio abierto y sin presión para compartir experiencias.',
       },
     ],
     teoriaIntro:
-      'Esta es la actividad más delicada de todo el nivel, y el profesor debe darla con el mismo cuidado con el que fue diseñada: sin alarmismo, sin dramatizar, y sin hacer sentir a ningún alumno señalado. El diseño de la actividad —que equivocarse en la decisión no penalice ni cierre el paso— es intencional: el objetivo no es que el alumno "acierte" la primera vez, es que explore las tres opciones en un espacio seguro y entienda las consecuencias de cada una sin miedo a "reprobar" la actividad. La frase "no es tu culpa", repetida cinco veces con esas palabras exactas, es la columna vertebral emocional de la clase y no debe diluirse ni acortarse.',
+      'Esta es la actividad más delicada del nivel y se da con el cuidado con el que fue diseñada: sin alarmismo y sin hacer sentir a nadie señalado. La clase ocurre dentro de la red social: el alumno no elige entre tres botones, hace las cosas donde se hacen de verdad —en los comentarios, en el perfil de la persona y en Mensajes— y la misión se cumple leyendo lo que quedó hecho. Equivocarse no resta puntos, a propósito: a quien sufre acoso no se le quita calificación por reaccionar mal. El costo es la consecuencia dentro del muro, y eso es lo que enseña el orden.',
     teoriaSecciones: [
       {
-        subtitulo: 'Por qué equivocarse aquí no cierra el paso',
+        subtitulo: 'Guardar la prueba antes de bloquear',
         contenido:
-          'Si la actividad penalizara elegir "contestar igual" o "quedarse callado", estaría enseñando que hay una única respuesta correcta memorizable, y castigando la exploración honesta de una decisión que, en la vida real, es difícil incluso para adultos. Al explicar la consecuencia de cada elección sin cerrar el paso, el alumno puede reconsiderar con información nueva, no con miedo a fallar — eso es lo que hace que la lección quede aprendida como criterio propio, no como una respuesta memorizada para un examen.',
+          'Al bloquear a alguien, lo que escribió deja de verse. Sin una captura, un adulto o la escuela no tienen cómo ver qué pasó. La clase no lo avisa antes: deja que el alumno bloquee y descubra que el comentario ya no está. Desde el perfil de la persona se puede desbloquear un momento, guardar la captura y volver a bloquear. Ese rodeo es el aprendizaje.',
+      },
+      {
+        subtitulo: 'El motivo del reporte importa',
+        contenido:
+          'Las redes sociales actúan según el motivo. «No me gusta» no es una falta, y con ese motivo la plataforma responde que no puede hacer nada. Reportar como acoso o burlas es lo que hace que lo revisen. El alumno puede volver a reportar con otro motivo.',
       },
       {
         subtitulo: 'La frase que se repite cinco veces, y por qué no se acorta',
         contenido:
-          '"No es tu culpa" aparece cinco veces con esas palabras exactas porque la repetición, en este tema específico, no es redundancia — es la forma en que un mensaje difícil de creer en el momento (cuando alguien recibe un comentario cruel, es común sentir vergüenza o pensar que "algo hice mal") se vuelve creíble a fuerza de escucharlo una y otra vez sin condiciones ni matices. El profesor no debe resumir esta frase ni cambiarla por sinónimos al hablar de la clase; debe usarla tal cual, todas las veces que sea natural hacerlo.',
+          '«No es tu culpa» aparece cinco veces con esas palabras exactas porque, en este tema, la repetición no es redundancia: es la forma en que un mensaje difícil de creer en el momento se vuelve creíble. La quinta la dice Mamá cuando recibe la prueba. El profesor no debe resumir la frase ni cambiarla por sinónimos.',
       },
     ],
     evaluacion: [
       {
-        pregunta: 'Si un alumno elige "quedarse callado" ante el comentario cruel en la actividad, ¿qué pasa?',
+        pregunta: 'Alguien te escribió algo cruel. ¿Por qué conviene guardar una captura ANTES de bloquear a esa persona?',
         opciones: [
-          'Pierde puntos y no puede continuar',
-          'La actividad explica la consecuencia de esa elección y deja la decisión abierta para reconsiderar',
-          'El programa se cierra automáticamente',
-          'Se le da automáticamente la insignia sin explicación',
+          'Porque al bloquearla su comentario deja de verse y ya no habría prueba para enseñársela a un adulto',
+          'Porque bloquear sin captura está prohibido',
+          'Porque la captura hace que la otra persona deje de escribir',
+          'No conviene: lo mejor es bloquear y olvidarse',
         ],
-        correctaIdx: 1,
+        correctaIdx: 0,
       },
       {
         pregunta: 'Según lo que enseña esta actividad, ¿de quién es la responsabilidad cuando alguien recibe un comentario cruel por algo que publicó?',
@@ -9701,22 +9731,22 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         correctaIdx: 1,
       },
       {
-        pregunta: '¿Cuáles son las tres opciones que puede elegir el alumno ante el comentario cruel?',
+        pregunta: 'Ves en tu muro una foto de un compañero publicada para burlarse de él. ¿Qué hace un buen amigo?',
         opciones: [
-          'Borrar el dibujo, cambiar de cuenta, o ignorar el juego',
-          'Contestar igual, quedarse callado, o reportar y bloquear',
-          'Llamar a la policía, cerrar la aplicación, o cambiar de escuela',
-          'Sólo hay una opción disponible: reportar',
+          'Le da «me gusta» para no quedar mal con los demás',
+          'La comparte para que más gente sepa lo que está pasando',
+          'La reporta, no le da «me gusta» y le escribe en privado al compañero',
+          'No hace nada, porque no es con él',
         ],
-        correctaIdx: 1,
+        correctaIdx: 2,
       },
     ],
     rubrica:
-      'Domina (explora las tres opciones con criterio propio, identifica reportar y bloquear como la respuesta más protectora, y explica por qué no es culpa de quien publica) · En proceso (explora las opciones con apoyo del profesor y necesita reforzamiento para interiorizar "no es tu culpa") · Inicia (necesita acompañamiento cercano durante toda la actividad y apoyo emocional adicional del profesor)',
+      'Domina (cumple las dos misiones guardando la prueba antes de bloquear, reporta con el motivo correcto a la primera y explica por qué no es culpa de quien publica) · En proceso (cumple las misiones tras descubrir alguna consecuencia, como el comentario que desaparece o el reporte rechazado, y la explica con sus palabras) · Inicia (necesita acompañamiento para encontrar dónde se hace cada cosa en el muro, o confunde apoyar con amplificar)',
     tips: [
-      'Da esta clase con el mismo tono tranquilo de principio a fin — evita frases de alarma como "esto es muy peligroso" o "tengan mucho cuidado", que pueden generar más ansiedad que protección; la actividad ya está diseñada para empoderar sin asustar.',
-      'Si notas que algún alumno se queda callado o incómodo durante el cierre, no lo fuerces a hablar frente al grupo — acércate después, en privado, y recuérdale directamente que puede hablar contigo o con otro adulto de confianza cuando quiera.',
-      'No abrevies ni parafrasees la frase "no es tu culpa" al hablar con el grupo — repítela con esas palabras exactas, tal como lo hace la actividad, porque la repetición literal es parte de lo que la hace efectiva.',
+      'Da esta clase con el mismo tono tranquilo de principio a fin; evita frases de alarma como «esto es muy peligroso»: la actividad ya está diseñada para empoderar sin asustar.',
+      'Si un alumno bloquea primero y se frustra porque el comentario desapareció, no le digas qué hacer: pregúntale qué le enseñaría a su mamá ahora. El perfil de Uriel tiene la respuesta.',
+      'Si notas que algún alumno se queda callado o incómodo durante el cierre, no lo fuerces a hablar frente al grupo; acércate después, en privado, y recuérdale que puede hablar contigo o con otro adulto de confianza.',
     ],
   },
 
@@ -9739,7 +9769,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         titulo: 'Investigar, armar y defender',
         duracionMin: 20,
         descripcion:
-          'Actividad digital: el alumno investiga en el navegador guardando sólo lo que sirve para sostener su idea, arma cuatro diapositivas (lo que va a sostener, la gráfica que habla de eso, y sus fuentes), y sube al escenario a defender el proyecto frente a un público que pregunta.',
+          'Actividad digital: el alumno investiga en el navegador guardando sólo lo que sirve para sostener su idea, arma cuatro diapositivas (lo que va a sostener, la gráfica que habla de eso, y sus fuentes), y sube al escenario a defender el proyecto frente a un público que pregunta. La frase la escribe el alumno con sus palabras y la tabla del salón la juzga en el momento: si la sostiene, si es falsa (con los números) o si habla de algo que no se midió —otras escuelas, otro año, lo que pasaría—.',
         actividadSugerida: 'La actividad digital — el ejercicio principal, con la investigación, el armado de las cuatro diapositivas y la defensa en el escenario.',
       },
       {
@@ -9801,6 +9831,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
     tips: [
       'Antes de que empiecen a investigar, pide que escriban en una frase qué van a sostener — si no pueden resumirlo en una frase clara, probablemente todavía no saben qué buscar, y es mejor afinarlo antes de que abran el navegador.',
       'Durante la defensa, anima al público (el resto del grupo) a hacer preguntas genuinas de curiosidad, no preguntas trampa — el objetivo es que el presentador demuestre entendimiento, no que se ponga a prueba su nervio.',
+      'Cuando el panel le diga «Eso no lo mediste», no lo trates como un error: es la idea más importante del proyecto. Pídele que lea en voz alta de qué no habla su tabla (otras escuelas, otro año) y que reescriba la frase para que hable sólo de su salón y su semana.',
       'Si un alumno elige una gráfica que no corresponde a lo que quiere sostener (por ejemplo un pastel para mostrar un cambio en el tiempo), no se lo corrijas directamente — pregúntale "¿esta gráfica contesta la pregunta que quieres sostener?" y deja que él mismo lo revise, como ya practicó en la actividad de elegir gráficas.',
     ],
   },
@@ -10157,71 +10188,71 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n7-variables-y-tipos': {
     actividadId: 'n7-variables-y-tipos',
     objetivo:
-      'Que el alumno entienda que en Python todo dato tiene un tipo (int, float, str, bool) que nace del valor que se le asigna, sepa consultarlo con type(), distinga la división normal (/) de la división entera (//), y provoque a propósito los dos errores más comunes de mezclar tipos —TypeError al sumar texto con número, ValueError al convertir texto no numérico— para aprender a decidir él mismo cuándo usar str() y cuándo int().',
+      'Que el alumno distinga los cuatro tipos básicos de Python (int, float, str y bool) guardando datos propios, provoque a propósito el error de tipo y el de valor y los distinga, y escriba tres programas cortos —una credencial con str(), un reparto con / y //, y una suma con int()— que un juez prueba cambiando los datos de arriba de cada celda.',
     materiales: [],
     fases: [
       {
-        titulo: '¿Qué tipo de dato es esto?',
+        titulo: '¿Es lo mismo 13 que "13"?',
         duracionMin: 5,
         descripcion:
-          'Escribe en el pizarrón cuatro valores sueltos: 7, 7.5, "siete", True. Pregunta al grupo qué tienen de distinto entre sí aunque los cuatro sean "datos". Deja que intuyan la diferencia antes de nombrarla formalmente.',
-        actividadSugerida: 'Pregunta detonadora con ejemplos en el pizarrón, discusión oral breve.',
+          'Escribe en el pizarrón 13 y "13" y pregunta al grupo si son lo mismo. Deja que discutan: la respuesta (no lo son) es la clase de hoy.',
+        actividadSugerida: 'Pregunta detonadora y discusión breve.',
       },
       {
-        titulo: 'La Mesa de tipos y las dos divisiones',
-        duracionMin: 18,
+        titulo: 'Cajas, type() y el error de tipo',
+        duracionMin: 9,
         descripcion:
-          'Actividad digital, primera mitad: el alumno guarda cuatro datos en cuatro cajas, consulta el tipo de cada uno con type(), y descubre por qué 10 / 2 escribe 5.0 mientras que 10 // 2 escribe 5. No interrumpas esta parte — es la base conceptual sobre la que se apoya el resto de la clase.',
-        actividadSugerida: 'La actividad digital, primera parte — Mesa de tipos y las dos divisiones.',
+          'Actividad digital, primera parte: el alumno guarda cuatro datos suyos, uno de cada tipo, y los ve en la Mesa de tipos; hace que Python le diga el tipo de uno, y provoca a propósito el error de juntar un texto con un número. Ninguna línea está dictada: la meta sí, y la ficha del manual trae un ejemplo de otro tema.',
+        actividadSugerida: 'La actividad digital, primera parte.',
       },
       {
-        titulo: 'Romper el programa a propósito',
-        duracionMin: 12,
+        titulo: 'Tres programas que el juez prueba con otros datos',
+        duracionMin: 13,
         descripcion:
-          'Actividad digital, segunda mitad: el alumno mezcla tipos deliberadamente hasta provocar TypeError (sumar texto con número) y ValueError (convertir "trece" con letras), y decide cada conversión: str() para pegar texto, int() para sumar. Este es el núcleo de la clase — los errores no son un tropiezo, son el mecanismo de aprendizaje.',
-        actividadSugerida: 'La actividad digital, segunda parte — provocar y resolver los dos errores.',
+          'Actividad digital, segunda parte: la credencial (str()), las pizzas del equipo (/ contra //) y el marcador (int() sobre un dato que llega como texto), con un error de valor provocado en medio. El juez cambia los datos de arriba de la celda en cada caso: escribir el resultado a mano pasa el ejemplo y nada más.',
+        actividadSugerida: 'La actividad digital, segunda parte.',
       },
       {
-        titulo: 'Cierre: ¿por qué Python es tan estricto con los tipos?',
-        duracionMin: 5,
+        titulo: 'Cierre: ¿qué pasó con la caja?',
+        duracionMin: 3,
         descripcion:
-          'Pregunta al grupo: "¿por qué creen que Python no deja sumar directamente un número con un texto, aunque para nosotros sea obvio que 5 años significa el número 5?". Conecta con la idea de que la computadora no "entiende" el sentido, sólo el tipo exacto del dato.',
-        actividadSugerida: 'Pregunta de cierre y discusión breve, sin necesidad de pizarrón.',
+          'La pregunta final: después de convertir puntos con int(), ¿de qué tipo es puntos? Que el grupo explique por qué sigue siendo texto: convertir fabrica un dato nuevo.',
+        actividadSugerida: 'Pregunta de cierre en voz alta.',
       },
     ],
     teoriaIntro:
-      'El valor pedagógico de esta clase está en dejar que el alumno rompa el programa a propósito, no en evitarlo. Muchos profesores instintivamente quieren "proteger" al alumno del error rojo en pantalla, pero aquí el error es el contenido: TypeError y ValueError son mensajes específicos que Python da porque distingue tipos de forma estricta, y aprender a leerlos (no a temerles) es la habilidad que se lleva toda la unidad de Python, no sólo esta clase.',
+      'El tipo de un dato decide qué deja hacer Python con él. Esta clase lo enseña sin explicarlo primero: el alumno guarda datos, los ve con su tipo en la Mesa de tipos y los mezcla hasta que revientan. Como todavía no hay input, el juez prueba cambiando los datos de arriba de cada celda: así se comprueba que el programa usa las variables y no copia el resultado del ejemplo.',
     teoriaSecciones: [
       {
-        subtitulo: 'El tipo nace del valor, no se declara aparte',
+        subtitulo: 'Dos errores de dos familias',
         contenido:
-          'A diferencia de otros lenguajes que el alumno podría encontrar más adelante, en Python no se escribe "esto es un entero" — el tipo se infiere del valor asignado. Por eso type() es tan importante en esta clase: es la única forma de "preguntarle" a Python qué decidió, y quita la sensación de magia sobre cómo funciona por dentro.',
+          'El error de tipo sale al usar + entre un texto y un número: la operación no existe para esa pareja. El error de valor sale al convertir con int() un texto que no tiene un número: el tipo está bien, el dato no sirve. Distinguirlos es saber qué arreglar.',
       },
       {
-        subtitulo: 'TypeError y ValueError son mensajes distintos a propósito',
+        subtitulo: 'Convertir fabrica un dato nuevo',
         contenido:
-          'TypeError aparece cuando la operación en sí no tiene sentido entre esos tipos (sumar un texto con un número); ValueError aparece cuando la operación tendría sentido pero el valor concreto no sirve (convertir "trece" —escrito con letras— a número, cuando int() sólo entiende dígitos). Diferenciar estos dos errores en voz alta con el grupo evita que los memoricen como "el error rojo" genérico y les da una pista real de dónde buscar la causa cuando programen solos.',
+          'int(puntos) da un número para la cuenta, pero la caja puntos sigue guardando el texto. Es la idea que sostiene la clase siguiente, donde todo lo que llega por teclado es texto.',
       },
     ],
     evaluacion: [
       {
-        pregunta: '¿Qué resultado da 10 // 2 en Python?',
-        opciones: ['5', '5.0', '5.5', 'Error'],
-        correctaIdx: 0,
-      },
-      {
-        pregunta: '¿Qué tipo de error provoca escribir "5" + 3 en Python (sumar un texto con un número)?',
-        opciones: ['ValueError', 'SyntaxError', 'TypeError', 'No provoca ningún error'],
+        pregunta: '¿De qué tipo es "13"?',
+        opciones: ['int', 'float', 'str', 'bool'],
         correctaIdx: 2,
       },
       {
-        pregunta: 'Si quieres pegar un número dentro de un texto (por ejemplo, para armar una frase con print), ¿qué función usas?',
+        pregunta: '¿Qué escribe Python con 12 / 3?',
+        opciones: ['4', '4.0', '"4"', 'Un error'],
+        correctaIdx: 1,
+      },
+      {
+        pregunta: 'Para imprimir «Tengo 13 años» juntando un texto con la edad (un número) usando +, ¿qué hace falta?',
         opciones: ['int()', 'float()', 'type()', 'str()'],
         correctaIdx: 3,
       },
     ],
     rubrica:
-      'Domina (identifica el tipo de cada dato sin ayuda, explica la diferencia entre / y //, y decide correctamente cuándo usar str() o int() para resolver ambos errores) · En proceso (identifica la mayoría de los tipos y resuelve al menos uno de los dos errores con apoyo) · Inicia (necesita guía para identificar tipos y no logra decidir solo qué conversión aplicar)',
+      'Domina (sus tres programas pasan al juez, distingue el error de tipo del de valor y explica por qué convertir no cambia la caja) · En proceso (resuelve dos programas con apoyo de las pistas) · Inicia (reconoce los tipos en la Mesa pero necesita guía para convertir)',
     tips: [
       'Cuando aparezca el error en rojo, no te apresures a corregirlo tú — pregunta "¿qué crees que está intentando decirte Python?" y deja que el grupo lo lea antes de explicarlo.',
       'Usa la analogía de cajas etiquetadas: una caja "de números" y una caja "de texto" no se pueden mezclar directamente aunque contengan algo parecido — ayuda a fijar por qué hace falta convertir.',
@@ -10232,50 +10263,55 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n7-entrada-y-salida': {
     actividadId: 'n7-entrada-y-salida',
     objetivo:
-      'Que el alumno escriba un programa que entrevista al usuario con input(), descubra que input() siempre devuelve texto (incluso si se escribe un número), aprenda a convertirlo con int() para poder operar con él, provoque el error de convertir texto no numérico, y arme una ficha con varios datos combinando print() con comas y con f-strings.',
+      'Que el alumno escriba programas que preguntan con input() y contestan con print(), descubra rompiéndolo que input() siempre devuelve texto, convierta con int() y float() según el dato, y resuelva tres problemas con juez —el juez teclea datos que el alumno no ha visto y compara letra por letra lo que su programa imprime—, sin que ninguna instrucción le dicte las líneas que tiene que escribir.',
     materiales: [],
     fases: [
       {
         titulo: '¿Cómo le pregunta algo un programa al usuario?',
         duracionMin: 5,
         descripcion:
-          'Pregunta al grupo si alguna vez han usado un programa o una app que les pregunta su nombre o su edad. Pide que describan qué pasa en pantalla en ese momento (aparece un cuadro, el programa "espera"). Esto prepara la idea de que input() detiene el programa hasta recibir respuesta.',
-        actividadSugerida: 'Pregunta detonadora y discusión oral breve sobre experiencias con formularios o apps.',
+          'Pregunta al grupo por apps que les piden su nombre o su edad y qué pasa en pantalla mientras no contestan: la app espera. Presenta la regla de hoy: el laboratorio no dicta líneas; da problemas, un manual con ejemplos de otros temas y un juez que prueba el programa con datos que nadie ha visto.',
+        actividadSugerida: 'Pregunta detonadora y explicación breve de cómo trabaja un juez de programas.',
       },
       {
-        titulo: 'El programa que entrevista y el error de la edad',
-        duracionMin: 18,
+        titulo: 'El programa que espera y el error de la edad',
+        duracionMin: 10,
         descripcion:
-          'Actividad digital, primera mitad: el alumno escribe un programa con input() que se detiene a esperar respuesta, e intenta sumarle 1 a la edad recién escrita — lo cual revienta, porque input() siempre devuelve texto. No apresures esta parte del error: es el momento central de la clase.',
-        actividadSugerida: 'La actividad digital, primera parte — programa con input() y el error al sumar.',
+          'Actividad digital, exploración: el alumno escribe en la celda «Calentamiento» un programa que le pregunta su nombre y lo saluda, apoyándose en la ficha del manual (que pregunta por una mascota, no por un nombre). Después, en la celda del Problema 1, intenta sumarle 1 a la edad que llegó sin convertirla y el programa se rompe con un TypeError. No te adelantes: la sorpresa de «¡pero si escribí un número!» es el centro de la clase.',
+        actividadSugerida: 'Encargos 1 y 2 del laboratorio: preguntar, contestar en la consola y provocar el error de tipo.',
       },
       {
-        titulo: 'Convertir con int() y provocar el segundo error',
-        duracionMin: 12,
+        titulo: 'Tres problemas con juez',
+        duracionMin: 15,
         descripcion:
-          'Actividad digital, segunda mitad: el alumno convierte la edad con int() para que la suma funcione, y luego contesta a propósito "trece" con letras en vez de con el número, para ver el error de conversión. Cierra armando una ficha con tres datos usando print con comas y una f-string.',
-        actividadSugerida: 'La actividad digital, segunda parte — conversión con int() y ficha final con f-string.',
+          'Actividad digital, problemas: «El año que viene» (int y la frase exacta con el punto pegado), «En 2030» (dos preguntas en orden y una cuenta) y «La cuenta de la tiendita» (float para el precio, int para las piezas). Entre el primero y el segundo, el alumno contesta «trece» con letras para ver el ValueError. Cada envío al juez devuelve cuántos casos pasan, incluidos los ocultos, y por qué falla el que falla.',
+        actividadSugerida: 'Encargos 3 a 6: los tres problemas enviados al juez y el dato que no vale.',
       },
       {
-        titulo: 'Cierre: ¿por qué siempre texto?',
-        duracionMin: 6,
+        titulo: 'Cierre: el texto que se repite',
+        duracionMin: 5,
         descripcion:
-          'Cierra preguntando por qué creen que input() siempre devuelve texto, aunque el usuario escriba puros números. Conecta con la clase anterior de tipos: Python no puede "adivinar" la intención del usuario, así que siempre asume el tipo más seguro (texto) y deja la conversión en manos del programador.',
-        actividadSugerida: 'Discusión de cierre conectando con la clase anterior de variables y tipos.',
+          'Proyecta el veredicto de un compañero que imprimió «Pagas 12.512.512.5 pesos.» y pide que expliquen qué pasó antes de contestar la pregunta final: el precio nunca se convirtió y un texto multiplicado por 3 se repite. Conecta con la clase anterior: Python no adivina tipos; convertir es decisión de quien programa.',
+        actividadSugerida: 'Discusión del veredicto y pregunta de cierre del laboratorio.',
       },
     ],
     teoriaIntro:
-      'El punto pedagógico de esta clase es que el alumno viva en carne propia por qué input() siempre devuelve texto, en vez de que se lo digan como un dato a memorizar. El error al intentar sumarle 1 a una edad recién escrita es el vehículo perfecto: es intuitivo (el alumno escribió un número, "debería" funcionar) y falla de forma clara, lo que hace que la explicación de por qué aterrice mejor que si se las das antes de que la necesiten.',
+      'Esta clase ya no se aprende copiando líneas. El alumno recibe una meta, un manual con un programa de otro tema y un juez que prueba su programa con datos que no conoce. Lo que se aprende está en el traslado: la ficha pregunta cuántas mascotas tienes y el problema, cuántos años cumples; la forma es la misma y el programa lo escribe él. El error al sumarle 1 a una edad recién escrita sigue siendo el momento central, porque convierte la regla «input devuelve texto» en algo que se vivió.',
     teoriaSecciones: [
       {
-        subtitulo: 'input() no adivina, siempre asume texto',
+        subtitulo: 'input() no adivina, siempre entrega texto',
         contenido:
-          'Es tentador para un alumno pensar que Python "debería darse cuenta" de que "13" es un número. Vale la pena explicar que input() no analiza lo que el usuario escribió, sólo lo entrega tal cual, como texto, siempre — es una regla fija, no una decisión caso por caso, y esa consistencia es justamente lo que hace a Python predecible una vez que se entiende.',
+          'input() no analiza lo que se escribió: lo entrega tal cual, como str, siempre. Es una regla fija, no una decisión caso por caso, y esa consistencia es lo que hace a Python predecible. El buzón de respuestas del laboratorio lo enseña con comillas: se tecleó 13 y llegó \'13\'.',
       },
       {
-        subtitulo: 'La ficha final conecta dos formas de imprimir',
+        subtitulo: 'Qué hace el juez y por qué es exigente con las letras',
         contenido:
-          'Usar print() con comas y luego una f-string para el mismo tipo de resultado no es redundante: deja ver que hay más de una forma válida de combinar texto y variables, y que la f-string (con las llaves {} dentro de un texto con el prefijo f) suele ser más legible cuando hay varios datos. No presentes una como "la correcta" y otra como "la vieja" — ambas se usan en código real.',
+          'El juez teclea los datos de cada caso, corre la celda del problema y compara lo que imprime print, línea por línea. El texto de las preguntas es libre; la respuesta tiene que ser exacta, porque otro programa podría estar leyéndola. Los casos ocultos existen para que escribir el resultado del ejemplo a mano no apruebe: el juez prueba edades de cien años, nombres con espacio y precios sin centavos.',
+      },
+      {
+        subtitulo: 'Celdas: varios programas en un archivo',
+        contenido:
+          'El archivo viene partido con líneas «# %%», la misma convención que usan VS Code y Spyder. El botón ▶ corre la celda del encargo en curso y el juez corre la del problema, así que lo que se guarda en una celda no existe en otra. Si un alumno ve un error de nombre en el juez que no ve en su consola, casi siempre es eso.',
       },
     ],
     evaluacion: [
@@ -10285,14 +10321,9 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         correctaIdx: 2,
       },
       {
-        pregunta: 'Si guardas la edad con "edad = input(...)" e intentas hacer "edad + 1" sin convertir, ¿qué pasa?',
-        opciones: [
-          'Da un error porque no se puede sumar texto y número directamente',
-          'Funciona sin problema',
-          'Python lo convierte automáticamente',
-          'El programa se cierra sin avisar',
-        ],
-        correctaIdx: 0,
+        pregunta: 'Un programa guarda el precio con input() y hace precio * 3 sin convertirlo. Si alguien teclea 12.5, ¿qué imprime?',
+        opciones: ['37.5', 'Un error de tipo', '12.512.512.5', '36'],
+        correctaIdx: 2,
       },
       {
         pregunta: 'Si el usuario escribe "trece" (con letras) y el programa intenta convertirlo con int(), ¿qué ocurre?',
@@ -10306,83 +10337,93 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
       },
     ],
     rubrica:
-      'Domina (escribe el programa con input() sin ayuda, convierte correctamente con int(), explica por qué ocurre el error de conversión y arma la ficha final con f-string) · En proceso (escribe el programa con apoyo y resuelve uno de los dos errores) · Inicia (necesita guía para usar input() y no distingue por qué falla la suma sin conversión)',
+      'Domina (resuelve los tres problemas con el juez usando el manual como referencia, elige entre int() y float() según el dato y explica por qué un texto multiplicado se repite) · En proceso (resuelve uno o dos problemas; necesita la segunda pista para la frase exacta o para la conversión) · Inicia (no logra que su programa pregunte y conteste sin ayuda directa, o no distingue el error de tipo del de valor)',
     tips: [
-      'Deja que el error de "sumar edad + 1" ocurra sin adelantarte a explicarlo — el momento de sorpresa ("¡pero si escribí un número!") es lo que hace que la explicación se quede.',
-      'Cuando lleguen a la f-string, señala en voz alta las llaves {} dentro del texto — muchos alumnos las pasan por alto como si fueran decorativas y no funcionales.',
-      'Si sobra tiempo, pregunta qué pasaría si alguien escribe su edad con un espacio de más (" 13") — abre la puerta, sin resolverla hoy, a que los datos del mundo real llegan sucios (idea que retoman en la unidad de hoja de cálculo).',
+      'Deja que el error de sumarle 1 a la edad ocurra sin adelantarte: la sorpresa es lo que hace que la explicación se quede.',
+      'Cuando un alumno pida «la respuesta», manda a la ficha del manual y a la primera pista antes de ayudar: el traslado del ejemplo a su problema es el aprendizaje de la clase.',
+      'Si un envío falla por «cumples 14 .», pide que lean la explicación del juez en voz alta: la coma de print pone un espacio, y ese espacio es otra respuesta.',
     ],
   },
 
   'n7-condicionales-python': {
     actividadId: 'n7-condicionales-python',
     objetivo:
-      'Que el alumno programe decisiones con if/else para dos caminos y con elif para tres o más, distinga == (comparar) de = (asignar), combine condiciones con and y or, y entienda por qué Python no permite escribir "120 <= altura <= 150" de forma encadenada como en matemáticas, resolviéndolo con and; y que reconozca que el orden de un elif puede cambiar el resultado sin que el programa avise.',
+      'Que el alumno escriba programas que deciden con if, elif y else sobre datos que teclea otra persona, lea con precisión las fronteras de una regla («120 o más», «menores de 5»), distinga == (comparar) de = (guardar), elija entre and y or según lo que pide la regla, y explique por qué un elif mal ordenado acierta con unos datos y falla con otros sin mostrar ningún error; todo resuelto frente a un juez que prueba cada frontera con casos ocultos, sin líneas dictadas.',
     materiales: [],
     fases: [
       {
-        titulo: '¿Cómo decide una persona? ¿Cómo decidiría un programa?',
+        titulo: '¿Quién sube a la montaña rusa?',
         duracionMin: 5,
         descripcion:
-          'Plantea una decisión cotidiana con dos caminos ("si llueve, llevo paraguas; si no, no") y pide que la traduzcan en voz alta a una estructura de "si... si no...". Es la puerta de entrada natural a if/else antes de tocar la pantalla.',
-        actividadSugerida: 'Ejemplo cotidiano traducido oralmente a estructura condicional, sin código todavía.',
+          'Proyecta el letrero de una atracción: «120 cm o más; de 120 a 149, con un adulto». Pregunta al grupo qué le contestarían a alguien de 120 justos y a alguien de 149. La discusión sobre las fronteras es la clase entera en pequeño.',
+        actividadSugerida: 'Lectura del letrero y discusión oral de los casos frontera, sin código.',
       },
       {
-        titulo: 'De if/else a elif, y el error de == vs =',
-        duracionMin: 17,
-        descripcion:
-          'Actividad digital, primera mitad: el alumno programa un camino con if/else, luego amplía a tres o más caminos con elif, y descubre por qué == y = no son lo mismo (uno compara, el otro asigna). No apresures el momento del error de == vs = — es uno de los errores más comunes en programación real y vale la pena que lo vivan aquí.',
-        actividadSugerida: 'La actividad digital, primera parte — if/else, elif, y el error de == vs =.',
-      },
-      {
-        titulo: 'and, or, y el rango encadenado que Python rechaza',
+        titulo: 'Dos y tres caminos, juzgados en la frontera',
         duracionMin: 13,
         descripcion:
-          'Actividad digital, segunda mitad: el alumno combina dos condiciones con and y con or, y provoca a propósito el error de intentar escribir "120 <= altura <= 150" de un tirón, resolviéndolo con and. Cierra reflexionando sobre por qué el orden de un elif puede dar la respuesta equivocada sin avisar.',
-        actividadSugerida: 'La actividad digital, segunda parte — and, or, y el error del rango encadenado.',
+          'Actividad digital: el alumno resuelve «¿Alcanzas?» con if/else y «Tres caminos» con elif, apoyándose en las fichas del manual (temperaturas y calificaciones, no alturas). El juez prueba 120, 119, 149 y 150. Si alguien escribe mayor que en vez de mayor o igual, el veredicto nombra el caso que falló: pide que lo lean en voz alta antes de corregir.',
+        actividadSugerida: 'Problemas 1 y 2 del laboratorio, enviados al juez.',
       },
       {
-        titulo: 'Cierre: el orden del elif importa',
+        titulo: 'Un igual o dos, and y or',
+        duracionMin: 12,
+        descripcion:
+          'Actividad digital: el alumno provoca el error de comparar con un solo signo igual y lee la explicación del editor; después resuelve «El pase VIP» (la altura descarta antes que el boleto) y «Entrada gratis» (basta con una de dos condiciones: or). Los casos ocultos castigan preguntar en el orden equivocado y usar and donde iba or.',
+        actividadSugerida: 'Exploración del = y problemas 3 y 4 del laboratorio.',
+      },
+      {
+        titulo: 'Cierre: el elif que acierta a medias',
         duracionMin: 5,
         descripcion:
-          'Plantea al grupo una cadena de elif con un error de orden (por ejemplo, una condición amplia antes que una específica que nunca se alcanza) y pregúntales por qué el resultado sale mal aunque cada condición individual esté bien escrita.',
-        actividadSugerida: 'Ejemplo de cadena elif mal ordenada, análisis grupal de por qué falla en silencio.',
+          'Escribe en el pizarrón el elif al revés (primero «menor que 150», luego «menor que 120») y recorre con el grupo a alguien de 130, de 170 y de 100. Los dos primeros salen bien y el tercero sale mal sin ningún error: por eso el juez guarda casos ocultos. Cierra con la pregunta final del laboratorio.',
+        actividadSugerida: 'Recorrido en voz alta del elif al revés y pregunta de cierre.',
       },
     ],
     teoriaIntro:
-      'El corazón pedagógico de esta clase son los errores silenciosos, no los que Python marca en rojo. El error de == vs = suele SÍ marcar un error visible (o un comportamiento raro), pero el error de orden en un elif no marca nada — el programa corre "bien" y da una respuesta incorrecta sin avisar. Ese tipo de error es más difícil de enseñar porque no hay un mensaje rojo que lo señale, así que vale la pena dedicarle tiempo real de discusión, no sólo mencionarlo de pasada.',
+      'Un condicional no se prueba con el dato que el propio alumno escribió: se prueba en las fronteras de la regla. Por eso esta clase ya no fija la altura en el código ni dicta las líneas; plantea reglas de una atracción y un juez que teclea las alturas justo donde un programa se equivoca. La sintaxis de if, elif y else se aprende del manual; lo que se aprende resolviendo es a leer una regla con precisión.',
     teoriaSecciones: [
       {
-        subtitulo: 'El error del rango encadenado es una decisión de diseño del lenguaje, no un capricho',
+        subtitulo: 'Las fronteras son el contenido',
         contenido:
-          'En matemáticas, "120 <= altura <= 150" es una notación válida y natural. Python técnicamente sí permite escribir eso, pero no significa lo que el alumno espera (lo evalúa de una forma que casi nunca da el resultado correcto), así que en la práctica hay que enseñarlo con and: "120 <= altura and altura <= 150". Vale la pena nombrar explícitamente que la intuición matemática del alumno es correcta y razonable — sólo que la sintaxis de Python para expresarla es distinta.',
+          '«120 o más» es mayor o igual; «menores de 5» es menor que. Casi todos los errores de la clase están en ese signo, y no se ven con datos cómodos: alguien de 130 sube con los dos. Cuando el juez rechace un envío por «justo en la marca», no des la respuesta: pide que prueben ese número en la consola y miren el Semáforo.',
       },
       {
-        subtitulo: 'Un elif mal ordenado falla sin avisar',
+        subtitulo: 'Comparaciones encadenadas: en Python sí valen',
         contenido:
-          'A diferencia de TypeError o ValueError, un elif con el orden equivocado no produce ningún mensaje de error — simplemente entra a la primera condición que se cumple, aunque no sea la más específica o la más adecuada. Este es el ejemplo perfecto para introducir la idea de que no todos los errores de programación se anuncian solos; algunos hay que encontrarlos leyendo la lógica con cuidado, una habilidad que se sigue practicando durante toda la unidad de Python.',
+          'Python acepta 120 <= altura < 150 y lo lee exactamente como en matemáticas: 120 <= altura and altura < 150. El editor de Tecnia también lo acepta. Conviene enseñar las dos formas: la encadenada se lee mejor, y la de and es la que funciona en casi cualquier otro lenguaje.',
+      },
+      {
+        subtitulo: 'El orden de un elif',
+        contenido:
+          'Python se queda con la primera condición cierta. Un elif ordenado con la condición ancha arriba no marca ningún error: responde mal a una parte de los datos. Ordenar las fronteras de un extremo al otro (de la más baja a la más alta con menor que, o al revés con mayor o igual) evita el problema.',
       },
     ],
     evaluacion: [
       {
         pregunta: '¿Cuál es la diferencia entre == y = en Python?',
         opciones: [
-          'No hay diferencia, son intercambiables',
-          '== asigna un valor, = compara dos valores',
+          'Son lo mismo, se pueden usar indistintamente',
+          '== guarda un valor, = compara dos valores',
           '== sólo funciona con números, = sólo con texto',
-          '== compara dos valores, = asigna un valor a una variable',
+          '== compara dos valores, = guarda un valor en una variable',
         ],
         correctaIdx: 3,
       },
       {
-        pregunta: '¿Cómo se escribe correctamente en Python la condición "la altura está entre 120 y 150"?',
-        opciones: ['120 <= altura <= 150', 'altura <= 120 and altura <= 150', '120 <= altura and altura <= 150', 'altura == 120 or altura == 150'],
-        correctaIdx: 2,
+        pregunta: 'La regla dice «pueden subir quienes miden 120 cm o más». ¿Qué condición la cumple exactamente?',
+        opciones: ['altura > 120', 'altura >= 120', 'altura == 120', 'altura < 120'],
+        correctaIdx: 1,
+      },
+      {
+        pregunta: 'Entran gratis los menores de 5 años y también quien cumple años ese día. ¿Qué une las dos condiciones?',
+        opciones: ['and, porque son dos condiciones', 'or, porque basta con que se cumpla una', 'else, porque son dos casos', 'No se pueden unir: hacen falta dos programas'],
+        correctaIdx: 1,
       },
       {
         pregunta: '¿Qué puede pasar si el orden de las condiciones en una cadena elif está mal pensado?',
         opciones: [
-          'El programa da un resultado incorrecto sin mostrar ningún error',
+          'El programa da un resultado incorrecto para algunos datos sin mostrar ningún error',
           'Python marca un error inmediatamente y no deja correr el programa',
           'No pasa nada, el orden nunca afecta el resultado',
           'El programa se vuelve más lento pero da el resultado correcto',
@@ -10391,177 +10432,175 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
       },
     ],
     rubrica:
-      'Domina (programa if/elif/else sin ayuda, distingue == de =, combina condiciones con and/or correctamente y explica por qué el orden de un elif puede alterar el resultado) · En proceso (programa condicionales básicos con apoyo y logra combinar and/or con pistas) · Inicia (necesita guía constante y confunde == con = sin poder explicar la diferencia)',
+      'Domina (resuelve los cuatro problemas con el juez, explica cada frontera con sus palabras y justifica el orden de su elif) · En proceso (resuelve dos o tres problemas; corrige las fronteras con ayuda de las pistas) · Inicia (escribe condicionales que funcionan con sus propios datos pero no logra que pasen los casos ocultos, o confunde == con =)',
     tips: [
-      'Cuando aparezca el error de == vs =, resístete a corregirlo de inmediato — pregunta "¿qué le estás pidiendo a Python que haga con ese signo?" y deja que el grupo distinga comparar de asignar por sí mismo.',
-      'Para el rango encadenado, dibuja una recta numérica en el pizarrón con el rango 120-150 marcado — ayuda a que vean visualmente por qué hacen falta dos comparaciones (and) y no una sola expresión.',
-      'El ejercicio final sobre el orden del elif es el más abstracto de la clase — dedícale tiempo real, no lo dejes como pregunta de cierre apresurada; si el grupo no lo entiende bien aquí, les costará más en los retos guiados.',
+      'Cuando aparezca el error de = en lugar de ==, pregunta «¿qué le estás pidiendo a Python que haga con ese signo?» antes de corregir.',
+      'Si un alumno pide los datos de un caso oculto, devuélvele el nombre del caso («justo en la marca») y pídele que invente él el número: ése es el razonamiento que la clase busca.',
+      'Dedica tiempo real a la pregunta del elif al revés; es la idea que más cuesta y la que más se usa en los retos guiados.',
     ],
   },
 
   'n7-bucles-python': {
     actividadId: 'n7-bucles-python',
     objetivo:
-      'Que el alumno escriba bucles for con range() para repetir instrucciones (armando la tabla del 7), acumule un total sumando en la misma variable vuelta tras vuelta, escriba un bucle while que cuenta hacia atrás, provoque un bucle infinito real al borrar su condición de paro y vea cómo el editor lo protege, y use break para salir de un bucle antes de tiempo, cerrando con la distinción de cuál de tres bucles nunca termina solo.',
+      'Que el alumno escriba, sin líneas dictadas, programas que repiten tantas veces como diga un dato: anunciar vueltas con for y range, acumular una suma preguntando una vez por vuelta, repetir con while mientras falte para una meta y salir de un bucle en cuanto llega una señal; que un juez los pruebe con cero, uno y muchos datos, y que provoque y reconozca un bucle infinito.',
     materiales: [],
     fases: [
       {
-        titulo: '¿Qué es repetir algo muchas veces sin escribirlo muchas veces?',
+        titulo: '¿Cuántas veces? Lo decide el dato',
         duracionMin: 5,
         descripcion:
-          'Pregunta al grupo cómo escribirían "imprime hola" diez veces sin copiar y pegar la misma línea diez veces. Deja que propongan ideas — la respuesta que buscan es justo la idea de un bucle.',
-        actividadSugerida: 'Pregunta detonadora y discusión breve sobre repetición sin copiar-pegar.',
+          'Pregunta al grupo cómo escribirían un programa que anuncie las vueltas de un entrenamiento si el número de vueltas cambia cada día. Que noten que escribir los print a mano sólo sirve para un número fijo.',
+        actividadSugerida: 'Pregunta detonadora y discusión breve.',
       },
       {
-        titulo: 'for, range() y la tabla del 7',
+        titulo: 'Las vueltas y los kilómetros',
+        duracionMin: 12,
+        descripcion:
+          'Actividad digital, primera parte: dos problemas con juez. El alumno repite con for un número de veces que teclea el juez (incluido el 0) y suma los kilómetros de cada día en una caja que nace antes del bucle. Las fichas del manual traen ejemplos de otro tema; el alumno los traslada.',
+        actividadSugerida: 'La actividad digital, primera parte — for, range y acumular.',
+      },
+      {
+        titulo: 'El bucle que no para, la meta y la alcancía',
         duracionMin: 14,
         descripcion:
-          'Actividad digital, primera parte: el alumno escribe un bucle for con range() para imprimir la tabla del 7 en dos líneas de código, y luego acumula la suma de diez números en la misma caja vuelta tras vuelta. No interrumpas — ver cómo una sola variable se actualiza en cada vuelta es la base de "acumular", un concepto que reaparece en los retos guiados.',
-        actividadSugerida: 'La actividad digital, primera parte — bucle for, range(), y acumulación de suma.',
+          'Actividad digital, segunda parte: un experimento donde el alumno escribe un while que nunca termina y ve al editor pararlo; después, dos problemas con while: repetir mientras falte para la meta y juntar monedas hasta que se teclee 0, saliendo antes de contar el 0.',
+        actividadSugerida: 'La actividad digital, segunda parte — while, el bucle infinito y break.',
       },
       {
-        titulo: 'while, el bucle infinito real, y break',
-        duracionMin: 16,
+        titulo: 'Cierre: el while que pidió un dato de más',
+        duracionMin: 4,
         descripcion:
-          'Actividad digital, segunda parte: el alumno cuenta hacia atrás con while, borra a propósito la línea que detiene el bucle para provocar un bucle infinito real y observa cómo el editor lo protege, lo arregla, y luego usa break para salir de un bucle antes de tiempo.',
-        actividadSugerida: 'La actividad digital, segunda parte — while, bucle infinito real, y break.',
-      },
-      {
-        titulo: 'Cierre: ¿cuál de estos tres bucles nunca termina?',
-        duracionMin: 6,
-        descripcion:
-          'Muestra tres bucles while en el pizarrón, dos con condición de paro correcta y uno sin ella (o con una condición que nunca se cumple), y pide al grupo que identifique cuál nunca terminaría solo y por qué.',
-        actividadSugerida: 'Análisis grupal de tres bucles en el pizarrón, identificando el que nunca termina.',
+          'La pregunta final de la actividad: un compañero repitió «mientras la suma sea menor o igual que la meta», pasó el ejemplo y el juez le dijo en los ocultos que pidió un dato de más. Pide al grupo que lo recorra con la meta de 5 y una salida de 5.',
+        actividadSugerida: 'Análisis grupal de una frontera en un while.',
       },
     ],
     teoriaIntro:
-      'El momento más importante pedagógicamente de esta clase es el bucle infinito provocado a propósito. No es un accidente que se deba evitar a toda costa — es la única forma de que el alumno entienda, de forma visceral, por qué un bucle while necesita una condición que eventualmente se vuelva falsa. Ver cómo el editor protege al alumno (sin que su computadora se congele de verdad) es lo que permite convertir un miedo típico de principiante en una lección segura y memorable.',
+      'El cambio importante de esta clase es que el número de repeticiones lo decide un dato que teclea otro. Un bucle que siempre da las mismas vueltas se podría sustituir por varios print; el juez lo detecta probando con 0, con 1 y con muchos. El bucle infinito provocado a propósito sigue siendo el momento más memorable: no es un accidente que haya que evitar, es la forma de entender que un while termina sólo si algo de adentro cambia su condición.',
     teoriaSecciones: [
       {
-        subtitulo: 'for cuenta veces conocidas, while cuenta hasta que algo cambie',
+        subtitulo: 'for cuando el dato dice cuántas veces, while cuando se repite hasta que algo pase',
         contenido:
-          'La diferencia entre for y while no es sólo de sintaxis: for se usa cuando se sabe de antemano cuántas veces se repetirá algo (range() lo deja explícito), mientras que while se usa cuando la repetición depende de una condición que puede cambiar en cualquier momento (como contar hacia atrás hasta cero, o esperar a que algo se cumpla). Vale la pena nombrar esta diferencia de uso, no sólo la de sintaxis.',
+          'En «Las vueltas» y «Los kilómetros» el primer dato dice cuántas veces se repite: for con range. En «La meta» y «La alcancía» nadie sabe cuántas vueltas habrá: se repite mientras falte para la meta o hasta que llegue la señal. El juez acepta otras estructuras que den lo mismo (las vueltas con while, la alcancía con una lectura antes del bucle).',
       },
       {
-        subtitulo: 'break es una salida de emergencia, no la forma normal de terminar un bucle',
+        subtitulo: 'Las fronteras de un bucle',
         contenido:
-          'Es tentador que el alumno empiece a usar break como su única forma de controlar bucles, incluso cuando una condición bien escrita bastaría. Vale la pena señalar que break es útil para casos específicos (salir en cuanto se cumple algo dentro del bucle, como en los retos guiados con el candado), pero que la condición del bucle sigue siendo la forma principal y más clara de controlar cuándo termina.',
+          'Los errores típicos no revientan: range(n) empieza en 0, range(1, n) se queda corto, «menor o igual» da una vuelta de más justo en la meta, y contar el 0 de la alcancía como moneda suma una de más. Por eso los casos ocultos caen en el 0, en el 1 y justo en la meta.',
       },
     ],
     evaluacion: [
       {
-        pregunta: '¿Qué tipo de bucle es más adecuado cuando ya sabes exactamente cuántas veces quieres repetir algo?',
-        opciones: ['while', 'break', 'if/elif', 'for con range()'],
-        correctaIdx: 3,
+        pregunta: 'Un programa anuncia «Vuelta 0», «Vuelta 1» y «Vuelta 2» cuando se teclea 3. ¿Qué le pasa?',
+        opciones: [
+          'Su range empieza en 0; para anunciar de la 1 a la 3 tiene que empezar en 1 y detenerse después del 3',
+          'Le falta un break',
+          'El juez tecleó mal el dato',
+          'Le falta convertir el 3 con int',
+        ],
+        correctaIdx: 0,
       },
       {
         pregunta: '¿Qué provoca un bucle infinito en un while?',
         opciones: [
           'Usar range() en vez de una lista',
           'Usar break dentro del bucle',
-          'Que la condición del bucle nunca se vuelva falsa',
+          'Que nada de lo que hay adentro haga falsa su condición',
           'Sumar dentro de un for',
         ],
         correctaIdx: 2,
       },
       {
-        pregunta: '¿Para qué sirve break dentro de un bucle?',
+        pregunta: 'En la alcancía, el 0 marca el final. ¿Dónde tiene que ir la salida del bucle?',
         opciones: [
-          'Para salir del bucle antes de que su condición normal lo termine',
-          'Para sumar todos los valores del bucle',
-          'Para reiniciar el bucle desde cero',
-          'Para convertir un for en un while',
+          'Después de sumar y contar la moneda',
+          'Justo después de leerla y antes de contarla o sumarla',
+          'Al final del programa',
+          'No hace falta salir: el bucle termina solo',
         ],
-        correctaIdx: 0,
+        correctaIdx: 1,
       },
     ],
     rubrica:
-      'Domina (escribe for con range() y while sin ayuda, identifica y corrige el bucle infinito explicando su causa, y usa break de forma correcta) · En proceso (escribe bucles básicos con apoyo y corrige el bucle infinito con pistas) · Inicia (necesita guía constante y no logra explicar por qué el bucle infinito ocurrió)',
+      'Domina (sus cuatro programas pasan al juez, explica por qué «menor o igual» pide un dato de más y provoca un bucle infinito sabiendo por qué no para) · En proceso (resuelve los problemas de for y uno de while con apoyo de las pistas) · Inicia (necesita guía para decidir qué va dentro del bucle y qué fuera)',
     tips: [
-      'Cuando ocurra el bucle infinito, no te apresures a arreglarlo tú — pregunta al grupo "¿qué le falta a este bucle para que alguna vez pare?" y deja que ellos identifiquen la condición faltante.',
-      'Tranquiliza a quien se ponga nervioso con el bucle infinito: recuérdales que el editor está diseñado para protegerlos, no es lo mismo que "colgar" una computadora de verdad — así se atreven a experimentar sin miedo.',
-      'En el ejercicio de acumulación de suma, verifica que entiendan que la misma variable se actualiza en cada vuelta (total = total + numero) — es un concepto que confunde a muchos principiantes y que necesitarán dominado para los retos guiados.',
+      'Cuando ocurra el bucle infinito, no te apresures a explicarlo — pregunta al grupo «¿qué le falta a este bucle para que alguna vez pare?» y deja que ellos identifiquen la condición que nunca cambia.',
+      'Si un alumno pasa el ejemplo y el juez lo rechaza en un oculto, ayúdale a imaginar el caso por su nombre («día de descanso», «justo en la meta») en vez de darle los datos.',
+      'En «Los kilómetros», revisa que la caja de la suma nazca antes del bucle: crearla dentro es el error más frecuente y el juez lo caza en el ejemplo.',
     ],
   },
 
   'n7-retos-python': {
     actividadId: 'n7-retos-python',
     objetivo:
-      'Que el alumno cierre la unidad de Python combinando, sin aprender herramientas nuevas, todo lo visto: decide un descuento con if/elif/else sobre un total calculado con float() e int(), cuenta y clasifica un grupo acumulando dos variables dentro del mismo for, y abre un candado con while, input y break, comprobando primero que un acierto sin break no basta para detener el bucle.',
+      'Que el alumno cierre la unidad de Python escribiendo, sin líneas dictadas, tres programas que juntan lo de las cuatro paradas: un descuento con dos fronteras sobre un total calculado, un conteo con dos acumuladores que no divide entre cero cuando no hay datos, y un candado con un bucle de dos salidas; y que un juez los pruebe en las fronteras y en los casos especiales.',
     materiales: [],
     fases: [
       {
         titulo: 'Repaso relámpago de las cuatro herramientas',
-        duracionMin: 6,
+        duracionMin: 5,
         descripcion:
-          'Antes de empezar, pide al grupo que nombre en voz alta las cuatro herramientas que ya dominan de la unidad: variables y tipos, entrada y salida, condicionales, bucles. Esta clase no enseña nada nuevo — es importante que el grupo llegue consciente de que va a combinar lo que ya sabe.',
-        actividadSugerida: 'Repaso oral rápido nombrando las cuatro herramientas de la unidad.',
+          'Pide al grupo que nombre en voz alta las cuatro herramientas de la unidad: variables y tipos, entrada y salida, condicionales, bucles. Esta clase no enseña nada nuevo: es el momento de juntarlas.',
+        actividadSugerida: 'Repaso oral de las cuatro clases anteriores.',
       },
       {
-        titulo: 'Reto 1: el descuento',
-        duracionMin: 12,
+        titulo: 'Tres retos con juez',
+        duracionMin: 25,
         descripcion:
-          'Actividad digital, primer reto: el alumno calcula un total con float() e int() y decide un descuento con if/elif/else sobre ese total. Es la primera combinación real de dos unidades previas (tipos + condicionales) en un solo programa con propósito.',
-        actividadSugerida: 'La actividad digital, reto 1 — cálculo de total y descuento con if/elif/else.',
+          'Actividad digital: el precio justo (10 % desde 100 y 20 % desde 500; el juez prueba justo en 100 y justo en 500), aprobados y promedio (dos cuentas en un bucle y el grupo vacío), y el candado del casillero (tres intentos; el juez prueba a la primera y en el último intento). Cada reto trae fichas del manual de otros temas. Si el juez rechaza, el alumno ve el nombre del caso que falló, no sus datos.',
+        actividadSugerida: 'La actividad digital — el ejercicio principal de esta clase.',
       },
       {
-        titulo: 'Reto 2: contar y clasificar',
-        duracionMin: 11,
+        titulo: 'Cierre: el grupo vacío',
+        duracionMin: 5,
         descripcion:
-          'Actividad digital, segundo reto: el alumno cuenta y clasifica un grupo acumulando dos variables dentro del mismo bucle for. Combina bucles con acumulación, ya visto en la clase anterior, pero ahora con dos contadores a la vez.',
-        actividadSugerida: 'La actividad digital, reto 2 — conteo y clasificación con dos acumuladores en un for.',
-      },
-      {
-        titulo: 'Reto 3: el candado',
-        duracionMin: 12,
-        descripcion:
-          'Actividad digital, tercer reto: el alumno abre un candado con while, input y break, después de comprobar que un acierto sin break no detiene el bucle por sí solo. Cierra la unidad completa.',
-        actividadSugerida: 'La actividad digital, reto 3 — el candado con while, input y break.',
+          'La pregunta final de la actividad: una compañera no revisó si el grupo tenía alumnos y su programa se detuvo con un error en un caso oculto. Pide al grupo que explique por qué dividir entre cero no tiene resultado y qué otros «casos especiales» se les ocurren en programas de la vida real.',
+        actividadSugerida: 'Discusión grupal sobre casos especiales.',
       },
     ],
     teoriaIntro:
-      'Esta clase es deliberadamente distinta a las cuatro anteriores: no introduce ningún concepto nuevo, y ese es justo su valor pedagógico. Programar de verdad no es aplicar una herramienta a la vez sino combinarlas con un propósito (un descuento, un conteo, un candado), y esta es la primera vez en la unidad que el alumno arma un programa completo con varias piezas trabajando juntas, en vez de un ejercicio aislado por concepto.',
+      'Esta clase no introduce herramientas: mide si el alumno sabe elegirlas y juntarlas. Lo difícil no es la sintaxis sino el orden de las preguntas (la frontera de 500 antes que la de 100), dónde nace cada cuenta (antes del bucle) y qué pasa en los casos especiales (sin alumnos, acertar a la primera).',
     teoriaSecciones: [
       {
-        subtitulo: 'La transferencia es más difícil que la ejecución aislada',
+        subtitulo: 'Los errores que no revientan',
         contenido:
-          'Un alumno puede haber dominado if/elif/else en su propia clase y aun así trabarse al combinarlo con una conversión de tipos dentro de un mismo programa — no porque no sepa cada pieza, sino porque combinarlas exige decidir en qué orden y con qué datos. Si un alumno se atora en el reto 1, no asumas que olvidó los condicionales: probablemente el problema está en decidir qué convertir primero, el total o la comparación.',
+          'Casi todos los errores típicos de esta clase dan una respuesta equivocada sin avisar: el descuento sin el 20 % y las fronteras al revés pasan los dos ejemplos y sólo fallan con compras de 500. Por eso existen los casos ocultos, y por eso el juez enseña su nombre («justo 500») y no sus datos.',
       },
       {
-        subtitulo: 'El candado sin break es el resumen de toda la unidad',
+        subtitulo: 'Un bucle con dos salidas',
         contenido:
-          'Que un acierto sin break no detenga el bucle es una demostración muy concreta de una idea que atraviesa toda la unidad: el programa hace exactamente lo que se le escribió, no lo que "tendría sentido" que hiciera. Vale la pena nombrar esto explícitamente al cerrar — es la idea más importante que un principiante puede llevarse de su primer contacto con programación.',
+          'El candado se acaba porque aciertan o porque se gastaron los intentos. Después del bucle hay que saber cuál pasó: con una variable que lo recuerde o preguntando por lo que quedó en el contador. El juez acepta las dos maneras.',
       },
     ],
     evaluacion: [
       {
-        pregunta: 'En el reto del descuento, ¿qué combinación de herramientas de la unidad se pone en juego?',
-        opciones: ['Conversión de tipos y condicionales juntos', 'Sólo condicionales', 'Sólo bucles', 'Sólo entrada y salida'],
+        pregunta: 'Una compra de 500 pesos recibe sólo el 10 % de descuento. ¿Qué es lo más probable?',
+        opciones: [
+          'El programa pregunta primero por la frontera de 100, que ya es cierta, y nunca llega a la de 500',
+          'El programa no convirtió el precio a número',
+          'El 20 % de 500 no se puede calcular con decimales',
+          'Falta un bucle',
+        ],
         correctaIdx: 0,
       },
       {
-        pregunta: 'En el reto del candado, ¿por qué un acierto sin break no detiene el bucle?',
+        pregunta: '¿Por qué hay que revisar si el grupo no tiene alumnos antes de calcular el promedio?',
         opciones: [
-          'Porque while nunca se detiene',
-          'Porque input() detiene automáticamente cualquier bucle',
-          'Porque hace falta usar for en vez de while',
-          'Porque el bucle sólo se detiene por la condición o por una instrucción explícita como break, no porque "el usuario ya acertó"',
+          'Porque el for no funciona con cero',
+          'Porque el promedio divide entre cuántos son, y dividir entre cero no tiene resultado',
+          'Porque el juez lo pide aunque no haga falta',
+          'Porque las calificaciones se vuelven texto',
         ],
-        correctaIdx: 3,
+        correctaIdx: 1,
       },
       {
-        pregunta: '¿Qué tienen en común los tres retos de esta clase?',
-        opciones: [
-          'Cada uno introduce una herramienta nueva de Python',
-          'Ninguno usa condicionales',
-          'Todos combinan herramientas ya vistas en la unidad, sin conceptos nuevos',
-          'Todos usan exclusivamente bucles while',
-        ],
+        pregunta: 'En el candado, alguien acierta a la primera y el programa le vuelve a preguntar. ¿Qué le falta?',
+        opciones: ['Un elif', 'Convertir el código con int', 'Salir del bucle con break en cuanto acierta', 'Un intento más'],
         correctaIdx: 2,
       },
     ],
     rubrica:
-      'Domina (resuelve los tres retos combinando las herramientas de la unidad sin ayuda y explica por qué cada combinación funciona) · En proceso (resuelve al menos dos retos con apoyo puntual) · Inicia (necesita guía constante en cada reto y no logra combinar herramientas por sí solo)',
+      'Domina (los tres retos pasan al juez y explica por qué el grupo vacío divide entre cero) · En proceso (resuelve dos retos y necesita las pistas en el tercero) · Inicia (reconoce las herramientas pero necesita guía para juntarlas)',
     tips: [
       'Si un alumno se atora, pregúntale qué herramienta de las cuatro de la unidad reconoce en el reto, antes de darle la respuesta — casi siempre la reconoce, sólo le falta ver cómo se combina con otra.',
       'El reto del candado suele generar el mayor "aha" de toda la unidad — dale tiempo extra si hace falta, no lo apresures por llegar a la insignia final.',
@@ -11167,7 +11206,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n7-privacidad-en-redes': {
     actividadId: 'n7-privacidad-en-redes',
     objetivo:
-      'Que el alumno audite su propio perfil de Tecnia Muro como lo vería un desconocido, identifique tres publicaciones que sueltan pistas personales (escuela, mascota, calle) y las cierre cambiando su audiencia o borrándolas, y entienda que borrar tarde saca la publicación del perfil desde ese momento, pero no deshace que alguien ya la haya visto antes.',
+      'Que el alumno audite su propio perfil de Tecnia Muro como lo vería un desconocido y decida qué cerrar sin esconder lo que no delata nada; que reconozca que un reto viral puede estar juntando las respuestas de las preguntas de seguridad (y lo reporte por pedir datos personales); y que, cuando alguien ya vio lo que no debía, guarde la prueba, se lo cuente a un adulto con ella y bloquee la cuenta.',
     materiales: [],
     fases: [
       {
@@ -11178,68 +11217,73 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         actividadSugerida: 'Pregunta detonadora y discusión oral general, sin exponer datos personales reales de ningún alumno.',
       },
       {
-        titulo: 'Auditar el perfil de Tecnia Muro',
-        duracionMin: 14,
+        titulo: 'Tres misiones en Tecnia Muro',
+        duracionMin: 16,
         descripcion:
-          'Actividad digital: el alumno revisa tres publicaciones públicas de un perfil simulado (Tecnia Muro) que sueltan pistas —escuela, mascota, calle— y las va cerrando una por una, cambiando su audiencia o borrándolas. Es la actividad principal — no interrumpas, cada pista que cierra es una decisión de privacidad practicada en un entorno seguro y simulado.',
+          'Actividad digital. Misión 1: con la pestaña «Así te ve un desconocido», el alumno encuentra él mismo qué publicaciones delatan algo y las cierra (audiencia o borrar); la misión no se cumple si esconde también lo que no delata nada. Misión 2: un reto viral («primera mascota + tu calle») que sus compañeros ya contestaron; se cumple cuando su perfil no contesta esas preguntas y el reto se reporta por pedir datos personales. Misión 3: una cuenta que vio la publicación de la calle antes de que la cerrara le comenta; se cumple con captura, mensaje a un adulto con la captura adjunta y bloqueo. Nada resta puntos: los errores tienen consecuencias dentro del muro. No interrumpas; si alguien se atora, pregúntale qué ve un desconocido en su perfil.',
         actividadSugerida: 'La actividad digital — el ejercicio principal de esta clase.',
       },
       {
-        titulo: 'Cierre: borrar tarde no deshace lo visto',
-        duracionMin: 7,
+        titulo: 'Cierre: lo que ya se vio no se des-ve, pero no estás solo',
+        duracionMin: 6,
         descripcion:
-          'Cierra con la idea central de la actividad: la publicación de la calle llevaba semanas pública, y aunque borrarla la saca del perfil al instante, un turno después se revela que alguien ya la había visto. Pregunta al grupo qué significa esto para las cosas que ya compartieron en el pasado.',
+          'Cierra con dos ideas: auditar tarde sirve (desde hoy nadie más lee lo que cerraste), y cuando alguien ya lo vio, lo que ayuda es la prueba y un adulto, no contestarle. Pregunta al grupo qué preguntas de seguridad usan sus cuentas y si alguna se contesta con algo que hayan publicado, sin que digan la respuesta en voz alta.',
         actividadSugerida: 'Discusión de cierre conectando la mecánica de la actividad con el hábito real de revisar la privacidad periódicamente.',
       },
     ],
     teoriaIntro:
-      'El punto pedagógico más delicado de esta clase es que no busca generar miedo ni culpa retroactiva por lo que un alumno ya haya compartido en la vida real, sino construir el hábito de auditar periódicamente. La revelación de que "alguien ya la había visto" no es un castigo dentro de la simulación, es información: el mensaje para el alumno es "actuar ahora evita que más gente lo vea desde hoy", no "ya es demasiado tarde para todo".',
+      'El punto pedagógico más delicado de esta clase es que no busca generar miedo ni culpa retroactiva por lo que un alumno ya haya compartido en la vida real, sino construir el hábito de auditar periódicamente y de pedir ayuda con pruebas. La tercera misión no es un castigo: es lo que pasa a veces, y lo que se practica es la respuesta (capturar, contarle a un adulto, bloquear), no el susto.',
     teoriaSecciones: [
       {
-        subtitulo: 'Auditar no es un evento único, es un hábito',
+        subtitulo: 'Auditar es elegir, no esconderse',
         contenido:
-          'La actividad simula tres publicaciones específicas, pero la habilidad que se busca instalar es la de revisar el propio perfil periódicamente con la pregunta "¿esto lo debería ver cualquiera?" — no una limpieza única después de esta clase. Vale la pena cerrar la sesión recordando que este ejercicio se puede repetir en la vida real cada cierto tiempo, no sólo hoy.',
+          'La actividad no acepta «cerrarlo todo»: el concurso de matemáticas y la ida al cine no ayudan a nadie a encontrar al alumno, y deben seguir públicos. La habilidad es preguntar de cada publicación «¿esto ayuda a que alguien sepa dónde estoy o cómo entrar a mis cuentas?», no ocultar la vida entera.',
       },
       {
-        subtitulo: 'Cambiar la audiencia y borrar son herramientas distintas, no intercambiables',
+        subtitulo: 'Las preguntas de seguridad se contestan con lo que publicas',
         contenido:
-          'Cambiar la audiencia de una publicación (de pública a sólo amigos, por ejemplo) es útil cuando el contenido puede quedarse pero no para cualquiera; borrarla es para cuando el contenido no debería existir en ningún lado. Ayuda a que el alumno entienda que la decisión correcta depende del tipo de pista que está soltando la publicación, no que "borrar siempre es lo más seguro".',
+          '«¿Cómo se llamaba tu primera mascota?» o «¿en qué calle creciste?» son preguntas que muchas cuentas usan para recuperar la contraseña. Un reto que pide justo esos datos puede ser un juego, o puede estar juntándolos. Por eso la misión pide reportarlo por «Me pide datos personales», y no sólo no contestarlo: así deja de juntar los de los compañeros.',
+      },
+      {
+        subtitulo: 'Bloquear antes de capturar borra la prueba de tu vista',
+        contenido:
+          'En la simulación, bloquear a la cuenta esconde su comentario, y sin el comentario no hay captura que mandarle a un adulto. El orden útil es: captura, adulto con la captura, bloqueo. Si un alumno bloquea primero, el muro le deja desbloquear un momento desde «Bloqueados».',
       },
     ],
     evaluacion: [
       {
-        pregunta: 'En la actividad, ¿qué tipo de información sueltan las tres publicaciones que hay que auditar?',
+        pregunta: 'En la primera misión, ¿por qué no basta con cerrar o borrar todas las publicaciones?',
         opciones: [
-          'Pistas personales como escuela, mascota y calle',
-          'Opiniones sobre videojuegos',
-          'Tareas escolares pendientes',
-          'Horarios de clase únicamente',
+          'Porque algunas, como el concurso, no ayudan a nadie a encontrarte y pueden seguir públicas',
+          'Porque borrar está prohibido en Tecnia Muro',
+          'Porque las publicaciones viejas no se pueden cerrar',
+          'Porque la misión pide tener muchos «me gusta»',
         ],
         correctaIdx: 0,
       },
       {
-        pregunta: 'Si borras una publicación que llevaba semanas pública, ¿qué es cierto sobre las personas que ya la vieron antes de borrarla?',
+        pregunta: 'Un reto pide «tu primera mascota + la calle donde vives». ¿Qué riesgo tiene contestarlo?',
         opciones: [
-          'Borrarla hace que nunca la hayan visto',
-          'Borrarla la saca del perfil desde ese momento, pero no deshace que ya la hayan visto antes',
-          'No importa, borrar siempre soluciona todo por completo',
-          'Es imposible que alguien la haya visto si tú no se la mostraste directamente',
+          'Ninguno, es sólo un juego',
+          'Que esos datos son respuestas de preguntas de seguridad para recuperar cuentas',
+          'Que te pueden quitar seguidores',
+          'Que la publicación se borra sola',
         ],
         correctaIdx: 1,
       },
       {
-        pregunta: '¿Cuál es la diferencia entre cambiar la audiencia de una publicación y borrarla?',
+        pregunta: 'Alguien te comenta algo que demuestra que sabe por dónde andas. ¿Qué orden ayuda más?',
         opciones: [
-          'Son exactamente lo mismo',
-          'Cambiar la audiencia siempre borra el contenido también',
-          'Cambiar la audiencia limita quién la ve manteniendo el contenido, borrarla la elimina por completo',
-          'Borrar sólo funciona en publicaciones nuevas, nunca en las viejas',
+          'Contestarle para que te deje en paz',
+          'Bloquearlo de inmediato y no decirle a nadie',
+          'Hacer una captura, mandársela a un adulto de confianza y después bloquear',
+          'Borrar tu cuenta y no volver a usar redes',
         ],
         correctaIdx: 2,
       },
     ],
     rubrica:
-      'Domina (identifica las tres pistas sin ayuda, elige correctamente entre cambiar audiencia o borrar, y explica por qué auditar tarde sigue siendo útil aunque no deshaga lo ya visto) · En proceso (identifica 2 de las 3 pistas con apoyo) · Inicia (necesita guía constante para reconocer qué información es sensible en una publicación)',
+      'Domina (cierra lo que delata sin esconder lo demás, reconoce el reto como recolección de respuestas de seguridad, y explica por qué la captura va antes que el bloqueo y a quién se la manda) · En proceso (cumple las misiones con algún intento de más, por ejemplo cerrar todo o bloquear antes de capturar, y lo corrige) · Inicia (necesita guía constante para reconocer qué información es sensible en una publicación)',
     tips: [
       'Nunca pidas ejemplos con datos reales de los propios alumnos durante la discusión — la actividad y la reflexión deben quedarse en el perfil simulado de Tecnia Muro, no convertirse en exponer información real del salón.',
       'Si algún alumno comenta con preocupación algo que ya publicó en la vida real, no lo minimices ni lo alarmes — valida que auditar y ajustar ahora es la acción correcta, y si hace falta, dirige la conversación fuera del grupo (con un adulto de confianza) en vez de en voz alta frente a la clase.',
@@ -11333,89 +11377,82 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n7-equilibrio-digital': {
     actividadId: 'n7-equilibrio-digital',
     objetivo:
-      'Que el alumno practique distinguir, aviso por aviso en una noche de viernes simulada, qué notificación puede esperar y cuál no —el meme de los amigos, el mensaje urgente de mamá, el cofre "por tiempo limitado" del juego que finge ser urgente sin serlo— y arme su propio modo de enfoque eligiendo a quién deja sonar mientras trabaja, entendiendo que equilibrio digital es aprender a distinguir, no apagar el teléfono por completo.',
+      'Que el alumno lea los datos de uso de un teléfono simulado (tiempo de pantalla, avisos por app y por hora) y los use para configurarlo: que silencie lo que interrumpe de más sin callar lo que importa, compruebe en una tarde simulada que esos ajustes le dejan terminar la tarea y contestar a tiempo a su familia, y programe una hora de dormir que cubra las noches antes de escuela sin silenciar la alarma.',
     materiales: [],
     fases: [
       {
         titulo: 'Es viernes en la noche',
         duracionMin: 5,
         descripcion:
-          'Plantea el escenario de la actividad: tarea pendiente, la cena por servirse, y el teléfono sonando sin parar. Pregunta al grupo si esa situación se les hace conocida, sin pedir detalles personales — sólo para ubicar el contexto antes de entrar a la actividad.',
-        actividadSugerida: 'Planteamiento del escenario y pregunta de conexión con la experiencia cotidiana del grupo.',
+          'Plantea el escenario: tarea pendiente, la cena por servirse y el teléfono sonando sin parar. Pregunta al grupo cuántos avisos creen que les manda su teléfono a la semana, sin pedir que lo revisen ni que digan sus datos reales.',
+        actividadSugerida: 'Planteamiento del escenario y pregunta de estimación, sin exponer datos personales.',
       },
       {
-        titulo: 'Aviso por aviso: ¿puede esperar?',
-        duracionMin: 8,
+        titulo: 'Tres misiones en Tecnia Avisos',
+        duracionMin: 18,
         descripcion:
-          'Actividad digital, primera parte: el alumno decide, notificación por notificación, qué puede esperar y qué no —el meme, el mensaje urgente de mamá, el cofre "por tiempo limitado" del juego—. Es el núcleo de la clase: reconocer que algunos avisos fingen urgencia sin tenerla realmente.',
-        actividadSugerida: 'La actividad digital, primera parte — decidir aviso por aviso.',
+          'Actividad digital en un teléfono simulado. Misión 1: en Ajustes → Bienestar digital el alumno ve cuántos avisos mandó cada app y cada categoría la semana pasada, y los configura hasta que no le habrían sonado más de 70 a la semana sin callar a Mamá (hay varias maneras de lograrlo). Misión 2: una tarde simulada en la que el reloj avanza con lo que hace — resuelve cinco ejercicios de mate de verdad, cada aviso que suena le cuesta concentración y abrir el cofre del juego le cuesta más; tiene que terminar antes de cenar y contestarle a Mamá en menos de 5 minutos. Si no sale, repite la tarde. Misión 3: programa la Hora de dormir para las noches antes de escuela (de domingo a jueves), con Mamá como excepción y sin silenciar la alarma. Nada resta puntos.',
+        actividadSugerida: 'La actividad digital — el ejercicio principal de esta clase.',
       },
       {
-        titulo: 'Armar tu modo de enfoque',
-        duracionMin: 7,
+        titulo: 'Cierre: tus datos, tus reglas',
+        duracionMin: 5,
         descripcion:
-          'Actividad digital, segunda parte: el alumno arma su propio modo de enfoque eligiendo a quién deja sonar mientras trabaja. Cierra la mecánica de la clase con una decisión personalizada, no una lista fija de reglas.',
-        actividadSugerida: 'La actividad digital, segunda parte — armar el modo de enfoque personalizado.',
-      },
-      {
-        titulo: 'Cierre: no es apagar el teléfono',
-        duracionMin: 6,
-        descripcion:
-          'Cierra con la idea central: equilibrio digital no es apagar el teléfono, es aprender a distinguir qué aviso sí puede esperar. Pregunta al grupo qué avisos ELLOS considerarían siempre urgentes en su propia vida (sin pedir ejemplos privados, sólo categorías generales como "familia" o "emergencia").',
-        actividadSugerida: 'Discusión de cierre conectando la mecánica de la actividad con un criterio propio de cada alumno.',
+          'Pregunta qué noche de la semana se les olvidó al programar la Hora de dormir (muchos eligen de lunes a viernes y dejan fuera el domingo) y por qué la alarma no se silencia. Cierra con la idea de que los teléfonos reales tienen las mismas herramientas y que revisarlas es una decisión propia, no una prohibición.',
+        actividadSugerida: 'Discusión breve conectando la actividad con los ajustes reales de cualquier teléfono.',
       },
     ],
     teoriaIntro:
-      'Esta clase, que cierra la unidad de ciudadanía digital, corrige deliberadamente una idea común y poco útil: que "equilibrio digital" significa desconectarse por completo. El diseño de la actividad —incluir el cofre "por tiempo limitado" del juego junto al mensaje urgente de mamá— existe para que el alumno practique una habilidad más fina que "usar menos el celular": distinguir la urgencia fingida (diseñada a propósito para generar ansiedad de perderse algo) de la urgencia real.',
+      'La clase no moraliza sobre «usar menos el celular»: trabaja con datos. El alumno descubre de dónde vienen las interrupciones (casi todas de dos o tres fuentes) y que silenciar no es bloquear: lo silenciado sigue llegando, sin interrumpir. La segunda misión hace visible un costo que no se ve: volver a concentrarse después de cada aviso.',
     teoriaSecciones: [
       {
-        subtitulo: 'La urgencia fingida es una técnica de diseño, no un accidente',
+        subtitulo: 'El costo de cambiar de tarea',
         contenido:
-          'El cofre "por tiempo limitado" no aparece por casualidad en la actividad: muchas apps y juegos usan temporizadores y avisos diseñados a propósito para sentirse urgentes aunque no lo sean, con el fin de que el usuario vuelva a abrir la aplicación. Vale la pena nombrar esto explícitamente con el grupo — no es que ellos tengan mal autocontrol, es que hay decisiones de diseño hechas para generar esa sensación de urgencia artificial.',
+          'En la tarde simulada cada aviso que suena cuesta 2 minutos aunque no se abra, y abrir el grupo o el juego cuesta entre 5 y 8. Son números de la simulación, no medidas exactas, pero el efecto es real: con los ajustes de fábrica la tarea no se termina antes de la cena.',
       },
       {
-        subtitulo: 'El modo de enfoque personalizado respeta que no todos tienen las mismas prioridades',
+        subtitulo: 'Urgencia fabricada',
         contenido:
-          'La actividad no impone una lista fija de "esto sí, esto no" — deja que cada alumno decida a quién deja sonar. Esto es intencional: la familia de un alumno puede tener una dinámica distinta a la de otro (por ejemplo, quién es la persona que sí debe poder interrumpir siempre). Evita convertir el cierre en una regla única para todo el grupo; el valor está en que cada quien construya su propio criterio razonado.',
+          'Las «ofertas por tiempo limitado» del juego mandan más avisos que casi cualquier persona. Están diseñadas para que se sienta prisa: al abrir el cofre aparece otro. Reconocer qué avisos vienen de una persona y cuáles de una estrategia para retener la atención es parte del criterio que se busca.',
+      },
+      {
+        subtitulo: 'La noche antes de escuela',
+        contenido:
+          'La Hora de dormir se activa «la noche de» cada día. La noche que importa es la anterior a un día de clases: de domingo a jueves. Elegir de lunes a viernes cubre el viernes, que no hacía falta, y deja sin cubrir el domingo.',
       },
     ],
     evaluacion: [
       {
-        pregunta: 'Según la clase, ¿qué es realmente el equilibrio digital?',
+        pregunta: 'Si silencias el grupo de amigos, ¿qué pasa con sus mensajes?',
         opciones: [
-          'Apagar el teléfono por completo todas las noches',
-          'Usar el teléfono el menor tiempo posible cada día',
-          'Aprender a distinguir qué aviso puede esperar y cuál no',
-          'Borrar todas las aplicaciones de juegos',
-        ],
-        correctaIdx: 2,
-      },
-      {
-        pregunta: '¿Por qué el cofre "por tiempo limitado" del juego es un buen ejemplo para esta clase?',
-        opciones: [
-          'Porque siempre es realmente urgente responder',
-          'Porque finge urgencia sin tenerla realmente, a propósito',
-          'Porque nunca aparece en juegos reales',
-          'Porque es idéntico a un mensaje de un familiar',
+          'Se borran',
+          'Siguen llegando al centro de notificaciones, pero sin sonar',
+          'Ya no te pueden escribir',
+          'Se los manda a otra persona',
         ],
         correctaIdx: 1,
       },
       {
-        pregunta: 'En el modo de enfoque que arma cada alumno, ¿qué decide la actividad por ellos?',
+        pregunta: 'En la actividad, ¿por qué no cumplía apagar la app de Mensajes completa?',
         opciones: [
-          'Cada alumno elige a quién deja sonar según su propio criterio',
-          'La actividad decide una lista fija igual para todos',
-          'El modo de enfoque bloquea el teléfono por completo sin excepciones',
-          'Sólo se puede elegir bloquear juegos, nada más',
+          'Porque así también se callaban los mensajes de Mamá',
+          'Porque Mensajes no se puede apagar',
+          'Porque así sonaban más avisos',
+          'Porque borraba los mensajes viejos',
         ],
         correctaIdx: 0,
       },
+      {
+        pregunta: 'Entras a la escuela de lunes a viernes. ¿Qué noches conviene que se active la Hora de dormir?',
+        opciones: ['De lunes a viernes', 'Sólo sábado y domingo', 'De domingo a jueves', 'Todas menos el lunes'],
+        correctaIdx: 2,
+      },
     ],
     rubrica:
-      'Domina (distingue con criterio propio la urgencia real de la fingida en los avisos, arma un modo de enfoque razonado, y explica por qué equilibrio digital no es apagar el teléfono) · En proceso (distingue la mayoría de los avisos con apoyo) · Inicia (necesita guía constante para diferenciar urgencia real de urgencia fingida)',
+      'Domina (usa los datos de la semana para decidir qué silenciar sin callar lo importante, termina la tarde a tiempo y programa la noche de domingo a jueves explicando por qué) · En proceso (cumple las misiones con algún intento de más, como apagar Mensajes entera o elegir de lunes a viernes, y lo corrige) · Inicia (necesita guía para leer los datos de uso o para relacionarlos con los ajustes)',
     tips: [
-      'Cuando lleguen al cofre "por tiempo limitado", pregunta directamente "¿qué pasaría si lo ignoras hasta mañana?" — la respuesta (nada grave) es más contundente que cualquier explicación teórica sobre diseño persuasivo.',
-      'Al armar el modo de enfoque, no impongas tu propio criterio de qué "debería" dejarse sonar — el valor de la actividad es que cada alumno razone el suyo, aunque distintos alumnos lleguen a configuraciones distintas.',
+      'Cuando alguien abra el cofre del juego en la tarde, pregunta «¿qué pasaría si lo ignoras hasta mañana?» — la respuesta (nada) es más contundente que cualquier explicación sobre diseño persuasivo.',
+      'En la misión 1 no impongas tu propio criterio de qué silenciar: hay varias configuraciones que cumplen, y el valor está en que cada alumno razone la suya con los números.',
       'Cierra la clase (y la unidad completa de ciudadanía digital) nombrando la insignia de Sabe elegir cuándo conectarse, y conecta brevemente con las dos clases anteriores: privacidad y riesgos en línea también son, en el fondo, formas de decidir con criterio en vez de reaccionar sin pensar.',
     ],
   },
@@ -12735,53 +12772,93 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n10-consultas-sql': {
     actividadId: 'n10-consultas-sql',
     objetivo:
-      'Que el alumno, sobre una base ya poblada con integrantes reales del club de robótica, filtre con WHERE, ordene con ORDER BY y DESC, busque por patrón con LIKE, corte el resultado con LIMIT, y lea el pie de una tabla de 150 filas que la pantalla sólo dibuja hasta la fila 100; que una dos tablas con JOIN … ON, provoque a propósito el error de columna ambigua, y descubra por qué un compañero sin equipo asignado desaparece del resultado: NULL no casa con nada, ni siquiera dentro de un JOIN.',
+      'Que el alumno resuelva siete problemas de consulta sobre la base del club de robótica a partir de un enunciado que dice qué tabla hay que devolver —con qué columnas y en qué orden— y nunca cómo, enviando cada consulta a un juez que la corre contra su base y contra dos clubes que no ha visto: que ordene con ORDER BY y DESC, filtre con WHERE, busque por patrón con LIKE, desempate y corte con LIMIT, junte dos tablas con JOIN … ON resolviendo la columna ambigua, encuentre con IS NULL al integrante que el JOIN pierde, y descubra que filtrar por un identificador interno en vez de por un nombre produce consultas que funcionan con unos datos y fallan con otros; y que cierre leyendo el pie de una tabla de 150 filas que la pantalla sólo dibuja hasta la 100.',
     materiales: [],
     fases: [
       {
         titulo: 'De diseñar a preguntar',
         duracionMin: 5,
         descripcion:
-          'Recuerda al grupo que en la clase anterior diseñaron y construyeron la base de datos del club de robótica; hoy esa base ya tiene datos reales y el trabajo es hacerle preguntas. Pregunta qué tipo de preguntas les gustaría poder hacerle a una lista de más de cien integrantes (¿quién se apuntó más reciente? ¿quiénes tienen nombre que empieza con cierta letra?).',
-        actividadSugerida: 'Pregunta detonadora conectando con la base construida en la clase anterior.',
+          'Recuerda que en la clase anterior diseñaron la base del club de robótica; hoy ya tiene datos y el trabajo es hacerle preguntas. Explica el formato antes de entrar: cada problema dice qué tabla devolver y un juez corre la consulta contra su base y contra otros dos clubes. El primer envío casi siempre vuelve rechazado, y eso es parte de la clase.',
+        actividadSugerida: 'Explicación del formato de la clase: enunciado, contrato de columnas, ejemplo y casos ocultos.',
       },
       {
-        titulo: 'Filtrar, ordenar, buscar y cortar',
-        duracionMin: 22,
+        titulo: 'Orden, filtro, patrón y corte',
+        duracionMin: 17,
         descripcion:
-          'Actividad digital, primera parte: el alumno filtra con WHERE, ordena con ORDER BY y DESC, busca por patrón con LIKE, corta el resultado con LIMIT, y lee con cuidado el pie de una tabla de 150 filas que la pantalla sólo dibuja hasta la fila 100 —para no perderse cuántas filas hay en realidad detrás de lo que se ve—.',
-        actividadSugerida: 'La actividad digital, primera parte — filtros, orden, patrones y límite de filas.',
+          'Actividad digital, problemas 1 a 4. En el primero casi todos envían la consulta sin ORDER BY y la ven rechazada: es el momento de fijar que las filas de una tabla no tienen orden propio. En el cuarto, pide que lean la frase sobre los empates antes de escribir: sin desempate, los tres de grado más alto tienen varias respuestas posibles y el juez no puede aceptar dos.',
+        actividadSugerida: 'La actividad digital, problemas 1 a 4 — la lista ordenada, los de tercero al revés, los que empiezan por A y el podio.',
       },
       {
-        titulo: 'JOIN, la columna ambigua y el compañero que desaparece',
-        duracionMin: 12,
+        titulo: 'Dos tablas y el que desaparece',
+        duracionMin: 15,
         descripcion:
-          'Actividad digital, segunda parte: el alumno une dos tablas con JOIN … ON, provoca a propósito el error de columna ambigua (cuando dos tablas tienen una columna con el mismo nombre y la consulta no aclara de cuál tabla es), lo corrige, y descubre por qué un compañero sin equipo asignado desaparece del resultado del JOIN: NULL no casa con nada, ni siquiera dentro de la unión de dos tablas.',
-        actividadSugerida: 'La actividad digital, segunda parte — JOIN, columna ambigua, y el caso del compañero sin equipo.',
+          'Actividad digital, problemas 5 y 6. Al juntar integrantes con equipos, el primer intento suele chocar con el error de columna ambigua, porque las dos tablas tienen una columna nombre; que lean el mensaje antes de pedir ayuda. Después pide que cuenten las filas: son once de doce integrantes, y el problema 6 consiste en encontrar al que el JOIN perdió.',
+        actividadSugerida: 'La actividad digital, problemas 5 y 6 — el JOIN con la columna ambigua y el integrante sin equipo.',
       },
       {
-        titulo: 'Cierre: lo que no aparece también es información',
-        duracionMin: 5,
+        titulo: 'El número que cambia y la tabla que no cabe',
+        duracionMin: 8,
         descripcion:
-          'Cierra preguntando al grupo por qué es importante notar que alguien desapareció del resultado, y no sólo confiar en la lista que sí se muestra. Conecta con la idea de que una consulta que "funciona sin errores" puede seguir estando incompleta si no se revisa qué se quedó fuera.',
-        actividadSugerida: 'Discusión de cierre sobre la importancia de notar lo ausente en un resultado de consulta.',
+          'Problema 7 y cierre. Casi todos filtran primero por el número del equipo, pasan el ejemplo y caen en los casos ocultos, donde ese mismo equipo lleva otro número. Pregunta por qué una consulta que funcionaba dejó de funcionar sin un solo error. Cierra con la tabla de 150 sesiones: el resultado está completo aunque la pantalla dibuje 100.',
+        actividadSugerida: 'La actividad digital, problema 7 y los dos encargos de la tabla de 150 filas, con discusión sobre identificadores y nombres.',
       },
     ],
     teoriaIntro:
-      'Esta clase construye directamente sobre "Modela tus datos": ahí el alumno aseguró que los datos fueran coherentes al guardarlos; aquí aprende a extraer información de esos datos con precisión. El punto pedagógico más importante es el del compañero sin equipo que desaparece del JOIN: no es un error del motor, es una consecuencia lógica y silenciosa de cómo funciona NULL, y es exactamente el tipo de comportamiento que un analista de datos profesional necesita anticipar, no descubrir por accidente en un reporte real.',
+      'Esta clase construye sobre «Modela tus datos» y cambia el oficio: ya no hay consultas escritas que copiar, sino problemas y un juez. Lo más valioso que se lleva el alumno no es una cláusula, son dos hábitos de analista: notar lo que no aparece en un resultado, y desconfiar de una consulta que sólo funciona con los datos que tiene delante.',
     teoriaSecciones: [
       {
-        subtitulo: 'Leer el pie de una tabla larga: lo que se ve no siempre es todo',
+        subtitulo: 'Las filas de una tabla no tienen orden propio',
         contenido:
-          'Cuando una tabla tiene 150 filas y la pantalla sólo dibuja las primeras 100, es fácil asumir por error que esas 100 son el total. El pie de la tabla —que indica cuántas filas hay en realidad— es la fuente de verdad, no el conteo visual. Este hábito de revisar el total real antes de sacar conclusiones es una versión más avanzada de la misma disciplina que ya practicaron revisando el máximo de una columna en la unidad de datos de N8.',
+          'Un SELECT sin ORDER BY no promete ningún orden: las filas salen como el motor quiera sacarlas. Si hoy aparecen ordenadas es casualidad, y basta con agregar un registro para que dejen de estarlo. Por eso el juez sólo exige orden cuando el enunciado lo pide, y en esos casos el orden es la respuesta. El desempate forma parte de pedirlo: sin él, cortar a las tres primeras filas no significa nada concreto.',
       },
       {
         subtitulo: 'Por qué NULL hace desaparecer filas dentro de un JOIN',
         contenido:
-          'Un JOIN … ON compara una columna de una tabla contra una columna de otra para decidir qué filas emparejar — pero si el valor a comparar es NULL en alguna de las dos, la comparación nunca se cumple, porque NULL representa "no se sabe" y no se puede afirmar que "no se sabe" sea igual a nada, ni siquiera a otro NULL. Esta es la misma trampa que el alumno ya vio con WHERE = NULL en N9, ahora con una consecuencia más seria: en vez de sólo fallar una condición, hace que una persona real desaparezca silenciosamente de un reporte.',
+          'Un JOIN … ON empareja filas comparando una columna de cada tabla, y si el valor es NULL la comparación nunca se cumple, porque NULL significa que no hay dato y no se puede afirmar que eso sea igual a nada, ni siquiera a otro NULL. Por eso preguntar si una casilla es igual a NULL no devuelve nada, y existe IS NULL. La consecuencia seria es silenciosa: una persona desaparece de un reporte sin que la consulta dé ningún error.',
+      },
+      {
+        subtitulo: 'Un identificador no es un nombre',
+        contenido:
+          'El número de un equipo es una clave interna: sirve para coser tablas, pero puede cambiar de un año a otro o de una base a otra. Filtrar por ese número funciona con los datos de hoy y entrega la plantilla de otro equipo con los de mañana, sin ningún mensaje de error. Filtrar por el nombre, que es lo que el enunciado pide, sobrevive a ese cambio. Los casos ocultos existen para enseñar justo esa diferencia.',
+      },
+      {
+        subtitulo: 'Leer el pie de una tabla larga',
+        contenido:
+          'Cuando una tabla tiene 150 filas y la pantalla sólo dibuja las primeras 100, es fácil creer que esas 100 son el total. El pie de la rejilla dice el total real y es la fuente de verdad. Confundir lo que una pantalla enseña con lo que una consulta devuelve está detrás de muchos informes mal hechos.',
       },
     ],
     evaluacion: [
+      {
+        pregunta: 'Una consulta pide los nombres de los integrantes sin ORDER BY y hoy salen en orden alfabético. ¿Qué se puede concluir?',
+        opciones: [
+          'Que la tabla siempre devolverá los nombres en ese orden',
+          'Nada sobre el orden: sin ORDER BY no se promete ninguno y puede cambiar en cuanto cambien los datos',
+          'Que el motor ordena por nombre de forma automática',
+          'Que la consulta tiene un error',
+        ],
+        correctaIdx: 1,
+      },
+      {
+        pregunta: 'Un JOIN entre integrantes y equipos devuelve once filas, pero hay doce integrantes. ¿Qué es lo más probable?',
+        opciones: [
+          'Que un integrante tiene NULL en su equipo y no casa con ninguna fila de equipos',
+          'Que el motor borró un integrante al juntar las tablas',
+          'Que la consulta tiene un error de sintaxis',
+          'Que un equipo tiene el mismo nombre que un integrante',
+        ],
+        correctaIdx: 0,
+      },
+      {
+        pregunta: 'Una consulta filtra la plantilla de «Los Circuitos» por el número de equipo 1 y funciona. Con la base del año siguiente entrega a otras personas sin dar error. ¿Por qué?',
+        opciones: [
+          'Porque la base del año siguiente está dañada',
+          'Porque el número de un equipo es un identificador interno que puede cambiar, y el nombre no',
+          'Porque los JOIN sólo funcionan una vez',
+          'Porque faltó un ORDER BY',
+        ],
+        correctaIdx: 1,
+      },
       {
         pregunta: 'Una tabla tiene 150 filas pero la pantalla sólo dibuja hasta la fila 100. ¿Qué debe revisar el alumno para saber el total real?',
         opciones: [
@@ -12792,33 +12869,13 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         ],
         correctaIdx: 1,
       },
-      {
-        pregunta: '¿Por qué un compañero sin equipo asignado (NULL en esa columna) desaparece del resultado de un JOIN?',
-        opciones: [
-          'Porque el JOIN siempre elimina filas al azar',
-          'Porque NULL no se puede comparar como igual a nada, ni siquiera dentro de la condición del JOIN',
-          'Porque ese compañero fue borrado de la base de datos',
-          'Porque los JOIN sólo funcionan con números, nunca con texto',
-        ],
-        correctaIdx: 1,
-      },
-      {
-        pregunta: '¿Cuándo ocurre el error de "columna ambigua" en una consulta con JOIN?',
-        opciones: [
-          'Cuando se usa LIMIT en la consulta',
-          'Cuando dos tablas tienen una columna con el mismo nombre y la consulta no aclara de cuál tabla es',
-          'Cuando se usa ORDER BY sin DESC',
-          'Cuando la consulta tiene más de diez líneas',
-        ],
-        correctaIdx: 1,
-      },
     ],
     rubrica:
-      'Domina (filtra, ordena, busca y limita resultados sin ayuda, usa JOIN correctamente, y explica por qué un registro con NULL desaparece del resultado) · En proceso (completa la mayoría de las consultas con 1-2 pistas) · Inicia (necesita guía constante para escribir cada tipo de consulta)',
+      'Domina (resuelve los siete problemas leyendo los casos que fallan, explica por qué el JOIN pierde una fila y por qué filtrar por el número del equipo falla en otros clubes) · En proceso (resuelve orden, filtro, patrón y JOIN, pero necesita pistas para el desempate, el IS NULL o el problema del identificador) · Inicia (escribe consultas que pasan el ejemplo visible pero no puede explicar qué cambia en los casos ocultos)',
     tips: [
-      'Cuando lean el pie de la tabla de 150 filas, pregúntales primero cuántas filas creen que hay basándose sólo en lo que ven en pantalla — comparar esa estimación contra el número real hace más contundente la lección.',
-      'Para el error de columna ambigua, no lo corrijas de inmediato — pídeles que lean el mensaje de error y decidan ellos mismos cuál de las dos tablas necesita especificarse.',
-      'Cuando el compañero sin equipo desaparezca del JOIN, pregunta explícitamente "¿cuántas personas esperabas ver en este resultado, y cuántas viste?" — notar la diferencia numérica hace más visible el problema que sólo explicarlo en abstracto.',
+      'Cuando alguien reciba un «Rechazado» en el problema 1, no le digas qué falta. Pregúntale si las filas de una tabla tienen un orden propio. La respuesta la da él, y la recuerda.',
+      'El error de columna ambigua del problema 5 es parte de la clase. No lo evites explicando antes que las dos tablas tienen una columna nombre: que choque con el mensaje, lo lea en voz alta y lo resuelva.',
+      'Si el grupo va con prisa, el problema 7 es el que no conviene saltarse. Es el único que enseña algo que una consulta sin errores no dice: que funcionaba sólo con los datos de hoy.',
     ],
   },
 
@@ -13079,7 +13136,7 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n8-listas-y-diccionarios': {
     actividadId: 'n8-listas-y-diccionarios',
     objetivo:
-      'Que el alumno guarde varios datos en una sola lista y sepa pedir cualquiera de ellos por su posición (incluida la última con índice negativo y con len()-1), agregue con append(), corte con una rebanada y recorra la lista completa con for; que provoque a propósito un IndexError pidiendo una posición que no existe, lo lea con calma y lo corrija; y que después guarde datos por CLAVE en un diccionario, lo recorra con .items() y compruebe una clave con in antes de pedirla.',
+      'Que el alumno escriba programas que funcionen con CUALQUIER lista y CUALQUIER diccionario, no sólo con el del ejemplo: pedir la primera y la última posición sin saber cuántas hay, hacer crecer una lista con append(), recorrerla recordando un total y un máximo, preguntar con in si una clave existe antes de pedirla —y distinguir «¿existe?» de «¿hay piezas?»— y recorrer un diccionario con .items() contando sólo algunos. Que pida a propósito una casilla que no existe y lea el error, y que explique por qué la casilla de len() nunca existe.',
     materiales: [],
     fases: [
       {
@@ -13090,18 +13147,18 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
         actividadSugerida: 'Pregunta detonadora en el pizarrón: escribir la asistencia con una variable por alumno.',
       },
       {
-        titulo: 'La lista, la posición cero y el error que se provoca a propósito',
+        titulo: 'La lista: la posición cero, la casilla que no existe y el juez que cambia la mochila',
         duracionMin: 15,
         descripcion:
-          'Actividad digital, primera parte. El alumno crea su mochila, pide el último elemento con mochila[-1], agrega con append(), corta una rebanada, recorre con for, y después escribe print(mochila[10]) A PROPÓSITO para provocar un IndexError de verdad. No adelantes el arreglo: el valor de este tramo está en que el mensaje de error se lea entero antes de tocar nada, y en descubrir que el editor no se rompe.',
-        actividadSugerida: 'La actividad digital, primera parte — lista, índice negativo, append(), rebanada, for e IndexError provocado.',
+          'Actividad digital, primera parte: tres problemas y una exploración. El alumno escribe lo primero y lo último de la mochila, pide a propósito una casilla que no existe (la elige él), agrega lo nuevo e imprime la lista, y calcula el total y el precio más caro. Arriba de cada celda está la lista del ejemplo y el juez la cambia: con una sola cosa, con cinco, vacía, con el más caro al principio. Lo que más va a pasar es que «la última» escrita como casilla 2 pase el ejemplo y el juez la rechace; no lo arregles tú, pregunta qué pasa con una mochila de una sola cosa.',
+        actividadSugerida: 'La actividad digital, primera parte — problemas 1 a 3 y la casilla que no existe.',
       },
       {
         titulo: 'El diccionario: pedir el dato por su nombre',
         duracionMin: 13,
         descripcion:
-          'Actividad digital, segunda parte. El alumno arma la ficha de un alumno en un diccionario, la recorre con .items() y comprueba una clave con in antes de pedirla. Nombra en voz alta la diferencia que importa: en la lista el dato se pide por DÓNDE está, en el diccionario por QUÉ significa, y por eso el orden en que se escribió deja de importar.',
-        actividadSugerida: 'La actividad digital, segunda parte — diccionario, .items() y el operador in.',
+          'Actividad digital, segunda parte: el inventario de la cooperativa. El alumno dice si un producto está y cuántas piezas hay, y después lista los agotados y los cuenta. El caso que separa a quien entendió es la goma: está en el inventario con 0 piezas, y quien preguntó «¿hay piezas?» en vez de «¿existe?» contesta «No tenemos goma». El juez lo esconde a propósito. Nombra en voz alta la diferencia que importa: en la lista el dato se pide por DÓNDE está, en el diccionario por QUÉ significa. La actividad cierra con una pregunta: por qué pedir la casilla que dice len() da error con cualquier mochila.',
+        actividadSugerida: 'La actividad digital, segunda parte — problemas 4 y 5 y la pregunta de cierre.',
       },
       {
         titulo: 'Cierre: la copia que no era una copia',
@@ -13158,11 +13215,12 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
       },
     ],
     rubrica:
-      'Domina (crea y recorre lista y diccionario sin ayuda, provoca el IndexError y lo corrige explicando qué decía el mensaje, y explica por qué otra = mochila no copia nada) · En proceso (usa las dos estructuras con 1-2 pistas y corrige el error cuando se le señala la línea) · Inicia (necesita guía constante para escribir la sintaxis y no logra explicar qué dijo el error)',
+      'Domina (el juez acepta los cinco programas con pocas pistas, explica por qué la casilla 2 no es «la última» y por qué la goma sí está, y explica por qué otra = mochila no copia nada) · En proceso (llega a los cinco con las tres pistas, o los corrige cuando el juez dice cuántos casos fallan, pero no sabe explicar qué caso oculto los tumbaba) · Inicia (escribe el resultado del ejemplo a mano o pide posiciones fijas, y no logra que el juez acepte más de uno o dos)',
     tips: [
       'Cuando el IndexError aparezca en pantalla, resiste la tentación de traducirlo tú — pide a un alumno que lea el mensaje en voz alta y que el grupo diga qué información útil trae. Ese hábito vale más que el arreglo.',
+      'Cuando el juez rechace un programa, el tablero dice cuántos casos fallaron pero no enseña los datos ocultos. No los dictes tú: la pregunta útil es «¿con qué mochila no funcionaría tu programa?». Una de una sola cosa, una vacía y un producto en cero tumban casi todos los errores de la clase.',
       'Vigila la confusión más común de la clase: usar corchetes con número en un diccionario. Si alguien escribe alumno[0], no lo corrijas de golpe; pregúntale qué dato cree que va a salir y deja que el error se lo diga.',
-      'Deja los últimos ocho minutos de verdad para la lista compartida. Es el único contenido de esta clase que no tiene encargo en pantalla, y es justo el que más adelante causa bugs difíciles de ver.',
+      'Deja los últimos ocho minutos de verdad para la lista compartida. Es el único contenido de esta clase que no tiene encargo en pantalla, y es justo el que más adelante causa bugs difíciles de ver. Engancha con el problema 2: append() cambió la MISMA mochila, no una copia.',
     ],
   },
 
@@ -14768,190 +14826,186 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n9-datos-con-python': {
     actividadId: 'n9-datos-con-python',
     objetivo:
-      'Que el alumno lleve un conjunto de ocho registros reales —uno sin calificación— de principio a fin con Python: que provoque el error de sumar un None y entienda que no es un cero ni un texto vacío; que limpie construyendo una lista nueva de válidos sin destruir la original; que filtre a los reprobados y compruebe por qué Camila, con 6.0 exactos, no entra en un filtro de menor que 6; que agregue con sum(), max() y min() —su primer uso en todo el curso—; que recupere el nombre detrás del número usando la posición; y que cierre con un reporte que termina en una conclusión decidida con if/else.',
+      'Que el alumno escriba, a partir de un enunciado y sin instrucciones que copiar, las seis funciones del reporte de calificaciones de un grupo —contar quién tiene calificación, promediar, filtrar a quien reprueba, encontrar el nombre detrás de la calificación más alta, agrupar por niveles y concluir— y que las haga resistir a un juez con casos ocultos; y que en cada una distinga a quien no ha entregado (None) de quien sacó cero, porque confundirlos no revienta el programa: da un número que parece bueno y está mal.',
     materiales: [],
     fases: [
       {
-        titulo: 'A Emilio le falta la nota',
-        duracionMin: 6,
+        titulo: 'A Emilio le falta la nota, y a Ana le pusieron cero',
+        duracionMin: 7,
         descripcion:
-          'Proyecta los ocho registros y pregunta cuánto es el promedio del grupo. Alguien dirá que hay que ponerle cero a Emilio. Recoge esa propuesta sin corregirla: dentro de veinte minutos, cuando vean que el promedio baja medio punto por un dato que nunca existió, la corrección la hacen ellos. Ése es el arranque de la clase.',
-        actividadSugerida: 'Discusión sobre qué hacer con un registro sin calificación antes de abrir el editor.',
+          'Proyecta dos registros: Emilio no ha entregado y Ana entregó en blanco. Pregunta si los dos cuentan igual para el promedio. Casi siempre alguien propone ponerle cero a Emilio: anótalo sin corregirlo. La clase entera gira sobre esa diferencia, y al final la van a medir con su propia función.',
+        actividadSugerida: 'Discusión de dos registros antes de abrir el editor: qué significa None y qué significa un cero.',
       },
       {
-        titulo: 'El error de sumar lo que no existe',
-        duracionMin: 12,
+        titulo: 'Contar y promediar sin confundirlos',
+        duracionMin: 14,
         descripcion:
-          'Actividad digital, primera parte. El alumno recorre la lista de diccionarios y provoca a propósito el error al sumar el None. Deja que lo lean entero: Python no avisa a medias ni adivina, se detiene y dice en qué línea. Después construye la lista de válidos, que es la operación importante de la clase aunque parezca menor: siete registros nuevos, y los ocho originales intactos.',
-        actividadSugerida: 'La actividad digital, encargos 1 a 3 — explorar el conjunto, provocar el error del None y limpiar los datos.',
+          'Actividad digital, problemas 1 y 2. Muchos escriben un if que pregunta si la calificación «tiene algo»: los ejemplos pasan y el caso oculto «alguien sacó cero» los tumba. No les digas por qué: pídeles que lean el nombre del caso y la tercera frase del enunciado. En el promedio el tropiezo típico es dividir entre toda la lista; el juez lo caza con «alguien no entregó».',
+        actividadSugerida: 'La actividad digital, problemas 1 y 2 — contar a quien tiene calificación y el promedio del grupo.',
       },
       {
-        titulo: 'Filtrar, agregar y el nombre detrás del número',
+        titulo: 'Filtrar, encontrar y agrupar',
         duracionMin: 16,
         descripcion:
-          'Actividad digital, segunda parte. Filtro de reprobados, promedio con sum() entre len(), y los extremos con max() y min(). Aquí caben dos paradas de discusión: por qué Camila con 6.0 no entra en menor que 6, y por qué max() devuelve un número pero no un nombre. Esa segunda es la que lleva a usar la posición, y conviene que la vean como una consecuencia y no como un truco.',
-        actividadSugerida: 'La actividad digital, encargos 4 a 7 — filtro, promedio, extremos y el nombre detrás del número.',
+          'Actividad digital, problemas 3 a 5. Tres decisiones que el juez vigila: sacar justo la mínima es aprobar, el número más alto no dice de quién es —y quien guarda las calificaciones aparte y busca la posición en la lista original se desalinea con cada alumno que no entregó—, y un 9 ya es sobresaliente. Cuando un alumno se atore, manda primero a leer qué caso falló y sólo después a la pista.',
+        actividadSugerida: 'La actividad digital, problemas 3 a 5 — quién va reprobando, el nombre detrás del número y los niveles.',
       },
       {
-        titulo: 'Cierre: un reporte termina en una conclusión',
-        duracionMin: 9,
+        titulo: 'La conclusión y lo que cambia un cero',
+        duracionMin: 8,
         descripcion:
-          'El último encargo imprime el reporte y decide una conclusión sobre el grupo con if/else. Cierra preguntando por qué el promedio se calculó sobre siete y no sobre ocho, y qué habría pasado con el cero que alguien propuso al empezar. La respuesta cierra el círculo de la clase: un dato que falta y un cero son cosas distintas, y confundirlas cambia la conclusión.',
-        actividadSugerida: 'Comparación del promedio real con el que habría salido poniendo cero al registro incompleto.',
+          'El problema 6 se resuelve reutilizando las funciones del 1 y del 3, y conviene que alguien lo cuente en voz alta: un programa de datos se arma con piezas que ya funcionan. La pregunta de cierre compara el promedio con Emilio sin entregar (7.2) contra el que saldría con un cero (6.3). Vuelve a la propuesta anotada al empezar y deja que el grupo la juzgue con esos dos números.',
+        actividadSugerida: 'Problema 6 y pregunta de cierre; comparación en grupo del promedio real con el que habría dado un cero.',
       },
     ],
     teoriaIntro:
-      'Es el cierre de la unidad de algoritmos y datos, y el primer proyecto donde el código sirve para decidir algo y no sólo para funcionar. El orden de los cuatro pasos —limpiar, filtrar, agregar, concluir— es el mismo que sigue cualquier análisis profesional, y conviene nombrarlo así en voz alta porque es lo que el alumno se lleva por encima de las funciones concretas.',
+      'Es el cierre de la unidad de algoritmos y datos. El orden limpiar, filtrar, agregar y concluir es el de cualquier análisis profesional, pero lo que esta clase deja no es el orden sino una pregunta que se hace antes de calcular: qué significa cada hueco del dato. El juez está diseñado alrededor de esa pregunta: casi todos sus casos ocultos llevan un alumno que no entregó o uno que sacó cero.',
     teoriaSecciones: [
       {
-        subtitulo: 'None no es un cero',
+        subtitulo: 'None no es un cero, y el error que no revienta',
         contenido:
-          'Un registro sin calificación no vale cero ni vale cadena vacía: no hay dato. Python no inventa un valor para poder seguir, así que sumarlo o compararlo con un número detiene el programa con un error explícito. Eso, que parece una molestia, es una protección: un cero silencioso habría bajado el promedio del grupo sin que nadie se enterara nunca.',
+          'Sumar o comparar None con un número detiene el programa con un error explícito, y ese error es una protección. El peligro está en el otro camino: preguntar si una calificación «tiene algo» trata igual al cero que a None, porque para Python los dos son falsos. El programa no se detiene, devuelve un número razonable y nadie lo revisa. Por eso cinco de los seis problemas tienen un cero en un caso oculto: es el error de datos más común y el más silencioso.',
       },
       {
-        subtitulo: 'Filtrar es construir una lista nueva',
+        subtitulo: 'Entre cuántos, y sobre quiénes',
         contenido:
-          'Imprimir dentro del bucle sólo muestra los que pasan la condición; guardar en una lista nueva permite contarla, recorrerla otra vez y usarla para calcular. Por eso los válidos y los reprobados son listas aparte y la lista original nunca se modifica: si más adelante hace falta volver a los ocho registros, ahí siguen. Esa separación entre datos originales y datos derivados es el hábito que sostiene todo el proyecto.',
+          'Casi todos los errores de agregación no están en la suma sino en el denominador. Un promedio que divide entre toda la lista cuenta como cero a quien no entregó; una conclusión de «más de la mitad reprueba» calculada sobre el total diluye el problema real. En los dos casos el código funciona con los ejemplos y falla con el grupo de verdad, que es exactamente lo que el juez demuestra con sus casos ocultos.',
       },
       {
         subtitulo: 'Las funciones de fábrica dan números, no personas',
         contenido:
-          'sum(), max() y min() trabajan sobre una lista de números y devuelven un número: max() no puede comparar diccionarios completos ni sabe de nombres. Recuperar quién sacó el 9.8 exige buscar la posición de ese valor y leer el mismo lugar en la lista de válidos, y funciona porque las dos listas se construyeron en el mismo bucle y en el mismo orden. Es la primera vez en el curso que dos listas paralelas tienen que mantenerse alineadas.',
+          'max() devuelve la calificación más alta, pero no sabe de quién es y no puede comparar registros completos. Guardar las calificaciones aparte y buscar la posición del máximo funciona sólo si esa posición se lee en una lista alineada; en la lista original, cada alumno sin calificación corre los lugares. La solución robusta es recorrer los registros recordando a la vez el valor más alto y el nombre, y con un «estrictamente mayor» un empate se queda con el primero.',
       },
     ],
     evaluacion: [
       {
-        pregunta: '¿Por qué falla el programa al calcular el promedio de los ocho registros?',
+        pregunta: 'Una función cuenta a los alumnos con calificación preguntando si la calificación «tiene algo». ¿Con qué grupo se equivoca?',
         opciones: [
-          'Porque falta convertir los números a decimal',
-          'Porque uno de los registros vale None y sumar un dato que no existe detiene el programa',
-          'Porque la lista tiene diccionarios en vez de números',
-          'Porque sum() no acepta listas largas',
+          'Con un grupo en el que nadie ha entregado',
+          'Con un grupo en el que alguien sacó cero, porque lo cuenta como si no hubiera entregado',
+          'Con un grupo muy grande',
+          'Con un grupo en el que todos tienen calificaciones decimales',
         ],
         correctaIdx: 1,
       },
       {
-        pregunta: 'Camila tiene exactamente 6.0 y el filtro busca calificaciones menores que 6. ¿Entra en la lista de reprobados?',
-        opciones: [
-          'Sí, 6.0 es el límite y el límite cuenta',
-          'No: 6.0 no es menor que 6, y el filtro se aplica tal como está escrito',
-          'Sí, porque el filtro redondea',
-          'Depende de cómo se ordene la lista',
-        ],
+        pregunta: 'En un grupo de ocho, siete tienen calificación y suman 50.5. ¿Cuál es el promedio correcto, a un decimal?',
+        opciones: ['6.3, dividiendo entre ocho', '7.2, dividiendo entre siete', '50.5, porque no se divide', 'No se puede calcular porque falta un dato'],
         correctaIdx: 1,
       },
       {
-        pregunta: 'max() te dio 9.8 pero no el nombre. ¿Por qué?',
+        pregunta: 'Dos alumnos empatan con la calificación más alta. Según el enunciado, se nombra a quien aparece primero. ¿Qué comparación lo consigue al recorrer la lista?',
         opciones: [
-          'Porque la lista está desordenada',
-          'Porque max() compara números, y el nombre está en la otra lista, en la misma posición',
-          'Porque hay que usar sort() antes',
-          'Porque el diccionario no guarda nombres',
+          'Cambiar de nombre cuando la calificación es mayor o igual que la más alta vista',
+          'Cambiar de nombre sólo cuando la calificación es estrictamente mayor que la más alta vista',
+          'Ordenar la lista antes de recorrerla',
+          'Da igual, el juez acepta a cualquiera de los dos',
         ],
         correctaIdx: 1,
       },
     ],
     rubrica:
-      'Domina (limpia antes de calcular, construye listas nuevas sin tocar la original, explica el caso de 6.0, recupera el nombre por posición y cierra con una conclusión justificada con los números que calculó) · En proceso (completa el proyecto y entiende el error del None tras verlo) · Inicia (sustituye el dato faltante por un cero y calcula sobre los ocho registros)',
+      'Domina (seis funciones aceptadas; distingue None de cero en todas; explica con los casos del juez por qué divide entre los que tienen calificación y por qué un empate se queda con el primero; reutiliza sus funciones en la conclusión) · En proceso (acepta la mayoría de los problemas tras leer los casos que fallan y pedir hasta la segunda pista) · Inicia (sus funciones pasan los ejemplos visibles pero tratan el cero como un dato que falta o dividen entre toda la lista)',
     tips: [
-      'Cuando propongan poner cero a Emilio, apúntalo y no lo discutas. Comparar al final los dos promedios enseña más sobre datos faltantes que cualquier explicación previa.',
-      'El caso de Camila con 6.0 merece pararse. Un filtro no se equivoca por sí solo: hace exactamente lo que dice la condición, y por eso escribir menor que o menor o igual que es una decisión con consecuencias.',
-      'Si alguien pregunta por qué no usan una hoja de cálculo, la respuesta corta es que aquí el análisis queda escrito y se puede repetir mañana con otros ocho registros sin volver a hacerlo a mano.',
+      'Cuando alguien proponga poner cero a quien no ha entregado, anótalo en el pizarrón y no lo discutas. En la pregunta de cierre su propia función les da los dos promedios, 7.2 y 6.3, y la corrección la hace el grupo.',
+      'El juez dice qué caso falló pero no sus datos. Antes de dar una pista, pide que lean el nombre del caso en voz alta: «alguien sacó cero», «justo en el límite» o «empate arriba» ya dicen casi todo.',
+      'Deja que usen sum(), max() y min() si los conocen. No hay atajo que prohibir: ninguno sabe qué hacer con None ni de quién es un número, y descubrirlo es parte de la clase.',
+      'Si un alumno termina antes, pídele que invente un grupo en el que su función del problema 4 dé un nombre equivocado si cambiara el «mayor que» por «mayor o igual». Escribir el caso que rompe un programa es la mitad del oficio.',
     ],
   },
 
   'n9-busqueda-y-ordenamiento': {
     actividadId: 'n9-busqueda-y-ordenamiento',
     objetivo:
-      'Que el alumno escriba una búsqueda lineal que cuenta cada comparación real y compruebe con sus propios números que buscar al principio cuesta 1, casi al final cuesta 7 y algo que no está cuesta 8, con el mismo código y la misma lista; que arme un ordenamiento burbuja completo con bucles anidados y vea que ordenar cinco números cuesta más que buscar entre ocho; que provoque un IndexError real quitando el menos uno del rango interior y lo repare entendiendo qué protegía; y que cierre midiendo cuánto ahorra buscar en una lista ya ordenada, todo sin una sola fórmula de notación asintótica.',
+      'Que el alumno escriba seis funciones de búsqueda y ordenamiento a partir de un enunciado y unos ejemplos —sin que nadie le dicte el código— y las envíe a un juez que las prueba con casos que no ha visto: que busque la primera aparición de una canción y sepa contestar cuando no está, que cuente cuántas comparaciones cuesta buscar y compruebe que ese costo depende de dónde está el dato, que aproveche una lista ordenada para dejar de buscar antes, y que escriba el ordenamiento burbuja contando sus intercambios y sus pasadas hasta descubrir que el mismo algoritmo cuesta distinto según cómo llegan los datos.',
     materiales: [],
     fases: [
       {
         titulo: 'Cuántas veces mira la computadora',
-        duracionMin: 6,
+        duracionMin: 5,
         descripcion:
-          'Con una lista de ocho nombres en el pizarrón, pide que busquen uno a ojo y digan cuántos miraron. Pregunta lo mismo para el primero de la lista y para uno que no está. Las tres respuestas ya contienen la clase; lo que falta es que el código lo cuente en vez de estimarlo, y ése es el encargo del día.',
-        actividadSugerida: 'Conteo a mano de cuántos nombres hay que mirar para encontrar tres objetivos distintos.',
+          'Con cinco títulos de canciones en el pizarrón, pide que alguien busque uno a ojo y diga cuántos miró. Repite con el primero de la lista y con uno que no está. Las tres respuestas ya contienen la primera mitad de la clase; lo que falta es que su propio código lo cuente, y ése es el trabajo del día.',
+        actividadSugerida: 'Conteo a mano de cuántos títulos hay que mirar para encontrar tres canciones distintas.',
       },
       {
-        titulo: 'Buscar y contar: 1, 7 y 8',
-        duracionMin: 13,
+        titulo: 'Buscar, y contar lo que cuesta',
+        duracionMin: 15,
         descripcion:
-          'Actividad digital, primera parte. La misma búsqueda lineal ejecutada tres veces con objetivos distintos. Insiste en lo que no cambió: el código, la lista y su tamaño. Lo único que cambió es dónde estaba el dato, y el break es lo que convierte esa posición en trabajo ahorrado. Es la primera vez que miden eficiencia con números que produjo su propio programa.',
-        actividadSugerida: 'La actividad digital, encargos 1 a 4 — búsqueda lineal con contador y las tres mediciones.',
+          'Actividad digital, problemas 1 a 3. Cada problema trae un enunciado, dos ejemplos y casos ocultos. Avisa antes de empezar que el primer envío casi siempre vuelve rechazado y que eso es parte de la clase: el juez dice qué caso falló aunque no enseñe sus datos. Si alguien se atasca, que relea el enunciado frase por frase antes de pedir la pista: en los tres problemas hay una frase que decide un caso oculto.',
+        actividadSugerida: 'La actividad digital, problemas 1 a 3 — la posición, las comparaciones y la búsqueda que para a tiempo.',
       },
       {
-        titulo: 'Burbuja, y romperla a propósito',
-        duracionMin: 16,
+        titulo: 'El burbuja, contado',
+        duracionMin: 17,
         descripcion:
-          'Actividad digital, segunda parte. Una pasada primero —que deja la lista aún desordenada pero empuja el mayor al final— y luego el ordenamiento completo con bucles anidados. Después se quita el menos uno del rango interior y aparece un IndexError de verdad. Que lo lean antes de arreglarlo: el error dice la posición pedida y el tamaño de la lista, y con esas dos cifras la causa se deduce sin ayuda.',
-        actividadSugerida: 'La actividad digital, encargos 5 a 8 — una pasada, el ordenamiento completo, el IndexError provocado y su reparación.',
+          'Actividad digital, problemas 4 a 6. Vale la pena hacer una pasada en el pizarrón con cinco tarjetas antes de que escriban la suya: el error más común es recorrer una pareja de menos o de más. En el problema 5 alguien va a intentar la función que ya trae Python para ordenar; déjalo, el juez lo rechaza porque ninguna función cuenta los intercambios, y esa sorpresa explica la clase mejor que cualquier aviso.',
+        actividadSugerida: 'La actividad digital, problemas 4 a 6 — una pasada, el burbuja con sus intercambios y el que se detiene solo.',
       },
       {
-        titulo: 'Cierre: lo que cuesta buscar en lo ordenado',
-        duracionMin: 10,
+        titulo: 'Cierre: lo que dicen sus números',
+        duracionMin: 8,
         descripcion:
-          'La última medición busca el mismo valor ausente en la misma lista, desordenada y ordenada: ocho comparaciones contra cinco. Pregunta por qué se puede parar antes en la ordenada. Cierra con el hábito que da nombre a la clase: no se dice que un programa es rápido, se cuenta cuánto trabajo hizo, y ese número se puede comparar.',
-        actividadSugerida: 'Discusión de por qué en una lista ordenada se puede dejar de buscar antes de llegar al final.',
+          'La función de pasadas contesta 1 con una lista ordenada y 5 con los mismos números al revés. Pregunta cómo es posible si el tamaño y los números son iguales. Cierra con el hábito que da nombre a la insignia: no se dice que un programa es rápido, se mide cuánto trabajo hizo con unos datos concretos.',
+        actividadSugerida: 'La pregunta de cierre de la actividad digital y discusión de por qué la misma lista cuesta distinto según cómo llega.',
       },
     ],
     teoriaIntro:
-      'La clase enseña eficiencia sin notación asintótica, y esa decisión conviene sostenerla si alguien ya oyó hablar de Big-O. Un alumno de esta edad entiende perfectamente que un programa hizo diez comparaciones y otro ocho; lo que no le dice nada todavía es una letra con un exponente. Los contadores dan la misma intuición con datos que él mismo produjo.',
+      'Esta clase no le dice al alumno qué escribir: le da un problema y un juez. Es un cambio de oficio que conviene nombrar en voz alta, porque en las clases anteriores la instrucción traía el código. Y enseña eficiencia sin notación asintótica: un alumno de esta edad entiende perfectamente que su función hizo cinco comparaciones y otra ocho; lo que todavía no le dice nada es una letra con un exponente.',
     teoriaSecciones: [
       {
         subtitulo: 'El costo de buscar depende de dónde está el dato',
         contenido:
-          'Una búsqueda lineal compara de una en una hasta encontrar o terminar. Encontrar en la primera posición cuesta una comparación; encontrar casi al final cuesta siete; buscar algo que no está obliga a recorrerlo todo y cuesta ocho, el peor caso. El código es idéntico en los tres, y por eso hablar del costo de un algoritmo exige preguntar siempre en qué caso: el mejor, el peor o el corriente.',
+          'Una búsqueda lineal compara de una en una hasta encontrar o terminar. Encontrar al principio cuesta una comparación; no encontrar nada obliga a mirarlo todo y es el caso más caro. El código es el mismo en los dos, y por eso hablar del costo de un algoritmo exige preguntar siempre en qué caso. Una lista ordenada cambia ese trato: en cuanto se pasa el lugar donde tendría que estar el dato, ya se sabe que no está.',
       },
       {
-        subtitulo: 'Dos bucles anidados y el menos uno que los protege',
+        subtitulo: 'Por qué los problemas piden contar y no sólo ordenar',
         contenido:
-          'La burbuja compara vecinos y los intercambia si están al revés: el bucle exterior cuenta pasadas y el interior recorre la lista, cada vez un poco más corto porque los mayores ya quedaron colocados al final. El menos uno del rango interior no es un detalle de estilo: sin él, la comparación con el elemento siguiente pide una posición que la lista no tiene, y eso es exactamente el IndexError que provoca el encargo.',
+          'Python ya trae una función que ordena una lista en una línea. Si el problema pidiera sólo la lista ordenada, esa línea lo resolvería sin enseñar nada, y prohibirla no es buena idea. En cambio ninguna función cuenta cuántos intercambios hizo el burbuja ni cuántas pasadas necesitó: esos números sólo salen de escribir el algoritmo. Contar el trabajo es a la vez la lección de eficiencia y lo que hace imposible el atajo.',
       },
       {
-        subtitulo: 'Ordenar cuesta más que buscar, y ordenar una vez sirve muchas',
+        subtitulo: 'Casos ocultos: una función se juzga con datos que no eligió',
         contenido:
-          'Ordenar cinco números costó diez comparaciones, más que buscar entre ocho: el costo de ordenar crece mucho más deprisa con el tamaño. Y sin embargo compensa, porque sobre una lista ordenada se puede dejar de buscar en cuanto se pasa el valor: ocho comparaciones bajan a cinco. Ése es el trato que hace cualquier aplicación real: paga una vez por ordenar y cobra en todas las búsquedas siguientes.',
+          'Cada ejemplo visible está elegido para que el error típico lo pase, y cada caso oculto para que lo tumbe: la lista con un título repetido, la canción que no está, la lista que ya venía ordenada. El alumno ve el nombre del caso que falló, pero no sus datos. Eso lo obliga a pensar qué situación describe ese nombre y a probarla él mismo, que es exactamente lo que hace un programador antes de entregar.',
       },
     ],
     evaluacion: [
       {
-        pregunta: 'Con el mismo código y la misma lista de ocho nombres, buscar el primero costó 1 comparación y buscar uno ausente costó 8. ¿Por qué?',
+        pregunta: 'La función de comparaciones devuelve 4 al buscar una canción que está en cuarto lugar y 5 al buscar una que no está, en la misma lista de cinco. ¿Por qué cuesta más la que no está?',
         opciones: [
-          'Porque la lista cambió de tamaño',
-          'Porque el costo depende de dónde está el dato: el break detiene el bucle en cuanto lo encuentra',
-          'Porque el segundo programa está peor escrito',
-          'Porque buscar texto es más lento que buscar números',
+          'Porque la lista cambió de tamaño entre las dos búsquedas',
+          'Porque para saber que no está hay que compararla con todas las canciones',
+          'Porque buscar texto que no existe es más lento para Python',
+          'Porque la función está mal escrita',
         ],
         correctaIdx: 1,
       },
       {
-        pregunta: 'Quitas el menos uno del rango del bucle interior de la burbuja y salta un IndexError. ¿Qué protegía ese menos uno?',
+        pregunta: 'Un alumno resuelve el problema del burbuja con la función que ya trae Python para ordenar, y el juez lo rechaza. ¿Por qué?',
         opciones: [
-          'Que la lista no se ordenara al revés',
-          'Que la comparación con el elemento siguiente no pidiera una posición fuera de la lista',
-          'Que el bucle exterior no diera pasadas de más',
-          'Que no se repitieran los intercambios',
+          'Porque esa función ordena de mayor a menor',
+          'Porque el juez prohíbe usar funciones de Python',
+          'Porque esa función devuelve la lista ordenada, pero no cuántos intercambios haría el burbuja, y eso también es parte de la respuesta',
+          'Porque esa función no funciona con listas de números',
         ],
-        correctaIdx: 1,
+        correctaIdx: 2,
       },
       {
-        pregunta: 'Buscar un valor ausente costó 8 comparaciones en la lista desordenada y 5 en la ordenada. ¿Por qué?',
+        pregunta: 'La función de pasadas contesta 1 con [1, 2, 3, 4, 5] y 5 con [5, 4, 3, 2, 1]. ¿Qué muestra eso?',
         opciones: [
-          'Porque ordenar borra elementos repetidos',
-          'Porque en una lista ordenada se puede dejar de buscar en cuanto se pasa del valor buscado',
-          'Porque la lista ordenada es más corta',
-          'Porque el contador se reinicia',
+          'Que el trabajo de un algoritmo depende también de cómo llegan los datos, no sólo de cuántos son',
+          'Que el burbuja tiene un error con las listas al revés',
+          'Que las listas ordenadas ocupan menos memoria',
+          'Que las dos listas tienen distinto tamaño',
         ],
-        correctaIdx: 1,
+        correctaIdx: 0,
       },
     ],
     rubrica:
-      'Domina (escribe las dos rutinas, interpreta sus contadores comparando casos, explica qué protegía el menos uno y justifica por qué ordenar una vez abarata las búsquedas siguientes) · En proceso (escribe el código y lee los contadores, pero necesita ayuda para explicar el IndexError) · Inicia (copia el código sin relacionar los números del contador con lo que hizo el programa)',
+      'Domina (resuelve los seis problemas leyendo los casos que fallan, explica por qué la canción ausente es el caso más caro y relaciona el número de pasadas con el orden de la lista) · En proceso (resuelve los problemas de búsqueda y el burbuja, pero necesita las pistas para los casos ocultos o para detener el algoritmo) · Inicia (escribe funciones que pasan los ejemplos visibles pero no puede explicar qué caso oculto las tumba)',
     tips: [
-      'Escribe las tres cifras —1, 7 y 8— en el pizarrón conforme salgan. Verlas juntas es lo que convierte tres ejecuciones sueltas en una idea sobre el costo de buscar.',
-      'No arregles el IndexError por ellos ni lo expliques antes. El mensaje trae la posición pedida y el tamaño de la lista; pedir que lean esas dos cifras en voz alta resuelve el encargo y enseña a leer errores.',
-      'Si alguien menciona Big-O porque lo vio en internet, dile que es el nombre de lo que acaba de medir y déjalo ahí. Hoy el valor está en los contadores propios; la notación llega sola en el nivel siguiente.',
+      'No des código cuando alguien reciba un «Rechazado». Pregunta qué dice el nombre del caso que falló y qué situación describe: casi siempre la respuesta está en una frase del enunciado que se leyó rápido.',
+      'Las pistas del panel van en escalera y la tercera resta puntos. Pide que usen la primera antes de levantar la mano: está escrita justo para el error más común de cada problema.',
+      'Si alguien menciona Big-O porque lo vio en internet, dile que es el nombre de lo que acaba de medir y déjalo ahí. Hoy el valor está en los números que produjeron sus propias funciones.',
     ],
   },
   'n9-construye-low-code': {
@@ -15807,95 +15861,95 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n10-python-intermedio': {
     actividadId: 'n10-python-intermedio',
     objetivo:
-      'Que el alumno reparta el trabajo entre su propio código y la librería estándar: que escriba suma_manual con el bucle que acumula y compruebe que da exactamente lo mismo que sum(); que escriba clasifica_venta, la regla que sólo conoce este negocio y que ninguna librería trae; que use max(), min(), sorted() y round() para lo que ya está resuelto desde hace décadas; que explique por qué un proyecto real se divide en archivos —por el equipo, no por un límite técnico— y qué gana un programa dividido en funciones; y que cierre con una función que junta las dos cosas en un reporte.',
+      'Que el alumno trabaje en un proyecto de tres archivos como se trabaja de verdad: que use una librería de fábrica (statistics) para lo que ya está resuelto; que lea un CSV renglón por renglón, saltando el encabezado y convirtiendo cada campo antes de comparar o sumar; que escriba una función en un módulo y la use desde otro archivo, sabiendo que el juez prueba ese módulo por separado; que escriba un archivo de reporte con un renglón por día; y que explique por qué el bloque bajo if __name__ == "__main__" corre cuando el módulo se ejecuta solo y no cuando se importa.',
     materiales: [],
     fases: [
       {
-        titulo: '¿Escribirlo o pedirlo prestado?',
+        titulo: '¿Dónde vive cada cosa?',
         duracionMin: 6,
         descripcion:
-          'Plantea el encargo de TecniMarket: el reporte de la semana. Pregunta qué partes creen que ya vienen resueltas en Python y cuáles habría que escribir. Nadie acierta del todo, y no importa: lo que hace falta es que la pregunta esté planteada antes del primer bucle, porque es la que organiza toda la clase.',
-        actividadSugerida: 'Discusión previa sobre qué partes de un reporte de ventas ya vienen resueltas en el lenguaje.',
+          'Enseña el proyecto antes de que nadie escriba: tres pestañas, estacion.py, clima.py y lecturas.csv. Pregunta qué creen que va en cada una. La pregunta que organiza la clase es ésa —¿dónde vive la regla, dónde viven los datos, dónde se juntan?—, y conviene que esté planteada antes de abrir el primer archivo.',
+        actividadSugerida: 'Discusión previa con el proyecto en pantalla: qué guarda cada archivo y quién usa a quién.',
       },
       {
-        titulo: 'Tu suma y la suma de la librería',
-        duracionMin: 14,
-        descripcion:
-          'Actividad digital, primera parte. Se escribe suma_manual con su bucle y después se calcula lo mismo con sum(), comparando los dos resultados con una igualdad. Ese encargo parece redundante y es el corazón de la clase: escribir una vez por dentro lo que hace el atajo es lo que permite confiar en el atajo después.',
-        actividadSugerida: 'La actividad digital, encargos 1 a 3 — la lista de ventas, la suma propia y su comprobación contra sum().',
-      },
-      {
-        titulo: 'La regla que ninguna librería trae',
+        titulo: 'La librería y el archivo de datos',
         duracionMin: 15,
         descripcion:
-          'Actividad digital, segunda parte. Se escribe clasifica_venta con sus umbrales y luego se usan max(), min() y sorted(). Subraya el reparto: clasificar una venta como alta a partir de 300 pesos es una decisión de este negocio, no un problema general; ordenar bien y rápido sí lo es, y por eso una lo escribe uno y la otra ya viene hecha.',
-        actividadSugerida: 'La actividad digital, encargos 4 a 6 — la función de clasificación y las funciones nativas.',
+          'Actividad digital, primera parte: statistics, el problema de la semana en números y el archivo que no existe. Los dos tropiezos que más van a pasar son no saltarse el encabezado (el error de valor dice «maxima», que es la pista) y comparar las máximas como textos: con los datos del ejemplo pasa, y el juez lo tumba con una semana de invierno donde «9.5» le gana a «31.0». No lo expliques tú: pregunta de qué tipo es lo que están comparando.',
+        actividadSugerida: 'La actividad digital, encargos 1 a 3 — la librería, la semana en números y el archivo que no existe.',
       },
       {
-        titulo: 'Archivos, módulos y el reporte final',
-        duracionMin: 12,
+        titulo: 'El módulo, solo y acompañado',
+        duracionMin: 16,
         descripcion:
-          'Actividad digital, última parte. Dos preguntas sin código —por qué se divide un proyecto en archivos y qué gana al dividirse en funciones— y el reporte que junta todo. La respuesta que suele fallar es la primera: casi todos suponen un límite técnico de tamaño, y la razón real es que varias personas trabajen a la vez sin pisarse.',
-        actividadSugerida: 'La actividad digital, encargos 7 a 9 — las dos preguntas de organización y la función de resumen.',
+          'Actividad digital, segunda parte: clasifica en clima.py, usarla desde estacion.py, correr clima.py solo y escribir el reporte. El juez prueba el módulo con un programa suyo, justo en 15.0 y 25.0: quien copió la regla en el principal en vez de escribirla en el módulo pasa los datos y cae ahí, y el tablero le dice que el módulo no tiene clasifica. Es el momento de nombrar por qué se separan las cosas: lo que vive aparte se puede probar aparte.',
+        actividadSugerida: 'La actividad digital, encargos 4 a 6 — tu módulo, correrlo solo y el reporte.',
+      },
+      {
+        titulo: 'Cierre: la prueba que no salió',
+        duracionMin: 8,
+        descripcion:
+          'La pregunta final de la actividad: por qué la línea de prueba de clima.py no salió al importarlo. Después, en el pizarrón, escribe un módulo con un print suelto, sin el if, y pregunta qué pasa al importarlo dos veces. Las dos ideas que cierran la clase: import sí corre el archivo entero —una vez—, y __name__ es lo que le dice al archivo si lo están corriendo o lo están usando.',
+        actividadSugerida: 'Demostración en el pizarrón de un módulo sin el bloque de prueba guardado.',
       },
     ],
     teoriaIntro:
-      'La clase enseña un criterio de reparto más que sintaxis nueva. Conviene decirlo así, porque el alumno que ya programa puede sentir que escribir suma_manual es un paso atrás cuando existe sum(). Es justo al revés: sin haberlo escrito una vez, usar el atajo es confiar en algo que no se entiende.',
+      'Hasta aquí todo programa del alumno ha sido un archivo. Esta clase rompe eso a propósito, porque ningún proyecto de verdad lo es: los datos viven en un archivo, las reglas en módulos y el programa los junta. Lo que se enseña no es sintaxis nueva —import, open y with son tres palabras— sino un criterio de reparto, y la prueba de que el criterio sirve la pone el juez: puede probar el módulo sin el programa.',
     teoriaSecciones: [
       {
-        subtitulo: 'Qué es una librería y por qué no se reinventa',
+        subtitulo: 'Un archivo es texto, renglón por renglón',
         contenido:
-          'Una librería es código ya escrito y probado por otras personas, disponible con una sola línea. sum(), max(), min() y sorted() son parte de la librería estándar de Python: dentro tienen exactamente el mismo bucle que uno escribiría, sólo que revisado por miles de programadores durante años. Reescribir un ordenamiento para un reporte de ventas no demuestra nada y sí gasta el tiempo que hacía falta para la parte propia.',
+          'Lo que se lee de un archivo es siempre texto, aunque parezca un número, y cada renglón trae su salto de línea al final. Por eso strip y split son las dos herramientas del CSV, y por eso hay que convertir con float antes de comparar: como textos, «9.5» es mayor que «31.0», porque se compara letra por letra. Es el error más instructivo de la clase y el juez lo esconde a propósito en un caso de invierno.',
       },
       {
-        subtitulo: 'Un módulo es una función que hace una sola cosa',
+        subtitulo: 'Un módulo es un archivo que se importa, y se prueba solo',
         contenido:
-          'clasifica_venta recibe un monto y devuelve una categoría; no imprime, no consulta y no calcula totales. Esa disciplina de una responsabilidad por función es la que permite probar cada pieza por separado, corregirla sin romper el resto y llamarla desde donde haga falta. No cambia lo que el programa calcula: cambia lo que cuesta mantenerlo.',
+          'clima.py no es una carpeta ni un concepto: es un archivo .py, y import lo corre de arriba abajo una vez, guardando lo que define. La razón para separar la regla del programa no es estética: lo que vive aparte se puede probar aparte, que es exactamente lo que hace el juez de esta clase con un programa suyo que sólo importa clasifica. En un equipo, es también lo que permite que dos personas trabajen sin pisarse.',
       },
       {
-        subtitulo: 'Un proyecto se divide en archivos por el equipo',
+        subtitulo: 'if __name__ == "__main__"',
         contenido:
-          'No hay ningún límite de tamaño que obligue a partir un programa. La razón es humana: con el código repartido por temas, dos personas trabajan al mismo tiempo sin corregirse la una a la otra, y encontrar dónde vive una función deja de ser una búsqueda a ciegas. Es la misma razón por la que un archivero tiene carpetas y no una sola pila de hojas.',
+          'Cuando un archivo es el que se corre, Python le pone a __name__ el valor "__main__"; cuando otro lo importa, le pone su nombre. El bloque bajo ese if es la prueba del módulo: sale cuando el módulo se corre solo y no estorba a quien lo usa. Si alguien lo quita, la línea de prueba aparece en la salida de cualquier programa que importe el módulo, y el juez lo nota.',
       },
     ],
     evaluacion: [
       {
-        pregunta: '¿Por qué escribir suma_manual si ya existe sum()?',
+        pregunta: 'Lees un renglón de un CSV y la máxima llega como "9.5". ¿Qué pasa si la comparas con "31.0" sin convertir?',
         opciones: [
-          'Porque sum() no siempre da el resultado correcto',
-          'Para ver por dentro el bucle que sum() ya trae hecho, y poder confiar en el atajo entendiéndolo',
-          'Porque sum() es más lento',
-          'Porque en proyectos reales no se usan funciones nativas',
+          'Python la convierte solo y compara 9.5 con 31.0',
+          '"9.5" sale mayor, porque como textos se comparan letra por letra y "9" va después de "3"',
+          'Da un error de tipo',
+          'Salen iguales',
         ],
         correctaIdx: 1,
       },
       {
-        pregunta: '¿Por qué clasifica_venta no existe en ninguna librería?',
+        pregunta: '¿Por qué el juez pudo probar clasifica sin correr estacion.py?',
         opciones: [
-          'Porque es una función demasiado sencilla',
-          'Porque es una regla de este negocio en concreto, no un problema general ya resuelto',
-          'Porque sólo funciona con números enteros',
-          'Porque las librerías no permiten condiciones',
+          'Porque leyó el código y adivinó qué hacía',
+          'Porque clasifica vive en su propio módulo, y cualquier programa puede importarlo y llamarla',
+          'Porque copió clasifica dentro de su programa',
+          'Porque estacion.py corrió primero sin que se viera',
         ],
         correctaIdx: 1,
       },
       {
-        pregunta: '¿Cuál es la razón principal para dividir un proyecto real en varios archivos?',
+        pregunta: '¿Qué hace import clima con el código de clima.py?',
         opciones: [
-          'Porque un archivo no puede pasar de cierto número de líneas',
-          'Porque varias personas trabajan a la vez y así cada una edita su parte sin pisar la de las demás',
-          'Porque el programa corre más rápido',
-          'Porque lo exige el intérprete',
+          'Sólo lee las funciones y se salta lo demás',
+          'Lo corre entero una vez, menos lo que está bajo if __name__ == "__main__"',
+          'Lo copia dentro del archivo que lo importa',
+          'Nada hasta que se llama a una función',
         ],
         correctaIdx: 1,
       },
     ],
     rubrica:
-      'Domina (escribe las dos funciones propias, comprueba su equivalencia con las nativas, justifica qué le toca a cada lado y explica la división en archivos y funciones por sus razones reales) · En proceso (escribe el código y usa las nativas, pero justifica el reparto con ayuda) · Inicia (copia los encargos sin distinguir qué parte es propia del negocio y cuál está resuelta en la librería)',
+      'Domina (el juez acepta los tres programas, explica por qué la semana de invierno tumbaba la comparación de textos, y explica qué hace import y para qué sirve el bloque de __name__) · En proceso (llega a los tres con pistas, o corrige cuando el tablero dice qué caso falla, pero no sabe explicar por qué la regla tiene que estar en el módulo) · Inicia (deja la regla en el principal o compara textos, y no logra que el juez acepte más de un problema)',
     tips: [
-      'La comparación entre suma_manual y sum() debe imprimirse como igualdad, no leerse a ojo. Ver el resultado verdadero en pantalla vale más que comparar dos números parecidos.',
-      'Si alguien pregunta por import, la respuesta corta es que este intérprete no lo admite y hoy no hace falta: todo lo que se usa ya está disponible. Es una limitación del editor, no una regla de Python.',
-      'En la pregunta de los archivos, deja que respondan mal primero. La intuición del límite técnico está muy extendida, y descartarla es la mitad de lo que enseña ese encargo.',
+      'Cuando el tablero diga que «el juez prueba tu módulo solo» falló, no digas dónde va la función: pregunta qué archivo crees que importa el juez. Es la mitad de la clase.',
+      'Si alguien escribe import clima.py, el error ya dice que va sin el .py. Déjalo leerlo: es el mismo hábito de N8 —el error se lee entero antes de tocar nada.',
+      'Si algún alumno pregunta por random, la respuesta del editor es la buena: un programa que contesta distinto cada vez no se puede comprobar. Vale la pena discutirla en voz alta con bachillerato.',
     ],
   },
 
@@ -15996,95 +16050,95 @@ export const PLANES_DE_CLASE: Record<string, PlanDeClase> = {
   'n10-problemas-de-concurso': {
     actividadId: 'n10-problemas-de-concurso',
     objetivo:
-      'Que el alumno resuelva cinco problemas breves con respuesta exacta, como los de un torneo real: que cuente con una condición dentro de un bucle, que encuentre el mínimo con el algoritmo del mejor hasta ahora y lo confirme contra min(), que invierta una lista recorriéndola de atrás hacia adelante sin usar ningún atajo, que sume los dígitos de un folio con módulo y división entera dentro de un while, y que escriba su propia función es_primo probándola con 17 y 21 —dos casos de respuesta conocida— antes de aplicarla a las cinco mesas de la final.',
+      'Que el alumno resuelva seis problemas breves como los de un torneo real, a partir de un enunciado y unos ejemplos y sin que nadie le dicte el código, enviando cada solución a un juez que la corre con casos que no ha visto: que cuente con una condición leyendo con lupa dónde está el corte, que encuentre el mejor tiempo y sepa qué contestar cuando no hay ninguno, que invierta una lista conservando los repetidos, que sume las cifras de un folio con aritmética, que decida si una mesa tiene número primo cuidando el uno y el dos, y que elija al campeón resolviendo el empate; y que cierre escribiendo él mismo el caso de prueba que desenmascara una solución con un error.',
     materiales: [],
     fases: [
       {
-        titulo: 'Respuesta exacta, sin más o menos',
+        titulo: 'Qué es un juez',
         duracionMin: 5,
         descripcion:
-          'Explica qué es un problema de concurso: enunciado breve, datos de entrada y una única respuesta correcta que se comprueba sola. No hay nota parcial por acercarse. Ese marco cambia cómo se trabaja y conviene fijarlo antes de empezar, porque justifica la disciplina de probar que aparece al final.',
-        actividadSugerida: 'Explicación del formato de un problema de concurso y de por qué la respuesta es exacta.',
+          'Explica el formato de un problema de concurso: enunciado breve, una función con nombre fijo, ejemplos visibles y casos ocultos. El juez no mira el código, lo corre, y la mitad de los casos no se ven. Avisa que el primer envío casi siempre vuelve rechazado y que leer por qué es la mitad del trabajo.',
+        actividadSugerida: 'Explicación del formato de concurso y de por qué hay casos ocultos.',
       },
       {
-        titulo: 'Contar, y el mínimo dos veces',
-        duracionMin: 13,
+        titulo: 'Los primeros envíos',
+        duracionMin: 15,
         descripcion:
-          'Actividad digital, primeros problemas. Un contador con una condición dentro del bucle, y después el mínimo escrito a mano y confirmado con min() en la línea siguiente. La comparación de los dos resultados no es un trámite: es la prueba de que el algoritmo que escribieron es el que la función trae dentro.',
-        actividadSugerida: 'La actividad digital, encargos 1 a 3 — el conteo con condición y el mínimo a mano contra min().',
+          'Actividad digital, problemas 1 a 3. Cada uno tiene una frase del enunciado que decide un caso oculto: «llegaron a setenta» incluye al setenta, una carrera cancelada no tiene tiempos, y dar la vuelta a una lista no quita repetidos. Cuando alguien reciba un rechazo, que lea el nombre del caso que falló y busque la frase que lo describe.',
+        actividadSugerida: 'La actividad digital, problemas 1 a 3 — el corte, el mejor tiempo y la premiación al revés.',
       },
       {
-        titulo: 'Invertir y sumar dígitos',
-        duracionMin: 14,
+        titulo: 'Aritmética y desempates',
+        duracionMin: 15,
         descripcion:
-          'Actividad digital, problemas 3 y 4. Recorrer una lista hacia atrás construyendo otra, y sumar los dígitos de un folio con módulo diez y división entera dentro de un while. El segundo suele costar: un número no es una lista de dígitos, y sacarlos uno a uno es aritmética. Vale la pena hacer la primera vuelta en el pizarrón.',
-        actividadSugerida: 'La actividad digital, encargos 4 y 5 — la lista invertida y la suma de verificación del folio.',
+          'Actividad digital, problemas 4 a 6. La suma de cifras suele costar porque un número no es una lista de dígitos: vale la pena hacer la primera vuelta en el pizarrón con módulo diez y división entera. En el de los primos, pide que prueben el uno y el dos antes de enviar. En el campeón, el empate vuelve a decidirse con un signo.',
+        actividadSugerida: 'La actividad digital, problemas 4 a 6 — la suma de verificación, las mesas de número primo y el campeón.',
       },
       {
-        titulo: 'Tu propia función, probada antes de usarla',
-        duracionMin: 13,
+        titulo: 'Escribir el caso que rompe',
+        duracionMin: 10,
         descripcion:
-          'Actividad digital, problema 5. Se escribe es_primo, se prueba con 17 y con 21, y sólo después se aplica a las cinco mesas. Pregunta qué habría pasado al revés: un error escondido entre cinco resultados que nadie sabe verificar. Con dos casos conocidos, el fallo salta de inmediato. Ése es el cierre de la clase.',
-        actividadSugerida: 'La actividad digital, encargos 6 a 8 — la función es_primo, la pregunta sobre probar y la clasificación final.',
+          'Con el torneo ganado aparece una versión rota del primer problema. El alumno tiene que escribir una lista de puntajes con la que su solución y la rota contesten distinto, sin romper la suya. Cierra con la pregunta de por qué un juez guarda casos ocultos: un caso que no distingue lo correcto de lo incorrecto no prueba nada.',
+        actividadSugerida: 'El encargo final de la actividad digital y la pregunta de cierre sobre los casos ocultos.',
       },
     ],
     teoriaIntro:
-      'La clase pide escribir a mano cosas que el lenguaje ya trae, y esa aparente contradicción conviene explicarla antes de que alguien la señale: en un concurso la función nativa suele existir, y aun así se pide el algoritmo, porque lo que se evalúa es si se entiende qué hay dentro y si se puede adaptar cuando la nativa no alcanza.',
+      'La clase ya no dicta soluciones: cada problema es un enunciado y un juez. Conviene explicar antes de empezar por qué eso cambia la forma de trabajar. Con la solución escrita, el alumno transcribe; con un juez que corre su programa contra datos que no eligió, tiene que pensar en los casos borde, que es donde se decide casi todo en un concurso y en el trabajo real.',
     teoriaSecciones: [
       {
         subtitulo: 'El mejor hasta ahora',
         contenido:
-          'Guardar el primer elemento como candidato y sustituirlo cada vez que aparece uno mejor es el algoritmo del mínimo, y es exactamente lo que hace min() por dentro. Sirve igual para el máximo cambiando la comparación, y para el más caro comparando un campo. Es uno de los tres o cuatro patrones que resuelven la mayoría de los problemas cortos.',
+          'Guardar el primer elemento como candidato y sustituirlo cada vez que aparece uno mejor es el algoritmo del mínimo y del máximo. El detalle que decide el problema del campeón está en el signo: «mayor que» se queda con el primero de los empatados y «mayor o igual» con el último. Y el candidato inicial tiene que salir de la lista, no de un número elegido a mano, que podría ganarles a todos.',
       },
       {
-        subtitulo: 'Los dígitos de un número se sacan con aritmética',
+        subtitulo: 'Las cifras de un número se sacan con aritmética',
         contenido:
-          'Un número entero no es una lista de dígitos: el resto de dividir entre diez da el último, y la división entera entre diez lo quita. Repetido en un while hasta que no queda nada, recorre el número completo. Es la base de las sumas de verificación que llevan los folios, los códigos de barras y los números de tarjeta.',
+          'Un número entero no es una lista de dígitos: el resto de dividir entre diez da la última cifra, y la división entera entre diez la quita. Repetido en un while hasta que no queda nada, recorre el número completo. Es la base de las sumas de verificación que llevan los folios, los códigos de barras y los números de tarjeta.',
       },
       {
-        subtitulo: 'Probar con casos de respuesta conocida',
+        subtitulo: 'Casos borde y casos ocultos',
         contenido:
-          'Antes de aplicar una función a los datos de verdad, se corre con uno o dos casos cuyo resultado ya se sabe. Si es_primo falla con 17, el error aparece de inmediato y en un sitio donde se puede mirar. Aplicada de golpe a cinco mesas, la misma equivocación se esconde entre resultados que nadie puede verificar de un vistazo, y contra el reloj eso cuesta el problema entero.',
+          'Casi todos los errores de un concurso están en los extremos: la lista vacía, el valor justo en el corte, el uno y el dos al hablar de primos, el empate. Por eso el juez guarda casos que no enseña: si estuvieran todos a la vista con su respuesta, se podría aprobar escribiendo esas respuestas en lugar de resolver el problema. Escribir un caso que separe una solución correcta de una rota es la misma habilidad vista desde el otro lado.',
       },
     ],
     evaluacion: [
       {
-        pregunta: '¿Por qué un problema de concurso pide escribir el mínimo a mano si existe min()?',
+        pregunta: '¿Para qué sirve que el juez guarde casos ocultos?',
         opciones: [
-          'Porque min() no funciona con listas largas',
-          'Porque lo que se evalúa es entender el algoritmo que la función trae dentro, y poder adaptarlo cuando no alcanza',
-          'Porque las funciones nativas están prohibidas en Python',
-          'Porque a mano es más rápido',
+          'Para que el ejercicio dure más tiempo',
+          'Para que no se pueda aprobar escribiendo las respuestas de los ejemplos en lugar de resolver el problema',
+          'Para que el profesor pueda cambiar la calificación después',
+          'Para que el programa corra más rápido',
         ],
         correctaIdx: 1,
       },
       {
-        pregunta: '¿Cómo se obtiene el último dígito de un número entero?',
+        pregunta: 'Una solución al problema del corte usa «mayor que 70» en lugar de «mayor o igual que 70» y pasa los ejemplos. ¿Qué dato la delata?',
         opciones: [
-          'Convirtiéndolo en lista',
-          'Con el resto de dividirlo entre diez; la división entera entre diez lo quita',
-          'Con la función len()',
-          'Ordenándolo de menor a mayor',
+          'Una lista vacía',
+          'Un puntaje de exactamente 70',
+          'Un puntaje de 100',
+          'Una lista con un solo participante de 55 puntos',
         ],
         correctaIdx: 1,
       },
       {
-        pregunta: 'Escribes es_primo y la pruebas con 17 y 21 antes de usarla con las cinco mesas. ¿Por qué ese orden?',
+        pregunta: '¿Por qué conviene probar es_primo con el 1 y con el 2 antes de enviarla?',
         opciones: [
-          'Porque hace falta calentar el intérprete',
-          'Porque con casos de respuesta conocida el error salta de inmediato, en vez de esconderse entre resultados que no se pueden verificar',
-          'Porque 17 y 21 son las mesas más importantes',
-          'Porque así la función corre más rápido después',
+          'Porque son los números más rápidos de calcular',
+          'Porque el 1 no es primo y el 2 sí, y un bucle escrito sin cuidado contesta lo contrario en los dos',
+          'Porque el juez sólo usa esos dos números',
+          'Porque los demás números no pueden ser primos',
         ],
         correctaIdx: 1,
       },
     ],
     rubrica:
-      'Domina (resuelve los cinco problemas, confirma su mínimo contra la nativa, escribe es_primo correctamente y explica por qué se prueba con casos conocidos antes de aplicar) · En proceso (resuelve los problemas de bucle y necesita ayuda con la suma de dígitos o con la función) · Inicia (copia los enunciados sin identificar el patrón que resuelve cada uno)',
+      'Domina (resuelve los seis problemas leyendo qué caso falla, explica qué frase del enunciado decide cada caso borde y escribe un caso que separa la solución rota) · En proceso (resuelve la mayoría de los problemas pero necesita las pistas para los casos borde o para el encargo final) · Inicia (escribe soluciones que pasan los ejemplos visibles y no puede explicar qué caso oculto las tumba)',
     tips: [
-      'Haz la primera vuelta del while de los dígitos en el pizarrón, con 4829 escrito. Ver cómo el número encoge en cada paso resuelve el problema entero para casi todo el grupo.',
-      'Nombra los patrones cuando aparezcan: contar con condición, el mejor hasta ahora, recorrer al revés, sacar dígitos, clasificar en dos listas. Cinco nombres valen más que cinco programas sueltos.',
-      'Si el grupo va con soltura, pon un sexto problema tuyo con la misma forma —contar aprobados, encontrar el máximo— sin resolverlo. Reconocer el patrón en un enunciado nuevo es lo que la clase quiere dejar.',
+      'Ante un «Rechazado», no des la corrección. Pide que lean en voz alta el nombre del caso que falló y busquen en el enunciado la frase que describe esa situación.',
+      'El panel de variables sirve para depurar antes de enviar: sugiere que llamen a su función con un dato propio y miren qué devuelve, en lugar de enviar a ver qué pasa.',
+      'El encargo final es el que más enseña y el que más se salta con prisa. Si falta tiempo, recorta minutos del problema 4, no de éste.',
     ],
   },
 

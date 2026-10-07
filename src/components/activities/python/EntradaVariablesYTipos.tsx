@@ -25,9 +25,9 @@ const CONFIG: ConfigEntradaN4 = {
   globo:
     'Un dato no es sólo su valor: también es su tipo. De eso depende lo que Python te deja hacer con él, y por qué a veces se niega.',
   arranqueSub:
-    'Abres **tipos.py** y clasificas cuatro datos distintos. Después los mezclas a propósito, hasta que el programa se rompe.',
+    'Abres **tipos.py**, guardas cuatro datos tuyos y los mezclas a propósito hasta que el programa se rompe. Después, tres programas que un juez prueba cambiando sus datos.',
   stats: [
-    { etiqueta: 'Encargos', valor: '9', acento: '#22d3ee' },
+    { etiqueta: 'Encargos', valor: '8', acento: '#22d3ee' },
     { etiqueta: 'Tipos', valor: '4', acento: '#fbbf24' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
@@ -73,7 +73,7 @@ const CONFIG: ConfigEntradaN4 = {
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre el editor de código',
   ctaDetalle:
-    'Nueve encargos: guarda cuatro datos, pregúntale su tipo a Python con `type()`, **mézclalos a propósito** hasta que reviente de dos maneras distintas, y decide tú cada conversión con `str()` y con `int()`.',
+    'Ocho encargos: guarda cuatro datos tuyos, pregúntale su tipo a Python, **mézclalos a propósito** hasta que reviente de dos maneras distintas, y escribe tres programas que el juez prueba con datos que no ves.',
   assetsPendientes: false,
 };
 

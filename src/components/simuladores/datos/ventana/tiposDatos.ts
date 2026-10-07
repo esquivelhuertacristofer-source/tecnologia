@@ -109,6 +109,20 @@ export interface PanelDatosProps {
   texto: string;
   /** Lleva el cursor del alumno a una línea del editor y la enfoca. */
   senalarLinea: (linea: number) => void;
+  /**
+   * «Vuelve a mirar si el encargo está hecho.»
+   *
+   * Los encargos se comprueban solos cuando cambia el texto o la ejecución,
+   * que es de dónde sale la respuesta en casi todas las clases. Pero hay
+   * predicados que leen algo que NO es ninguna de las dos —el tablero de
+   * veredictos del juez, que vive fuera de React— y que cambia por un botón
+   * del panel de la clase. Ese botón repinta su propio panel y nada más: el
+   * encargo se quedaba sin cerrar hasta la siguiente tecla.
+   *
+   * No corrige nada —sigue corrigiendo el predicado del guion, canon prueba
+   * 3—: sólo vuelve a preguntar. Gemelo del de `codigo/ventana/useCodigo.ts`.
+   */
+  revisar: () => void;
 }
 
 /** Una herramienta que aporta la clase y el armazón no trae. */

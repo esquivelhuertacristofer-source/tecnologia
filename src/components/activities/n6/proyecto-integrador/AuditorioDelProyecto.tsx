@@ -2,7 +2,8 @@
 
 import type { EscenarioProps } from '@/components/office/VentanaDiapositivas';
 import { Auditorio, type DecisionEnEscena, type OpcionDecision } from '@/components/office/auditorio/Auditorio';
-import { AFIRMACIONES_SOSTENIDAS, afirmacionDe, fuentesEnElMazo } from './pruebas';
+import { afirmacionDe, fuentesEnElMazo } from './pruebas';
+import { propuestasDelPublico } from './juezDeAfirmaciones';
 
 /**
  * `n6-proyecto-integrador` · Acto 3 (Presentar) · el público con sus tres preguntas.
@@ -75,15 +76,16 @@ export function decisionParaElPaso(pasoId: string | null, mazo: EscenarioProps['
   }
 
   if (pasoId === 'que-proponen') {
-    const actual = afirmacionDe(mazo);
-    const opciones: OpcionDecision[] = AFIRMACIONES_SOSTENIDAS.map((a) => ({
-      texto: a.propuesta ?? a.texto,
-      bien: actual !== null && a.id === actual.id,
-      dice:
-        actual !== null && a.id === actual.id
-          ? 'Eso sale de tu propia gráfica. Eso es un proyecto.'
-          : 'Esa propuesta es buenísima, pero tu gráfica no habla de eso.',
-    }));
+    // §69.5: la correcta sale del TEMA de la frase que el alumno escribió (el
+    // papel, el jueves…) y las otras dos son de temas distintos.
+    const tema = afirmacionDe(mazo)?.juicio.tema ?? null;
+    const opciones: OpcionDecision[] = tema
+      ? propuestasDelPublico(tema).map((p) => ({
+          texto: p.texto,
+          bien: p.bien,
+          dice: p.bien ? 'Eso sale de tu propia gráfica. Eso es un proyecto.' : 'Esa propuesta es buenísima, pero tu gráfica no habla de eso.',
+        }))
+      : [];
     return { diapositiva: 4, pregunta: 'Qué proponen', gesto: 'propuesta-correcta', opciones };
   }
 

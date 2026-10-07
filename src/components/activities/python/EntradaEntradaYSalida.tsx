@@ -12,8 +12,12 @@ import { RUTA_N7_PYTHON_1 } from './rutaN7Python1';
  * aquella dejó —un dato tiene tipo, convertir fabrica un dato nuevo— y no lo
  * repiten: lo usan. Cada cadena está escrita para esta clase.
  *
- * El video y las láminas no existen todavía (`assetsPendientes`): la campaña
- * de videos sigue pausada desde el 1-ago-2026.
+ * ── Reescrita el 12-sep-2026 (§68.4) ─────────────────────────────────────────
+ *
+ * El laboratorio dejó de dictar sus ocho encargos y pasó al juez de programas:
+ * tres de exploración y tres problemas con nueve casos ocultos, con un manual
+ * de ejemplos de otros temas. La entrada se reescribió con él: una entrada que
+ * describe la clase anterior miente sin que ninguna prueba se entere.
  */
 
 const CONFIG: ConfigEntradaN4 = {
@@ -24,10 +28,10 @@ const CONFIG: ConfigEntradaN4 = {
   globo:
     'Hasta ahora tus programas hablaban solos. Éste te va a preguntar, y se va a quedar quieto hasta que le contestes.',
   arranqueSub:
-    'Abres **entrevista.py** y escribes un programa que te entrevista: tres preguntas, tus tres respuestas y una ficha al final.',
+    'Abres **entrevista.py**. Nadie te dicta líneas: tienes metas, un **manual** con ejemplos de otros temas y **un juez** que prueba tus programas tecleando datos que no has visto.',
   stats: [
-    { etiqueta: 'Encargos', valor: '8', acento: '#22d3ee' },
-    { etiqueta: 'Preguntas', valor: '3', acento: '#fbbf24' },
+    { etiqueta: 'Problemas con juez', valor: '3', acento: '#22d3ee' },
+    { etiqueta: 'Casos ocultos', valor: '9', acento: '#fbbf24' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
   letrero: 'Cómo habla un programa',
@@ -56,7 +60,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 3,
       titulo: 'int() convierte, tú decides',
       detalle:
-        'Si necesitas el número, lo pides: `int(edad) + 1`. Y si lo que quieres es pegarlo a un texto, no conviertes nada y usas comas en el `print`.',
+        'Si necesitas el número, lo pides con `int()`, o con `float()` si trae punto decimal. Y sin convertir, multiplicar un texto no falla: **lo repite**.',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -72,7 +76,7 @@ const CONFIG: ConfigEntradaN4 = {
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre el editor de código',
   ctaDetalle:
-    'Ocho encargos: haz que el programa te pregunte y contéstale tú, **rómpelo sumándole 1 a una respuesta**, conviértela, contesta mal a propósito y arma una ficha con tus tres datos.',
+    'Haz que el programa te pregunte y contéstale tú, **rómpelo sumándole 1 a una respuesta**, y resuelve tres problemas que un juez prueba con edades, nombres y precios que no conoces.',
   assetsPendientes: false,
 };
 

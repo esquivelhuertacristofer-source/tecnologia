@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useLabActividad } from '../../lib/useLabActividad';
 import { VentanaBase } from '../../../simuladores/VentanaBase';
 
@@ -471,7 +472,7 @@ export function LabIpWifiServidores(props: ActivityProps & { alSalir?: () => voi
                 al alcance ahora mismo:
               </p>
               <ul className="flex flex-col gap-2" data-testid="lista-redes">
-                {REDES.map((red) => (
+                {ordenDeOpciones(REDES.length, 'ipwifi-redes').map((i) => REDES[i]).map((red) => (
                   <li key={red.id}>
                     <button
                       type="button"
@@ -533,7 +534,7 @@ export function LabIpWifiServidores(props: ActivityProps & { alSalir?: () => voi
                 ahí?
               </p>
               <div className="flex flex-col gap-2" data-testid="opciones-riesgo">
-                {OPCIONES_RIESGO.map((op) => (
+                {ordenDeOpciones(OPCIONES_RIESGO.length, 'ipwifi-riesgo').map((i) => OPCIONES_RIESGO[i]).map((op) => (
                   <button
                     key={op.id}
                     type="button"
@@ -563,7 +564,7 @@ export function LabIpWifiServidores(props: ActivityProps & { alSalir?: () => voi
               </div>
               <p className="text-sm text-slate-300">De estas cuatro direcciones, toca la que SÍ podría ser una IP local (de una red como ésta):</p>
               <div className="grid grid-cols-2 gap-2" data-testid="opciones-ip">
-                {OPCIONES_IP.map((op) => (
+                {ordenDeOpciones(OPCIONES_IP.length, 'ipwifi-ip').map((i) => OPCIONES_IP[i]).map((op) => (
                   <button
                     key={op.id}
                     type="button"
@@ -625,7 +626,7 @@ export function LabIpWifiServidores(props: ActivityProps & { alSalir?: () => voi
             <div className="flex flex-col gap-3">
               <p className="text-sm text-slate-300">¿Qué hace el router de tu casa?</p>
               <div className="flex flex-col gap-2" data-testid="opciones-router">
-                {OPCIONES_ROUTER.map((op) => (
+                {ordenDeOpciones(OPCIONES_ROUTER.length, 'ipwifi-router').map((i) => OPCIONES_ROUTER[i]).map((op) => (
                   <button
                     key={op.id}
                     type="button"
@@ -693,7 +694,7 @@ export function LabIpWifiServidores(props: ActivityProps & { alSalir?: () => voi
                 Si ahora mismo escribes <strong className="text-white">tienda.tecnia.mx</strong> en el navegador, ¿qué va a pasar?
               </p>
               <div className="flex flex-col gap-2" data-testid="opciones-falla">
-                {OPCIONES_FALLA.map((op) => (
+                {ordenDeOpciones(OPCIONES_FALLA.length, 'ipwifi-falla').map((i) => OPCIONES_FALLA[i]).map((op) => (
                   <button
                     key={op.id}
                     type="button"

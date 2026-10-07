@@ -6,6 +6,7 @@ import { useEffect, useRef } from 'react';
 import { comoLlegar, type Ubicacion } from '../motor/guia';
 import type { PortadaClase } from '../motor/guion';
 import { ICONOS } from './iconos';
+import { barajadas } from '@/lib/ordenDeOpciones';
 
 /**
  * Las piezas de interfaz que comparten todos los programas de la suite (§40.6).
@@ -430,8 +431,8 @@ export function PanelMaestro({
 
             {actual.logro.tipo === 'eleccion' && actual.logro.opciones && (
               <div className="txtw-opciones">
-                {actual.logro.opciones.map((o, i) => (
-                  <button key={o} type="button" className="txtw-opcion" onClick={() => onElegir(i)}>
+                {barajadas((actual.logro.opciones ?? []), actual.id).map(([o, i]) => (
+                  <button key={o} type="button" className="txtw-opcion" data-opcion={i} onClick={() => onElegir(i)}>
                     {o}
                   </button>
                 ))}

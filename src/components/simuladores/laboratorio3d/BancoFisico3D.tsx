@@ -178,9 +178,14 @@ export function BancoFisico3D({
    * que sin esto la pieza se queda pegada a la mano y la actividad queda
    * muerta con todo en verde. El oyente va en `window` porque el puntero puede
    * levantarse literalmente en cualquier sitio.
+   *
+   * Sólo con escena (§69.6): en el `respaldo` no hay arrastre, y el
+   * `pointerup` del propio botón «Poner en…» llegaba aquí antes que su
+   * `click` y devolvía la pieza — en un navegador de verdad sin WebGL no se
+   * podía montar nada (jsdom no lo ve: su `click` no dispara `pointerup`).
    */
   useEffect(() => {
-    if (estado.tomada === null) return;
+    if (estado.tomada === null || !webgl) return;
     const alSoltarFuera = () => {
       setRayo(null);
       onDevolver();
@@ -191,7 +196,7 @@ export function BancoFisico3D({
       window.removeEventListener('pointerup', alSoltarFuera);
       window.removeEventListener('pointercancel', alSoltarFuera);
     };
-  }, [estado.tomada, onDevolver]);
+  }, [estado.tomada, onDevolver, webgl]);
 
   // Dónde está la pieza que va en la mano: sobre el rayo, a la profundidad del
   // hueco al que apunta. Todo esto es aritmética pura del núcleo.

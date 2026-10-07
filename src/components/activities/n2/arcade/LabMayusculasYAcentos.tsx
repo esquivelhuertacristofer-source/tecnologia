@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { RoundedBox } from '@react-three/drei';
 import { ActivityProps } from '@/types/activity-contract';
@@ -312,7 +313,7 @@ export function LabMayusculasYAcentos(props: ActivityProps & { alSalir?: () => v
       />
       <PanelMaquina3D position={[0, MOSTRADOR_Y + 0.5, 1.0]} ancho={1.6} alto={1.12} nota="Tarjetas de la palanca Shift">
         <div className="maquina-tarjetas" role="group" aria-label="Elige la versión correcta">
-          {retoR1.opciones.map((opcion) => (
+          {ordenDeOpciones(retoR1.opciones.length, retoR1.id).map((k) => retoR1.opciones[k]).map((opcion) => (
             <button
               key={opcion.texto}
               type="button"
@@ -373,7 +374,7 @@ export function LabMayusculasYAcentos(props: ActivityProps & { alSalir?: () => v
       </div>
       <span className="gabinete-nota">Tarjetas de la palanca Shift</span>
       <div className="maquina-tarjetas" role="group" aria-label="Elige la versión correcta">
-        {retoR1.opciones.map((opcion) => (
+        {ordenDeOpciones(retoR1.opciones.length, retoR1.id).map((k) => retoR1.opciones[k]).map((opcion) => (
           <button
             key={opcion.texto}
             type="button"

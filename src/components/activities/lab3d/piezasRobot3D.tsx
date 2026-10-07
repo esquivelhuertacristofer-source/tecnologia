@@ -21,7 +21,7 @@ import { RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
 import type { Punto3 } from '@/components/simuladores/laboratorio3d';
 import { Escritorio3D } from './piezasEquipo3D';
-import { OX_ROBOT } from './bancoRobot';
+import { CAJA_MEDIA, CAJA_Y, OX_ROBOT } from './bancoRobot';
 
 const v3 = (p: Punto3): [number, number, number] => [p[0], p[1], p[2]];
 
@@ -153,12 +153,12 @@ export function Caja3D({
   });
 
   return (
-    <group ref={grupo} position={[OX_ROBOT, -0.68, zMeta]}>
-      <RoundedBox args={[0.5, 0.5, 0.5]} radius={0.03} smoothness={2} castShadow>
+    <group ref={grupo} position={[OX_ROBOT, CAJA_Y, zMeta]}>
+      <RoundedBox args={[CAJA_MEDIA * 2, CAJA_MEDIA * 2, CAJA_MEDIA * 2]} radius={0.03} smoothness={2} castShadow>
         <meshStandardMaterial color="#5B4630" roughness={0.78} metalness={0.06} />
       </RoundedBox>
-      <mesh ref={tapa} position={[0, 0, -0.251]}>
-        <planeGeometry args={[0.5, 0.5]} />
+      <mesh ref={tapa} position={[0, 0, -CAJA_MEDIA - 0.001]}>
+        <planeGeometry args={[CAJA_MEDIA * 2, CAJA_MEDIA * 2]} />
         <meshStandardMaterial color="#EF4444" emissive="#EF4444" emissiveIntensity={0} transparent opacity={0.6} />
       </mesh>
     </group>

@@ -1,0 +1,30 @@
+/*
+ * `n8-disena-tu-videojuego` — lo poco que la clase pone encima de Tecnia
+ * Juegos: el encaje de la ventana en la pantalla del gabinete y el panel del
+ * encargo, que aquí vive a la derecha del escenario.
+ */
+
+.dv-marco {
+  height: 100%;
+}
+
+.dv-marco .vtb-cuerpo {
+  min-height: 0;
+}
+
+.dv-panel {
+  padding: 12px 14px;
+}
+
+.dv-panel .blqs-panel-titulo {
+  font-size: 16px;
+}
+
+.dv-panel .blqs-panel-instruccion {
+  font-size: 12.5px;
+  margin-bottom: 8px;
+}
+
+.dv-panel .blqs-panel-pista-texto {
+  font-size: 12px;
+}

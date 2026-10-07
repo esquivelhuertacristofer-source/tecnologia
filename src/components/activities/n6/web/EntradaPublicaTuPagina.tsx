@@ -54,7 +54,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 3,
       titulo: '«Escribí el CSS y no se ve nada»',
       detalle:
-        'Casi siempre es lo mismo: el enlace al archivo de estilo tiene el nombre mal escrito. **Una letra de más y la página se ve en blanco y negro.**',
+        'Casi nunca es el CSS: es que la página **no encuentra el archivo** donde está. El error rojo dice qué archivo busca; comparar ese nombre con el de verdad es la mitad del arreglo.',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {

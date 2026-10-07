@@ -2,6 +2,7 @@
 
 import { useMemo, useState, type ReactNode } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useLabActividad } from '@/components/activities/lib/useLabActividad';
 import { VentanaBase } from '@/components/simuladores/VentanaBase';
 import { VentanaCorreo, type MensajeCorreo } from '@/components/simuladores/correo';
@@ -354,14 +355,14 @@ function PasoAccesoView({ caso, resuelto, acierto, onResolver, onAvanzar, esUlti
           <button
             type="button"
             onClick={() => onResolver(bloqueado)}
-            className="flex-1 px-4 py-3 rounded-xl bg-emerald-500 text-slate-950 font-bold"
+            className="flex-1 px-4 py-3 rounded-xl bg-slate-700 text-white font-semibold"
           >
             🛡️ El acceso queda bloqueado
           </button>
           <button
             type="button"
             onClick={() => onResolver(!bloqueado)}
-            className="flex-1 px-4 py-3 rounded-xl bg-rose-500 text-white font-bold"
+            className="flex-1 px-4 py-3 rounded-xl bg-slate-700 text-white font-semibold"
           >
             ⚠️ La cuenta queda comprometida
           </button>
@@ -439,7 +440,7 @@ function PasoCorreoView({ mensaje, resuelto, acierto, onResolver, onAvanzar, esU
             type="button"
             disabled={!inspeccionado}
             onClick={() => decidir(true)}
-            className="px-4 py-3 rounded-xl bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-bold"
+            className="px-4 py-3 rounded-xl bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold"
           >
             Es legítimo
           </button>
@@ -447,7 +448,7 @@ function PasoCorreoView({ mensaje, resuelto, acierto, onResolver, onAvanzar, esU
             type="button"
             disabled={!inspeccionado}
             onClick={() => decidir(false)}
-            className="px-4 py-3 rounded-xl bg-rose-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold"
+            className="px-4 py-3 rounded-xl bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold"
           >
             Es un intento de phishing
           </button>
@@ -564,7 +565,7 @@ function PasoReflexionView({
       <p className="text-lg text-white font-semibold leading-relaxed">{paso.pregunta}</p>
       {!resuelto && (
         <div className="flex flex-col gap-2">
-          {paso.opciones.map((o) => (
+          {ordenDeOpciones(paso.opciones.length, paso.id).map((i) => paso.opciones[i]).map((o) => (
             <button
               key={o.id}
               type="button"

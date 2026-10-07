@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { reproducirTono } from '../../n1/mision/audio';
 import { ArcadeSala, AvisoRonda, useBit } from '../../n1/arcade/ArcadeSala';
 import { formatTiempo, useLabActividad } from '../../lib/useLabActividad';
@@ -753,7 +754,7 @@ function McqBloque({
     <div className="flex flex-col gap-3">
       <p className="text-lg text-white font-semibold leading-relaxed">{pregunta}</p>
       <div className="flex flex-col gap-2" data-testid="opciones-mcq">
-        {opciones.map((op) => (
+        {ordenDeOpciones(opciones.length, pregunta).map((idx) => opciones[idx]).map((op) => (
           <button
             key={op.id}
             type="button"

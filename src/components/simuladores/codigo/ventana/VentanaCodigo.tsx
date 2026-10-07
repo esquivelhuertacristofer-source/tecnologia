@@ -11,6 +11,7 @@ import {
 } from './tiposCodigo';
 import type { Codigo } from './useCodigo';
 import './ventanaCodigo.css';
+import { barajadas } from '@/lib/ordenDeOpciones';
 
 /**
  * TECNIA CÓDIGO · LA VENTANA
@@ -169,7 +170,10 @@ function Consola({ codigo }: { codigo: Codigo }) {
 function TropiezoEnPantalla({ codigo }: { codigo: Codigo }) {
   const e = codigo.ejecucion.error;
   if (!e) return null;
-  const eco = ecoDeLinea(codigo.texto, e.linea, e.columna);
+  /* De qué archivo es (M4): el eco se saca de ESE texto, y el botón lo abre. */
+  const clave = codigo.ejecucion.archivo;
+  const otro = clave !== null;
+  const eco = ecoDeLinea(codigo.textoDe(clave), e.linea, e.columna);
 
   return (
     <div className="cod-error" data-testid="cod-error" role="alert">
@@ -182,9 +186,9 @@ function TropiezoEnPantalla({ codigo }: { codigo: Codigo }) {
             type="button"
             className="cod-error-linea"
             data-testid="cod-error-linea"
-            onClick={() => codigo.senalarLinea(e.linea)}
+            onClick={() => codigo.senalarEn(clave, e.linea)}
           >
-            Línea {e.linea}
+            {otro ? `${clave} · ` : ''}Línea {e.linea}
           </button>
         )}
         <span className="cod-error-mensaje">{e.mensaje}</span>
@@ -264,7 +268,7 @@ function Encargo({ codigo }: { codigo: Codigo }) {
 
       {paso.logro.tipo === 'eleccion' && (
         <div className="cod-encargo-opciones">
-          {paso.logro.opciones.map((o, i) => (
+          {barajadas(paso.logro.opciones, paso.id).map(([o, i]) => (
             <button
               key={o}
               type="button"
@@ -348,12 +352,37 @@ export function VentanaCodigo({
       {encabezado}
 
       <div className="cod-barra">
-        <span className="cod-archivo" data-testid="cod-archivo">
-          <span className="cod-archivo-glifo" aria-hidden="true">
-            🐍
+        {codigo.archivos.length > 1 ? (
+          /* M4 (§69.21): una pestaña por archivo del proyecto. */
+          <div className="cod-pestanas" role="tablist" aria-label="Archivos del proyecto">
+            {codigo.archivos.map((a) => (
+              <button
+                key={a.nombre}
+                type="button"
+                role="tab"
+                aria-selected={codigo.abierto === a.clave}
+                className={`cod-archivo es-pestana${codigo.abierto === a.clave ? ' es-abierta' : ''}`}
+                data-testid={a.clave === null ? 'cod-archivo' : undefined}
+                data-archivo={a.nombre}
+                data-tipo={a.tipo}
+                onClick={() => codigo.abrir(a.clave)}
+              >
+                <span className="cod-archivo-glifo" aria-hidden="true">
+                  {a.tipo === 'datos' ? '📄' : a.tipo === 'generado' ? '📝' : '🐍'}
+                </span>
+                {a.clave === null ? archivo : a.nombre}
+                {a.tipo === 'generado' && <span className="cod-archivo-chapa">lo escribió tu programa</span>}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <span className="cod-archivo" data-testid="cod-archivo">
+            <span className="cod-archivo-glifo" aria-hidden="true">
+              🐍
+            </span>
+            {archivo}
           </span>
-          {archivo}
-        </span>
+        )}
 
         <div className="cod-controles" role="group" aria-label="Controles del programa">
           <button
@@ -461,18 +490,25 @@ export function VentanaCodigo({
 
       <div className="cod-cuerpo">
         <div className="cod-izquierda">
+          {codigo.archivos.length > 1 && (
+            <p className="cod-corre" data-testid="cod-corre">
+              {codigo.editor.tipo === 'modulo'
+                ? `▶ corre ${codigo.editor.nombre}, el archivo abierto`
+                : `▶ corre ${archivo}`}
+            </p>
+          )}
           <EditorCodigo
-            texto={codigo.texto}
-            lineas={codigo.lineas}
-            onCambiar={codigo.escribir}
-            editable={codigo.editable}
-            onBloqueado={codigo.avisarBloqueo}
-            bajoLlave={codigo.bajoLlave}
-            lineaEnCurso={ejecucion.linea}
-            lineaError={ejecucion.error?.linea ?? 0}
-            lineaSenalada={codigo.encargo?.paso.senal?.linea ?? 0}
+            texto={codigo.editor.texto}
+            lineas={codigo.editor.lineas}
+            onCambiar={codigo.editor.escribir}
+            editable={codigo.editor.editable}
+            onBloqueado={codigo.editor.avisarBloqueo}
+            bajoLlave={codigo.editor.bajoLlave}
+            lineaEnCurso={ejecucion.archivo === codigo.abierto ? ejecucion.linea : 0}
+            lineaError={ejecucion.archivo === codigo.abierto ? (ejecucion.error?.linea ?? 0) : 0}
+            lineaSenalada={codigo.abierto === null ? (codigo.encargo?.paso.senal?.linea ?? 0) : 0}
             foco={codigo.foco}
-            etiqueta={`Editor de código · ${archivo}`}
+            etiqueta={`Editor de código · ${codigo.abierto === null ? archivo : codigo.editor.nombre}`}
             idPista={idPista}
           />
           <p className="cod-pista-teclado" id={idPista}>
@@ -494,7 +530,14 @@ export function VentanaCodigo({
           {panelFijo && (
             <section className="cod-panel" data-testid="cod-panel" aria-label={panelFijo.titulo}>
               <h3 className="cod-lateral-titulo">{panelFijo.titulo}</h3>
-              <panelFijo.Cuerpo ejecucion={ejecucion} texto={codigo.texto} senalarLinea={codigo.senalarLinea} />
+              <panelFijo.Cuerpo
+                ejecucion={ejecucion}
+                texto={codigo.texto}
+                senalarLinea={codigo.senalarLinea}
+                revisar={codigo.revisar}
+                encargoId={codigo.encargo?.paso.id ?? null}
+                proyecto={codigo.proyecto}
+              />
             </section>
           )}
           {variables && <Variables codigo={codigo} />}

@@ -108,7 +108,7 @@ describe('VentanaHojas · n6-interpreta-la-informacion, jugando mal a propósito
     expect(celda('D4').textContent).toBe('=B4*C4');
     // Sin el «=» que tienen sus cuatro vecinas: el número quedó a mano.
     expect(celda('D6').textContent).toBe('140');
-    expect(encargo()).toBe('Corrige el número de Camila');
+    expect(encargo()).toBe('El Total escrito a mano');
   });
 
   it('encargo 2 · escribir el número correcto a mano no basta; hace falta la fórmula', async () => {
@@ -117,12 +117,17 @@ describe('VentanaHojas · n6-interpreta-la-informacion, jugando mal a propósito
     irAFormulas();
     fireEvent.click(boton('mostrar-formulas'));
     await celebrar();
-    expect(encargo()).toBe('Corrige el número de Camila');
+    expect(encargo()).toBe('El Total escrito a mano');
 
     // JUGAR MAL · el número correcto, pero sin «=»: sigue siendo un dato.
     teclear('D6', '150');
     await celebrar();
-    expect(encargo()).toBe('Corrige el número de Camila');
+    expect(encargo()).toBe('El Total escrito a mano');
+
+    // §69.9 · con «=» pero sin leer la fila: guarda una regla y no se entera de los meses.
+    teclear('D6', '=150');
+    await celebrar();
+    expect(encargo()).toBe('El Total escrito a mano');
 
     teclear('D6', '=B6*C6');
     await celebrar();
@@ -192,6 +197,12 @@ describe('VentanaHojas · n6-interpreta-la-informacion, jugando mal a propósito
     irAHoja('h3');
     // El error se ve como error, no como un 0 que alguien pudiera confundir con un dato.
     expect(celda('D5').textContent).toBe('#¡REF!');
+
+    // §69.9 · tapar el error con el neto escrito como cuenta fija no lo arregla: no lee la fila.
+    teclear('D5', '=900-300');
+    await celebrar();
+    expect(celda('D5').textContent).toBe('600');
+    expect(encargo()).toBe('Un #¡REF! cuenta que alguien borró algo');
 
     teclear('D5', '=B5-C5');
     await celebrar();

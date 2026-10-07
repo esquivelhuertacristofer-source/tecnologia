@@ -15,12 +15,11 @@ import { RUTA_N8_PYTHON_2 } from './rutaN8Python2';
  * correcto con su traducción al lado, se explica el porqué y no sólo el
  * qué, refuerzo informativo. Cada cadena está escrita para esta clase.
  *
- * La cuarta ficha («Una lista es una referencia») no tiene encargo propio en
- * el laboratorio: `valores.ts` la señala como contenido de esta clase (su
- * comentario de la decisión de modelo (3)), pero se entiende leyéndola y no
- * hacía falta ejecutarla, así que vive aquí en vez de ocupar un onceavo
- * encargo. El dato de `mochila[:]` como copia de verdad está comprobado en
- * `sintaxis.ts` (`sufijos()`) antes de escribirlo, no adivinado.
+ * Reescrita con la clase el 6-oct-2026 (§69.20): las fichas ya no anuncian
+ * diez encargos dictados sino cinco problemas que un juez prueba cambiando la
+ * mochila y el inventario. La ficha «Una lista es una referencia» salió de
+ * aquí: no tiene encargo, y el plan docente la hace en el pizarrón al cierre
+ * (`otra = mochila`), que es donde se entiende.
  *
  * El video se grabó y se publicó el 2-sep-2026:
  * `public/assets/actividades/n8-listas-y-diccionarios/video-explicativo.mp4`
@@ -38,10 +37,10 @@ const CONFIG: ConfigEntradaN4 = {
   globo:
     'Hasta ahora cada dato tuyo vivía solo, en su propia variable. Las listas y los diccionarios guardan varios datos juntos, en una sola caja — y hoy vas a usar los dos.',
   arranqueSub:
-    'Abres **mochila.py** y guardas varios datos en una lista y en un diccionario, hasta provocar un **IndexError de verdad** — y corregirlo.',
+    'Abres **mochila.py** y escribes cinco programas con listas y diccionarios. Un juez los prueba con **mochilas e inventarios que no ves**: una cosa, cinco, ninguna, un producto en cero.',
   stats: [
-    { etiqueta: 'Encargos', valor: '10', acento: '#22d3ee' },
-    { etiqueta: 'Estructuras', valor: '2', acento: '#fbbf24' },
+    { etiqueta: 'Encargos', valor: '7', acento: '#22d3ee' },
+    { etiqueta: 'Problemas con juez', valor: '5', acento: '#fbbf24' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
   letrero: 'Dos formas de guardar varios datos',
@@ -52,7 +51,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 1,
       titulo: 'Listas',
       detalle:
-        'Una lista guarda varios datos en una sola caja, en el orden en que los escribiste. `mochila[0]` es el primero — en Python las posiciones empiezan en 0, no en 1.',
+        'Una lista guarda varios datos en una sola caja, en el orden en que los escribiste. Las posiciones empiezan en 0, no en 1, y también se pueden contar desde el final: así se pide la última sin saber cuántas hay.',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -61,7 +60,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 2,
       titulo: 'Diccionarios',
       detalle:
-        "Un diccionario (`dict`) guarda cada dato bajo una CLAVE, no bajo una posición: `alumno['nombre']` pide el dato por lo que significa, sin que importe en qué orden se guardó.",
+        'Un diccionario (`dict`) guarda cada dato bajo una CLAVE, no bajo una posición: el inventario de la cooperativa sabe cuántos lápices hay sin que importe en qué orden se apuntaron. Antes de pedir una clave, se pregunta si existe.',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -70,23 +69,23 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 3,
       titulo: 'IndexError y KeyError',
       detalle:
-        'Pedir una posición o una clave que no existe **no rompe el editor**: te dice exactamente qué pediste y qué sí existe. Hoy vas a provocar uno a propósito, leerlo con calma y corregirlo.',
+        'Pedir una posición o una clave que no existe **no rompe el editor**: te dice qué pediste. Hoy vas a pedir una casilla que no existe a propósito y La Mochila te va a enseñar cuáles sí.',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
-      key: 'referencia',
-      tag: 'El truco que confunde a todos al inicio',
+      key: 'juez',
+      tag: 'Tu mochila no es la del juez',
       numero: 4,
-      titulo: 'Una lista es una referencia',
+      titulo: 'El juez cambia los datos',
       detalle:
-        '`otra = mochila` no copia la lista: las dos variables apuntan a la MISMA mochila, y si `otra` cambia, `mochila` también. Una copia de verdad se hace con una rebanada completa: `mochila[:]`.',
+        'Arriba de cada celda está la lista o el diccionario del ejemplo. El juez la cambia en cada caso, así que escribir «regla» a mano o pedir la casilla 2 por «la última» funciona con tu mochila y con la suya no.',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre el editor de código',
   ctaDetalle:
-    'Diez encargos: crea una lista y una recórrela con for, agrega con append(), recorta con una rebanada, **provoca un IndexError a propósito** y corrígelo, crea un diccionario, recórrelo con .items() y comprueba una clave con in.',
+    'Siete encargos: lo primero y lo último de la mochila, la casilla que no existe, el pedido nuevo, lo que cuesta, ¿lo tenemos? y los agotados — **cinco programas que un juez prueba con datos que no ves** — y una pregunta para cerrar.',
   assetsPendientes: false,
 };
 

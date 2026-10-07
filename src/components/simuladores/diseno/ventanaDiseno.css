@@ -272,3 +272,6 @@
   background: rgba(11, 28, 46, 0.7);
   overflow-x: auto;
 }
+
+/* El glifo fantasma de una foto movida se monta sobre el original (6-oct-2026). */
+.dis-imagen > .dis-glifo { grid-area: 1 / 1; }

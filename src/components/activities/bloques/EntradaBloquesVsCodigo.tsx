@@ -81,7 +81,7 @@ const CONFIG: ConfigEntradaN4 = {
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre las dos caras',
   ctaDetalle:
-    'Ocho encargos: ejecuta y mira encenderse las dos caras a la vez, arma con bloques y ve el texto reescribirse solo, y encuentra los cuatro espacios que deciden si algo pasa una vez o tres.',
+    'Ocho encargos: ejecuta y mira encenderse las dos caras a la vez, arma con bloques y ve el texto reescribirse solo, encuentra los cuatro espacios que deciden si algo pasa una vez o tres, y al final lee un programa en Python y ármalo tú en bloques.',
   assetsPendientes: false,
 };
 

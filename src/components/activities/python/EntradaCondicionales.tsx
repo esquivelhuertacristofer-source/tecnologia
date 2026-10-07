@@ -16,6 +16,13 @@ import { RUTA_N7_PYTHON_1 } from './rutaN7Python1';
  * explica el porqué y no sólo el qué, refuerzo informativo. Cada cadena está
  * escrita para esta clase.
  *
+ * ── Reescrita el 12-sep-2026 (§68.5) ─────────────────────────────────────────
+ *
+ * El laboratorio dejó de dictar sus nueve encargos (con la altura fijada en el
+ * código) y pasó al juez de programas: cuatro problemas con doce casos ocultos
+ * en las fronteras. Y ya no promete «descubrir por qué este editor no acepta
+ * 120 <= altura <= 150»: desde ese día el intérprete lo acepta, como Python.
+ *
  * El video se grabó y se publicó el 2-sep-2026: ya existe
  * `public/assets/actividades/n7-condicionales-python/video-explicativo.mp4` y la bandera bajó a
  * `assetsPendientes: false`. OJO si escribes pruebas: con el video puesto, el
@@ -31,10 +38,10 @@ const CONFIG: ConfigEntradaN4 = {
   globo:
     'Hasta ahora tu programa corría igual todas las veces, para cualquiera que lo usara. Un condicional es la manera de decirle a Python: esto, SÓLO SI se cumple algo — y esto otro, si no.',
   arranqueSub:
-    'Abres **acceso.py** y decides quién sube a una montaña rusa: con la altura, con el boleto, y con dos condiciones a la vez.',
+    'Abres **acceso.py** y escribes el programa de la entrada de La Serpiente. Nadie te dicta líneas: **un juez** lo prueba con gente que mide justo lo que marca el letrero.',
   stats: [
-    { etiqueta: 'Encargos', valor: '9', acento: '#22d3ee' },
-    { etiqueta: 'Operadores', valor: '6', acento: '#fbbf24' },
+    { etiqueta: 'Problemas con juez', valor: '4', acento: '#22d3ee' },
+    { etiqueta: 'Casos ocultos', valor: '12', acento: '#fbbf24' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
   letrero: 'Cuatro maneras de preguntar',
@@ -79,7 +86,7 @@ const CONFIG: ConfigEntradaN4 = {
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre el editor de código',
   ctaDetalle:
-    'Nueve encargos: decide con if/else si alcanzas la altura mínima, encadena tres caminos con elif, compara con == y != un boleto, combina dos condiciones con and y con or, y **descubre por qué este editor no acepta «120 <= altura <= 150»** de un tirón — y escríbelo con and, que es como se dice en cualquier lenguaje.',
+    'Cuatro problemas: quién alcanza, los tres caminos de la altura, el pase VIP y la entrada gratis. El juez prueba **justo en las fronteras**, y al final explicas por qué un elif mal ordenado acierta con los ejemplos y falla con quien no esperabas.',
   assetsPendientes: false,
 };
 

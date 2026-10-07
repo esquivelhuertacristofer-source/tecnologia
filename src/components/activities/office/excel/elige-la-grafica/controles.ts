@@ -1,6 +1,7 @@
 import type { ContextoCinta, ControlHojas, ControlesDeClase } from '@/components/office/motor-hojas/cinta';
 import { esUnaCelda, textoDeCaja } from '@/components/office/motor-hojas/cinta';
 import type { TipoGrafica } from '@/components/office/motor-hojas/modelo';
+import { CINTA_EXCEL_BASICO, type PestanaHojas } from '../../tecniaHojas';
 
 /**
  * `n6-elige-la-grafica` · las dos gráficas que la cinta del grado Intermedio
@@ -18,7 +19,8 @@ import type { TipoGrafica } from '@/components/office/motor-hojas/modelo';
  * botones (`controles.ts` + `panelFijo`) y no tocando `motor-hojas/cinta.ts`:
  * un control que aporta la clase está construido por definición, aunque el
  * motor no lo declare en ninguna cinta compartida (`cinta.ts`,
- * `estaConstruido`). El panel es `PanelGraficas.tsx`.
+ * `estaConstruido`). Hasta el §69.8 vivían en un panel aparte; ahora van en
+ * la cinta de la clase (`CINTA_ELIGE_GRAFICA`, abajo), con las otras tres.
  *
  * La lógica de los dos botones es LITERALMENTE la de `graficaDe()` en
  * `motor-hojas/cinta.ts` —el mismo `insertarGrafica`, el mismo `id` derivado
@@ -52,5 +54,41 @@ export const CONTROLES_ELIGE_GRAFICA: ControlesDeClase = {
   'grafico-barras': graficaDe('barras'),
   'grafico-dispersion': graficaDe('dispersion'),
 };
+
+/**
+ * §69.8 · la cinta de esta clase: la del Básico, con Insertar → Gráficos
+ * trayendo las CINCO, en el orden de Excel (columnas, barras, líneas,
+ * circular, dispersión). La clase es elegir, y elegir pide ver las cinco en el
+ * mismo sitio; además el panel aparte le quitaba a la hoja dos columnas y media
+ * de ancho, y la gráfica de los puestos —de 8 columnas— se cortaba justo en la
+ * barra más alta, la respuesta. No se toca la cinta compartida: se deriva.
+ */
+type ControlDeCinta = PestanaHojas['grupos'][number]['controles'][number];
+
+const BARRAS: ControlDeCinta = {
+  id: 'grafico-barras',
+  glifo: '▤',
+  etiqueta: 'Gráfico de barras',
+  corto: 'Barras',
+  ancho: true,
+};
+const DISPERSION: ControlDeCinta = {
+  id: 'grafico-dispersion',
+  glifo: '⁘',
+  etiqueta: 'Gráfico de dispersión',
+  corto: 'Dispersión',
+  ancho: true,
+};
+
+export const CINTA_ELIGE_GRAFICA: PestanaHojas[] = CINTA_EXCEL_BASICO.map((p) =>
+  p.id !== 'insertar'
+    ? p
+    : {
+        ...p,
+        grupos: p.grupos.map((gr) =>
+          gr.id !== 'graficos' ? gr : { ...gr, controles: [gr.controles[0], BARRAS, ...gr.controles.slice(1), DISPERSION] },
+        ),
+      },
+);
 
 export default CONTROLES_ELIGE_GRAFICA;

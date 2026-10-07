@@ -41,6 +41,7 @@ export {
   ecoDeLinea,
   lineasBajoLlave,
   velocidadDe,
+  type ArchivoProyecto,
   type Edicion,
   type Ejecucion,
   type FaseCodigo,
@@ -49,10 +50,11 @@ export {
   type LogroCodigo,
   type PanelCodigoProps,
   type PasoCodigo,
+  type PestanaCodigo,
   type ResumenCodigo,
   type SenalCodigo,
   type Velocidad,
   type VelocidadId,
 } from './tiposCodigo';
-export { useCodigo, type Aviso, type Codigo, type Encargo, type OpcionesCodigo } from './useCodigo';
+export { useCodigo, type Aviso, type Codigo, type Encargo, type OpcionesCodigo, type VistaEditor } from './useCodigo';
 export { VentanaCodigo, type AccionCodigo, type VentanaCodigoProps } from './VentanaCodigo';

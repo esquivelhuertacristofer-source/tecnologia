@@ -16,15 +16,15 @@ const CONFIG: ConfigEntradaN4 = {
   ruta: RUTA_N6_DISENO_MULTIMEDIA,
   parada: 1,
   globo:
-    'Hoy abres un editor gráfico de verdad: capas, colores, alinear. Vas a construir un cartel que se lea de un vistazo — igual que los que ves pegados en la escuela.',
+    'Hoy abres un editor gráfico de verdad: formas, textos, colores, alinear. El 6.º B hizo una encuesta, y tú conviertes sus números en un cartel que la conteste de un vistazo.',
   arranqueSub:
-    'Un cartel bueno dice **una cosa clara**: un título grande que se lee primero, la información de apoyo más chica debajo, y pocos colores. Hoy construyes el tuyo con esas cuatro reglas.',
+    'Una infografía **contesta una pregunta con números que se ven**: el tamaño de cada barra es su número, todas desde el mismo suelo, cada una con su nombre, y la respuesta destaca. Hoy construyes la tuya.',
   stats: [
-    { etiqueta: 'Encargos', valor: '4', acento: '#f97316' },
+    { etiqueta: 'Encargos', valor: '8', acento: '#f97316' },
     { etiqueta: 'Colores máx.', valor: '4', acento: '#22d3ee' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
-  letrero: 'Las reglas de un buen cartel',
+  letrero: 'Las reglas de una infografía',
   fichas: [
     {
       key: 'un-mensaje',
@@ -46,8 +46,8 @@ const CONFIG: ConfigEntradaN4 = {
       key: 'centrado-exacto',
       tag: 'Sin adivinar',
       numero: 3,
-      titulo: 'Centrado es centrado, no «casi»',
-      detalle: 'El editor cuadricula el lienzo en casillas. **O el centro cae exacto, o no está centrado** — se usa la herramienta, no el ojo.',
+      titulo: 'El tamaño es el número',
+      detalle: 'En una gráfica de barras **el ojo lee alturas, no números**. Si una barra no mide lo que vale, o empieza más arriba, la gráfica miente aunque la etiqueta diga la verdad.',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -62,7 +62,7 @@ const CONFIG: ConfigEntradaN4 = {
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre el editor',
   ctaDetalle:
-    'Tu lienzo llega vacío. **Escribes el título, lo agrandas y lo centras, añades la información y le pones color** — con las cuatro reglas de un cartel que se entiende de un vistazo.',
+    'Tu lienzo llega vacío y la encuesta, con sus cuatro números. **Pones la pregunta de título, dibujas una barra por número, las etiquetas, destacas la respuesta y dices de dónde salen los datos** — ocho encargos, y las alturas las calculas tú.',
   assetsPendientes: false,
 };
 

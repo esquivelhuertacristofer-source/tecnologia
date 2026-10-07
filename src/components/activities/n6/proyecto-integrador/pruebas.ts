@@ -3,6 +3,7 @@ import type { Mazo } from '@/components/office/motor-diapos/mazo';
 import { textoEn } from '@/components/office/motor-diapos/mazo';
 import type { GraficoId } from '@/components/office/motor-diapos/modelo';
 import { ID_DE_URL, URL_ANUNCIO, URL_ESCUELA } from './mapaSitios';
+import { juzgar, propuestaPara, type Juicio } from './juezDeAfirmaciones';
 
 /**
  * `n6-proyecto-integrador` · el hilo que cose el acto 1 con el acto 2.
@@ -40,7 +41,7 @@ export function desdeMarcadores(marcadores: Marcador[], mapa: MapaSitios): Prueb
   });
 }
 
-/* ── las seis afirmaciones (E4) ───────────────────────────────────────────── */
+/* ── las seis frases del panel viejo: hoy son ejemplos de prueba del juez (§69.5) ───────────────────────────────────────────── */
 
 export interface Afirmacion {
   id: string;
@@ -82,38 +83,39 @@ export const AFIRMACIONES: Afirmacion[] = [
 
 export const AFIRMACIONES_SOSTENIDAS = AFIRMACIONES.filter((a) => a.sostenida);
 
-const pelado = (s: string): string =>
-  s
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[¿?¡!.,;:·]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .toLowerCase();
-
 /**
  * En qué diapositiva está la afirmación — buscada por CONTENIDO, no por
  * índice. «Borrar la diapositiva 1 en mitad del acto 2» (pliego, jugar MAL 8)
  * corre todos los índices; un `mazo.diapositivas[1]` a mano se habría roto ahí.
+ * Desde el §69.5 el contenido es el cuerpo con los datos del grupo; si el
+ * alumno los borró, la que tenga la gráfica.
  */
 function indiceDeLaAfirmacion(mazo: Mazo): number {
-  return mazo.diapositivas.findIndex((_, i) => {
-    const t = textoEn(mazo, i, 'titulo');
-    if (!t) return false;
-    const p = pelado(t);
-    return AFIRMACIONES.some((a) => pelado(a.texto) === p);
-  });
+  const conDatos = mazo.diapositivas.findIndex((_, i) => (textoEn(mazo, i, 'cuerpo') ?? '').includes('Papel: 45'));
+  if (conDatos !== -1) return conDatos;
+  return mazo.diapositivas.findIndex((d) => d.libres.some((l) => l.clase === 'grafico'));
 }
 
-/** La afirmación que el alumno escribió como título de SU diapositiva, o null. */
-export function afirmacionDe(mazo: Mazo): Afirmacion | null {
+/**
+ * Lo que el alumno escribió como título de esa diapositiva, juzgado contra la
+ * tabla (`juezDeAfirmaciones.ts`). `null` si todavía no escribió nada.
+ */
+export function afirmacionDe(mazo: Mazo): (Afirmacion & { juicio: Juicio }) | null {
   const i = indiceDeLaAfirmacion(mazo);
   if (i === -1) return null;
-  const t = pelado(textoEn(mazo, i, 'titulo') ?? '');
-  return AFIRMACIONES.find((a) => pelado(a.texto) === t) ?? null;
+  const texto = textoEn(mazo, i, 'titulo') ?? '';
+  if (!texto.trim()) return null;
+  const juicio = juzgar(texto);
+  return {
+    id: juicio.clave,
+    texto,
+    sostenida: juicio.veredicto === 'sostenida',
+    tipoCorrecto: juicio.tipo ?? undefined,
+    propuesta: juicio.tema ? propuestaPara(juicio.tema) : undefined,
+    juicio,
+  };
 }
 
-/** El tipo de gráfico dibujado en ESA MISMA diapositiva, o null. */
 export function tipoDeGraficoDe(mazo: Mazo): GraficoId | null {
   const i = indiceDeLaAfirmacion(mazo);
   if (i === -1) return null;

@@ -2,9 +2,11 @@
 
 import type { ActivityProps } from '@/types/activity-contract';
 import {
+  arrancar,
   nuevoBloque,
   pila,
   programaDe,
+  siguiente,
   type CategoriaBloques,
   type EventoBloques,
   type FichaBloque,
@@ -50,9 +52,11 @@ export interface MundoMicrobit {
   ultimaAccion: string | null;
   vecesA: number;
   vecesB: number;
+  /** La pila que disparó el último botón (§69.11): el juez sabe así QUÉ botón se pulsó al final. */
+  ultimaPila: string | null;
 }
 
-const MUNDO_INICIAL: MundoMicrobit = { pantalla: null, ultimaAccion: null, vecesA: 0, vecesB: 0 };
+export const MUNDO_INICIAL: MundoMicrobit = { pantalla: null, ultimaAccion: null, vecesA: 0, vecesB: 0, ultimaPila: null };
 
 function esIcono(v: unknown): v is IconoMicrobit {
   return v === 'feliz' || v === 'triste' || v === 'flecha-arriba' || v === 'estrella';
@@ -78,7 +82,7 @@ function preguntarMicrobit(): boolean {
 
 /* ─────────────────────────────── el catálogo ──────────────────────────────── */
 
-const CATALOGO: FichaBloque[] = [
+export const CATALOGO: FichaBloque[] = [
   { id: 'al-empezar', categoria: 'inicio', etiqueta: 'al empezar', semantica: { tipo: 'sombrero' } },
   { id: 'al-presionar-a', categoria: 'inicio', etiqueta: 'al presionar A', semantica: { tipo: 'sombrero' } },
   { id: 'al-presionar-b', categoria: 'inicio', etiqueta: 'al presionar B', semantica: { tipo: 'sombrero' } },
@@ -119,33 +123,87 @@ function sombreroFijo(fichaId: string, id: string) {
   return { ...b, fijo: true };
 }
 
-const PROGRAMA_INICIAL: Programa = programaDe(
+export const PROGRAMA_INICIAL: Programa = programaDe(
   pila('p-inicio', sombreroFijo('al-empezar', 'h-inicio'), []),
   pila('p-a', sombreroFijo('al-presionar-a', 'h-a'), []),
   pila('p-b', sombreroFijo('al-presionar-b', 'h-b'), []),
 );
 
+/* ─────────────────────────────── el juez ──────────────────────────────────── */
+
+/**
+ * Corre UNA pila sin pantalla, desde el mundo que se le dé, y devuelve lo que
+ * queda en la placa (§69.11). Así el encargo 1 no se cumple con una cara feliz
+ * que salió del sombrero de B: se juzga la pila del botón que la clase pide.
+ */
+export function pantallaTras(
+  programa: Programa,
+  pilaId: string,
+  desde: MundoMicrobit = MUNDO_INICIAL,
+): IconoMicrobit | null {
+  let mundo = desde;
+  let estado = arrancar(programa, CATALOGO, { pila: pilaId });
+  while (!estado.fin) {
+    const paso = siguiente(estado, preguntarMicrobit);
+    estado = paso.estado;
+    if (paso.evento) mundo = reducirMicrobit(mundo, paso.evento);
+  }
+  return mundo.pantalla;
+}
+
+function fichasDe(programa: Programa, pilaId: string): string[] {
+  return programa.pilas.find((p) => p.id === pilaId)?.bloques.map((b) => b.ficha) ?? [];
+}
+
+/**
+ * El botón se pulsó CON la pila ya bien armada: lo dice el parte de la última
+ * corrida (su `programa` es la foto del momento en que corrió), no el editor.
+ */
+function botonCumple(
+  ctx: { parte: { programa: Programa } | null; programa: Programa; mundo: MundoMicrobit },
+  pilaId: string,
+  icono: IconoMicrobit,
+): boolean {
+  return (
+    ctx.parte !== null &&
+    ctx.mundo.ultimaPila === pilaId &&
+    ctx.mundo.pantalla === icono &&
+    pantallaTras(ctx.parte.programa, pilaId) === icono &&
+    pantallaTras(ctx.programa, pilaId) === icono
+  );
+}
+
+/** Encargo 5: los dos bloques siguen ahí, y al reiniciar queda la estrella aunque hubiera otra cara puesta. */
+export function reinicioDejaLaEstrella(programa: Programa): boolean {
+  const fichas = fichasDe(programa, 'p-inicio');
+  return (
+    fichas.includes('apagar-pantalla') &&
+    fichas.includes('mostrar-icono') &&
+    pantallaTras(programa, 'p-inicio', { ...MUNDO_INICIAL, pantalla: 'triste' }) === 'estrella'
+  );
+}
+
 /* ─────────────────────────────── el guion ─────────────────────────────────── */
 
-const GUION: readonly EncargoBloques<MundoMicrobit>[] = [
+export const GUION: readonly EncargoBloques<MundoMicrobit>[] = [
   {
     id: 'icono-a',
-    titulo: 'Un icono cuando presionas A',
+    titulo: 'Una cara feliz con el botón A',
     instruccion:
-      'Bajo el sombrero «al presionar A» arrastra (o toca y toca el hueco) el bloque «mostrar icono», y elige 🙂 feliz. Después pulsa el botón A de la placa.',
-    pista: '«mostrar icono» está en la categoría Pantalla. Suéltalo justo debajo de «al presionar A» y elige «feliz» en la lista.',
-    logro: {
-      tipo: 'estado',
-      comprueba: (ctx) => ctx.mundo.pantalla === 'feliz' && ctx.mundo.ultimaAccion === 'mostrar-icono',
-    },
+      'Haz que al pulsar el botón A la placa ponga una cara feliz 🙂. El bloque que dibuja en la pantalla se llama «mostrar icono» (está en Pantalla). Fíjate en los sombreros de arriba de cada guion: cada uno dice CUÁNDO corre lo que cuelga de él. Cuando lo tengas, pulsa A en la placa.',
+    pista: 'Hay tres sombreros. Lee cada uno: ¿cuál de ellos corre cuando alguien pulsa A?',
+    logro: { tipo: 'estado', comprueba: (ctx) => botonCumple(ctx, 'p-a', 'feliz') },
     aprendido: 'Cada guion empieza con un sombrero: «al presionar A» sólo corre cuando de verdad presionas A.',
   },
   {
     id: 'icono-b',
-    titulo: 'Otro icono para B',
-    instruccion: 'Ahora bajo «al presionar B» pon «mostrar icono» con 😢 triste, y pulsa el botón B.',
-    pista: 'Es el mismo bloque que usaste con A: tócalo en la paleta y toca el hueco debajo de «al presionar B».',
-    logro: { tipo: 'estado', comprueba: (ctx) => ctx.mundo.pantalla === 'triste' },
+    titulo: 'Una cara triste con el botón B',
+    instruccion: 'Ahora haz que el botón B ponga una cara triste 😢, sin que A deje de poner la feliz. Pruébalo pulsando B.',
+    pista: 'Es el mismo bloque que usaste con A. La pregunta es la de antes: ¿qué sombrero corre cuando pulsas B?',
+    logro: {
+      tipo: 'estado',
+      comprueba: (ctx) => botonCumple(ctx, 'p-b', 'triste') && pantallaTras(ctx.programa, 'p-a') === 'feliz',
+    },
     aprendido: 'Dos sombreros, dos guiones distintos: cada botón corre SU pila, nunca la del otro.',
   },
   {
@@ -173,9 +231,17 @@ const GUION: readonly EncargoBloques<MundoMicrobit>[] = [
     id: 'arregla-orden',
     titulo: 'Arréglalo',
     instruccion:
-      'Quita los dos bloques de «al empezar» con la ✕ y vuelve a ponerlos al revés: primero «apagar pantalla», después «mostrar icono» con ⭐. Reinicia la placa.',
-    pista: 'La ✕ está a la derecha de cada bloque puesto. Después arrástralos (o tócalos) en el nuevo orden.',
-    logro: { tipo: 'estado', comprueba: (ctx) => ctx.mundo.pantalla === 'estrella' },
+      'Ahora queremos lo contrario: que al reiniciar, la pantalla se limpie y quede una estrella ⭐. Usa los MISMOS dos bloques, sin quitar ninguno; el icono puedes cambiarlo. Reinicia la placa para probarlo.',
+    pista: 'Ya viste que se queda el último bloque que corre. ¿Cuál de los dos tiene que correr al final?',
+    logro: {
+      tipo: 'estado',
+      comprueba: (ctx) =>
+        ctx.parte !== null &&
+        ctx.mundo.ultimaPila === 'p-inicio' &&
+        ctx.mundo.pantalla === 'estrella' &&
+        reinicioDejaLaEstrella(ctx.parte.programa) &&
+        reinicioDejaLaEstrella(ctx.programa),
+    },
     aprendido: 'Cambiar el orden cambia el resultado, aunque los bloques sean exactamente los mismos.',
   },
   {
@@ -249,12 +315,13 @@ const CLASE: ClaseBloques<MundoMicrobit> = {
   reducir: reducirMicrobit,
   manejarAccion: (id, { correr, establecerMundo }) => {
     if (id === 'boton-a') {
-      establecerMundo((m) => ({ ...m, vecesA: m.vecesA + 1 }));
+      establecerMundo((m) => ({ ...m, vecesA: m.vecesA + 1, ultimaPila: 'p-a' }));
       correr('p-a');
     } else if (id === 'boton-b') {
-      establecerMundo((m) => ({ ...m, vecesB: m.vecesB + 1 }));
+      establecerMundo((m) => ({ ...m, vecesB: m.vecesB + 1, ultimaPila: 'p-b' }));
       correr('p-b');
     } else if (id === 'reiniciar') {
+      establecerMundo((m) => ({ ...m, ultimaPila: 'p-inicio' }));
       correr('p-inicio');
     }
   },

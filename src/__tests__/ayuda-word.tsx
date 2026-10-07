@@ -226,9 +226,12 @@ export const confirmar = (texto: string | RegExp) => fireEvent.click(screen.getB
 /** Contesta un encargo de elegir entre opciones. */
 export const elegir = (texto: string | RegExp) => {
   const opciones = Array.from(document.querySelectorAll<HTMLElement>('.txtw-opcion'));
-  const cual = opciones.find((o) =>
-    typeof texto === 'string' ? (o.textContent ?? '').includes(texto) : texto.test(o.textContent ?? ''),
-  );
+  // Las opciones salen barajadas (fase A, 6-oct-2026): primero la coincidencia exacta.
+  const cual =
+    opciones.find((o) => typeof texto === 'string' && (o.textContent ?? '').trim() === texto) ??
+    opciones.find((o) =>
+      typeof texto === 'string' ? (o.textContent ?? '').includes(texto) : texto.test(o.textContent ?? ''),
+    );
   if (!cual) throw new Error(`no hay opción «${texto}» — hay: ${opciones.map((o) => o.textContent).join(' | ')}`);
   fireEvent.click(cual);
 };

@@ -24,6 +24,7 @@ import {
   SERIE_SALIDA,
   SERIE_AHORA,
   DIAS_FALTAN,
+  TOTAL_DE_LA_TESORERA,
 } from '@/components/activities/office/excel/funciones-esenciales/guion';
 
 beforeAll(() => {
@@ -174,6 +175,33 @@ describe('VentanaHojas · n6-funciones-esenciales, jugando mal a propósito', ()
     expect(encargo()).toBe('Cuántos gastos hay en Comida');
   });
 
+  it('§69.7 · se juzga lo que la fórmula hace: el número tecleado y la suma a mano no cierran; con el encabezado dentro, sí', async () => {
+    await abrirYEmpezar();
+    teclear(CELDA_TRANSPORTE, '4980');
+    await celebrar();
+    expect(encargo()).toBe('Cuánto se fue en Transporte');
+    teclear(CELDA_TRANSPORTE, '=E4+E5');
+    await celebrar();
+    expect(celda(CELDA_TRANSPORTE).textContent).toBe('4980');
+    expect(encargo()).toBe('Cuánto se fue en Transporte');
+    // Un SUMAR.SI que sólo mira el camión y le suma el estacionamiento a mano:
+    // da 4980 y no se entera de la fila 5 como parte de la pregunta.
+    teclear(CELDA_TRANSPORTE, '=SUMAR.SI(B4:B4,"Transporte",E4:E4)+180');
+    await celebrar();
+    expect(encargo()).toBe('Cuánto se fue en Transporte');
+    // Escrito distinto de como lo escribiría el guion viejo, y correcto.
+    teclear(CELDA_TRANSPORTE, '=SUMAR.SI($B$3:$B$11,"Transporte",$E$3:$E$11)');
+    await celebrar();
+    expect(encargo()).toBe('Cuántos gastos hay en Comida');
+  });
+
+  it('§69.7 · ninguna instrucción del bloque 25 trae la fórmula escrita', () => {
+    for (const paso of GUION_FUNCIONES_ESENCIALES.pasos.slice(0, 6)) {
+      expect([paso.id, /=(SUMAR|CONTAR|PROMEDIO)\.SI\(/.test(paso.instruccion)]).toEqual([paso.id, false]);
+      expect([paso.id, /=(SUMAR|CONTAR|PROMEDIO)\.SI\(/.test(paso.pista ?? '')]).toEqual([paso.id, false]);
+    }
+  });
+
   it('encargos 2 y 3 · CONTAR.SI cuenta con un solo rango, PROMEDIO.SI reparte sólo entre los que cumplen', async () => {
     await abrirYEmpezar();
     await hacer.e1();
@@ -210,7 +238,7 @@ describe('VentanaHojas · n6-funciones-esenciales, jugando mal a propósito', ()
 
     await hacer.e5();
     expect(celda(CELDA_MAS_DE_300).textContent).toBe('5500');
-    expect(encargo()).toBe('El mismo total, bien alineado');
+    expect(encargo()).toBe('El total que no cuadra');
   });
 
   it('encargo 6 · un rango desalineado da un número y está mal, sin avisar', async () => {
@@ -220,7 +248,14 @@ describe('VentanaHojas · n6-funciones-esenciales, jugando mal a propósito', ()
     await hacer.e3();
     await hacer.e4();
     await hacer.e5();
-    expect(encargo()).toBe('El mismo total, bien alineado');
+    expect(encargo()).toBe('El total que no cuadra');
+
+    // §69.7 · el libro llega con la fórmula de la tesorera, corrida una fila.
+    expect(celda(CELDA_ENTRADAS_TOTAL).textContent).toBe(String(TOTAL_DE_LA_TESORERA));
+    // Teclear el número de los recibos no la arregla: no lee la tabla.
+    teclear(CELDA_ENTRADAS_TOTAL, '4310');
+    await celebrar();
+    expect(encargo()).toBe('El total que no cuadra');
 
     // JUGAR MAL · el rango de lo pagado corrido una fila hacia arriba: no da
     // ningún error, da 3790 en vez de 4310, y el encargo no puede darse por
@@ -228,7 +263,7 @@ describe('VentanaHojas · n6-funciones-esenciales, jugando mal a propósito', ()
     teclear(CELDA_ENTRADAS_TOTAL, '=SUMAR.SI(B4:B11,"Entradas",E3:E10)');
     await celebrar();
     expect(celda(CELDA_ENTRADAS_TOTAL).textContent).toBe('3790');
-    expect(encargo()).toBe('El mismo total, bien alineado');
+    expect(encargo()).toBe('El total que no cuadra');
 
     await hacer.e6();
     expect(celda(CELDA_ENTRADAS_TOTAL).textContent).toBe('4310');

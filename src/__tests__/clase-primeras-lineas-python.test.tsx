@@ -1,41 +1,49 @@
 /**
- * N6 · «Primeras líneas de Python» — el banco de la clase.
+ * N6 · «Primeras líneas de Python» — el banco de la clase (§69.22).
  *
- * Se prueba **jugando mal**, que es la mitad del banco: ejecutar sin escribir
- * nada, borrar el archivo entero, escribir encima de una línea con candado,
- * pulsar ▶ cien veces, terminar sin acertar y fallar la pregunta final. Y una
- * prueba recorre la clase **entera hasta la pantalla de cierre**, porque la
- * lección más cara de este proyecto es que un motor sólo está probado hasta
- * donde llegan las clases que se han jugado de verdad.
+ * Se prueba **jugando mal**, que es la mitad del banco: borrar el archivo,
+ * escribir encima del candado, pulsar ▶ cien veces, copiar el saludo a mano y
+ * decidir sin `if` —que pasan el ejemplo y el juez tumba con otros nombres—,
+ * dar por arreglado lo que nadie mandó al juez, y fallar la pregunta final. Y
+ * una prueba recorre la clase **entera hasta la pantalla de cierre**.
  */
 
 import { fireEvent, render, screen } from '@testing-library/react';
-import { LabPrimerasLineasPython } from '@/components/activities/python/LabPrimerasLineasPython';
+import { LabPrimerasLineasPython, PLANTILLA } from '@/components/activities/python/LabPrimerasLineasPython';
 
-/* Las cinco líneas con candado, tal cual las trae la plantilla. */
-const CABEZA = [
-  '# saludo.py · mi primer programa',
-  'print("Hola, soy tu computadora.")',
-  'print("Cumplo las líneas de arriba abajo, una por una.")',
-  '',
-  '# ↓ de aquí para abajo escribes tú',
-].join('\n');
+type Celda = 'arriba' | 'Problema 1' | 'Problema 2';
 
-/** El archivo con lo que el alumno escribe debajo de la cabecera. */
-const archivo = (...mias: string[]) => [CABEZA, ...mias].join('\n');
+/**
+ * La plantilla con lo del alumno: `arriba` va debajo de la flecha, y cada
+ * problema justo debajo de su caja. `caja1` cambia lo que guarda la caja del
+ * Problema 1 (para romperla y arreglarla).
+ */
+function enCeldas(programas: Partial<Record<Celda, string>>, caja1 = 'nombre = "Sofi"'): string {
+  const lineas = PLANTILLA.split('\n');
+  const insertar = (despues: number, programa?: string) => {
+    if (programa) lineas.splice(despues + 1, 0, ...programa.split('\n'));
+  };
+  const caja = (celda: string) => {
+    const i = lineas.findIndex((l) => l.startsWith(`# %% ${celda}`));
+    return lineas.findIndex((l, n) => n > i && /^nombre\s*=/.test(l));
+  };
+  insertar(caja('Problema 2'), programas['Problema 2']);
+  const i1 = caja('Problema 1');
+  lineas[i1] = caja1;
+  insertar(i1, programas['Problema 1']);
+  insertar(lineas.findIndex((l) => l.startsWith('# ↓')), programas.arriba);
+  return lineas.join('\n');
+}
 
 const MI_PRINT = 'print("Programo yo")';
-const MI_NOMBRE = 'nombre = "Sofi"';
-const MI_SALUDO = 'print("Mucho gusto,", nombre)';
-const MI_IF = ['if len(nombre) > 6:', '    print("Tu nombre es largo.")', 'else:', '    print("Tu nombre es corto.")'];
+const SALUDO = 'print("Mucho gusto,", nombre)';
+const SI = ['if len(nombre) > 6:', '    print("Tu nombre es largo.")', 'else:', '    print("Tu nombre es corto.")'].join('\n');
 
 function montar() {
   const onProgress = jest.fn();
   const onScore = jest.fn();
   const onComplete = jest.fn();
-  render(
-    <LabPrimerasLineasPython config={{}} onProgress={onProgress} onScore={onScore} onComplete={onComplete} />,
-  );
+  render(<LabPrimerasLineasPython config={{}} onProgress={onProgress} onScore={onScore} onComplete={onComplete} />);
 
   const api = {
     onProgress,
@@ -43,9 +51,8 @@ function montar() {
     onComplete,
     entrar: () => {
       fireEvent.click(screen.getByTestId('pyc-empezar'));
-      /* ⚡ Sin pausas: el alumno tiene los cuatro botones de velocidad y la
-       * clase arranca en «Lenta» a propósito. Aquí se pone en el que ejecuta
-       * de un tirón para que las pruebas no dependan de relojes. */
+      /* ⚡ Sin pausas: la clase arranca en «Lenta» a propósito; aquí se pone
+       * la que ejecuta de un tirón para no depender de relojes. */
       fireEvent.click(document.querySelector('[data-vel="rayo"]') as HTMLElement);
       return api;
     },
@@ -56,6 +63,14 @@ function montar() {
     ejecutar: () => fireEvent.click(screen.getByTestId('cod-ejecutar')),
     paso: () => fireEvent.click(screen.getByTestId('cod-paso')),
     parar: () => fireEvent.click(screen.getByTestId('cod-parar')),
+    /* jsdom pulsa botones escondidos: la quinta puerta cazó «arréglalo» con
+     * el botón de enviar dentro de un tablero `hidden`. Aquí se exige que se vea. */
+    enviar: () => {
+      const boton = screen.getByTestId('jz-enviar');
+      expect(boton.closest('[hidden]')).toBeNull();
+      fireEvent.click(boton);
+    },
+    veredicto: () => screen.getByTestId('jz-veredicto'),
     encargo: () => screen.getByTestId('cod-encargo').getAttribute('data-paso'),
     logrado: () => screen.queryByTestId('cod-logrado'),
     siguiente: () => fireEvent.click(screen.getByText('Siguiente encargo →')),
@@ -64,30 +79,14 @@ function montar() {
   return api;
 }
 
-/**
- * Los siete primeros encargos, jugados bien. Existe para que la prueba de la
- * pregunta final no tenga que repetirlos: son los mismos gestos que hace el
- * recorrido de punta a punta, en el mismo orden.
- */
-function llegarAlUltimoEncargo(lab: ReturnType<typeof montar>) {
-  lab.ejecutar(); // 1 · dale al ▶
-  lab.siguiente();
-  lab.paso(); // 2 · míralo ir despacio
-  lab.parar(); // …y ⏹ para poder volver a escribir
-  lab.siguiente();
-  lab.escribir(archivo(MI_PRINT)); // 3 · tu propia línea
+/** Los tres primeros encargos, jugados bien: ▶, ⏭ y ⏹, y la frase propia. */
+function hastaElSaludo(lab: ReturnType<typeof montar>) {
   lab.ejecutar();
   lab.siguiente();
-  lab.escribir(archivo(MI_PRINT, MI_NOMBRE, MI_SALUDO)); // 4 · una caja con tu nombre
-  lab.ejecutar();
+  lab.paso();
+  lab.parar();
   lab.siguiente();
-  lab.escribir(archivo(MI_PRINT, 'nombre = Sofi', MI_SALUDO)); // 5 · rómpelo
-  lab.ejecutar();
-  lab.siguiente();
-  lab.escribir(archivo(MI_PRINT, MI_NOMBRE, MI_SALUDO)); // 6 · arréglalo
-  lab.ejecutar();
-  lab.siguiente();
-  lab.escribir(archivo(MI_PRINT, MI_NOMBRE, MI_SALUDO, ...MI_IF)); // 7 · que decida
+  lab.escribir(enCeldas({ arriba: MI_PRINT }));
   lab.ejecutar();
   lab.siguiente();
 }
@@ -95,19 +94,17 @@ function llegarAlUltimoEncargo(lab: ReturnType<typeof montar>) {
 describe('la portada de objetivos, que va antes del editor', () => {
   it('nadie llega al editor sin haber leído tema, objetivo, encargos e insignia', () => {
     const lab = montar();
-    /* Entrar a un laboratorio sin saber de qué va está declarado defecto. */
     expect(screen.getByTestId('pyc-portada')).toBeInTheDocument();
     expect(screen.queryByTestId('cod-area')).toBeNull();
     expect(screen.getByText('Tu primer archivo de Python')).toBeInTheDocument();
     const portada = screen.getByTestId('pyc-portada').textContent ?? '';
-    expect(portada).toContain('encargos');
-    expect(portada).toContain('Al terminar');
     expect(portada).toContain('Lo que vas a hacer');
+    expect(portada).toContain('juez');
     expect(screen.getByText('Insignia · Primera línea')).toBeInTheDocument();
 
     lab.entrar();
     expect(screen.queryByTestId('pyc-portada')).toBeNull();
-    expect(lab.area().value).toContain('# saludo.py');
+    expect(lab.area().value).toContain('# %% Problema 1 · El saludo');
     expect(lab.encargo()).toBe('ejecuta');
   });
 });
@@ -117,40 +114,40 @@ describe('el archivo del alumno y sus candados', () => {
     const lab = montar().entrar();
     const original = lab.area().value;
 
-    /* Escribir encima de una línea con candado. */
-    lab.escribir(archivo().replace('Hola, soy tu computadora.', 'lo que yo quiera'));
+    lab.escribir(original.replace('Hola, soy tu computadora.', 'lo que yo quiera'));
     expect(lab.area().value).toBe(original);
     expect(screen.getByTestId('cod-aviso').textContent).toContain('candado');
 
-    /* Y el gesto grande: seleccionar todo y borrar. */
     lab.escribir('');
     expect(lab.area().value).toBe(original);
 
-    /* Meter una línea POR ENCIMA del candado también corre los números de
-     * línea, y el guion y los errores hablan por número de línea. */
     lab.escribir(['# otra cosa', original].join('\n'));
     expect(lab.area().value).toBe(original);
 
-    /* Lo de abajo sí se escribe. */
-    lab.escribir(archivo(MI_PRINT));
+    lab.escribir(enCeldas({ arriba: MI_PRINT }));
     expect(lab.area().value).toContain(MI_PRINT);
   });
 
-  it('el panel «Las tres piezas» lee el archivo y lleva a la línea de cada una', () => {
+  it('las tres piezas se encienden con lo que corre y con el juez, no con lo que está escrito', () => {
     const lab = montar().entrar();
     expect(lab.pieza('escribir').getAttribute('data-hecha')).toBe('no');
-    expect(lab.pieza('guardar')).toBeDisabled();
 
-    lab.escribir(archivo(MI_PRINT, MI_NOMBRE, MI_SALUDO, ...MI_IF));
+    /* Escribir el `if` y el saludo enteros ya no enciende nada: antes bastaba
+     * con que el texto casara con una expresión regular. */
+    lab.escribir(enCeldas({ 'Problema 1': SALUDO, 'Problema 2': SI }));
+    expect(lab.pieza('guardar').getAttribute('data-hecha')).toBe('no');
+    expect(lab.pieza('decidir').getAttribute('data-hecha')).toBe('no');
+
+    /* Una frase que no corre tampoco: le falta el paréntesis de cierre. */
+    lab.escribir(enCeldas({ arriba: 'print("Programo yo"' }));
+    expect(lab.pieza('escribir').getAttribute('data-hecha')).toBe('no');
+    lab.escribir(enCeldas({ arriba: MI_PRINT }));
     expect(lab.pieza('escribir').getAttribute('data-hecha')).toBe('si');
-    expect(lab.pieza('guardar').getAttribute('data-hecha')).toBe('si');
-    expect(lab.pieza('decidir').getAttribute('data-hecha')).toBe('si');
 
-    /* Un panel de la derecha que no lleva a ningún sitio es un adorno: éste
-     * pone el cursor en la línea donde vive la pieza. */
+    /* Tocar la pieza lleva el cursor a su celda. */
     fireEvent.click(lab.pieza('guardar'));
     expect(lab.area()).toHaveFocus();
-    expect(lab.area().value.slice(lab.area().selectionStart, lab.area().selectionEnd)).toBe(MI_NOMBRE);
+    expect(lab.area().value.slice(lab.area().selectionStart, lab.area().selectionEnd)).toBe('# %% Problema 1 · El saludo');
   });
 });
 
@@ -163,147 +160,172 @@ describe('jugando mal a propósito', () => {
     expect(lab.logrado()).not.toBeNull();
   });
 
-  it('la pista sale sola cuando el programa termina sin cerrar el encargo', () => {
+  it('la frase propia no se cumple sin escribirla, y la pista enseña el molde sin dictar la línea', () => {
     const lab = montar().entrar();
     lab.ejecutar();
     lab.siguiente();
     lab.paso();
     lab.parar();
     lab.siguiente();
-
-    /* Encargo 3: se pide un print propio. Ejecutar sin escribirlo no lo cierra
-     * y saca la pista sin que haya que pedirla. */
     expect(lab.encargo()).toBe('tu-print');
     lab.ejecutar();
     expect(lab.logrado()).toBeNull();
-    expect(screen.getByTestId('cod-pista').textContent).toContain('print("Aquí escribo yo")');
+    const pista = screen.getByTestId('cod-pista').textContent ?? '';
+    expect(pista).toContain('molde');
+    expect(pista).not.toMatch(/print\s*\(/);
   });
 
-  it('«rómpelo» sólo se da por hecho si el programa se rompe de verdad, de cualquiera de las dos formas', () => {
+  it('el saludo escrito a mano pasa a Sofi y el juez lo tumba con otros nombres, sin enseñarlos', () => {
     const lab = montar().entrar();
-    lab.escribir(archivo(MI_PRINT, 'nombre = Sofi', MI_SALUDO));
+    hastaElSaludo(lab);
+    expect(lab.encargo()).toBe('el-saludo');
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': 'print("Mucho gusto, Sofi")' }));
     lab.ejecutar();
-    /* Un nombre de una palabra sin comillas es NameError; uno de dos palabras
-     * es SyntaxError. Las dos son «le quité las comillas», y las dos valen. */
-    expect(screen.getByTestId('cod-error').textContent).toContain('NameError');
+    expect(lab.salida()).toContain('Mucho gusto, Sofi');
+    lab.enviar();
+    expect(lab.veredicto().getAttribute('data-aceptado')).toBe('no');
+    expect(lab.veredicto().textContent).toContain('1 de 4 casos');
+    expect(lab.veredicto().textContent).not.toMatch(/María José|Maximiliano|Ana\b/);
+    expect(lab.logrado()).toBeNull();
+  });
 
-    lab.escribir(archivo(MI_PRINT, 'nombre = Ana Sofia', MI_SALUDO));
+  it('«rómpelo» vale de las dos formas, y «arréglalo» no se cierra hasta que el juez vuelve a aceptar', () => {
+    const lab = montar().entrar();
+    hastaElSaludo(lab);
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': SALUDO }));
+    lab.enviar();
+    expect(lab.veredicto().getAttribute('data-aceptado')).toBe('si');
+    lab.siguiente();
+
+    expect(lab.encargo()).toBe('rompelo');
+    /* Un nombre de una palabra sin comillas es NameError; de dos, SyntaxError. */
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': SALUDO }, 'nombre = Ana Sofia'));
     lab.ejecutar();
     expect(screen.getByTestId('cod-error').textContent).toContain('SyntaxError');
+    expect(lab.logrado()).not.toBeNull();
+    lab.siguiente();
 
-    /* Y con el programa entero bien, el encargo de romperlo NO se cierra. */
-    lab.escribir(archivo(MI_PRINT, MI_NOMBRE, MI_SALUDO));
+    expect(lab.encargo()).toBe('arreglalo');
+    /* Quitar la caja roja con otro saludo a mano NO es arreglarlo. */
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': 'print("Mucho gusto, Sofi")' }));
     lab.ejecutar();
     expect(screen.queryByTestId('cod-error')).toBeNull();
+    expect(lab.logrado()).toBeNull();
+    lab.enviar();
+    expect(lab.logrado()).toBeNull();
+
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': SALUDO }));
+    lab.enviar();
+    expect(lab.logrado()).not.toBeNull();
+  });
+
+  it('la frase sin if contesta igual a todos y cae en los largos', () => {
+    const lab = montar().entrar();
+    hastaElSaludo(lab);
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': SALUDO }));
+    lab.enviar();
+    lab.siguiente();
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': SALUDO }, 'nombre = Sofi'));
+    lab.ejecutar();
+    lab.siguiente();
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': SALUDO }));
+    lab.enviar();
+    lab.siguiente();
+
+    expect(lab.encargo()).toBe('largo-o-corto');
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': SALUDO, 'Problema 2': 'print("Tu nombre es corto.")' }));
+    lab.enviar();
+    expect(lab.veredicto().getAttribute('data-aceptado')).toBe('no');
+    expect(lab.veredicto().textContent).toContain('2 de 4 casos');
+    expect(lab.logrado()).toBeNull();
   });
 
   it('después de ejecutar el programa entero todavía se puede recorrer paso a paso', () => {
-    /* La regresión que costó el arreglo de ⏭ en el armazón: terminado el
-     * programa, ⏭ quedaba gris y el único botón vivo era ↺, que borra lo que
-     * el alumno escribió. En una clase cuyo encargo 2 es «míralo despacio»,
-     * eso es un callejón sin salida. */
     const lab = montar().entrar();
-    lab.escribir(archivo(MI_PRINT));
+    lab.escribir(enCeldas({ arriba: MI_PRINT }));
     lab.ejecutar();
     expect(lab.fase()).toBe('terminada');
-
     expect(screen.getByTestId('cod-paso')).not.toBeDisabled();
     lab.paso();
     expect(lab.fase()).toBe('pausada');
     expect(lab.area().value).toContain(MI_PRINT);
   });
-
-  it('fallar la pregunta final resta puntos, no avanza, y acertar después sí cierra', () => {
-    const lab = montar().entrar();
-    llegarAlUltimoEncargo(lab);
-    expect(lab.encargo()).toBe('quien-decide');
-
-    fireEvent.click(screen.getByText('El botón ▶ que pulsé'));
-    expect(lab.logrado()).toBeNull();
-    expect(screen.getByTestId('cod-pista')).toBeInTheDocument();
-    /* Lo ÚNICO que resta puntos en esta clase: romper el programa no cuesta. */
-    expect(lab.onScore).toHaveBeenLastCalledWith(94);
-
-    fireEvent.click(screen.getByText('Lo que vale «nombre» cuando el programa llega al if'));
-    expect(lab.onComplete).toHaveBeenCalledTimes(1);
-    expect(lab.onComplete.mock.calls[0][0]).toMatchObject({ score: 94, stars: 3 });
-  });
 });
 
 describe('el recorrido de punta a punta, como un alumno', () => {
-  it('los ocho encargos, en orden, hasta la pantalla de cierre con su insignia', () => {
+  it('los ocho encargos, con un tropiezo en la pregunta final, hasta la insignia', () => {
     const lab = montar().entrar();
 
-    // 1 · dale al ▶
+    // 1–3 · ▶, ⏭ y la frase propia
     expect(lab.encargo()).toBe('ejecuta');
     lab.ejecutar();
     expect(lab.logrado()).not.toBeNull();
     lab.siguiente();
-
-    // 2 · míralo ir despacio, y ⏹ para poder volver a escribir
     expect(lab.encargo()).toBe('paso-a-paso');
     lab.paso();
-    expect(lab.fase()).toBe('pausada');
     expect(lab.logrado()).not.toBeNull();
     lab.parar();
     lab.siguiente();
-
-    // 3 · tu propia línea
     expect(lab.encargo()).toBe('tu-print');
-    lab.escribir(archivo(MI_PRINT));
+    lab.escribir(enCeldas({ arriba: MI_PRINT }));
     lab.ejecutar();
     expect(lab.salida()).toContain('Programo yo');
+    expect(lab.logrado()).not.toBeNull();
     lab.siguiente();
 
-    // 4 · una caja con tu nombre
-    expect(lab.encargo()).toBe('variable');
-    lab.escribir(archivo(MI_PRINT, MI_NOMBRE, MI_SALUDO));
+    // 4 · el saludo, con su nombre en la caja
+    expect(lab.encargo()).toBe('el-saludo');
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': SALUDO }, 'nombre = "Valentina"'));
     lab.ejecutar();
-    expect(lab.salida()).toContain('Mucho gusto, Sofi');
-    expect(document.querySelector('[data-var="nombre"]')?.textContent).toContain('Sofi');
+    expect(lab.salida()).toContain('Mucho gusto, Valentina');
+    expect(lab.salida()).not.toContain('Programo yo'); // ▶ corre sólo la celda
+    lab.enviar();
+    expect(lab.veredicto().getAttribute('data-aceptado')).toBe('si');
+    expect(lab.pieza('guardar').getAttribute('data-hecha')).toBe('si');
     lab.siguiente();
 
-    // 5 · rómpelo a propósito
+    // 5 · rómpelo: el error dice la línea de la caja
     expect(lab.encargo()).toBe('rompelo');
-    lab.escribir(archivo(MI_PRINT, 'nombre = Sofi', MI_SALUDO));
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': SALUDO }, 'nombre = Valentina'));
     lab.ejecutar();
     expect(lab.fase()).toBe('error');
-    expect(screen.getByTestId('cod-error').textContent).toContain('Línea 7');
+    expect(screen.getByTestId('cod-error').textContent).toContain('Línea 11');
     lab.siguiente();
 
     // 6 · arréglalo
     expect(lab.encargo()).toBe('arreglalo');
-    lab.escribir(archivo(MI_PRINT, MI_NOMBRE, MI_SALUDO));
-    lab.ejecutar();
-    expect(lab.fase()).toBe('terminada');
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': SALUDO }, 'nombre = "Valentina"'));
+    lab.enviar();
+    expect(lab.logrado()).not.toBeNull();
     lab.siguiente();
 
-    // 7 · que el programa decida
-    expect(lab.encargo()).toBe('decide');
-    lab.escribir(archivo(MI_PRINT, MI_NOMBRE, MI_SALUDO, ...MI_IF));
+    // 7 · ¿largo o corto?
+    expect(lab.encargo()).toBe('largo-o-corto');
+    lab.escribir(enCeldas({ arriba: MI_PRINT, 'Problema 1': SALUDO, 'Problema 2': SI }, 'nombre = "Valentina"'));
     lab.ejecutar();
     expect(lab.salida()).toContain('Tu nombre es corto.');
+    lab.enviar();
+    expect(lab.veredicto().getAttribute('data-aceptado')).toBe('si');
+    expect(lab.pieza('decidir').getAttribute('data-hecha')).toBe('si');
     lab.siguiente();
 
-    // 8 · quién decide
+    // 8 · quién decidió, primero mal: es lo único que resta
     expect(lab.encargo()).toBe('quien-decide');
-    fireEvent.click(screen.getByText('Lo que vale «nombre» cuando el programa llega al if'));
+    fireEvent.click(screen.getByText('El juez cambió mi if por otro para cada nombre.'));
+    expect(lab.logrado()).toBeNull();
+    expect(lab.onScore).toHaveBeenLastCalledWith(94);
+    fireEvent.click(screen.getByText(/^Lo que valía «nombre» cuando el programa llegó al if/));
 
-    // …y la pantalla de cierre
     expect(screen.getByText('¡Tu primer archivo .py!')).toBeInTheDocument();
     expect(screen.getByText('Insignia · Primera línea')).toBeInTheDocument();
-    /* El contador de programas rotos se enseña sin signo negativo: aquí
-     * romperlo es el oficio, y esta clase lo pide dos veces. */
-    expect(screen.getByText('Se rompió')).toBeInTheDocument();
     expect(lab.onProgress).toHaveBeenLastCalledWith(1);
     expect(lab.onComplete).toHaveBeenCalledTimes(1);
-    expect(lab.onComplete.mock.calls[0][0]).toMatchObject({ score: 100, stars: 3 });
+    expect(lab.onComplete.mock.calls[0][0]).toMatchObject({ score: 94, stars: 3 });
 
-    /* Y «Jugar otra vez» devuelve el guion al primer encargo, no a la mitad. */
+    /* «Jugar otra vez» devuelve el guion al primer encargo y el archivo a la plantilla. */
     fireEvent.click(screen.getByText('Jugar otra vez'));
-    expect(screen.getByTestId('pyc-portada')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('pyc-empezar'));
     expect(lab.encargo()).toBe('ejecuta');
-    expect(lab.area().value).toBe(archivo() + '\n');
+    expect(lab.area().value).toBe(PLANTILLA);
   });
 });

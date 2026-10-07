@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ErrorPy } from '../errores';
 import {
+  archivoActual,
   correr,
   crearMaquina,
   lineaActual,
@@ -17,12 +18,14 @@ import { colorear, type LineaPintada } from './coloreado';
 import {
   EJECUCION_VACIA,
   cambioPermitido,
+  type ArchivoProyecto,
   lineasBajoLlave,
   velocidadDe,
   type Ejecucion,
   type FaseCodigo,
   type GuionCodigo,
   type PasoCodigo,
+  type PestanaCodigo,
   type ResumenCodigo,
   type VelocidadId,
 } from './tiposCodigo';
@@ -65,6 +68,21 @@ export interface OpcionesCodigo {
   /** Para bajar el tope de pasos en una clase que enseña el bucle infinito, o en una prueba. */
   topes?: Partial<Topes>;
   velocidad?: VelocidadId;
+  /**
+   * Qué parte del texto corre ▶ en cada encargo (§68.4). Devuelve el programa
+   * con lo demás en blanco —ver `recortarCelda`— o `null` para correr el
+   * archivo entero. Sin esto, un archivo con tres problemas volvía a preguntar
+   * lo del primero al probar el tercero.
+   */
+  celda?: (texto: string, encargoId: string | null) => string | null;
+  /** Cómo se llama el archivo principal («estacion.py»). Hace falta con `proyecto`. */
+  archivo?: string;
+  /**
+   * Los otros archivos del proyecto (M4, §69.21): módulos que se importan y
+   * datos que se abren. Cada uno tiene su pestaña. ▶ corre el `.py` de la
+   * pestaña abierta; desde una de datos, el principal.
+   */
+  proyecto?: ArchivoProyecto[];
   onAvance?: (avance: number) => void;
   onTerminado?: (r: ResumenCodigo) => void;
 }
@@ -92,8 +110,22 @@ export interface Encargo {
   eleccion: number | null;
 }
 
+/** Lo que el editor enseña: el archivo de la pestaña abierta (M4). */
+export interface VistaEditor {
+  nombre: string;
+  clave: string | null;
+  tipo: PestanaCodigo['tipo'];
+  texto: string;
+  lineas: LineaPintada[];
+  escribir: (texto: string) => boolean;
+  bajoLlave: ReadonlySet<number>;
+  editable: boolean;
+  avisarBloqueo: () => void;
+}
+
 export interface Codigo {
   // ── el texto ─────────────────────────────────────────────────────────────
+  /** El archivo PRINCIPAL, siempre: es lo que leen los encargos y los paneles. */
   texto: string;
   /** Devuelve `false` si el cambio se rechazó por tocar una línea bajo llave. */
   escribir: (texto: string) => boolean;
@@ -124,9 +156,39 @@ export interface Codigo {
   // ── señalar ──────────────────────────────────────────────────────────────
   /** Lleva el cursor a una línea. Sube el sello para que el editor sepa que es nuevo. */
   senalarLinea: (linea: number) => void;
+  /**
+   * «Vuelve a mirar si el encargo está hecho.»
+   *
+   * Los encargos se comprueban solos cuando cambia el texto o la ejecución,
+   * que es de dónde sale la respuesta en casi todas las clases. Pero hay
+   * predicados que leen algo que NO es ninguna de las dos cosas —el tablero de
+   * veredictos del juez, por ejemplo— y que cambia por un botón del panel de
+   * la clase. Ese botón repinta su propio panel y nada más: el encargo se
+   * quedaba sin cerrar hasta la siguiente tecla que pulsara el alumno.
+   *
+   * Esto es lo que el panel de una clase usa para decirlo. No corrige nada
+   * —sigue corrigiendo el predicado del guion, canon prueba 3—: sólo vuelve a
+   * preguntar.
+   */
+  revisar: () => void;
   foco: { linea: number; sello: number } | null;
   aviso: Aviso | null;
   descartarAviso: () => void;
+
+  // ── el proyecto (M4) ─────────────────────────────────────────────────────
+  /** Las pestañas. Con una sola, la ventana pinta la de siempre. */
+  archivos: PestanaCodigo[];
+  /** La pestaña abierta: `null` = el principal. */
+  abierto: string | null;
+  abrir: (clave: string | null) => void;
+  /** Lo que enseña el editor ahora. */
+  editor: VistaEditor;
+  /** Los otros archivos tal como están ahora, por nombre. Para el juez. */
+  proyecto: Readonly<Record<string, string>>;
+  /** El texto de un archivo: `null` = el principal. */
+  textoDe: (clave: string | null) => string;
+  /** Abrir un archivo y llevar el cursor a una línea suya. */
+  senalarEn: (clave: string | null, linea: number) => void;
 
   // ── el guion ─────────────────────────────────────────────────────────────
   encargo: Encargo | null;
@@ -149,7 +211,7 @@ function enMarcha(m: Maquina): boolean {
  * `corriendo` y `detenida` los pone quien la saca porque **no están en la
  * máquina**: la máquina no sabe de relojes ni de alumnos que pulsan ⏹.
  */
-function foto(m: Maquina | null, corriendo: boolean, detenida: boolean): Ejecucion {
+function foto(m: Maquina | null, corriendo: boolean, detenida: boolean, corrio: string | null): Ejecucion {
   if (!m) return EJECUCION_VACIA;
 
   let fase: FaseCodigo;
@@ -165,6 +227,7 @@ function foto(m: Maquina | null, corriendo: boolean, detenida: boolean): Ejecuci
     fase,
     estadoMaquina: m.estado,
     salida: [...m.salida],
+    ecos: [...m.ecos],
     variables: variables(m),
     pilaDeLlamadas: pilaDeLlamadas(m),
     error: m.error,
@@ -172,13 +235,19 @@ function foto(m: Maquina | null, corriendo: boolean, detenida: boolean): Ejecuci
     lineaSenalada: m.error ? m.error.linea : linea,
     pasos: m.pasos,
     pregunta: m.estado === 'esperando' ? m.pregunta : null,
+    /* Un `null` de la máquina es «el que se corrió», que puede ser un módulo. */
+    archivo: (m.error ? (m.error.archivo ?? null) : linea > 0 ? archivoActual(m) : null) ?? corrio,
+    corrio,
+    escritos: m.escritos.map((nombre) => ({ nombre, texto: m.disco.get(nombre) ?? '' })),
   };
 }
 
 /** El programa ni siquiera arrancó: está mal escrito. No hay máquina que retratar. */
-function fotoDelArranqueFallido(error: ErrorPy): Ejecucion {
-  return { ...EJECUCION_VACIA, fase: 'error', error, lineaSenalada: error.linea };
+function fotoDelArranqueFallido(error: ErrorPy, corrio: string | null): Ejecucion {
+  return { ...EJECUCION_VACIA, fase: 'error', error, lineaSenalada: error.linea, archivo: corrio, corrio };
 }
+
+const SIN_LLAVE: ReadonlySet<number> = new Set();
 
 export function useCodigo(opciones: OpcionesCodigo): Codigo {
   const { plantilla, guion } = opciones;
@@ -199,6 +268,29 @@ export function useCodigo(opciones: OpcionesCodigo): Codigo {
   const [foco, setFoco] = useState<{ linea: number; sello: number } | null>(null);
 
   const maqRef = useRef<Maquina | null>(null);
+
+  /* ── M4: el proyecto ──
+   * El principal sigue en `texto`, exactamente como antes: las celdas, los
+   * candados y lo que leen los encargos son suyos. Los demás archivos viven
+   * aparte, y una clase de un solo archivo no nota que esto existe. */
+  const originales = useMemo(
+    () => Object.fromEntries((opciones.proyecto ?? []).map((a) => [a.nombre, a.texto.replace(/\r\n?/g, '\n')])),
+    [opciones.proyecto],
+  );
+  const conCandado = useMemo(
+    () => new Set((opciones.proyecto ?? []).filter((a) => a.soloLectura).map((a) => a.nombre)),
+    [opciones.proyecto],
+  );
+  const [extras, setExtras] = useState<Record<string, string>>(originales);
+  const [abierto, setAbierto] = useState<string | null>(null);
+  const extrasRef = useRef(extras);
+  const abiertoRef = useRef(abierto);
+  useEffect(() => {
+    extrasRef.current = extras;
+    abiertoRef.current = abierto;
+  });
+  /** Qué archivo corrió la máquina viva: `null` = el principal. */
+  const corrioRef = useRef<string | null>(null);
   /** ⏹: la máquina sigue viva para poder mirarla, pero ya no es de nadie. */
   const detenidaRef = useRef(false);
   const avisoRef = useRef(0);
@@ -216,6 +308,7 @@ export function useCodigo(opciones: OpcionesCodigo): Codigo {
   }, []);
 
   const opcionesRef = useRef(opciones);
+  const encargoRef = useRef<string | null>(null);
   useEffect(() => {
     opcionesRef.current = opciones;
   });
@@ -233,10 +326,17 @@ export function useCodigo(opciones: OpcionesCodigo): Codigo {
    * mientras se prueba: eso es programar.
    */
   const retratar = useCallback((enMarchaSola: boolean) => {
-    const nueva = foto(maqRef.current, enMarchaSola, detenidaRef.current);
+    const nueva = foto(maqRef.current, enMarchaSola, detenidaRef.current, corrioRef.current);
     if (nueva.fase === 'error' && juzgadaRef.current !== sesionRef.current) {
       juzgadaRef.current = sesionRef.current;
       tropiezosRef.current += 1;
+    }
+    /* Paso a paso dentro de un módulo, o un error en él: se abre su pestaña,
+     * como hace Thonny. Mirar la línea 4 del archivo equivocado es justo lo que
+     * la ventana existe para no hacer. */
+    if ((nueva.fase === 'pausada' || nueva.fase === 'error') && nueva.archivo !== abiertoRef.current) {
+      abiertoRef.current = nueva.archivo;
+      setAbierto(nueva.archivo);
     }
     setEjecucion(nueva);
   }, []);
@@ -264,12 +364,12 @@ export function useCodigo(opciones: OpcionesCodigo): Codigo {
    * números de línea del error señalan a un programa que ya no existe, y
    * entonces todo el paso a paso miente.
    */
-  const editable =
-    !soloLectura &&
-    (ejecucion.fase === 'libre' ||
-      ejecucion.fase === 'terminada' ||
-      ejecucion.fase === 'error' ||
-      ejecucion.fase === 'detenida');
+  const sinPrograma =
+    ejecucion.fase === 'libre' ||
+    ejecucion.fase === 'terminada' ||
+    ejecucion.fase === 'error' ||
+    ejecucion.fase === 'detenida';
+  const editable = !soloLectura && sinPrograma;
 
   const escribir = useCallback(
     (crudo: string) => {
@@ -304,13 +404,43 @@ export function useCodigo(opciones: OpcionesCodigo): Codigo {
 
   const lineas = useMemo(() => colorear(texto), [texto]);
 
+  /** Escribir en otro archivo del proyecto (M4). Las mismas reglas que el principal, sin celdas ni candados por línea. */
+  const escribirEn = useCallback(
+    (nombre: string, crudo: string) => {
+      const nuevo = normalizar(crudo);
+      if (nuevo === extras[nombre]) return true;
+      if (!sinPrograma) {
+        avisar('El programa está en marcha. Pulsa ⏹ Parar y podrás escribir.', 'aviso');
+        return false;
+      }
+      if (conCandado.has(nombre)) {
+        avisar('Este archivo viene dado por la clase: se lee, no se cambia 🔒', 'candado');
+        return false;
+      }
+      setExtras((prev) => ({ ...prev, [nombre]: nuevo }));
+      setEjecucion((prev) =>
+        prev.error ? { ...prev, fase: 'libre', error: null, linea: 0, lineaSenalada: 0 } : prev,
+      );
+      return true;
+    },
+    [extras, sinPrograma, conCandado, avisar, normalizar],
+  );
+
   // ── La ejecución ─────────────────────────────────────────────────────────
 
   const nacer = useCallback((): Maquina | null => {
-    const arranque = crearMaquina(texto, {
+    /* ▶ con la pestaña de un módulo abierta corre ese módulo, como en Thonny:
+     * es como se ve su bloque de prueba. Con una de datos, el principal. */
+    const enPestana = abiertoRef.current;
+    const modulo = enPestana !== null && enPestana.endsWith('.py') && enPestana in extrasRef.current ? enPestana : null;
+    const recorte = modulo ? null : (opcionesRef.current.celda?.(texto, encargoRef.current) ?? null);
+    const arranque = crearMaquina(modulo ? extrasRef.current[modulo] : (recorte ?? texto), {
       entradas: opcionesRef.current.entradas ? [...opcionesRef.current.entradas] : [],
       topes: opcionesRef.current.topes,
+      archivos: extrasRef.current,
+      archivo: modulo ?? opcionesRef.current.archivo,
     });
+    corrioRef.current = modulo;
     sesionRef.current += 1;
     detenidaRef.current = false;
     if (!arranque.ok) {
@@ -318,7 +448,7 @@ export function useCodigo(opciones: OpcionesCodigo): Codigo {
       juzgadaRef.current = sesionRef.current;
       tropiezosRef.current += 1;
       setCorriendo(false);
-      setEjecucion(fotoDelArranqueFallido(arranque.error));
+      setEjecucion(fotoDelArranqueFallido(arranque.error, modulo));
       return null;
     }
     maqRef.current = arranque.maq;
@@ -404,14 +534,21 @@ export function useCodigo(opciones: OpcionesCodigo): Codigo {
     juzgadaRef.current = -1;
     setEjecucion(EJECUCION_VACIA);
     setTexto(normalizar(opcionesRef.current.plantilla));
+    /* «Empezar de cero» es el proyecto entero, no sólo el principal. */
+    setExtras(originales);
+    setAbierto(null);
+    corrioRef.current = null;
     setBorrador('');
     setAviso(null);
-  }, [normalizar]);
+  }, [normalizar, originales]);
 
   const limpiarConsola = useCallback(() => {
     const m = maqRef.current;
-    if (m) m.salida = [];
-    setEjecucion((prev) => (prev.salida.length === 0 ? prev : { ...prev, salida: [] }));
+    if (m) {
+      m.salida = [];
+      m.ecos = [];
+    }
+    setEjecucion((prev) => (prev.salida.length === 0 ? prev : { ...prev, salida: [], ecos: [] }));
   }, []);
 
   const cambiarVelocidad = useCallback((v: VelocidadId) => setVelocidad(v), []);
@@ -465,6 +602,97 @@ export function useCodigo(opciones: OpcionesCodigo): Codigo {
     setFoco({ linea, sello: selloRef.current });
   }, []);
 
+  /*
+   * Ver el comentario de `revisar` en la interfaz.
+   *
+   * Vuelve a publicar la MISMA foto de la ejecución con otra identidad. Suena
+   * a truco y no lo es: el efecto que cierra los encargos ya depende de
+   * `ejecucion`, así que una foto nueva lo hace mirar otra vez sin inventar
+   * ninguna dependencia de más ni callar ninguna regla —y callarla tenía un
+   * precio medido: con un `eslint-disable` de `exhaustive-deps` en
+   * `preguntar`, la regla `set-state-in-effect` dejaba de analizar el efecto
+   * de los encargos, que es justo el canario que este archivo declara vivo
+   * unas líneas más abajo.
+   *
+   * El contenido no cambia, así que nada de lo que se pinta se mueve: cambia
+   * el objeto, que es lo único que React compara.
+   */
+  const revisar = useCallback(() => setEjecucion((prev) => ({ ...prev })), []);
+
+  // ── El proyecto (M4) ─────────────────────────────────────────────────────
+
+  const principal = opciones.archivo ?? 'programa.py';
+  const generados = ejecucion.escritos.filter((g) => !(g.nombre in extras) && g.nombre !== principal);
+
+  const archivos: PestanaCodigo[] = useMemo(
+    () => [
+      { nombre: principal, clave: null, tipo: 'programa' },
+      ...Object.keys(extras).map((n): PestanaCodigo => ({ nombre: n, clave: n, tipo: n.endsWith('.py') ? 'modulo' : 'datos' })),
+      ...generados.map((g): PestanaCodigo => ({ nombre: g.nombre, clave: g.nombre, tipo: 'generado' })),
+    ],
+    // `generados` sale de `ejecucion` en cada pintado: se compara por sus nombres.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [principal, extras, generados.map((g) => g.nombre).join('\n')],
+  );
+
+  const textoDe = useCallback(
+    (clave: string | null) => {
+      if (clave === null) return texto;
+      if (clave in extras) return extras[clave];
+      return ejecucion.escritos.find((g) => g.nombre === clave)?.texto ?? '';
+    },
+    [texto, extras, ejecucion.escritos],
+  );
+
+  const avisarGenerado = useCallback(
+    () => avisar('Este archivo lo escribió tu programa: se mira, no se cambia. Para cambiarlo, cambia el programa.', 'candado'),
+    [avisar],
+  );
+  const avisarCandado = useCallback(() => avisar('Este archivo viene dado por la clase: se lee, no se cambia 🔒', 'candado'), [avisar]);
+
+  const textoAbierto = abierto !== null ? textoDe(abierto) : texto;
+  const lineasAbiertas = useMemo(() => (abierto === null ? lineas : colorear(textoAbierto)), [abierto, lineas, textoAbierto]);
+  const pestana = archivos.find((a) => a.clave === abierto) ?? archivos[0];
+
+  const editor: VistaEditor =
+    pestana.clave === null
+      ? { nombre: principal, clave: null, tipo: 'programa', texto, lineas, escribir, bajoLlave, editable, avisarBloqueo }
+      : pestana.tipo === 'generado'
+        ? {
+            nombre: pestana.nombre,
+            clave: pestana.clave,
+            tipo: 'generado',
+            texto: textoAbierto,
+            lineas: lineasAbiertas,
+            escribir: () => {
+              avisarGenerado();
+              return false;
+            },
+            bajoLlave: SIN_LLAVE,
+            editable: false,
+            avisarBloqueo: avisarGenerado,
+          }
+        : {
+            nombre: pestana.nombre,
+            clave: pestana.clave,
+            tipo: pestana.tipo,
+            texto: textoAbierto,
+            lineas: lineasAbiertas,
+            escribir: (t: string) => escribirEn(pestana.nombre, t),
+            bajoLlave: SIN_LLAVE,
+            editable: sinPrograma && !conCandado.has(pestana.nombre),
+            avisarBloqueo: conCandado.has(pestana.nombre) ? avisarCandado : avisarBloqueo,
+          };
+
+  const abrirPestana = useCallback((clave: string | null) => setAbierto(clave), []);
+  const senalarEn = useCallback(
+    (clave: string | null, linea: number) => {
+      setAbierto(clave);
+      senalarLinea(linea);
+    },
+    [senalarLinea],
+  );
+
   const descartarAviso = useCallback(() => setAviso(null), []);
 
   // ── El guion ─────────────────────────────────────────────────────────────
@@ -477,6 +705,11 @@ export function useCodigo(opciones: OpcionesCodigo): Codigo {
 
   const pasoActual = pasos[indice] ?? null;
   const hecho = pasoActual ? hechosIds.includes(pasoActual.id) : false;
+
+  /* `nacer` vive arriba y necesita saber el encargo para recortar la celda. */
+  useEffect(() => {
+    encargoRef.current = pasoActual?.id ?? null;
+  }, [pasoActual]);
 
   const marcarHecho = useCallback((id: string) => {
     setHechosIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
@@ -639,9 +872,18 @@ export function useCodigo(opciones: OpcionesCodigo): Codigo {
     contestar,
 
     senalarLinea,
+    revisar,
     foco,
     aviso,
     descartarAviso,
+
+    archivos,
+    abierto: pestana.clave,
+    abrir: abrirPestana,
+    editor,
+    proyecto: extras,
+    textoDe,
+    senalarEn,
 
     encargo,
     hechos: hechosIds.length,

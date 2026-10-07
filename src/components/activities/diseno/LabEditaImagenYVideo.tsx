@@ -43,16 +43,17 @@ export const PAGINA = 'portada';
 const BANCO: Record<string, Recurso> = {
   'foto-movida': {
     id: 'foto-movida',
-    nombre: 'Foto de la feria (movida)',
+    nombre: 'Foto de la feria, toma 1',
     autor: 'Prof. Ávila',
     licencia: 'con-permiso',
-    fondo: 'linear-gradient(155deg,#7c3aed,#0f172a)',
+    fondo: 'linear-gradient(155deg,#f97316,#0f172a)',
     glifo: '🌋',
     proporcion: { cols: 11, filas: 8 },
+    movida: true,
   },
   'foto-nitida': {
     id: 'foto-nitida',
-    nombre: 'Foto de la feria (nítida)',
+    nombre: 'Foto de la feria, toma 2',
     autor: 'Prof. Ávila',
     licencia: 'con-permiso',
     fondo: 'linear-gradient(155deg,#f97316,#0f172a)',
@@ -161,7 +162,7 @@ export const GUION: PasoGuionDiseno[] = [
     id: 'cambiar-material',
     titulo: 'Cámbiala por la que sirve',
     instruccion:
-      'Ya arreglada, se ve que está movida. En el banco de «Imágenes» hay otra del mismo momento — ponla y borra la vieja. Llega con el mismo pasillo vacío: encuádrala otra vez.',
+      'Ya está derecha y encuadrada. Mírala de cerca, como la vería alguien en la portada: ¿sirve? En el banco de «Imágenes» hay otra toma del mismo momento. Deja en la portada la que sí sirve, y encuádrala.',
     pista: 'La nueva viene mal encuadrada igual que la primera: es la misma cámara, el mismo sitio.',
     comprueba: (d) => {
       const imgs = imagenesDe(d.documento, PAGINA);

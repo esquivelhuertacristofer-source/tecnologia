@@ -22,6 +22,10 @@ import { LabPythonIntermedio } from './LabPythonIntermedio';
  * `EntradaN4Base` porque es la plantilla que ya usan las demás entradas de
  * N10 sobre este mismo armazón (`n10-consultas-sql`, `n10-ia-copiloto`), no
  * un componente nuevo.
+ *
+ * Reescrita con la clase el 6-oct-2026 (§69.21): la ficha «Aquí no hay import
+ * — y no lo necesitas» era verdad del motor viejo y dejó de serlo con M4. Las
+ * fichas describen ahora el proyecto de tres archivos de la estación.
  */
 
 const RUTA_N10_PROGRAMACION: PasoRuta[] = (getUnidad('n10-programacion-aplicada')?.actividades ?? []).map((a) => ({
@@ -37,57 +41,57 @@ const CONFIG: ConfigEntradaN4 = {
   ruta: RUTA_N10_PROGRAMACION,
   parada: Math.max(1, RUTA_N10_PROGRAMACION.findIndex((p) => p.id === ACTIVIDAD) + 1),
   globo:
-    'TecniMarket cerró la semana y necesita su reporte de ventas. Hoy vas a resolverlo con dos herramientas: funciones que escribes tú, para la lógica que sólo conoce este negocio, y funciones que Python ya trae resueltas, para todo lo que miles de programadores ya resolvieron antes que tú.',
+    'La estación meteorológica de la escuela guarda sus lecturas en un archivo, y el club de ciencias dejó a medias un módulo para clasificarlas. Hoy tu programa no es un archivo: son tres, y vas a hacer que trabajen juntos.',
   arranqueSub:
-    'Vas a escribir dos funciones propias con una responsabilidad cada una, comparar el mismo cálculo escrito a mano y con una función nativa, y decidir —sin escribir código— por qué un proyecto real se organiza en archivos y en módulos.',
+    'Abres un proyecto de **tres archivos** —tu programa, el módulo **clima.py** y **lecturas.csv**— y escribes tres programas que un juez prueba con semanas que no ves y **con tu módulo por separado**.',
   stats: [
-    { etiqueta: 'Encargos', valor: '9', acento: '#38bdf8' },
-    { etiqueta: 'Funciones nativas', valor: '5', acento: '#10b981' },
+    { etiqueta: 'Encargos', valor: '7', acento: '#38bdf8' },
+    { etiqueta: 'Archivos', valor: '3', acento: '#10b981' },
     { etiqueta: 'Insignia', valor: '1', acento: '#a78bfa' },
   ],
-  letrero: 'Código propio y librería, cada uno en su lugar',
+  letrero: 'Archivos, módulos y librerías',
   fichas: [
     {
-      key: 'que-es-libreria',
-      tag: 'Concepto 1',
+      key: 'libreria',
+      tag: 'Lo que ya está resuelto',
       numero: 1,
-      titulo: 'Qué es una librería',
+      titulo: 'Una librería',
       detalle:
-        'Código ya escrito y probado por alguien más, listo para usarse con una sola línea: sum(), max(), min() y sorted() son parte de la librería estándar de Python.',
+        'Código ya escrito y probado que se trae con import: statistics saca la mediana y el promedio, math la raíz. Copian a Python hasta en el tipo de número que devuelven.',
       acento: { c: '#38bdf8', deep: '#0284c7' },
     },
     {
-      key: 'que-es-modulo',
-      tag: 'Concepto 2',
+      key: 'archivo',
+      tag: 'Datos que sobreviven al programa',
       numero: 2,
-      titulo: 'Qué es un módulo',
+      titulo: 'Un archivo',
       detalle:
-        'Una función con una sola responsabilidad: hace una cosa, la hace bien, y cualquier otra parte del programa la puede llamar sin repetir su lógica.',
+        'lecturas.csv tiene un renglón por día. Se lee renglón por renglón con open, y cada renglón llega como texto, con su salto al final. Lo que escribas en un archivo sigue ahí cuando el programa termina.',
+      acento: { c: '#10b981', deep: '#047857' },
+    },
+    {
+      key: 'modulo',
+      tag: 'La regla en su sitio',
+      numero: 3,
+      titulo: 'Un módulo',
+      detalle:
+        'clima.py es un archivo .py que tu programa importa. La regla vive ahí y se usa desde estacion.py, así cada parte se puede probar sola: el juez va a probar tu módulo sin tu programa.',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
-      key: 'que-es-archivo',
-      tag: 'Concepto 3',
-      numero: 3,
-      titulo: 'Por qué un proyecto se divide en archivos',
-      detalle:
-        'Un programa real tiene miles de líneas y varias personas trabajando a la vez: separarlo en archivos deja que cada quien edite su parte sin pisar la de los demás.',
-      acento: { c: '#fbbf24', deep: '#b45309' },
-    },
-    {
-      key: 'sin-import',
+      key: 'pestanas',
       tag: 'Este editor',
       numero: 4,
-      titulo: 'Aquí no hay import — y no lo necesitas',
+      titulo: 'Una pestaña por archivo',
       detalle:
-        'Este intérprete no admite import ni from: todo lo que vas a usar hoy —tus propias funciones y las nativas de Python— ya está disponible sin pedirlo.',
-      acento: { c: '#fb7185', deep: '#9f1239' },
+        'Cada archivo del proyecto tiene su pestaña. ▶ corre el .py que tengas abierto, y si tu programa escribe un archivo, aparece como pestaña nueva. Un error dentro de clima.py abre clima.py.',
+      acento: { c: '#fbbf24', deep: '#b45309' },
     },
   ],
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
-  ctaTitulo: 'Abre el reporte de ventas',
+  ctaTitulo: 'Abre el proyecto de la estación',
   ctaDetalle:
-    'Nueve encargos: dos funciones propias tuyas, cuatro funciones nativas de la librería estándar, dos preguntas sobre por qué un proyecto real se organiza en archivos y módulos, y el cierre — un reporte que junta tu código con el de la librería.',
+    'Siete encargos: la librería, la semana en números, el archivo que no existe, tu módulo, correr el módulo solo y el reporte escrito — **tres programas que un juez prueba con semanas que no ves** — y una pregunta para cerrar.',
   assetsPendientes: false,
 };
 

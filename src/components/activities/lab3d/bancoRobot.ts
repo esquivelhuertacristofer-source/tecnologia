@@ -160,6 +160,15 @@ export const CAJA_Z_LEJOS = 3.1;
 export const CAJA_Z_PARA = 1.35;
 /** A qué Z llega la caja cuando el robot no la vio venir. */
 export const CAJA_Z_CHOCA = 0.85;
+/** Altura del centro de la caja y la mitad de su lado: los usa el dibujo (`Caja3D`) y el rayo. */
+export const CAJA_Y = -0.68;
+export const CAJA_MEDIA = 0.25;
+/** Hasta dónde llega el rayo del sensor de distancia, en unidades de escena. */
+export const ALCANCE_SENSOR = 1.2;
+/** A esta distancia medida, la tarjeta manda parar el motor (§69.6). */
+export const DISTANCIA_PARADA = 0.35;
+/** Cuánto avanza la caja entre una lectura del sensor y la siguiente. */
+const PASO_CAJA = 0.05;
 
 export const BANCO_ROBOT: BancoDef = {
   tolerancia: 0.22,
@@ -264,13 +273,64 @@ export type Pulso = 'sensor' | 'tarjeta' | 'actuador' | null;
 export const SECUENCIA_PULSO: readonly Pulso[] = ['sensor', 'tarjeta', 'actuador'];
 
 /**
- * ¿Se detiene a tiempo? La única pregunta que decide el desenlace: si el
- * sensor de distancia está mirando hacia adelante. Ni la posición de los
- * otros sensores ni la del motor cambian si choca o no — ésas se juzgan
- * aparte, con `evaluar`, para el encargo 8 («las siete piezas en su sitio»).
+ * Distancia a la que un rayo que sale de `o` en la dirección `d` choca con
+ * un cubo alineado con los ejes (método de las losas), o `null` si no lo
+ * cruza por delante.
  */
+function choqueRayoCaja(o: Punto3, d: Punto3, centro: Punto3, media: number): number | null {
+  let tMin = -Infinity;
+  let tMax = Infinity;
+  for (let eje = 0; eje < 3; eje++) {
+    const min = centro[eje] - media;
+    const max = centro[eje] + media;
+    if (d[eje] === 0) {
+      if (o[eje] < min || o[eje] > max) return null;
+      continue;
+    }
+    const t1 = (min - o[eje]) / d[eje];
+    const t2 = (max - o[eje]) / d[eje];
+    tMin = Math.max(tMin, Math.min(t1, t2));
+    tMax = Math.min(tMax, Math.max(t1, t2));
+  }
+  if (tMax < Math.max(tMin, 0)) return null;
+  return Math.max(tMin, 0);
+}
+
+/**
+ * Lo que lee el sensor de distancia con la caja en `cajaZ`: la distancia a
+ * su cara, si el rayo que sale del anclaje donde está el sensor, en la
+ * dirección hacia donde mira, la cruza dentro del alcance. `null` si no la ve
+ * (el sensor no está puesto, mira a otro lado o la caja queda lejos).
+ */
+export function sensorVeLaCaja(banco: EstadoBanco, cajaZ: number): number | null {
+  const sitio = dondeEsta(banco, 'sensor-distancia');
+  if (!sitio) return null;
+  const anclaje = BANCO_ROBOT.anclajes.find((a) => a.id === sitio);
+  if (!anclaje?.mira) return null;
+  const t = choqueRayoCaja(anclaje.punto, anclaje.mira, [OX_ROBOT, CAJA_Y, cajaZ], CAJA_MEDIA);
+  return t !== null && t <= ALCANCE_SENSOR ? t : null;
+}
+
+/**
+ * Dónde se queda la caja en la prueba de la ronda 3: se acerca desde
+ * `CAJA_Z_LEJOS` y, en la primera lectura que dé `DISTANCIA_PARADA` o menos,
+ * la tarjeta para el motor. `null` si llega a `CAJA_Z_CHOCA` sin que el sensor
+ * la lea: choque. Ni la posición de los otros sensores ni la del motor cambian
+ * el desenlace — ésas se juzgan aparte, con `evaluar`, para el encargo 8.
+ */
+export function dondeSeDetiene(banco: EstadoBanco): number | null {
+  const pasos = Math.round((CAJA_Z_LEJOS - CAJA_Z_CHOCA) / PASO_CAJA);
+  for (let i = 0; i <= pasos; i++) {
+    const z = CAJA_Z_LEJOS - i * PASO_CAJA;
+    const lectura = sensorVeLaCaja(banco, z);
+    if (lectura !== null && lectura <= DISTANCIA_PARADA + 1e-9) return z;
+  }
+  return null;
+}
+
+/** ¿Se detiene a tiempo? Lo decide el rayo del sensor, no el nombre del sitio. */
 export function robotSeDetiene(banco: EstadoBanco): boolean {
-  return dondeEsta(banco, 'sensor-distancia') === 'frente';
+  return dondeSeDetiene(banco) !== null;
 }
 
 export const ESTADO_VACIO_ROBOT = ESTADO_VACIO;

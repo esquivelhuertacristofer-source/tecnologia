@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useCallback, useState } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
 import { reproducirTono } from '../../n1/mision/audio';
@@ -653,7 +654,7 @@ function Practica({ alSalir, alRepetir, ...props }: PropsLab & { alRepetir: () =
               <>
                 <p style={{ color: '#e2e8f0', fontSize: '0.8rem', lineHeight: 1.45, margin: '0 0 10px 0' }}>{PREGUNTA_OBJETIVO.pregunta}</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {PREGUNTA_OBJETIVO.opciones.map((op) => (
+                  {ordenDeOpciones(PREGUNTA_OBJETIVO.opciones.length, PREGUNTA_OBJETIVO.pregunta).map((k) => PREGUNTA_OBJETIVO.opciones[k]).map((op) => (
                     <button key={op.texto} type="button" onClick={() => elegirObjetivo(op)} style={ESTILO_TARJETA_OPCION}>
                       {op.texto}
                     </button>
@@ -666,7 +667,7 @@ function Practica({ alSalir, alRepetir, ...props }: PropsLab & { alRepetir: () =
               <>
                 <p style={{ color: '#e2e8f0', fontSize: '0.8rem', lineHeight: 1.45, margin: '0 0 10px 0' }}>{PREGUNTA_SENSOR_LUZ.pregunta}</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {PREGUNTA_SENSOR_LUZ.opciones.map((op) => (
+                  {ordenDeOpciones(PREGUNTA_SENSOR_LUZ.opciones.length, PREGUNTA_SENSOR_LUZ.pregunta).map((k) => PREGUNTA_SENSOR_LUZ.opciones[k]).map((op) => (
                     <button key={op.texto} type="button" onClick={() => elegirSensorLuz(op)} style={ESTILO_TARJETA_OPCION}>
                       {op.texto}
                     </button>
@@ -679,7 +680,7 @@ function Practica({ alSalir, alRepetir, ...props }: PropsLab & { alRepetir: () =
               <>
                 <p style={{ color: '#e2e8f0', fontSize: '0.8rem', lineHeight: 1.45, margin: '0 0 10px 0' }}>{PREGUNTA_SENSOR_TEMP.pregunta}</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {PREGUNTA_SENSOR_TEMP.opciones.map((op) => (
+                  {ordenDeOpciones(PREGUNTA_SENSOR_TEMP.opciones.length, PREGUNTA_SENSOR_TEMP.pregunta).map((k) => PREGUNTA_SENSOR_TEMP.opciones[k]).map((op) => (
                     <button key={op.texto} type="button" onClick={() => elegirSensorTemp(op)} style={ESTILO_TARJETA_OPCION}>
                       {op.texto}
                     </button>
@@ -692,7 +693,7 @@ function Practica({ alSalir, alRepetir, ...props }: PropsLab & { alRepetir: () =
               <>
                 <p style={{ color: '#e2e8f0', fontSize: '0.8rem', lineHeight: 1.45, margin: '0 0 10px 0' }}>{PREGUNTA_SENSOR_PRESENCIA.pregunta}</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {PREGUNTA_SENSOR_PRESENCIA.opciones.map((op) => (
+                  {ordenDeOpciones(PREGUNTA_SENSOR_PRESENCIA.opciones.length, PREGUNTA_SENSOR_PRESENCIA.pregunta).map((k) => PREGUNTA_SENSOR_PRESENCIA.opciones[k]).map((op) => (
                     <button key={op.texto} type="button" onClick={() => elegirSensorPresencia(op)} style={ESTILO_TARJETA_OPCION}>
                       {op.texto}
                     </button>

@@ -1,0 +1,640 @@
+/*
+ * El juez — el tablero, dentro del panel lateral de Tecnia Código.
+ *
+ * Hereda el fondo oscuro del editor y le pone color pleno encima: verde de
+ * aceptado, rojo de rechazado, ámbar de «no termina». No es decoración — es la
+ * información: un alumno que mira el panel de reojo tiene que saber cómo va sin
+ * leer una palabra, y los tres estados de un juez son tres colores.
+ *
+ * Lo que NO lleva: nada flotante. El panel vive dentro del hueco que
+ * `SalaCodigo` le da y se desplaza con él.
+ */
+
+.jz {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #dce7ff;
+}
+
+/* ── la fila de problemas ─────────────────────────────────────────────────── */
+
+.jz-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jz-solapa {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 9px;
+  border: 2px solid #3d55b0;
+  background: #16224d;
+  color: #cfe0ff;
+  font-weight: 900;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.jz-solapa[aria-current='true'] {
+  border-color: #8fb4ff;
+  background: #24377a;
+  box-shadow: 0 0 0 3px rgba(143, 180, 255, 0.28);
+}
+
+.jz-solapa[data-estado='aceptado'] {
+  border-color: #2fbf6b;
+  background: #11331f;
+  color: #9ff0c0;
+}
+
+.jz-solapa[data-estado='rechazado'] {
+  border-color: #e2554f;
+  background: #3a1414;
+  color: #ffb3ae;
+}
+
+.jz-solapa-marca {
+  font-size: 13px;
+}
+
+/* ── el enunciado ─────────────────────────────────────────────────────────── */
+
+.jz-titulo {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.jz-enunciado {
+  margin: 0;
+  color: #c7d6f7;
+}
+
+.jz-firma {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #0d1738;
+  border: 2px solid #2b3a7a;
+}
+
+.jz-firma span {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8ea3d8;
+  font-weight: 800;
+}
+
+.jz code {
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SF Mono', Menlo, monospace;
+  font-size: 12.5px;
+}
+
+.jz-firma code {
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #1d2c63;
+  color: #ffe08a;
+  font-weight: 700;
+}
+
+/* ── los ejemplos ─────────────────────────────────────────────────────────── */
+
+.jz-ejemplos h5 {
+  margin: 0 0 6px;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8ea3d8;
+}
+
+.jz-ejemplos ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jz-ejemplos li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 9px;
+  border-radius: 9px;
+  background: #101c44;
+  border-left: 4px solid #3d55b0;
+}
+
+.jz-ej-llamada {
+  color: #b9ccff;
+  /* Una llamada puede ser de varias líneas (un `for` que imprime, o
+   * `r = burbuja(…)` y dos `print`). Con `normal` se pintaba en un solo
+   * renglón y parecía Python roto: medido en Chromium el 12-sep-2026 con el
+   * problema 5 de `n9-busqueda-y-ordenamiento`. `pre-wrap` respeta los saltos
+   * y la sangría, y aun así parte una línea larga en una columna estrecha. */
+  white-space: pre-wrap;
+}
+
+.jz-ej-flecha {
+  color: #6f86c4;
+  font-weight: 900;
+}
+
+.jz-ej-salida {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.jz-ej-salida code {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #1b3a29;
+  color: #9ff0c0;
+  font-weight: 700;
+}
+
+.jz-ocultos {
+  margin: 8px 0 0;
+  padding: 7px 10px;
+  border-radius: 9px;
+  background: #2a2110;
+  border-left: 4px solid #e8a33d;
+  color: #ffd89a;
+  font-size: 12.5px;
+}
+
+/* ── enviar ───────────────────────────────────────────────────────────────── */
+
+/* Pegado al borde de abajo de la columna mientras no esté a la vista. Medido en
+ * Chromium el 12-sep-2026 a 1440×900: la columna lateral enseña 544 px y el
+ * botón quedaba a 871 (SQL), 893 (búsqueda) y 986 px (datos) de su borde, así
+ * que al entrar NINGUNA de las clases del juez lo enseñaba. Recortar ejemplos
+ * no lo cura —el enunciado ya es largo—; que el botón acompañe al que lee, sí.
+ * Cuando el desplazamiento llega a su sitio, se queda en su sitio. */
+.jz-enviar {
+  position: sticky;
+  bottom: 10px;
+  z-index: 2;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 2px solid #ffd166;
+  background: linear-gradient(180deg, #f5a524, #d97706);
+  color: #1a1000;
+  font-weight: 900;
+  font-size: 14.5px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #8a4b06;
+}
+
+.jz-enviar:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #8a4b06;
+}
+
+/* ── el veredicto ─────────────────────────────────────────────────────────── */
+
+.jz-veredicto {
+  border-radius: 12px;
+  border: 2px solid #2b3a7a;
+  background: #0b1130;
+  overflow: hidden;
+}
+
+.jz-marcador {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0;
+  padding: 9px 12px;
+}
+
+.jz-marcador b {
+  font-size: 15px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.jz-marcador span {
+  font-size: 12.5px;
+  color: #a9bce8;
+  font-variant-numeric: tabular-nums;
+}
+
+.jz-veredicto[data-aceptado='si'] .jz-marcador {
+  background: linear-gradient(180deg, #17492e, #123a24);
+}
+
+.jz-veredicto[data-aceptado='si'] .jz-marcador b {
+  color: #8ff0b6;
+}
+
+.jz-veredicto[data-aceptado='no'] .jz-marcador {
+  background: linear-gradient(180deg, #4a1a18, #3a1414);
+}
+
+.jz-veredicto[data-aceptado='no'] .jz-marcador b {
+  color: #ffb3ae;
+}
+
+.jz-casos {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jz-caso {
+  display: flex;
+  gap: 9px;
+  padding: 9px 12px;
+  border-top: 1px solid #1d2a55;
+}
+
+.jz-caso-glifo {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.jz-caso[data-clase='pasa'] .jz-caso-glifo {
+  background: #17492e;
+  color: #8ff0b6;
+}
+
+.jz-caso[data-clase='falla'] .jz-caso-glifo {
+  background: #4a1a18;
+  color: #ffb3ae;
+}
+
+.jz-caso[data-clase='error'] .jz-caso-glifo,
+.jz-caso[data-clase='pregunta'] .jz-caso-glifo {
+  background: #4a3410;
+  color: #ffd89a;
+}
+
+.jz-caso[data-clase='no-termina'] .jz-caso-glifo {
+  background: #3a2a52;
+  color: #d9b8ff;
+}
+
+.jz-caso-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.jz-caso-nombre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  font-weight: 800;
+  color: #eaf1ff;
+}
+
+.jz-chapa-oculto {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #3a2a52;
+  color: #d9b8ff;
+  font-size: 10.5px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.jz-caso-rotulo {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #8ea3d8;
+}
+
+.jz-caso-porque {
+  color: #c7d6f7;
+}
+
+.jz-caso-cotejo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.jz-caso-cotejo > span {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.jz-caso-cotejo b {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8ea3d8;
+}
+
+.jz-caso-cotejo code {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #16224d;
+  color: #e6efff;
+  overflow-wrap: anywhere;
+}
+
+.jz-caso-cotejo i {
+  color: #8ea3d8;
+  font-size: 12px;
+}
+
+.jz-caso-ruido {
+  font-size: 12px;
+  color: #ffd89a;
+}
+
+.jz-ir {
+  align-self: flex-start;
+  padding: 3px 9px;
+  border-radius: 7px;
+  border: 2px solid #3d55b0;
+  background: #16224d;
+  color: #cfe0ff;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ── las pistas ───────────────────────────────────────────────────────────── */
+
+.jz-pistas {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.jz-pista {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #101c44;
+  border-left: 4px solid #3d55b0;
+  color: #c7d6f7;
+}
+
+.jz-pista[data-cuesta='si'] {
+  background: #2a2110;
+  border-left-color: #e8a33d;
+  color: #ffd89a;
+}
+
+.jz-pista b {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8ea3d8;
+}
+
+.jz-pista[data-cuesta='si'] b {
+  color: #e8a33d;
+}
+
+.jz-pedir {
+  align-self: flex-start;
+  padding: 6px 12px;
+  border-radius: 9px;
+  border: 2px solid #3d55b0;
+  background: #16224d;
+  color: #cfe0ff;
+  font-weight: 800;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+/* ── los ejemplos del juez de SQL: una respuesta de SQL son filas ─────────── */
+
+.jz-ej-sql {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jz-ej-sql > li {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: #101c44;
+  border-left: 4px solid #3d55b0;
+}
+
+.jz-ej-nombre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  font-weight: 800;
+  font-size: 12.5px;
+  color: #cfe0ff;
+}
+
+.jz-ej-orden {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #2a2110;
+  color: #ffd89a;
+  font-size: 10.5px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.jz-ej-tabla {
+  border-collapse: collapse;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.jz-ej-tabla td {
+  padding: 2px 8px 2px 0;
+  color: #9ff0c0;
+  white-space: nowrap;
+}
+
+.jz-ej-tabla tr + tr td {
+  border-top: 1px solid #1d2a55;
+}
+
+/* El «ya 8 de 12» del cotejo. Ver `TOPE_COTEJO` en `TableroJuez.tsx`. */
+.jz-cotejo-mas {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.72rem;
+  font-style: normal;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+/* El «y 6 filas más» del ejemplo. Ver `TOPE_FILAS_EJEMPLO`. */
+.jz-ej-tabla tr.jz-ej-mas td {
+  padding-top: 0.3rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  background: none;
+}
+
+/* ── juez de programas (§68.4): lo que se teclea y el manual ─────────────── */
+
+.jz-ej-teclea {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  color: #8fb4ff;
+}
+
+.jz-ej-teclea code {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #1d2c63;
+  color: #cfe0ff;
+  font-weight: 700;
+  /* «María José» es un dato; partirlo en dos renglones parecería dos respuestas. */
+  white-space: pre;
+}
+
+.jz-nota-teclado {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #9fb2e0;
+}
+
+/* La ficha del manual: papel de documentación, no un aviso. Borde cian para
+ * que no se confunda con el ámbar de los ocultos ni con el verde del veredicto. */
+.jz-manual {
+  border-radius: 12px;
+  border: 2px solid #1f8fb0;
+  background: #07202b;
+  color: #cdeefa;
+}
+
+.jz-manual summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  cursor: pointer;
+  font-weight: 800;
+  list-style: revert;
+}
+
+.jz-manual summary:focus-visible {
+  outline: 3px solid #5fd4f5;
+  outline-offset: 2px;
+}
+
+.jz-manual-rotulo {
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: #1f8fb0;
+  color: #031017;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.jz-manual-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 11px 10px;
+}
+
+.jz-manual-codigo {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.jz-manual-codigo code {
+  display: block;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding-left: 2ch;
+  text-indent: -2ch;
+}
+
+.jz-manual-programa {
+  background: #031017;
+  color: #ffe8a3;
+}
+
+.jz-manual-consola {
+  background: #000a0e;
+  color: #b5f5c8;
+}
+
+.jz-manual-tecleado,
+.jz-manual-consola-rotulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  font-size: 12px;
+  color: #8fcfe3;
+}
+
+.jz-manual-tecleado code {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #0f3a4a;
+  color: #e3f8ff;
+  white-space: pre;
+}
+
+.jz-manual-nota {
+  margin: 0;
+  font-size: 12.5px;
+  color: #cdeefa;
+}

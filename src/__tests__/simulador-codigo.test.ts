@@ -109,13 +109,13 @@ describe('Tecnia Código · el subconjunto que se decidió', () => {
 
   it('lo que quedó fuera avisa con su frase, no con un «SyntaxError» pelado', () => {
     const fuera: [string, string][] = [
-      ['import random', 'no se importan módulos'],
+      /* `import random` ya no es de escritura: desde M4 (§69.21) falla al correr, con su frase (`simulador-m4.test.ts`). */
+      ['from math import *', 'todo de golpe'],
       ['class Perro:\n    pass', 'las clases y los objetos son del curso siguiente'],
       ['try:\n    x = 1\nexcept:\n    pass', 'no se tapan con «try»'],
       ['f = lambda x: x', 'se escriben con «def»'],
       ['dobles = [x * 2 for x in [1, 2]]', 'listas por comprensión'],
       ['print("hola", end="")', 'argumentos con nombre'],
-      ['x = 5\nif 0 < x < 10:\n    print("sí")', 'encadenar dos comparaciones'],
       ['print([1, 2, 3][::-1])', 'tercer número'],
       ['def f(x=1):\n    return x', 'valor por defecto'],
       ['print(f"{3.14159:.2f}")', 'formatos dentro de un texto con f'],
@@ -306,6 +306,32 @@ const PROGRAMAS: Programa[] = [
     nombre: 'promedio con redondeo',
     codigo: ['notas = [8, 9, 7, 10, 6, 9]', 'promedio = sum(notas) / len(notas)', 'print(promedio)', 'print(round(promedio, 2))'].join('\n'),
     espera: ['8.166666666666666', '8.17'],
+  },
+  {
+    /* Medido contra CPython 3.14 el 12-sep-2026. Los tres primeros daban 6.4,
+     * 2.68 y 0.2: se redondeaba `x * 10^n`, que ya viene redondeado. */
+    nombre: 'round con decimales redondea el número guardado, no el producto',
+    codigo: [
+      'print(round(6.35, 1), round(2.675, 2), round(0.15, 1))',
+      'print(round(6.25, 1), round(7.25, 1), round(0.375, 2))',
+      'print(round(-6.35, 1), round(-2.5), round(1350, -2))',
+    ].join('\n'),
+    espera: ['6.3 2.67 0.1', '6.2 7.2 0.38', '-6.3 -2 1400'],
+  },
+  {
+    /* Medido contra CPython 3.14 el 12-sep-2026. Hasta ese día el intérprete
+     * rechazaba la cadena; ahora la lee como Python: cada eslabón con `and` y
+     * el término de en medio evaluado UNA vez (la «m» sale una sola vez). */
+    nombre: 'comparaciones encadenadas como en Python',
+    codigo: [
+      'def m():',
+      '    print("m")',
+      '    return 5',
+      'print(0 < m() < 10, 1 < 2 > 3, 3 == 3 == 3, 1 < 5 <= 5 != 4, "a" in "abc" in "xabcx", 10 > 5 > 7)',
+      'x = 7',
+      'print(120 <= x <= 150, 0 < x < 10)',
+    ].join('\n'),
+    espera: ['m', 'True False True True True False', 'False True'],
   },
   {
     nombre: 'ordenamiento de burbuja contando comparaciones',

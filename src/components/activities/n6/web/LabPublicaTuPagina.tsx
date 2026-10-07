@@ -67,14 +67,14 @@ export const PLANTILLA_HTML = `<!DOCTYPE html>
 </head>
 <body>
   <h1>Robots del 6.º B</h1>
-  <p>Nos juntamos los martes en el salón de cómputo y armamos robots.</p>
-  <p class="contacto">¿Quieres entrar? Llámame al 55 12 34 56 78. Vivo en Insurgentes 214 y salgo de la escuela a las 2:30.</p>
+  <p>Nos juntamos los martes en el salón de cómputo y armamos robots. Yo salgo de la escuela a las 2:30 por la puerta de atrás.</p>
   <h2>Nuestros proyectos</h2>
   <ul>
     <li>El robot que sigue la línea</li>
     <li>El brazo que recoge tapas</li>
-    <li>El coche por control remoto</li>
+    <li>El coche por control remoto, que guardamos en mi casa: Insurgentes 214</li>
   </ul>
+  <p>¿Quieres entrar al club? Pregúntale a la maestra Lupita, o llámame al 55 12 34 56 78.</p>
   <img src="robot.png">
   <a>La Feria de Ciencias de este año</a>
 </body>
@@ -174,9 +174,20 @@ export const PUBLICACION: Publicacion = {
  *
  * El candado del encargo «quita tus datos»: borrarlo todo también los quita.
  */
+/**
+ * Lo que sí va se queda (§69.13): el título, los tres proyectos, la foto y el
+ * día en que se junta el club. Los datos que delatan están repartidos entre
+ * esas cosas, así que borrar el renglón entero no es el arreglo.
+ */
 function laPaginaSigueEnPie(p: PaginaAnalizada): boolean {
   const h1 = primero(p, 'h1');
-  return h1 !== null && texto(h1).trim().length >= 3 && cuantos(p, 'ul li') >= 3 && existe(p, 'img');
+  return (
+    h1 !== null &&
+    texto(h1).trim().length >= 3 &&
+    cuantos(p, 'ul li') >= 3 &&
+    existe(p, 'img') &&
+    loQueSeLee(p).includes('martes')
+  );
 }
 
 /** Lo que se ve escrito en la página, en una sola línea y en minúscula. */
@@ -223,9 +234,9 @@ export const GUION: GuionWeb = {
       id: 'quita-tus-datos',
       titulo: 'Quítalos de la página',
       instruccion:
-        'Borra el párrafo del teléfono, la calle y la hora de salida — la línea 10 entera, la que empieza por <p class="contacto">. Lo demás se queda: el club, los proyectos y la foto no tienen nada de malo.',
-      pista: 'Borra la línea completa, desde <p class="contacto"> hasta </p>. Sólo esa.',
-      senal: { archivo: 'index.html', linea: 10, control: 'editor' },
+        'Quita de la página tu teléfono, tu calle y la hora a la que sales. No están juntos: léela entera. Lo demás se queda —el club, el día en que se juntan, los tres proyectos y la foto no tienen nada de malo—.',
+      pista: 'Son tres cosas en tres sitios distintos. No siempre hay que borrar el renglón entero: a veces basta con quitar el trozo que delata.',
+      senal: { archivo: 'index.html', control: 'editor' },
       logro: {
         tipo: 'pagina',
         comprueba: (p) => {
@@ -242,8 +253,8 @@ export const GUION: GuionWeb = {
       id: 'el-error-rojo',
       titulo: 'Ahora el error rojo',
       instruccion:
-        '¿Ves la página en blanco y negro? Abajo, en «Lo que hay que arreglar», hay un error rojo que dice por qué, y trae escrito el arreglo. Léelo y arregla la línea 5.',
-      pista: 'El archivo de estilo se llama «estilo.css», mira su pestaña. En el <link> está escrito con una ese de más.',
+        '¿Ves la página en blanco y negro? Abajo, en «Lo que hay que arreglar», hay un error rojo que dice por qué. Léelo y arréglalo.',
+      pista: 'Compara el nombre que escribe el <link> con el de la pestaña del archivo de estilo, letra por letra.',
       senal: { control: 'problemas' },
       logro: { tipo: 'pagina', comprueba: (p) => p.errores === 0 && p.hojas.length === 1 },
       aprendido: 'Eso era: el <link> apuntaba a un archivo que no existe. «Escribí el CSS y no se ve nada» casi siempre es esto.',
@@ -252,8 +263,8 @@ export const GUION: GuionWeb = {
       id: 'los-avisos-amarillos',
       titulo: 'Y los dos avisos amarillos',
       instruccion:
-        'Quedan dos avisos: la foto no dice lo que se ve en ella, y el enlace no lleva a ninguna parte. Ponle un alt a la imagen y un href="https://feriadeciencias.mx" al enlace.',
-      pista: '<img src="robot.png" alt="Nuestro robot siguiendo la línea"> y <a href="https://feriadeciencias.mx">…</a>.',
+        'Quedan dos avisos amarillos. Léelos y arréglalos los dos, sin quitar la foto ni el enlace.',
+      pista: 'Uno pide el atributo alt en la imagen; el otro, el atributo href en el enlace, con la dirección de la Feria: https://feriadeciencias.mx.',
       senal: { control: 'problemas' },
       logro: { tipo: 'pagina', comprueba: (p) => problemasQueTocanAlAlumno(p) === 0 && laPaginaSigueEnPie(p) },
       aprendido: 'Rojo es «el navegador no puede». Amarillo es «funciona y está mal hecho». Antes de publicar, ninguno de los dos.',
@@ -262,8 +273,8 @@ export const GUION: GuionWeb = {
       id: 'nombre-de-la-pestana',
       titulo: 'Lo último: la pestaña',
       instruccion:
-        'El <title> de la línea 4 está vacío, así que la pestaña no dice nada. Escríbele el nombre del club: es lo que verá quien guarde tu dirección.',
-      pista: 'Entre <title> y </title>, en la línea 4.',
+        'El título de la pestaña está vacío, así que la pestaña no dice nada. Ponle el nombre del club: es lo que verá quien guarde tu dirección.',
+      pista: 'La pestaña la escribe la etiqueta title, que está dentro del head, arriba del todo.',
       senal: { archivo: 'index.html', linea: 4, control: 'editor' },
       logro: { tipo: 'pagina', comprueba: (p) => (p.titulo ?? '').trim().length >= 3 },
       aprendido: 'Revisada: sin datos tuyos, sin errores, sin avisos y con nombre. Ahora sí se publica.',

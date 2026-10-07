@@ -164,7 +164,24 @@ async function subir() {
   const yaEstan = new Set(
     fs.existsSync(LISTA_SUBIDOS) ? fs.readFileSync(LISTA_SUBIDOS, 'utf-8').split('\n').filter(Boolean) : [],
   );
-  const faltan = todos.filter(([, r]) => !yaEstan.has(claveDe(r)));
+  /*
+   * La lista local sólo sabe que una clave se subió alguna vez, no QUÉ se subió.
+   * El 12-sep-2026 se regrabaron cinco videos con la misma ruta y los cinco
+   * estaban en `subidos.txt`: `subir` los habría saltado y producción habría
+   * seguido enseñando los viejos. Por eso manda el bucket —clave y peso—, y la
+   * lista queda sólo como respaldo si el bucket no se deja listar.
+   */
+  let enR2 = null;
+  try {
+    enR2 = await listarBucket(cred);
+  } catch (e) {
+    console.warn(`no pude listar el bucket (${e.message.slice(0, 80)}); uso la lista local, que NO detecta videos reemplazados`);
+  }
+  const faltan = todos.filter(([d, r]) => {
+    const clave = claveDe(r);
+    if (!enR2) return !yaEstan.has(clave);
+    return enR2.get(clave) !== fs.statSync(path.join(d, r)).size;
+  });
   const peso = faltan.reduce((n, [d, r]) => n + fs.statSync(path.join(d, r)).size, 0);
   console.log(`${todos.length} archivos · ${yaEstan.size} ya subidos · ${faltan.length} por subir (${(peso / MB / 1024).toFixed(2)} GB)`);
 

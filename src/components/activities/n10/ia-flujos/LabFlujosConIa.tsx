@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useLabActividad } from '@/components/activities/lib/useLabActividad';
 import { VentanaBase } from '@/components/simuladores/VentanaBase';
 import { VentanaAsistente, evaluarPrompt, useAsistente, type ResultadoGuion } from '@/components/simuladores/asistente';
@@ -466,7 +467,7 @@ export function LabFlujosConIa(props: ActivityProps & { alSalir?: () => void }) 
           <div className="flex flex-col gap-4">
             <p className="text-sm text-slate-300">{TEXTOS.encabezadoRiesgo}</p>
             <div className="flex flex-col gap-2">
-              {OPCIONES_RIESGO.map((op) => {
+              {ordenDeOpciones(OPCIONES_RIESGO.length, 'flujos-riesgo').map((i) => OPCIONES_RIESGO[i]).map((op) => {
                 const activa = seleccion === op.id;
                 return (
                   <button

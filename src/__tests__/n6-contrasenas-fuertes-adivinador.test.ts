@@ -12,6 +12,7 @@
 import {
   BOLSA_PALABRAS,
   DICCIONARIO_COMUN,
+  PACIENCIA,
   candidatasDePerfil,
   combinacionesDeFrase,
   intentarAdivinar,
@@ -185,5 +186,58 @@ describe('la bolsa y el diccionario del archivo son reales, no de mentira', () =
 
   it('"password" está en el diccionario — hace falta para que P@ssw0rd caiga en el paso 3', () => {
     expect(DICCIONARIO_COMUN).toContain('password');
+  });
+});
+
+/* ── §69.4: la llave se arma con fichas, y la máquina tiene paciencia ─────── */
+
+describe('intentarAdivinar — las piezas que la máquina ya conoce (§69.4)', () => {
+  const PERFIL_DANI: PerfilPublico = { nombre: 'Dani', mascota: 'Rocky', equipo: 'Halcones', juego: 'DinoRally', anios: [2014] };
+  const tres = BOLSA_PALABRAS.slice(10, 13);
+  const cuatro = BOLSA_PALABRAS.slice(10, 14);
+
+  it('armada con fichas, la mascota y el año separados caen igual que juntos (paso 2)', () => {
+    expect(intentarAdivinar('rocky 2014', PERFIL_DANI, DICCIONARIO_COMUN).paso).toBe('dato');
+    expect(intentarAdivinar('Rocky 2014', PERFIL_DANI, DICCIONARIO_COMUN).cae).toBe(true);
+  });
+
+  it('disfrazar password con fichas separadas no la salva (paso 3)', () => {
+    expect(intentarAdivinar('p@ss w0rd', PERFIL_DANI, DICCIONARIO_COMUN).paso).toBe('disfraz');
+  });
+
+  it('tres palabras de la bolsa caen por piezas; cuatro aguantan — la lección de la clase', () => {
+    const r3 = intentarAdivinar(tres.join(' '), PERFIL_DANI, DICCIONARIO_COMUN);
+    expect(r3).toMatchObject({ cae: true, paso: 'piezas', combinaciones: Math.pow(BOLSA_PALABRAS.length, 3) });
+    const r4 = intentarAdivinar(cuatro.join(' '), PERFIL_DANI, DICCIONARIO_COMUN);
+    expect(r4.cae).toBe(false);
+    expect(r4.combinaciones).toBe(Math.pow(BOLSA_PALABRAS.length, 4));
+    expect(r4.combinaciones).toBeGreaterThan(PACIENCIA);
+  });
+
+  it('cuatro fichas con la mascota dentro caen: un dato suyo no suma nada', () => {
+    const r = intentarAdivinar(['rocky', ...tres].join(' '), PERFIL_DANI, DICCIONARIO_COMUN);
+    expect(r).toMatchObject({ cae: true, paso: 'piezas' });
+    expect(r.motivo).toMatch(/dato de su perfil/);
+  });
+
+  it('el disfraz no suma: cuatro palabras disfrazadas valen lo mismo que sin disfraz', () => {
+    const disfrazadas = cuatro.map((p) => p.replace(/a/g, '@').replace(/o/g, '0')).join(' ');
+    expect(intentarAdivinar(disfrazadas, PERFIL_DANI, DICCIONARIO_COMUN).combinaciones).toBe(Math.pow(BOLSA_PALABRAS.length, 4));
+  });
+
+  it('una llave corta y rara cae a lo bruto; una larga y rara aguanta', () => {
+    expect(intentarAdivinar('Xk9!', PERFIL_DANI, DICCIONARIO_COMUN)).toMatchObject({ cae: true, paso: 'fuerza' });
+    expect(intentarAdivinar('Xk9!pQ2z', PERFIL_DANI, DICCIONARIO_COMUN).cae).toBe(false);
+  });
+
+  it('una sola palabra de la bolsa cae, y un número también (el hueco que tenía el motor)', () => {
+    expect(intentarAdivinar('gato', PERFIL_DANI, DICCIONARIO_COMUN)).toMatchObject({ cae: true, paso: 'piezas' });
+    expect(intentarAdivinar('gato 1 2', PERFIL_DANI, DICCIONARIO_COMUN).cae).toBe(true);
+  });
+
+  it('las llaves del marcador de E1 siguen cayendo en el paso de siempre', () => {
+    expect(intentarAdivinar('123456', PERFIL_LUNA, DICCIONARIO_COMUN).paso).toBe('lista');
+    expect(intentarAdivinar('luna2014', PERFIL_LUNA, DICCIONARIO_COMUN).paso).toBe('dato');
+    expect(intentarAdivinar('P@ssw0rd', PERFIL_LUNA, DICCIONARIO_COMUN).paso).toBe('disfraz');
   });
 });

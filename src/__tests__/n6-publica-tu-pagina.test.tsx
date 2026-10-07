@@ -51,11 +51,15 @@ function siguiente() {
 }
 
 /** La línea entera del párrafo con los datos personales, la que hay que quitar. */
-const SIN_CONTACTO = /^.*class="contacto".*\n/m;
+/** Los tres datos que delatan, cada uno en su sitio (§69.13): la hora en el párrafo, la calle en un proyecto, el teléfono en el último párrafo. */
+const HORA = ' Yo salgo de la escuela a las 2:30 por la puerta de atrás.';
+const CALLE = ', que guardamos en mi casa: Insurgentes 214';
+const TELEFONO = ', o llámame al 55 12 34 56 78';
+const sinDatos = (t: string) => t.replace(HORA, '').replace(CALLE, '').replace(TELEFONO, '');
 
 function cumplirEncargo(n: number): void {
   if (n === 1) fireEvent.click(screen.getByText('Tu teléfono, tu calle y la hora a la que sales de la escuela'));
-  else if (n === 2) escribir(codigo().replace(SIN_CONTACTO, ''));
+  else if (n === 2) escribir(sinDatos(codigo()));
   else if (n === 3) escribir(codigo().replace('href="estilos.css"', 'href="estilo.css"'));
   else if (n === 4)
     escribir(
@@ -177,7 +181,7 @@ test('jugando MAL · borrar la página entera también quita el teléfono, y NO 
   escribir('<h1>Robots</h1>');
   expect(screen.queryByTestId('web-logrado')).toBeNull();
   /* Ni quitando sólo la lista y la foto «de paso». */
-  escribir(PLANTILLA_HTML.replace(SIN_CONTACTO, '').replace('  <img src="robot.png">\n', ''));
+  escribir(sinDatos(PLANTILLA_HTML).replace('  <img src="robot.png">\n', ''));
   expect(screen.queryByTestId('web-logrado')).toBeNull();
 
   fireEvent.click(screen.getByText(/Devolver la plantilla/));
@@ -192,12 +196,20 @@ test('jugando MAL · quitar el teléfono a medias tampoco cuela', () => {
   cumplirEncargo(1);
   siguiente();
 
-  /* Quita el teléfono y deja la calle. */
-  escribir(codigo().replace('Llámame al 55 12 34 56 78. ', ''));
+  const original = codigo();
+  /* Quita sólo el teléfono: quedan la calle y la hora. */
+  escribir(original.replace(TELEFONO, ''));
   expect(screen.queryByTestId('web-logrado')).toBeNull();
-  /* Quita la calle y deja la hora de salida. */
-  escribir(codigo().replace('Vivo en Insurgentes 214 y salgo', 'Salgo'));
+  /* Quita el teléfono y la calle: queda la hora. */
+  escribir(original.replace(TELEFONO, '').replace(CALLE, ''));
   expect(screen.queryByTestId('web-logrado')).toBeNull();
+  /* Borra el proyecto entero para quitar la calle: la lista se queda con dos. */
+  escribir(original.replace(TELEFONO, '').replace(HORA, '').replace(/^.*Insurgentes.*\n/m, ''));
+  expect(screen.queryByTestId('web-logrado')).toBeNull();
+  /* Borra el párrafo entero para quitar la hora: se va también el día del club. */
+  escribir(original.replace(TELEFONO, '').replace(CALLE, '').replace(/^.*martes.*\n/m, ''));
+  expect(screen.queryByTestId('web-logrado')).toBeNull();
+  escribir(original);
   cumplirEncargo(2);
   expect(screen.getByTestId('web-logrado')).toBeInTheDocument();
 });
@@ -274,7 +286,7 @@ test('jugando MAL · adelantarse y dejar la página revisada de un tirón la ter
   /* Los cuatro arreglos en un solo tecleo: cada encargo se da por hecho al
    * abrirse, sin pedir una tecla de más. */
   escribir(
-    PLANTILLA_HTML.replace(SIN_CONTACTO, '')
+    sinDatos(PLANTILLA_HTML)
       .replace('href="estilos.css"', 'href="estilo.css"')
       .replace('<img src="robot.png">', '<img src="robot.png" alt="Nuestro robot siguiendo la línea">')
       .replace('<a>', '<a href="https://feriadeciencias.mx">')
@@ -323,4 +335,15 @@ test('la entrada habla de ESTA clase y abre el laboratorio', () => {
   expect(screen.getByText('Publicar es lo fácil')).toBeInTheDocument();
   fireEvent.click(screen.getByText('Abre el proyecto'));
   expect(screen.getByTestId('pgw-portada')).toBeInTheDocument();
+});
+
+/* ── §69.13 · la meta se ve, el código no se dicta ─────────────────────────── */
+
+/** Una etiqueta entera con su contenido: «<h1>Robots</h1>» o «<img src="x">». «<title> y </title>» no cuenta. */
+const LINEA_DICTADA = /<(\w+)[^>]*>(?!\s*y\s*<)[^<]{2,}<\/\1>|<img\s[^>]*>/;
+
+test('§69.13 · ninguna instrucción ni pista trae la línea de código hecha', () => {
+  for (const paso of GUION.pasos) {
+    expect([paso.id, LINEA_DICTADA.test(`${paso.instruccion} ${paso.pista}`)]).toEqual([paso.id, false]);
+  }
 });

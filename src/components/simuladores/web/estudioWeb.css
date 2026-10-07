@@ -155,6 +155,8 @@
 .web-cuerpo {
   display: grid;
   grid-template-columns: minmax(320px, 1fr) minmax(340px, 1.15fr) minmax(240px, 0.7fr);
+  /* Una fila del alto de la caja: así el lateral se puede limitar a ella y desplazarse. */
+  grid-template-rows: minmax(0, 1fr);
   gap: 12px;
   padding: 12px;
   min-height: 0;
@@ -551,6 +553,11 @@
   flex-direction: column;
   gap: 12px;
   min-width: 0;
+  /* Se desplaza dentro de su fila: si el encargo crece (el modelo, §69.13), no se mete
+     debajo de lo que la clase pinta abajo. */
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .web-lateral-titulo {
@@ -591,6 +598,32 @@
   font-size: 13.5px;
   color: #cfe0ff;
 }
+/* El modelo del encargo (§69.13): la página que hay que conseguir, en pequeño. */
+.web-encargo-modelo {
+  margin: 10px 0 0;
+  padding: 8px;
+  border-radius: 10px;
+  border: 2px dashed rgba(251, 191, 36, 0.7);
+  background: #070c22;
+}
+.web-encargo-modelo figcaption {
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fbbf24;
+}
+.web-encargo-modelo-marco {
+  max-height: 104px;
+  overflow: hidden auto;
+  border-radius: 6px;
+}
+.web-encargo-modelo-marco > .wpv {
+  zoom: 0.5;
+  pointer-events: none;
+}
+
 .web-encargo-opciones {
   display: grid;
   gap: 6px;
@@ -816,6 +849,10 @@
 @media (max-width: 1100px) {
   .web-cuerpo {
     grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+  .web-lateral {
+    max-height: none;
   }
 }
 

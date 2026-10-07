@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityProps } from '@/types/activity-contract';
 import { reproducirTono } from '../../n1/mision/audio';
@@ -327,7 +328,7 @@ export function LabOrtografiaEImagenes(props: ActivityProps & { alSalir?: () => 
           <p className="taller3d-corrector-pregunta">¿Cómo se escribe?</p>
           <p className="taller3d-corrector-palabra">«{palabras[revisionAbierta.i]}»</p>
           <div className="taller3d-corrector-opciones">
-            {revisionAbierta.opciones.map((op) => (
+            {ordenDeOpciones(revisionAbierta.opciones.length, `ortografia-${revisionAbierta.i}`).map((k) => revisionAbierta.opciones[k]).map((op) => (
               <button
                 key={op}
                 type="button"
@@ -445,7 +446,7 @@ export function LabOrtografiaEImagenes(props: ActivityProps & { alSalir?: () => 
       </div>
       {revisionAbierta && (
         <div className="escena3d-respaldo-fila">
-          {revisionAbierta.opciones.map((op) => (
+          {ordenDeOpciones(revisionAbierta.opciones.length, `ortografia-${revisionAbierta.i}`).map((k) => revisionAbierta.opciones[k]).map((op) => (
             <button key={op} type="button" aria-label={`Opción: ${op}`} disabled={terminado} onClick={() => elegirOpcion(revisionAbierta, op)}>
               {op}
             </button>

@@ -309,6 +309,13 @@ const CLASES_EXPLICADAS: Record<ClaseError, { emoji: string; nombre: string; que
   atributo: { emoji: '🧷', nombre: 'Error de atributo', que: 'Se pidió un método o dato que ese tipo no tiene.' },
   recursion: { emoji: '🌀', nombre: 'Error de recursión', que: 'Una función se llamó a sí misma demasiadas veces sin parar.' },
   limite: { emoji: '🛑', nombre: 'Error de límite', que: 'El programa pidió más de lo que este editor puede manejar sin equivocarse.' },
+  /* Los de archivos y módulos (M4, §69.21). Esta clase no los provoca, pero si un
+   * alumno los escribe por su cuenta el detective tiene que saber qué son. */
+  archivo: { emoji: '📂', nombre: 'Archivo que no existe', que: 'Se intentó abrir un archivo con un nombre que no está en el proyecto.' },
+  modulo: { emoji: '📦', nombre: 'Módulo que no existe', que: 'Se importó un módulo que no hay: ni es de fábrica ni es un archivo .py del proyecto.' },
+  importacion: { emoji: '🚚', nombre: 'Error de importación', que: 'El módulo existe, pero no tiene lo que se le pidió traer.' },
+  estadistica: { emoji: '📊', nombre: 'Error de estadística', que: 'Se le pidió un promedio o una mediana a una lista sin datos.' },
+  operacion: { emoji: '🔒', nombre: 'Operación no permitida', que: 'Se quiso leer un archivo abierto para escribir, o escribir en uno abierto para leer.' },
 };
 
 function PanelDetective({ ejecucion }: PanelCodigoProps) {

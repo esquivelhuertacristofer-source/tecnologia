@@ -25,6 +25,13 @@
   min-height: 0;
 }
 
+/* El cuerpo no encoge para dejar sitio a la mesa de imágenes (§69.13): encogido, sus
+   columnas se salían por debajo y la mesa tapaba «Lo que hay que arreglar», justo lo
+   que los encargos piden leer. Así crece y es la pantalla del gabinete la que se desplaza. */
+.pgw-marco .web-cuerpo {
+  flex-shrink: 0;
+}
+
 /* La marca del programa, con el brillo del salón. */
 .pgw-marco .vtb-barra {
   background: linear-gradient(180deg, #17245c, #0b1230);

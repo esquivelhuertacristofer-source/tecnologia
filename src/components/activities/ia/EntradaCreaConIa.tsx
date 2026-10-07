@@ -22,11 +22,11 @@ const CONFIG: ConfigEntradaN4 = {
   ruta: RUTA_N6_DISENO_MULTIMEDIA,
   parada: 3,
   globo:
-    'Para el cartel del año que viene hace falta una ilustración que nadie fotografió. Hoy se la pides a una IA, la revisas antes de usarla, y firmas de dónde salió — que es lo que hace que el trabajo se pueda entregar.',
+    'El comité de la Feria de Ciencias necesita el fondo de su cartel, y esa imagen no la tiene nadie. Hoy se la pides a un generador, la revisas antes de usarla —porque no obedece del todo— y firmas de dónde salió.',
   arranqueSub:
     'Una IA generadora **no busca: fabrica**. Lo que te da no existía antes y **no vuelve a salir igual**. Por eso hay dos cosas que aprender juntas: pedir bien y **apuntar de dónde salió**.',
   stats: [
-    { etiqueta: 'Encargos', valor: '7', acento: '#a78bfa' },
+    { etiqueta: 'Encargos', valor: '6', acento: '#a78bfa' },
     { etiqueta: 'Piezas de la petición', valor: '4', acento: '#22d3ee' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
@@ -53,7 +53,7 @@ const CONFIG: ConfigEntradaN4 = {
       tag: 'Antes de usar',
       numero: 3,
       titulo: 'Míralo tú',
-      detalle: 'La IA entrega lo bueno y lo malo con la misma seguridad. **Letras revueltas** es su fallo más típico.',
+      detalle: 'Lo que prohíbes casi nunca sale, pero **a veces se cuela**. Ninguna imagen te avisa: hay que mirarla.',
       acento: { c: '#f97316', deep: '#b45309' },
     },
     {
@@ -76,7 +76,7 @@ const CONFIG: ConfigEntradaN4 = {
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5',
   ctaTitulo: 'Abre el generador',
   ctaDetalle:
-    'Cuatro piezas, tres tandas de imágenes y una ficha de procedencia. **Sales sabiendo pedir, revisar y firmar.**',
+    'Un generador que hace lo que le pides —y a veces lo que no—, un comité que revisa y una ficha de procedencia. **Sales sabiendo pedir, revisar y firmar.**',
   assetsPendientes: false,
 };
 

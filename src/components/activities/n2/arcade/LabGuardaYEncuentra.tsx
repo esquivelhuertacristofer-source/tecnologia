@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityProps } from '@/types/activity-contract';
 import { reproducirTono } from '../../n1/mision/audio';
@@ -309,7 +310,7 @@ export function LabGuardaYEncuentra(props: ActivityProps & { alSalir?: () => voi
     <>
       <span className="gabinete-nota">Tarjetas de nombre</span>
       <div className="safari-opciones" role="group" aria-label="Elige el nombre">
-        {retoR1.opciones.map((opcion) => (
+        {ordenDeOpciones(retoR1.opciones.length, retoR1.id).map((k) => retoR1.opciones[k]).map((opcion) => (
           <button
             key={opcion.texto}
             type="button"

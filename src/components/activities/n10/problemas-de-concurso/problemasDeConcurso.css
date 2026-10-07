@@ -1,0 +1,97 @@
+/*
+ * `n10-problemas-de-concurso` — lo que la clase añade al panel del juez.
+ *
+ * Todo lo del tablero (solapas, veredicto, casos, pistas) viene de
+ * `panelJuez.css`, que es del armazón. Aquí sólo está el encargo final, el
+ * único trozo que es de esta clase y de ninguna otra: la función rota que hay
+ * que desenmascarar.
+ */
+
+.pdc-roto {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 2px solid #7a4bd0;
+  background: #1a1236;
+  color: #e7dcff;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.pdc-roto h4 {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 900;
+  color: #d9b8ff;
+}
+
+.pdc-roto p {
+  margin: 0;
+}
+
+.pdc-roto code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: #2a1d52;
+  color: #ffd89a;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SF Mono', Menlo, monospace;
+  font-size: 12.5px;
+}
+
+.pdc-rota-codigo {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #0e0a20;
+  border-left: 4px solid #e2554f;
+  color: #ffc9c6;
+  font-family: 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SF Mono', Menlo, monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+  overflow-x: auto;
+}
+
+.pdc-probar {
+  align-self: flex-start;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 2px solid #b07bff;
+  background: linear-gradient(180deg, #8b5cf6, #6d28d9);
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 13.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #45178c;
+}
+
+.pdc-probar:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #45178c;
+}
+
+.pdc-veredicto-roto {
+  padding: 9px 11px;
+  border-radius: 10px;
+  border-left: 4px solid #7a4bd0;
+  background: #241848;
+}
+
+.pdc-veredicto-roto[data-separa='si'] {
+  border-left-color: #2fbf6b;
+  background: #11331f;
+  color: #c9f7dc;
+}
+
+.pdc-porque {
+  margin: 0;
+}
+
+.pdc-porque b {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #0e0a20;
+  font-variant-numeric: tabular-nums;
+}

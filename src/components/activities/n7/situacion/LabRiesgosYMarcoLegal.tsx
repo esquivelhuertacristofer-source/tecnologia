@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
 import { ConNegritas } from '@/components/ui/ConNegritas';
@@ -875,7 +876,7 @@ function ChatPane({
         <div className="msj-respuestas">
           <p className="msj-respuestas-pregunta">{decisionActual.pregunta}</p>
           <div className="msj-respuestas-opciones">
-            {decisionActual.opciones.map((op) => (
+            {ordenDeOpciones(decisionActual.opciones.length, decisionActual.pregunta).map((k) => decisionActual.opciones[k]).map((op) => (
               <button key={op.id} type="button" className="msj-opcion" onClick={() => onElegir(op)}>
                 {op.texto}
               </button>

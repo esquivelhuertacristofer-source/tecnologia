@@ -92,18 +92,25 @@ export const confirmar = (texto?: string | RegExp) => {
 /** Contesta un encargo de elegir entre opciones. */
 export const elegir = (texto: string | RegExp) => {
   const opciones = Array.from(document.querySelectorAll<HTMLElement>('.txtw-opcion'));
-  const cual = opciones.find((o) =>
-    typeof texto === 'string' ? (o.textContent ?? '').includes(texto) : texto.test(o.textContent ?? ''),
-  );
+  // Las opciones salen barajadas (fase A, 6-oct-2026): primero la coincidencia exacta.
+  const cual =
+    opciones.find((o) => typeof texto === 'string' && (o.textContent ?? '').trim() === texto) ??
+    opciones.find((o) =>
+      typeof texto === 'string' ? (o.textContent ?? '').includes(texto) : texto.test(o.textContent ?? ''),
+    );
   if (!cual) throw new Error(`no hay opción «${texto}» — hay: ${opciones.map((o) => o.textContent).join(' | ')}`);
   fireEvent.click(cual);
 };
 
-/** La opción número `i` de un encargo de elección, cuando el texto es largo. */
+/**
+ * La opción número `i` de un encargo de elección, cuando el texto es largo.
+ * `i` es el índice ORIGINAL (el de `logro.opciones`): en pantalla salen
+ * barajadas desde la fase A (6-oct-2026), así que se busca por `data-opcion`.
+ */
 export const elegirLa = (i: number) => {
-  const opciones = Array.from(document.querySelectorAll<HTMLElement>('.txtw-opcion'));
-  if (!opciones[i]) throw new Error(`no hay opción número ${i} — hay ${opciones.length}`);
-  fireEvent.click(opciones[i]);
+  const opcion = document.querySelector<HTMLElement>(`.txtw-opcion[data-opcion="${i}"]`);
+  if (!opcion) throw new Error(`no hay opción número ${i} — hay ${document.querySelectorAll('.txtw-opcion').length}`);
+  fireEvent.click(opcion);
 };
 
 /* ── el lienzo ──────────────────────────────────────────────────────────────*/

@@ -38,10 +38,10 @@ const CONFIG: ConfigEntradaN4 = {
   globo:
     'Hasta hoy programabas arrastrando bloques. Hoy abres un editor de código y escribes las órdenes tú, letra por letra.',
   arranqueSub:
-    'Vas a abrir **saludo.py**, tu primer archivo de Python, y a escribir dentro las tres piezas que tiene cualquier programa.',
+    'Vas a abrir **saludo.py**, tu primer archivo de Python, a escribir dentro las tres piezas que tiene cualquier programa, y un **juez** lo va a probar con nombres que tú no escribiste.',
   stats: [
     { etiqueta: 'Encargos', valor: '8', acento: '#22d3ee' },
-    { etiqueta: 'Piezas', valor: '3', acento: '#fbbf24' },
+    { etiqueta: 'Problemas con juez', valor: '2', acento: '#fbbf24' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
   letrero: 'Las tres piezas de un programa',
@@ -70,7 +70,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 3,
       titulo: 'Una variable guarda',
       detalle:
-        'Es una caja con nombre. El nombre va **sin comillas**; lo que guardas dentro va con comillas si es texto. Luego la usas escribiendo su nombre.',
+        'Es una caja con nombre: la usas escribiendo su nombre, y tu programa sirve para **cualquier** cosa que haya dentro. El juez lo comprueba cambiando lo que guarda la caja.',
       acento: { c: '#fbbf24', deep: '#b45309' },
     },
     {
@@ -86,7 +86,7 @@ const CONFIG: ConfigEntradaN4 = {
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre el editor de código',
   ctaDetalle:
-    'Ocho encargos: ejecuta un programa, míralo ir despacio, escribe tu propio print, guarda tu nombre en una variable, **rómpelo a propósito**, arréglalo y haz que decida solo.',
+    'Ocho encargos: ejecuta un programa, míralo ir despacio, escribe tu propia línea, haz un saludo que sirva para cualquier nombre, **rómpelo a propósito**, arréglalo y haz que decida solo si un nombre es largo o corto. Los dos problemas los prueba el juez.',
   assetsPendientes: false,
 };
 

@@ -1498,9 +1498,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 6,
       unidadId: 'n6-de-bloques-a-texto',
       eje: 'programacion',
-      duracionMin: 25,
+      duracionMin: 30,
       descripcion:
-        'Tu primer archivo .py. Ejecutas un programa ya escrito y lo miras ir despacio, línea por línea; escribes tu propio print; guardas tu nombre en una variable; le quitas las comillas para romperlo A PROPÓSITO y aprender a leer el error que sale, con su línea y su pista; lo arreglas; y terminas haciendo que el programa decida solo con un if y un else. Insignia de Primera línea.',
+        'Tu primer archivo .py. Ejecutas un programa ya escrito y lo miras ir despacio, línea por línea; escribes tu propia línea; haces un saludo con lo que guarda una caja y un juez lo prueba con otros nombres; le quitas las comillas para romperlo A PROPÓSITO y leer el error, con su línea y su pista; lo arreglas; y haces que el programa decida solo si un nombre es largo o corto, con un if y un else que el juez prueba en 6 y en 7 letras justas. Insignia de Primera línea.',
       layout: 'inmersivo',
     },
   },
@@ -1519,7 +1519,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'programacion',
       duracionMin: 20,
       descripcion:
-        'Armas un programa con bloques y ves, en la misma ventana, cómo se reescribe solo en Python: el bloque que corre y su línea se encienden a la vez. El ejercicio central es meter un bloque dentro de la boca de un «repetir» y sacar otro fuera, para descubrir que la única diferencia en el texto son cuatro espacios de sangría.',
+        'Armas un programa con bloques y ves, en la misma ventana, cómo se reescribe solo en Python: el bloque que corre y su línea se encienden a la vez. Haces que algo pase tres veces con un solo bloque y otra cosa una sola vez, y descubres que la única diferencia en el texto son cuatro espacios de sangría. Al final, al revés: te dan un programa escrito en Python y lo armas tú en bloques.',
       layout: 'inmersivo',
     },
   },
@@ -1532,7 +1532,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'programacion',
       duracionMin: 30,
       descripcion:
-        'Guardas cuatro datos en cuatro cajas y ves de qué tipo nace cada una en la Mesa de tipos: int, float, str y bool. Le preguntas el tipo a Python con type(), descubres por qué 10 / 2 escribe 5.0 y 10 // 2 escribe 5, y después mezclas tipos A PROPÓSITO hasta romper el programa de dos maneras distintas —TypeError al sumar texto con número, ValueError al convertir «trece»—. Terminas decidiendo tú cada conversión: str() para pegar, int() para sumar. Insignia de Cada dato en su caja.',
+        'Guardas cuatro datos tuyos y ves en la Mesa de tipos de qué tipo nace cada uno: int, float, str y bool. Le preguntas el tipo a Python y provocas a propósito los dos errores de esta clase, el de tipo y el de valor. Después escribes tres programas —una credencial, un reparto de pizzas y un marcador— que un juez prueba cambiando sus datos: escribir el resultado a mano no sirve. Insignia de Cada dato en su caja.',
       layout: 'inmersivo',
     },
   },
@@ -1543,9 +1543,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 7,
       unidadId: 'n7-python-1',
       eje: 'programacion',
-      duracionMin: 30,
+      duracionMin: 35,
       descripcion:
-        'Escribes un programa que te entrevista: pregunta con input, se detiene a esperarte y tú le contestas en la consola. Le sumas 1 a la edad que acabas de escribir y revienta, que es como se descubre que input devuelve SIEMPRE texto; lo conviertes con int(), contestas «trece» con letras para ver el otro error, y armas una ficha con tres datos usando print con comas y una f-string. Insignia de Pregunta y responde.',
+        'Escribes programas que preguntan con input y contestan con print, sin líneas dictadas: una meta, un manual con ejemplos de otros temas y un juez que teclea datos que no has visto. Le sumas 1 a una edad recién escrita y revienta, que es como se descubre que input devuelve SIEMPRE texto; después resuelves tres problemas con nueve casos ocultos —convertir con int() y float() y escribir la frase exacta— y descubres por qué un precio sin convertir imprime 12.512.512.5. Insignia de Pregunta y responde.',
       layout: 'inmersivo',
     },
   },
@@ -1556,9 +1556,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 7,
       unidadId: 'n7-python-1',
       eje: 'programacion',
-      duracionMin: 30,
+      duracionMin: 35,
       descripcion:
-        'Tu programa decide: un camino u otro con if/else, tres caminos o más con elif, y descubres por qué == y = no son lo mismo. Combinas dos condiciones a la vez con and y con or, y provocas a propósito el único error que este intérprete no sólo señala sino que explica: Python no deja escribir «120 <= altura <= 150» de un tirón. Lo arreglas con and, y cierras con una pregunta sobre por qué el orden de un elif puede darte la respuesta equivocada sin avisar. Insignia de Tu programa ya decide.',
+        'Escribes el programa de la entrada de La Serpiente sin líneas dictadas: quién alcanza la altura, quién sube con un adulto, quién pasa por la fila VIP y quién entra gratis. Un juez lo prueba justo en las fronteras —120 exactos, 149, 150, un niño con boleto vip— con doce casos ocultos, provocas el error de comparar con un solo signo igual, y cierras explicando por qué un elif mal ordenado acierta con los ejemplos y falla sin avisar. Insignia de Tu programa ya decide.',
       layout: 'inmersivo',
     },
   },
@@ -1570,9 +1570,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 7,
       unidadId: 'n7-python-1',
       eje: 'programacion',
-      duracionMin: 30,
+      duracionMin: 35,
       descripcion:
-        'Escribes cuatro bucles distintos: repites con for y range() hasta escribir la tabla del 7 en dos líneas, acumulas la suma de diez números en la misma caja vuelta tras vuelta, y cuentas hacia atrás con while. Luego borras la línea que lo detiene para provocar un bucle infinito de verdad y ver cómo el editor te protege — lo arreglas, sales de un bucle con break antes de tiempo, y cierras distinguiendo cuál de tres bucles nunca termina solo. Insignia de Sobreviviste al bucle infinito.',
+        'El equipo entrena para la carrera de la escuela y tú escribes los programas que repiten: anunciar las vueltas que diga el entrenador, sumar los kilómetros de la semana, contar las salidas hasta la meta y juntar monedas hasta que alguien teclee 0. Nadie te dicta las líneas y un juez prueba con cero, con una y con muchas vueltas. En medio, provocas un bucle infinito a propósito y ves al editor pararlo. Insignia de Sobreviviste al bucle infinito.',
       layout: 'inmersivo',
     },
   },
@@ -1586,7 +1586,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'programacion',
       duracionMin: 35,
       descripcion:
-        'Cierras la unidad armando tres programas completos, uno detrás de otro: decides un descuento con if/elif/else sobre un total que tú mismo calculaste con float() e int(), cuentas y clasificas un grupo acumulando dos variables en el mismo for, y abres un candado con while, input y break —después de comprobar que un acierto sin break no basta para detenerlo—. No aprendes ninguna herramienta nueva: combinas las cuatro de la unidad. Insignia de Resolviste los tres retos.',
+        'Cierras la unidad con tres programas que escribes tú, sin una línea dictada: el precio con dos descuentos de la papelería, los aprobados y el promedio del grupo, y el candado del casillero con tres intentos. Ninguno necesita algo nuevo; necesitan que juntes lo de las cuatro paradas. Un juez los prueba justo en las fronteras y en los casos especiales, como el grupo sin alumnos. Insignia de Resolviste los tres retos.',
       layout: 'inmersivo',
     },
   },
@@ -1600,9 +1600,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 8,
       unidadId: 'n8-python-2',
       eje: 'programacion',
-      duracionMin: 30,
+      duracionMin: 35,
       descripcion:
-        'Guardas varios datos juntos en una sola caja: una lista para tu mochila (indexar con positivos y negativos, append(), una rebanada, recorrerla con for) y un diccionario para la ficha de un alumno (acceso por clave, .items(), el operador in). En medio, provocas a propósito un IndexError de verdad pidiendo una posición que no existe, lo lees con calma y lo corriges. Insignia de Ordenaste tu mochila.',
+        'Escribes cinco programas con una lista y un diccionario: lo primero y lo último de la mochila, el pedido nuevo, el total y el precio más caro, si la cooperativa tiene un producto y cuáles están agotados. Un juez los prueba cambiando la mochila y el inventario —una cosa, cinco, ninguna, un producto en cero—, así que escribir el resultado a mano o pedir una posición fija no sirve. En medio pides a propósito una casilla que no existe y lees el error. Insignia de Ordenaste tu mochila.',
       layout: 'inmersivo',
     },
   },
@@ -1671,7 +1671,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'programacion',
       duracionMin: 20,
       descripcion:
-        'Programas una placa micro:bit simulada con tres guiones distintos: qué pasa al presionar A, qué pasa al presionar B y qué pasa al empezar. Ves un guion vacío avisar en vez de fallar, provocas un resultado equivocado A PROPÓSITO cambiando el orden de los bloques y lo arreglas, y terminas decidiendo qué es lo que de verdad dispara cada guion. Insignia de Programador de placas.',
+        'Programas una placa micro:bit simulada con tres guiones distintos: qué pasa al presionar A, qué pasa al presionar B y qué pasa al empezar. Nadie te dice bajo qué sombrero va cada bloque: lo descubres leyéndolos, y la placa comprueba el guion del botón que pulsaste. Ves un guion vacío avisar en vez de fallar, provocas un resultado equivocado A PROPÓSITO con el orden de los bloques y lo arreglas sin quitar ninguno. Insignia de Programador de placas.',
       layout: 'inmersivo',
     },
   },
@@ -1684,7 +1684,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'programacion',
       duracionMin: 22,
       descripcion:
-        'Mueves a un robot por una cuadrícula hasta chocar con un límite A PROPÓSITO, y le enseñas a preguntar «¿hay pared adelante?» con un bloque «si» antes de girar, para llegar a la meta sin volver a chocar. Terminas quitándole la pregunta al «si» para descubrir que, sin ella, la respuesta es siempre que no. Insignia de Domador de robots.',
+        'Llevas a un robot a la bandera en un mapa con paredes, pruebas el mismo programa en otro mapa y lo ves fallar, y armas UN solo programa que llegue en los dos sin chocar ni cambiarlo: para eso el robot tiene que preguntar «¿hay pared adelante?» antes de cada paso. Nadie te dicta los bloques. Terminas quitándole la pregunta al «si» para descubrir qué contesta un hexágono vacío. Insignia de Domador de robots.',
       layout: 'inmersivo',
     },
   },
@@ -1835,7 +1835,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'creatividad',
       duracionMin: 20,
       descripcion:
-        'La tesorera le puso categoría a cada gasto de la salida —transporte, entradas, comida, material— y hoy contestas cuánto se fue en cada una sin partir la tabla en cuatro: SUMAR.SI, CONTAR.SI y PROMEDIO.SI suman, cuentan y reparten sólo lo que cumple una condición. Provocas a propósito el error de escribir el criterio sin comillas, descubres que hasta un criterio con un número las lleva si trae un signo de comparación, y cazas un rango corrido que da un número y está mal sin que nada avise. Después, en la hoja de los pagos, escribes =HOY() y sale un número de cinco cifras en vez de una fecha: la vistes de fecha, le quitas el mismo disfraz a la fecha de la salida, y las restas para saber cuántos días faltan. Insignia de El número disfrazado.',
+        'La tesorera le puso categoría a cada gasto de la salida —transporte, entradas, comida, material— y hoy contestas cuánto se fue en cada una sin partir la tabla en cuatro: SUMAR.SI, CONTAR.SI y PROMEDIO.SI suman, cuentan y reparten sólo lo que cumple una condición. Cada encargo es una pregunta de la tesorera y la fórmula la armas tú: descubres por qué el criterio va entre comillas, que hasta uno con un número las lleva si trae un signo de comparación, y encuentras el rango corrido de un total que ella dejó escrito, que da un número y está mal sin que nada avise. Después, en la hoja de los pagos, escribes =HOY() y sale un número de cinco cifras en vez de una fecha: la vistes de fecha, le quitas el mismo disfraz a la fecha de la salida, y las restas para saber cuántos días faltan. Insignia de El número disfrazado.',
       layout: 'inmersivo',
     },
   },
@@ -1844,10 +1844,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
    * La cuarta del grado Intermedio, y prestada como la anterior: su id es
    * `n6-`, vive en la misma unidad del nivel 6 y la sala de Excel la enseña
    * desde ahí. Bloques 37 (elegir entre las cinco gráficas) y 38 (las que
-   * mienten: el eje cortado, el pastel de veinte porciones), con el panel
-   * «Gráficas» —`PanelGraficas.tsx`— que entra por `panelFijo` para los dos
-   * tipos que la cinta del grado Básico no declara (barras y dispersión), el
-   * mismo criterio que ya usó `n7-formato-condicional` para el suyo.
+   * mienten: el eje cortado, el pastel de veinte porciones), con su propia
+   * cinta (`CINTA_ELIGE_GRAFICA`): Insertar → Gráficos trae las cinco, porque la
+   * cinta del grado Básico sólo declara tres (§69.8).
    */
   'n6-elige-la-grafica': {
     meta: {
@@ -1858,7 +1857,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'creatividad',
       duracionMin: 24,
       descripcion:
-        'La feria de la escuela ya pasó, y hay números de sobra. Descubres que cada gráfica contesta una pregunta distinta —barras compara, líneas sigue el tiempo, pastel reparte un total, dispersión busca relación— eligiendo mal a propósito dos veces, para ver la respuesta dejar de leerse sin que ningún número cambie. Construyes la misma gráfica dos veces con los mismos datos y le cortas el eje a una: la misma diferencia real se ve casi nada en una y enorme en la otra. Armas un pastel de veinte porciones ilegibles y otro de datos que no suman ningún total. Insignia de El ojo que desconfía.',
+        'La feria de la escuela ya pasó, y hay números de sobra. Cada pregunta llega sin decir qué gráfica usar: la eliges tú entre cinco, y descubres que cada una contesta una pregunta distinta. Eliges mal a propósito dos veces, para ver la respuesta dejar de leerse sin que ningún número cambie. Construyes la misma gráfica dos veces con los mismos datos y le cortas el eje a una: la misma diferencia real se ve casi nada en una y enorme en la otra. Armas un pastel de veinte porciones ilegibles y otro de datos que no suman ningún total. Insignia de El ojo que desconfía.',
       layout: 'inmersivo',
     },
   },
@@ -2070,7 +2069,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'programacion',
       duracionMin: 15,
       descripcion:
-        'Abres por dentro la página del club de robótica de tu escuela: el texto a la izquierda, la página a la derecha, y todo lo que escribes se ve al momento sin guardar. Le cambias el nombre al club, le pones nombre a la pestaña, y después la rompes a propósito —borras el cierre </h1>— para ver qué pasa: el párrafo de abajo se vuelve gigante y el programa te dice el archivo, la línea y el arreglo. La arreglas leyendo el aviso, no adivinando, y escribes tú una línea nueva. Siete encargos. Insignia de Abre el código. Guardado automático.',
+        'Abres por dentro la página del club de robótica de tu escuela: el texto a la izquierda, la página a la derecha, y todo lo que escribes se ve al momento sin guardar. Le cambias el nombre al club, le pones nombre a la pestaña, y después la rompes a propósito —borras el cierre </h1>— para ver qué pasa: el párrafo de abajo se vuelve gigante y el programa te dice el archivo, la línea y el arreglo. La arreglas leyendo el aviso, no adivinando, y escribes tú un párrafo nuevo mirando un modelo de cómo tiene que verse. Siete encargos. Insignia de Abre el código. Guardado automático.',
       layout: 'inmersivo',
     },
   },
@@ -2083,7 +2082,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'programacion',
       duracionMin: 20,
       descripcion:
-        'Tu página llega con la cabecera puesta y el cuerpo vacío, y la llenas tú con las cinco etiquetas de las que está hecha casi cualquier página: título, párrafo, lista, imagen y enlace. Pones una lista de tres proyectos sin escribir ni una viñeta, y aprendes las dos reglas que casi nadie cumple: contar con palabras lo que se ve en la foto —el aviso amarillo aparece aunque la foto se vea perfectamente— y escribir enlaces que digan a dónde llevan, porque «pincha aquí» no lo da por bueno. Siete encargos. Insignia de Constructor de páginas. Guardado automático.',
+        'Tu página llega con la cabecera puesta y el cuerpo vacío, y la llenas tú con las cinco etiquetas de las que está hecha casi cualquier página: título, párrafo, lista, imagen y enlace. Pones una lista de tres proyectos sin escribir ni una viñeta, y aprendes las dos reglas que casi nadie cumple: contar con palabras lo que se ve en la foto —el aviso amarillo aparece aunque la foto se vea perfectamente— y escribir enlaces que digan a dónde llevan, porque «pincha aquí» no lo da por bueno. Nadie te dicta el código: cada encargo nombra la etiqueta y te enseña, en pequeño, cómo tiene que verse la página. Siete encargos. Insignia de Constructor de páginas. Guardado automático.',
       layout: 'inmersivo',
     },
   },
@@ -2096,7 +2095,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'programacion',
       duracionMin: 20,
       descripcion:
-        'Hoy casi no escribes: revisas. Tu página llega terminada y con cuatro cosas mal, y la primera no es un error de código —es un teléfono, una calle y la hora a la que sales de la escuela, en una página que va a poder abrir cualquiera—. Quitas eso sin llevarte por delante el resto, arreglas el error rojo (el enlace al estilo tiene una letra de más, y al quitarla la página se llena de color de golpe), arreglas los dos avisos amarillos y le pones nombre a la pestaña. Sólo entonces se abre el panel de publicar, y la barra del navegador pasa a decir tu dirección. Cinco revisiones y tres pasos. Insignia de Publica con cabeza. Guardado automático.',
+        'Hoy casi no escribes: revisas. Tu página llega terminada y con cuatro cosas mal, y la primera no es un error de código —es un teléfono, una calle y la hora a la que sales de la escuela, en una página que va a poder abrir cualquiera—. Esos datos están repartidos por la página, mezclados con cosas que sí van, y los quitas sin llevarte por delante el resto. Arreglas el error rojo leyendo lo que dice (y al arreglarlo la página se llena de color de golpe), arreglas los dos avisos amarillos y le pones nombre a la pestaña. Sólo entonces se abre el panel de publicar, y la barra del navegador pasa a decir tu dirección. Cinco revisiones y tres pasos. Insignia de Publica con cabeza. Guardado automático.',
       layout: 'inmersivo',
     },
   },
@@ -2180,9 +2179,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 8,
       unidadId: 'n8-multimedia-y-videojuegos',
       eje: 'creatividad',
-      duracionMin: 25,
+      duracionMin: 30,
       descripcion:
-        'Cinco encargos sobre un nivel 3D que se juega de verdad: subes la gravedad y el impulso de salto hasta que el personaje alcance lo alto, añades la plataforma y el cristal que faltan, enciendes la luz de neón, y lo pruebas con el teclado hasta recoger el cristal. Guardado automático.',
+        'Nueve encargos en Tecnia Juegos, un creador de plataformas 2D: escribes los guiones del héroe (caminar, saltar sólo desde el suelo, ajustar impulso y gravedad), las reglas de la moneda, el pincho y la puerta, y diseñas tu propio nivel, que tres jugadores de prueba —novato, medio y experto— tienen que poder terminar. Guardado automático.',
       layout: 'inmersivo',
     },
   },
@@ -2375,7 +2374,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'creatividad',
       duracionMin: 15,
       descripcion:
-        'Tu lienzo llega vacío y construyes un cartel con las cuatro reglas de un buen cartel: un título que se lee primero, agrandado y centrado con la herramienta —no a ojo—, la información de apoyo debajo y estrictamente más chica (jerarquía de verdad), y un fondo de color cuidando no pasarte de cuatro colores distintos en total. El editor cuadricula el lienzo: o algo está centrado exacto, o no lo está. Cuatro encargos. Insignia de Diseñador de carteles.',
+        'El 6.º B preguntó cómo llega cada uno a la escuela, y tú conviertes los cuatro números de la encuesta en una infografía para el periódico mural: la pregunta de título, grande y centrada; una barra por dato con la altura proporcional a su número —la calculas tú—, todas desde el mismo suelo y con su etiqueta; la respuesta destacada en otro color, la fuente de los datos en letra chica, y el cartel sin pasarse de cuatro colores. El editor cuadricula el lienzo: una barra mide lo que vale o no lo mide. Ocho encargos. Insignia de Diseñador de carteles.',
       layout: 'inmersivo',
     },
   },
@@ -2386,9 +2385,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 6,
       unidadId: 'n6-diseno-y-multimedia',
       eje: 'creatividad',
-      duracionMin: 18,
+      duracionMin: 20,
       descripcion:
-        'Abres el Estudio de Generación —no un chat de texto libre— y armas una petición eligiendo cuatro piezas: qué, cómo, para dónde y qué no. Con una sola pieza salen tres imágenes genéricas; con las cuatro, salen otras más cercanas y descartas las dos que no cumplen (una con letras revueltas, otra con una persona que pediste que no saliera). Pides exactamente lo mismo otra vez y compruebas que nunca sale igual, pones la elegida de fondo en tu cartel y firmas de dónde salió con tres datos: herramienta, petición y fecha. Siete encargos. Insignia de Creador que cita.',
+        'Abres Tecnia Imagina, un generador de imágenes, con un encargo del comité de la Feria de Ciencias. Lo que no pides lo decide la máquina, y lo que prohíbes casi nunca sale pero a veces se cuela: ninguna imagen te avisa, hay que mirarla de cerca. Pides lo mismo dos veces y compruebas que nunca sale igual, pones en el cartel una que cumpla (el comité rechaza la que no, y eso cuesta) y firmas con la herramienta, la petición que de verdad la generó y la fecha. Seis encargos. Insignia de Creador que cita.',
       layout: 'inmersivo',
     },
   },
@@ -2543,9 +2542,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 6,
       unidadId: 'n6-ciberseguridad',
       eje: 'ciudadania',
-      duracionMin: 12,
+      duracionMin: 20,
       descripcion:
-        'Entras a Tecnia Muro y encuentras una publicación tuya ya en "Público" con tus horarios de juego. Un desconocido comenta algo que sólo pudo saber por haberla leído — la consecuencia llega un turno después, nunca con un aviso al publicar. Ajustas la visibilidad, y practicas publicar de nuevo eligiendo la audiencia ANTES: público, sólo amigos o sólo tú. Insignia de Elige quién te ve.',
+        'Tres misiones dentro de Tecnia Muro. Miras tu perfil como lo ve un desconocido y cierras desde el selector de audiencia lo que dice tu horario de juego y tu escuela, sin esconder el dibujo que no dice nada. Jugador_Nocturno te escribe amable y te pide la escuela: no le das datos, lo reportas, lo bloqueas y se lo cuentas a un adulto. Y publicas tu torneo eligiendo «Sólo amigos» antes, porque lo que ya vio un desconocido no se des-ve. Equivocarte no resta puntos. Insignia de Elige quién te ve.',
       layout: 'inmersivo',
     },
   },
@@ -2556,9 +2555,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 6,
       unidadId: 'n6-ciberseguridad',
       eje: 'ciudadania',
-      duracionMin: 12,
+      duracionMin: 20,
       descripcion:
-        'Publicas un dibujo tuyo en Tecnia Muro y, un turno después, alguien escribe un comentario cruel. Decides qué hacer: contestar igual, quedarte callada o reportar y bloquear — equivocarte no baja el puntaje ni cierra el paso, se explica y la decisión sigue abierta. La actividad más delicada de la tanda: "No es tu culpa" se dice cinco veces, con esas letras exactas. Insignia de Sabe defenderse sin pelear.',
+        'Dentro de Tecnia Muro y en dos misiones. Uriel se burla del dibujo de Sofi: guardas la prueba, la reportas como acoso, lo bloqueas desde su perfil y se lo cuentas a un adulto por Mensajes —si bloqueas primero, el comentario desaparece y ya no hay prueba—. Después Mateo publica una foto de Lía para burlarse: la reportas, no le das más vida y le escribes en privado. La misión se cumple leyendo el muro; equivocarte no resta puntos, y «No es tu culpa» se dice cinco veces. Insignia de Sabe defenderse sin pelear.',
       layout: 'inmersivo',
     },
   },
@@ -2578,7 +2577,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'ciudadania',
       duracionMin: 14,
       descripcion:
-        'Pruebas tres contraseñas de personajes de ficción en la máquina de adivinar y descubres en qué paso caen: la lista, un dato de su perfil o un disfraz. Sacas tu propia frase de cuatro palabras, le pones llave a tus tres cuentas abiertas (juego, escuela y videos), y reparas sin culpa una filtración cuando el sitio de videos pierde su lista. Cierras activando la verificación en dos pasos y aprendiendo a no darle el código a una ventana emergente que dice ser el soporte del juego.',
+        'Pruebas tres contraseñas de personajes de ficción en la máquina de adivinar y descubres en qué paso caen: la lista, un dato de su perfil o un disfraz. Luego armas llaves con fichas —sin teclear nada— y la máquina las ataca: la mascota con un año cae, tres palabras caen, cuatro aguantan. Le pones llave a las tres cuentas de Dani (juego, escuela y videos), y reparas sin culpa una filtración cuando el sitio de videos pierde su lista. Cierras activando la verificación en dos pasos y aprendiendo a no darle el código a una ventana emergente que dice ser el soporte del juego.',
       layout: 'inmersivo',
     },
   },
@@ -2598,7 +2597,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       eje: 'datos-ia',
       duracionMin: 20,
       descripcion:
-        'Investigas en el navegador y guardas sólo lo que sirve para sostener algo. Armas cuatro diapositivas: escribes lo que vas a sostener, eliges la gráfica que habla de eso y pegas tus fuentes. Subes al escenario y defiendes tu proyecto delante de un público que pregunta.',
+        'Investigas en el navegador y guardas sólo lo que sirve para sostener algo. Armas cuatro diapositivas: escribes con tus palabras lo que vas a sostener —y la tabla del salón te dice si lo sostiene, si es falso o si habla de algo que no mediste—, eliges la gráfica que habla de eso y pegas tus fuentes. Subes al escenario y defiendes tu proyecto delante de un público que pregunta.',
       layout: 'inmersivo',
     },
   },
@@ -2609,9 +2608,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 7,
       unidadId: 'n7-ciudadania-digital-critica',
       eje: 'ciudadania',
-      duracionMin: 14,
+      duracionMin: 20,
       descripcion:
-        'Auditas tu propio perfil de Tecnia Muro tal como lo vería un desconocido: tres publicaciones públicas sueltan pistas —tu escuela, tu mascota, tu calle— y las vas cerrando, una por una, cambiando su audiencia o borrándolas. La de la calle llevaba semanas pública: borrarla la saca del perfil al instante, pero un turno después descubres que alguien ya la había visto — auditar tarde no deshace lo ya visto, pero sí evita que lo vea alguien más desde hoy. Insignia de Sabe auditar su perfil.',
+        'Tres misiones dentro de tu propio perfil de Tecnia Muro. Primero lo miras como lo vería un desconocido y decides tú qué delata algo y qué no, sin esconder lo que no hace falta. Luego llega un reto viral que pide justo las respuestas de las preguntas de seguridad, y tus compañeros ya lo contestaron. Al final, alguien que leyó tu publicación antes de que la cerraras te comenta: guardas la prueba, se la mandas a un adulto y bloqueas. Nada resta puntos. Insignia de Sabe auditar su perfil.',
       layout: 'inmersivo',
     },
   },
@@ -2635,9 +2634,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 7,
       unidadId: 'n7-ciudadania-digital-critica',
       eje: 'ciudadania',
-      duracionMin: 15,
+      duracionMin: 25,
       descripcion:
-        'Es viernes en la noche: tienes tarea pendiente, la cena está por servirse y el teléfono no deja de sonar. Decides, aviso por aviso, qué puede esperar y qué no —el meme de los amigos, el mensaje urgente de mamá, el cofre "por tiempo limitado" del juego que finge ser urgente sin serlo— y armas tu propio modo de enfoque eligiendo a quién dejas sonar mientras trabajas. Equilibrio digital no es apagar el teléfono: es aprender a distinguir qué aviso sí puede esperar. Insignia de Sabe elegir cuándo conectarse.',
+        'Un teléfono que se usa de verdad. Primero lees tus datos de la semana en Bienestar digital y silencias lo que te interrumpe de más sin callar a Mamá. Luego vives la tarde del viernes: cinco ejercicios de mate con el reloj corriendo, avisos que cuestan concentración y Mamá esperando respuesta antes de la cena. Al final programas la Hora de dormir para las noches antes de escuela sin silenciar la alarma. Nada resta puntos. Insignia de Sabe elegir cuándo conectarse.',
       layout: 'inmersivo',
     },
   },
@@ -2798,9 +2797,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 9,
       unidadId: 'n9-algoritmos-y-datos',
       eje: 'programacion',
-      duracionMin: 30,
+      duracionMin: 45,
       descripcion:
-        'Escribes dos programas que usa cualquier app de verdad: una búsqueda lineal contando cada comparación real —y comprobando que buscar al final cuesta más que buscar al principio—, y un ordenamiento burbuja completo con bucles anidados, que rompes a propósito con un IndexError real y arreglas. Cierras comparando el costo de buscar en una lista ordenada contra una desordenada. Nada de notación Big-O: todo se mide con contadores que tu propio código lleva. Diez encargos. Insignia de Algoritmos con Números Reales.',
+        'Seis problemas con juez sobre la app de la lista de reproducción del festival. Nadie dicta el código: cada problema trae un enunciado, dos ejemplos y casos ocultos, y tus funciones se prueban con listas que no has visto —con títulos repetidos, vacías, ya ordenadas o al revés—. Buscas la primera aparición de una canción, cuentas cuántas comparaciones le costó a la app y aprovechas una lista ordenada para parar antes; después escribes el ordenamiento burbuja, primero una pasada, luego completo contando sus intercambios y por último uno que se detiene solo. Cuatro de los seis devuelven cuánto trabajo costó algo, y eso no lo cuenta ninguna función de Python por ti. Nada de notación Big-O. Insignia Mide su propio código.',
       layout: 'inmersivo',
     },
   },
@@ -2812,9 +2811,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 9,
       unidadId: 'n9-algoritmos-y-datos',
       eje: 'programacion',
-      duracionMin: 28,
+      duracionMin: 45,
       descripcion:
-        'Cierras la unidad con un proyecto de datos real —ocho registros, uno sin calificación—: provocas y arreglas un error real al sumar un dato que falta (None), filtras construyendo listas nuevas, agregas con sum(), max() y min() (su primer uso en todo el curso), encuentras el nombre detrás del extremo, y cierras con un reporte que decide una conclusión sobre el grupo. Nueve encargos. Insignia de Analista de Datos.',
+        'Seis problemas con juez sobre la app de calificaciones del grupo. Nadie dicta el código: cada problema trae un enunciado, dos ejemplos y casos ocultos, y tus funciones se prueban con grupos que no has visto. Cuentas quién tiene calificación, calculas el promedio decidiendo entre cuántos se divide, filtras a quién hay que apoyar, encuentras el nombre detrás de la calificación más alta, agrupas por niveles y cierras con una conclusión que reutiliza tus funciones. En casi todos hay una trampa: quien no ha entregado (None) no es lo mismo que quien sacó cero. Insignia El Analista de Datos.',
       layout: 'inmersivo',
     },
   },
@@ -2839,9 +2838,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 10,
       unidadId: 'n10-bases-de-datos-y-sql',
       eje: 'datos-ia',
-      duracionMin: 34,
+      duracionMin: 45,
       descripcion:
-        'consultas.sql ya tiene datos: el mismo club de robótica, ahora con integrantes de verdad. Filtras con WHERE, ordenas con ORDER BY y DESC, buscas por patrón con LIKE, cortas el resultado con LIMIT y lees el pie de una tabla de 150 filas que la pantalla sólo dibuja hasta la 100. Terminas uniendo dos tablas con JOIN … ON, provocando a propósito el error de columna ambigua, y descubriendo por qué un compañero sin equipo asignado desaparece del resultado: NULL no casa con nada, ni siquiera dentro de un JOIN. Insignia de Consultora de datos.',
+        'Siete problemas con juez sobre la base del club de robótica. Cada uno dice qué tabla hay que devolver, con qué columnas y en qué orden, y enseña un ejemplo con sus filas; la consulta la escribes tú. El juez la corre contra tu base y contra dos clubes que no has visto —otra gente, otros equipos y otros números de equipo—, así que copiar las filas del ejemplo no sirve de nada: de los 21 casos, 14 están ocultos. Por el camino ordenas con ORDER BY y DESC, buscas por patrón con LIKE, desempatas y cortas con LIMIT, juntas dos tablas con JOIN … ON, te topas con el error de columna ambigua y encuentras con IS NULL al integrante que el JOIN perdía. El último problema avisa de la trampa que enseña: el número de un equipo cambia de un año a otro y su nombre no. Cierras leyendo el pie de una tabla de 150 filas que la pantalla sólo dibuja hasta la 100. Insignia de Consultora de datos.',
       layout: 'inmersivo',
     },
     /*
@@ -2890,9 +2889,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 10,
       unidadId: 'n10-programacion-aplicada',
       eje: 'programacion',
-      duracionMin: 35,
+      duracionMin: 45,
       descripcion:
-        'TecniMarket cerró la semana y necesita su reporte de ventas. Escribes dos funciones propias con una sola responsabilidad cada una —suma_manual y clasifica_venta, la regla que sólo conoce este negocio—, comparas ese mismo cálculo con las funciones nativas de la librería estándar (sum, max, min, sorted, round), y decides, sin escribir código, por qué un proyecto real se organiza en archivos y en módulos. Cierras con un reporte que integra tu código con el de la librería. Nueve encargos.',
+        'Un proyecto de tres archivos: tu programa, el módulo clima.py que el club de ciencias dejó a medias y las lecturas de la estación meteorológica en lecturas.csv. Usas una librería de fábrica (statistics), lees el CSV, terminas el módulo y lo usas desde tu programa, y escribes un reporte en un archivo. Un juez prueba los tres programas con semanas que no ves y prueba tu módulo por separado, justo en sus fronteras. Insignia de Arquitecto de módulos.',
       layout: 'inmersivo',
     },
   },
@@ -2904,9 +2903,9 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 10,
       unidadId: 'n10-programacion-aplicada',
       eje: 'programacion',
-      duracionMin: 35,
+      duracionMin: 45,
       descripcion:
-        'TecniMarket organiza un torneo interno de programación para su equipo júnior. Resuelves cinco problemas breves con Python real: contar quién avanza de ronda, encontrar el mejor tiempo a mano y confirmarlo con min(), invertir una lista de finalistas sin atajos, sumar los dígitos de un folio, y escribir tu propia función es_primo() —probada con casos conocidos antes de aplicarla a todos los datos— para clasificar los números de mesa de la final. Ocho encargos.',
+        'TecniMarket abre su torneo interno con un juez de verdad: seis problemas con enunciado, ejemplos y veinte casos ocultos que corren tu programa con datos que no elegiste tú. Contar con una condición, buscar un mínimo, invertir una lista, sumar cifras, decidir si un número es primo y desempatar a un campeón. Cada envío vuelve con un veredicto que dice por qué falla el que falla, y tres pistas en escalera —la tercera cuesta puntos—. El encargo final te cambia de lado: te dan una solución con un error y escribes tú el caso de prueba que la desenmascara. Ocho encargos.',
       layout: 'inmersivo',
     },
   },
@@ -2918,7 +2917,7 @@ export const REGISTRO_ACTIVIDADES: Record<string, ActividadRegistrada> = {
       nivel: 10,
       unidadId: 'n10-programacion-aplicada',
       eje: 'programacion',
-      duracionMin: 35,
+      duracionMin: 40,
       descripcion:
         'Cierre de «Programación aplicada». TecniMarket quiere analizar su catálogo completo —no una sola columna de números, sino una tabla con nombre, categoría y precio de seis productos—. Recorres la lista de diccionarios con tus propios bucles, usas las funciones nativas para totales y promedios, y decides cuándo un atajo de la librería no alcanza —max() no compara diccionarios— y hay que resolverlo a mano. Diez encargos, sin ninguna librería de análisis de datos: todo con lo que ya sabes.',
       layout: 'inmersivo',

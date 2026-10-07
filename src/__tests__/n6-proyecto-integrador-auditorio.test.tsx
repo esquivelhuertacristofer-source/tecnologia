@@ -97,7 +97,7 @@ describe('afirmacionDe / tipoDeGraficoDe / sostiene', () => {
 
   it('afirmación sostenida + su gráfica correcta → sostiene() da verdadero', () => {
     const m = mazo([portada('T', 'P'), conAfirmacion('Lo que más se tira es papel', 'barras')]);
-    expect(afirmacionDe(m)?.id).toBe('mas-papel');
+    expect(afirmacionDe(m)?.id).toBe('cat-mas:papel');
     expect(sostiene(afirmacionDe(m), tipoDeGraficoDe(m))).toBe(true);
   });
 
@@ -114,7 +114,7 @@ describe('afirmacionDe / tipoDeGraficoDe / sostiene', () => {
 
   it('sigue leyendo bien aunque la diapositiva de la afirmación ya no sea la 2 (se borró la portada)', () => {
     const conPortadaBorrada = mazo([conAfirmacion('La comida es menos de la cuarta parte del total', 'pastel'), fuentes([])]);
-    expect(afirmacionDe(conPortadaBorrada)?.id).toBe('comida-cuarta');
+    expect(afirmacionDe(conPortadaBorrada)?.id).toBe('parte:comida');
     expect(sostiene(afirmacionDe(conPortadaBorrada), tipoDeGraficoDe(conPortadaBorrada))).toBe(true);
   });
 });
@@ -182,6 +182,15 @@ describe('decisionParaElPaso', () => {
 
     const conJueves = decisionParaElPaso('que-proponen', conAfirmacionEnElMazo('jueves-mas'));
     expect(conJueves?.opciones.find((o) => o.bien)?.texto).toMatch(/jueves/);
+
+    // §69.5: una frase con palabras del alumno, no de una lista. La gráfica que
+    // la sostiene la decide el juez, y la propuesta sigue a su tema.
+    const propia = mazo([portada('T', 'P'), conAfirmacion('El jueves se tiró más papel que ningún otro día', 'lineas')]);
+    expect(afirmacionDe(propia)?.juicio.veredicto).toBe('sostenida');
+    expect(sostiene(afirmacionDe(propia), tipoDeGraficoDe(propia))).toBe(true);
+    expect(decisionParaElPaso('que-proponen', propia)?.opciones.find((o) => o.bien)?.texto).toMatch(/jueves/);
+    const conBarras = mazo([portada('T', 'P'), conAfirmacion('El jueves se tiró más papel que ningún otro día', 'barras')]);
+    expect(sostiene(afirmacionDe(conBarras), tipoDeGraficoDe(conBarras))).toBe(false);
 
     // Sin ninguna afirmación reconocible en el mazo, ninguna propuesta es «la buena».
     const sinAfirmacion = decisionParaElPaso('que-proponen', mazo([portada('T', 'P')]));

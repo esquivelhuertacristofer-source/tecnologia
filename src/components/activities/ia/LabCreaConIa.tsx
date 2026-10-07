@@ -6,35 +6,31 @@ import { ArcadeSala, useBit } from '../n1/arcade/ArcadeSala';
 import { reproducirTono } from '../n1/mision/audio';
 import { formatTiempo, useLabActividad } from '../lib/useLabActividad';
 import { VentanaBase } from '@/components/simuladores/VentanaBase';
-import { VentanaAsistente, useAsistente, type AccionAsistente, type ResultadoGuion } from '@/components/simuladores/asistente';
-import { PortadaDiseno, type DatosPortadaDiseno } from '../diseno/PortadaDiseno';
 import {
-  construirPeticion,
-  ENCARGOS,
-  FIRMA_VACIA,
-  firmaFaltante,
-  GUION_CREA_CON_IA,
-  OPCIONES_CUANDO,
-  OPCIONES_HERRAMIENTA,
-  OPCIONES_QUE_PEDISTE,
-  PIEZAS_COMO,
-  PIEZAS_PARA_DONDE,
-  PIEZAS_QUE,
-  PIEZAS_QUE_NO,
-  PIEZAS_VACIAS,
-  piezasFaltantes,
-  TOTAL_ENCARGOS,
-  type CategoriaFirma,
-  type CategoriaPieza,
-  type DatosGeneracion,
-  type FirmaSeleccion,
-  type IdTanda,
+  ELEMENTOS,
+  ESTILOS,
+  FORMATOS,
+  generar,
+  LienzoImagen,
+  mismaPeticion,
+  PETICION_VACIA,
+  peticionCubre,
+  piezasDe,
+  queLeFalta,
+  TEMAS,
+  textoDePeticion,
+  type Elemento,
+  type Estilo,
+  type Formato,
   type ImagenGenerada,
-  type OpcionFirma,
-  type PiezaOpcion,
-  type Piezas,
-} from './guionCreaConIa';
-import './creaConIa.css';
+  type Peticion,
+  type Requisitos,
+  type Tanda,
+  type Tema,
+} from '@/components/simuladores/generador';
+import { barajadas } from '@/lib/ordenDeOpciones';
+import { PortadaDiseno, type DatosPortadaDiseno } from '../diseno/PortadaDiseno';
+import './estudioImagina.css';
 
 /**
  * ══════════════════════════════════════════════════════════════════════════
@@ -42,287 +38,294 @@ import './creaConIa.css';
  * 6.º de Primaria · 11–12 años (verificado en `src/data/curriculo.ts:623`)
  * ══════════════════════════════════════════════════════════════════════════
  *
- * Sobre el armazón `simuladores/asistente` con el panel «Generador con
- * marca»: el alumno arma una petición con cuatro huecos de piezas (nada de
- * texto libre), recibe tres tandas de imágenes SIMULADAS y fijas —cero
- * azar—, descarta las que no cumplen, descubre que la misma
- * petición nunca vuelve a dar lo mismo, y firma de dónde salió la que usó.
+ * Reescrita el 6-oct-2026 sobre `simuladores/generador` (§69.3). Antes las
+ * tandas eran fijas y salían según el número de encargo; ahora la imagen sale
+ * de la PETICIÓN: lo que no se pide lo decide el generador, lo prohibido a
+ * veces se cuela, y la misma petición dos veces no da lo mismo.
  *
- * ── El riesgo n.º 1: que salga otro chat más ──────────────────────────────
- * El Estudio de Generación ocupa la mayor parte de la pantalla vía la clase
- * `cia-asis` (creaConIa.css invierte las proporciones del armazón: el hilo
- * se hace estrecho y el `panel` se hace ancho). El hilo de la ventana lleva,
- * de principio a fin, un saludo y tres respuestas cortas: cuatro o cinco
- * frases en total. Todo lo demás —las piezas, la bandeja, el sello, el
- * cartel— vive en el `panel`, no en burbujas.
+ * Nada aquí sabe de antemano qué imagen es la buena: el comité juzga con
+ * `queLeFalta(imagen, ENCARGO)` y la firma se compara contra la generación
+ * de la que salió la imagen del cartel. Ninguna tarjeta trae escrito su
+ * defecto: se descubre mirando (la lupa).
  *
- * ── Por qué el avance sale del gesto ──────────────────────────────────────
- * Los encargos 1, 2 y 4 cierran cuando `onFinTecleo` avisa que llegó la
- * respuesta esperada; ese callback NO depende de en qué encargo cree estar
- * el componente, porque cada ficha (`pide-1`, `pide-4`, `pide-otra-vez`) sólo
- * se manda desde el paso que le corresponde — así no hay cierre de índice
- * viejo que leer. Los encargos 3, 5, 6 y 7 cierran dentro del manejador de
- * un clic del panel, calculando el conjunto nuevo ANTES de llamar a
- * `setState` (nunca `avanzar()` dentro de un actualizador).
+ * Cuestan 6 puntos (piso 60) sólo dos cosas: poner en el cartel una imagen
+ * que no cumple y firmar con datos que no corresponden. Generar no cuesta:
+ * explorar es la clase.
  */
 
-type Fase = 'portada' | 'estudio' | 'fin';
-type EstadoImagen = 'ninguno' | 'descartada' | 'elegida';
-type Tandas = Partial<Record<IdTanda, ImagenGenerada[]>>;
+type Fase = 'portada' | 'estudio';
+
+export const ENCARGO: Requisitos = { tema: 'volcan', estilo: 'plastilina', formato: 'vertical', sin: ['texto', 'persona', 'marca'] };
+export const FECHA_TRABAJO = '14 de septiembre de 2026';
+export const HERRAMIENTA = 'Tecnia Imagina';
+const HERRAMIENTAS = [HERRAMIENTA, 'Un buscador de imágenes', 'Lo dibujé yo'];
+const FECHAS = [FECHA_TRABAJO, '14 de septiembre de 2025', 'No me acuerdo'];
+
+export const ENCARGOS = [
+  { titulo: 'Prueba el generador con la petición más corta que puedas', situacion: 'Una sola pieza y Generar. Mira qué decide la máquina por ti.' },
+  { titulo: 'Pide lo que necesita el comité', situacion: 'Cada cosa que pide la Profe Ávila es una pieza de tu petición, también lo que NO quiere.' },
+  { titulo: 'Vuelve a pedir exactamente lo mismo', situacion: 'Sin cambiar nada, genera otra vez y compara las dos tandas.' },
+  { titulo: 'Pon en el cartel una imagen que cumpla el encargo', situacion: 'Abre las imágenes, míralas de cerca y elige. El comité la revisa.' },
+  { titulo: 'Firma de dónde salió', situacion: 'Con qué herramienta, qué pediste y cuándo. Todo está en el historial.' },
+  { titulo: 'Contesta al comité', situacion: 'Una última pregunta antes de colgar el cartel.' },
+];
+export const TOTAL_ENCARGOS = ENCARGOS.length;
+
+export const PREGUNTA = {
+  texto: '¿Por qué hace falta firmar una imagen generada?',
+  opciones: [
+    {
+      texto: 'Porque la hizo una máquina y no se puede volver a pedir igual: quien la vea tiene que saber con qué se hizo, qué se pidió y cuándo.',
+      correcta: true,
+      porque: '',
+    },
+    {
+      texto: 'Porque si no la firmas, el generador te cobra.',
+      correcta: false,
+      porque: 'Nadie te cobra. Se firma para que quien vea el cartel sepa la verdad sobre de dónde salió la imagen.',
+    },
+    {
+      texto: 'No hace falta: la pedí yo, así que la hice yo.',
+      correcta: false,
+      porque: 'Tú la pediste, pero la fabricó una máquina. Decirlo no te quita el mérito; esconderlo sí.',
+    },
+  ],
+};
 
 const PORTADA: DatosPortadaDiseno = {
   situacion: 'Parada 3 de 3 · Diseño y multimedia',
   tema: 'Crea con IA: pídelo bien, míralo, y di de dónde salió',
   objetivo:
-    'Sabrás armar una petición con las cuatro piezas que importan, descartar lo que la IA entrega mal, y firmar la procedencia de una imagen generada con las tres cosas que hay que decir.',
+    'Sabrás armar una petición que diga todo lo que necesitas, revisar cada imagen generada contra lo que pediste antes de usarla, y firmar de dónde salió con la petición que de verdad la generó.',
   vasAHacer: [
-    'Pedir una imagen con una sola pieza y ver que no basta.',
-    'Armar la petición completa: qué, cómo, para dónde y qué no.',
-    'Descartar las dos que no cumplen y elegir la que sí.',
-    'Pedir lo mismo otra vez y descubrir que nunca sale igual.',
-    'Poner la imagen en el cartel y firmar de dónde salió.',
+    'Probar el generador con una sola pieza y ver qué decide él.',
+    'Pedir todo lo que necesita el comité, incluido lo que NO quiere.',
+    'Pedir lo mismo otra vez y comparar.',
+    'Mirar de cerca y poner en el cartel una imagen que cumpla.',
+    'Firmar con qué, qué pediste y cuándo.',
   ],
   encargos: TOTAL_ENCARGOS,
-  minutos: 18,
+  minutos: 20,
   insignia: { nombre: 'Creador que cita', emoji: '🪄' },
-  boton: 'Abrir el generador',
+  boton: 'Abrir Tecnia Imagina',
   acento: '#a78bfa',
 };
 
 const BIT = {
   inicio:
-    'La feria del año que viene ya tiene fecha, y hace falta un cartel nuevo. Falta una ilustración que nadie tiene: un volcán de bicarbonato de noche. Nadie fue a fotografiar eso. Vas a pedírsela a un generador de imágenes: ojo, no la va a buscar, la va a fabricar. Empieza con lo mínimo — elige sólo qué quieres y pulsa Generar.',
-  faltanPiezas: (nombres: string[]) => `Todavía te falta elegir: ${nombres.join(', ')}.`,
-  encargo1Logra:
-    'Salieron tres. Míralas: ninguna es la que tenías en la cabeza. No es que la máquina sea tonta — le dijiste una palabra y te contestó a una palabra.',
-  encargo2Entra: 'Ahora rellena las cuatro piezas: qué, cómo, para dónde y qué no. La pieza de qué no es la más olvidada y la más útil.',
-  encargo2Logra: 'Otras tres, y ahora sí se parecen a lo que pediste.',
-  encargo3Entra: 'No elijas la primera bonita. Míralas de cerca, una por una: alguna trae letras mal escritas, y eso le pasa mucho a las imágenes generadas.',
-  encargo3Falla: 'Esa no cumple lo que pediste. Descártala y sigue mirando.',
-  encargo3Logra: 'Bien mirado. Dos fuera y una elegida, por lo que dice y no por lo bonita.',
-  encargo4Entra: 'Ahora haz una prueba: pide exactamente lo mismo otra vez.',
-  encargo4TandaLlego: 'Fíjate bien: salieron otras tres. Distintas.',
-  encargo4Logra: 'Esto es lo importante del día: la imagen que elegiste no se puede volver a pedir. Si la pierdes, se acabó.',
-  encargo5Entra: 'Ponla de fondo en el cartel. Es material, como una foto.',
-  encargo5Logra: 'Ahí está el cartel de la feria del año que viene.',
-  encargo6Entra:
-    'Falta lo que hace que este trabajo se pueda entregar: decir de dónde salió esa ilustración. Son tres cosas: con qué herramienta, qué le pediste, y cuándo.',
-  encargo6Falla: (faltan: string[]) => `No me acuerdo no vale como respuesta. Todavía falta: ${faltan.join(', ')}.`,
-  encargo6Logra: 'Sellado. Ahora cualquiera que vea el cartel sabe de dónde salió el fondo.',
-  encargo7Entra: 'La maestra pregunta si el dibujo lo hiciste tú. Contesta.',
-  encargo7Falla: 'Si dices que lo hiciste tú, la ficha se marca vacía y el cartel no puede ir a la galería. Puedes corregirlo.',
-  encargo7Logra: 'Eso es. Decir que te ayudó una IA no te quita el mérito. Esconderlo sí te lo quita.',
-  cierre: 'Pediste bien, miraste antes de usar, descubriste que nunca sale igual dos veces, y firmaste de dónde salió. Así se crea con IA.',
+    'El comité de la Feria de Ciencias necesita el fondo de su cartel, y esa imagen no la tiene nadie: se la vas a pedir a Tecnia Imagina. Un generador no busca imágenes, las fabrica. Primero pruébalo con lo mínimo: una sola pieza, y pulsa Generar.',
+  sinPiezas: 'Con cero piezas no hay petición. Elige al menos una.',
+  e1Larga: (n: number) => `Esa petición lleva ${n} piezas. Para esta prueba deja una sola y genera otra vez.`,
+  e1Logra:
+    'Mira las tres de cerca. El tema es el que pediste, pero el estilo, la forma y lo que trae encima lo decidió la máquina. Lo que no pides, lo decide ella.',
+  e2Entra: 'Relee el mensaje de la Profe Ávila. Cada cosa que pide es una pieza de tu petición, y lo que dice que no quiere también cuenta.',
+  e2Faltan: (n: number) =>
+    n === 1
+      ? 'A tu petición le falta una de las cosas que pidió la Profe Ávila. Vuelve a leer su mensaje, frase por frase.'
+      : `A tu petición le faltan ${n} de las cosas que pidió la Profe Ávila. Vuelve a leer su mensaje, frase por frase.`,
+  e2Logra: 'Esa petición dice todo lo que pidió el comité. Pero pedirlo no garantiza que salga: mira bien las tres.',
+  e3Entra: 'Una prueba: sin tocar nada, vuelve a generar exactamente lo mismo.',
+  e3NoCubre: 'Ésa ya no es la petición del comité. Déjala como en el encargo anterior y genera dos veces seguidas sin tocar nada.',
+  e3Distinta: 'Cambiaste algo respecto a la generación anterior. Ahora genera otra vez sin tocar nada.',
+  e3Logra: 'Misma petición, tres imágenes nuevas, y ninguna se repite. La que elijas no la vas a poder pedir igual nunca más.',
+  e4Entra:
+    'Abre las imágenes una por una y míralas de cerca: el generador no obedece del todo. Cuando encuentres una que cumpla todo el encargo, ponla en el cartel.',
+  e4Otra: 'Otra tanda. Ábrelas y míralas antes de decidir.',
+  e4Rechazo: 'El comité la rechazó. Lee qué le falta y busca otra. Si ninguna te sirve, puedes generar más: eso no cuesta.',
+  e4Logra: 'Aprobada por el comité. Ése es el fondo del cartel.',
+  e5Entra: 'Falta lo que hace que el cartel se pueda colgar: decir de dónde salió el fondo. Con qué herramienta, qué le pediste y cuándo. Todo está en el historial.',
+  e5Incompleta: (falta: string) => `Todavía no eliges ${falta}.`,
+  e5Mal: (mal: string) => `El comité revisó la ficha: ${mal} no coincide con la generación de la que salió tu imagen. Búscala en el historial.`,
+  e5Logra: 'Firmada. Quien vea el cartel sabe con qué se hizo el fondo, qué se pidió y cuándo.',
+  e6Entra: 'Última. El comité pregunta algo, y la respuesta es lo que te llevas de hoy.',
+  e6Logra: 'Eso es. Decir que te ayudó una IA no te quita el mérito. Esconderlo sí te lo quita.',
+  cierre: 'Pediste todo lo que hacía falta, miraste antes de usar, viste que nunca sale igual dos veces, y firmaste de dónde salió. Así se crea con IA.',
 };
 
-const ENTRA_AL_ENCARGO: Record<number, string> = {
-  1: BIT.encargo2Entra,
-  2: BIT.encargo3Entra,
-  3: BIT.encargo4Entra,
-  4: BIT.encargo5Entra,
-  5: BIT.encargo6Entra,
-  6: BIT.encargo7Entra,
-};
+const ENTRA_AL_ENCARGO: Record<number, string> = { 1: BIT.e2Entra, 2: BIT.e3Entra, 3: BIT.e4Entra, 4: BIT.e5Entra, 5: BIT.e6Entra };
 
-const REQUERIDAS_POR_INDICE: Partial<Record<number, CategoriaPieza[]>> = {
-  0: ['que'],
-  1: ['que', 'como', 'paraDonde', 'queNo'],
-  3: ['que', 'como', 'paraDonde', 'queNo'],
-};
+/** Cuántas de las cosas del encargo no están (o no coinciden) en la petición. */
+function faltantesDelEncargo(p: Peticion, r: Requisitos): number {
+  return (
+    (p.tema === r.tema ? 0 : 1) +
+    (p.estilo === r.estilo ? 0 : 1) +
+    (p.formato === r.formato ? 0 : 1) +
+    r.sin.filter((e) => !p.prohibidos.includes(e)).length
+  );
+}
 
-const FICHA_POR_INDICE: Partial<Record<number, 'pide-1' | 'pide-4' | 'pide-otra-vez'>> = {
-  0: 'pide-1',
-  1: 'pide-4',
-  3: 'pide-otra-vez',
-};
+function buscarImagen(historial: Tanda[], id: string | null): { tanda: Tanda; imagen: ImagenGenerada } | null {
+  if (!id) return null;
+  for (const tanda of historial) {
+    const imagen = tanda.imagenes.find((im) => im.id === id);
+    if (imagen) return { tanda, imagen };
+  }
+  return null;
+}
+
+const segundosDesde = (inicio: number) => Math.max(1, Math.round((Date.now() - inicio) / 1000));
+
+const sinId = ({ id: _id, ...resto }: ImagenGenerada) => JSON.stringify(resto);
+
+interface Firma {
+  herramienta: string | null;
+  peticion: string | null;
+  fecha: string | null;
+}
+const FIRMA_VACIA: Firma = { herramienta: null, peticion: null, fecha: null };
 
 export function LabCreaConIa(props: ActivityProps & { alSalir?: () => void }) {
   const [fase, setFase] = useState<Fase>('portada');
   const [indice, setIndice] = useState(0);
   const [logrado, setLogrado] = useState(false);
-  const [pedidos, setPedidos] = useState(0);
-
-  const [piezas, setPiezas] = useState<Piezas>(PIEZAS_VACIAS);
-  const [tandas, setTandas] = useState<Tandas>({});
-  const [estados, setEstados] = useState<Record<string, EstadoImagen>>({});
-  const [compararMostrado, setCompararMostrado] = useState(false);
-  const [fondoCartelId, setFondoCartelId] = useState<string | null>(null);
-  const [firma, setFirma] = useState<FirmaSeleccion>(FIRMA_VACIA);
-  const [firmaHecha, setFirmaHecha] = useState(false);
-  const [declaroAutoria, setDeclaroAutoria] = useState<'propia' | 'ia' | null>(null);
+  const [peticion, setPeticion] = useState<Peticion>(PETICION_VACIA);
+  const [historial, setHistorial] = useState<Tanda[]>([]);
+  const [mirando, setMirando] = useState<string | null>(null);
+  const [comparadas, setComparadas] = useState<[number, number] | null>(null);
+  const [cartel, setCartel] = useState<string | null>(null);
+  const [rechazo, setRechazo] = useState<{ id: string; faltas: string[] } | null>(null);
+  const [rechazos, setRechazos] = useState(0);
+  const [firma, setFirma] = useState<Firma>(FIRMA_VACIA);
+  const [firmada, setFirmada] = useState(false);
+  const [respuesta, setRespuesta] = useState<number | null>(null);
 
   const { linea, hablar } = useBit();
-  const lab = useLabActividad(props, TOTAL_ENCARGOS);
+  const lab = useLabActividad(props, TOTAL_ENCARGOS, { penalizacionError: 6, piso: 60 });
 
-  const alFinTecleo = (r: ResultadoGuion) => {
-    const datos = r.respuesta.datos as DatosGeneracion | undefined;
-    if (datos) {
-      setTandas((prev) => (prev[datos.tanda] ? prev : { ...prev, [datos.tanda]: datos.imagenes }));
-    }
-    if (r.regla?.tipo !== 'ficha') return;
-    if (r.regla.ficha === 'pide-1') {
-      setLogrado(true);
-      lab.avanzar();
-      hablar(BIT.encargo1Logra);
-    } else if (r.regla.ficha === 'pide-4') {
-      setLogrado(true);
-      lab.avanzar();
-      hablar(BIT.encargo2Logra);
-    } else if (r.regla.ficha === 'pide-otra-vez') {
-      hablar(BIT.encargo4TandaLlego);
-    }
+  const encargo = ENCARGOS[Math.min(indice, TOTAL_ENCARGOS - 1)];
+  const activo = fase === 'estudio' && !lab.terminado;
+
+  const lograr = (frase: string) => {
+    reproducirTono('correct');
+    setLogrado(true);
+    lab.avanzar();
+    hablar(frase);
   };
 
-  const ia = useAsistente({
-    guion: GUION_CREA_CON_IA,
-    saludo: 'Hola. Soy Tecnia Genera: no busco imágenes, las fabrico a partir de lo que me pidas.',
-    velocidad: 14,
-    paso: 5,
-    onFinTecleo: alFinTecleo,
-  });
+  /* ── La petición ──────────────────────────────────────────────────────── */
 
-  const encargo = ENCARGOS[Math.min(indice, ENCARGOS.length - 1)];
+  const peticionAbierta = activo && !logrado && indice <= 3;
 
-  /* ── Zona 1 · la petición ─────────────────────────────────────────────── */
+  const tocarTema = (t: Tema) => peticionAbierta && setPeticion((p) => ({ ...p, tema: p.tema === t ? null : t }));
+  const tocarEstilo = (e: Estilo) => peticionAbierta && setPeticion((p) => ({ ...p, estilo: p.estilo === e ? null : e }));
+  const tocarFormato = (f: Formato) => peticionAbierta && setPeticion((p) => ({ ...p, formato: p.formato === f ? null : f }));
+  const tocarProhibido = (e: Elemento) =>
+    peticionAbierta &&
+    setPeticion((p) => ({ ...p, prohibidos: p.prohibidos.includes(e) ? p.prohibidos.filter((x) => x !== e) : [...p.prohibidos, e] }));
 
-  const elegirPieza = (categoria: CategoriaPieza, id: string) => {
-    if (fase !== 'estudio' || logrado) return;
-    if (indice !== 0 && indice !== 1 && indice !== 3) return;
-    reproducirTono('select');
-    setPiezas((prev) => ({ ...prev, [categoria]: id }));
-  };
-
-  const generar = () => {
-    if (fase !== 'estudio' || logrado) return;
-    const requeridas = REQUERIDAS_POR_INDICE[indice];
-    const fichaId = FICHA_POR_INDICE[indice];
-    if (!requeridas || !fichaId) return;
-    const faltan = piezasFaltantes(piezas, requeridas);
-    if (faltan.length > 0) {
-      hablar(BIT.faltanPiezas(faltan));
+  const generarTanda = () => {
+    if (!peticionAbierta) return;
+    const piezas = piezasDe(peticion);
+    if (piezas === 0) {
+      reproducirTono('error');
+      hablar(BIT.sinPiezas);
       return;
     }
-    const pregunta = construirPeticion(piezas);
-    const resultado = ia.enviarFicha({ id: fichaId, etiqueta: pregunta, pregunta });
-    if (resultado === 'enviado') {
-      reproducirTono('select');
-      setPedidos((n) => n + 1);
-    }
-  };
-
-  /* ── Zona 2 · la bandeja (encargo 3: descartar / elegir) ─────────────────── */
-
-  const evaluarMiraAntes = (siguiente: Record<string, EstadoImagen>) => {
-    const a = siguiente['t2-a'] ?? 'ninguno';
-    const b = siguiente['t2-b'] ?? 'ninguno';
-    const c = siguiente['t2-c'] ?? 'ninguno';
-    if (a === 'elegida' && b === 'descartada' && c === 'descartada') {
-      setLogrado(true);
-      lab.avanzar();
-      hablar(BIT.encargo3Logra);
-    }
-  };
-
-  const alDescartar = (id: string) => {
-    if (fase !== 'estudio' || indice !== 2 || logrado) return;
-    const actual = estados[id] ?? 'ninguno';
-    // Toggle: descartar dos veces la RECUPERA. Es la vía de salida para que
-    // «descartar las tres» nunca sea un callejón sin salida.
-    const nuevo: EstadoImagen = actual === 'descartada' ? 'ninguno' : 'descartada';
-    const siguiente = { ...estados, [id]: nuevo };
     reproducirTono('select');
-    setEstados(siguiente);
-    evaluarMiraAntes(siguiente);
-  };
+    const previa = historial[historial.length - 1];
+    const tanda = generar(peticion, historial.length + 1);
+    const nuevo = [...historial, tanda];
+    setHistorial(nuevo);
 
-  const alElegir = (id: string, tieneMotivo: boolean) => {
-    if (fase !== 'estudio' || indice !== 2 || logrado) return;
-    if (tieneMotivo) {
-      reproducirTono('error');
-      hablar(BIT.encargo3Falla);
+    if (indice === 0) {
+      if (piezas === 1) lograr(BIT.e1Logra);
+      else hablar(BIT.e1Larga(piezas));
+    } else if (indice === 1) {
+      if (peticionCubre(peticion, ENCARGO)) lograr(BIT.e2Logra);
+      else hablar(BIT.e2Faltan(faltantesDelEncargo(peticion, ENCARGO)));
+    } else if (indice === 2) {
+      if (!peticionCubre(peticion, ENCARGO)) hablar(BIT.e3NoCubre);
+      else if (!previa || !mismaPeticion(previa.peticion, peticion)) hablar(BIT.e3Distinta);
+      else {
+        setComparadas([nuevo.length - 2, nuevo.length - 1]);
+        lograr(BIT.e3Logra);
+      }
     } else {
-      reproducirTono('select');
+      hablar(BIT.e4Otra);
     }
-    const limpio: Record<string, EstadoImagen> = {};
-    for (const clave of Object.keys(estados)) {
-      limpio[clave] = estados[clave] === 'elegida' ? 'ninguno' : estados[clave];
+  };
+
+  /* ── El cartel (encargo 4) ────────────────────────────────────────────── */
+
+  const alCartel = (id: string) => {
+    if (!activo || logrado || indice !== 3) return;
+    const hallada = buscarImagen(historial, id);
+    if (!hallada) return;
+    const faltas = queLeFalta(hallada.imagen, ENCARGO);
+    if (faltas.length > 0) {
+      lab.restar();
+      setRechazo({ id, faltas });
+      setRechazos((n) => n + 1);
+      hablar(BIT.e4Rechazo);
+      return;
     }
-    const siguiente = { ...limpio, [id]: 'elegida' as EstadoImagen };
-    setEstados(siguiente);
-    evaluarMiraAntes(siguiente);
+    setRechazo(null);
+    setCartel(id);
+    lograr(BIT.e4Logra);
   };
 
-  /* ── Zona 3 · comparar tandas (encargo 4) ─────────────────────────────── */
+  /* ── La firma (encargo 5) ─────────────────────────────────────────────── */
 
-  const comparar = () => {
-    if (fase !== 'estudio' || indice !== 3 || logrado || !tandas.tanda3) return;
+  const origen = buscarImagen(historial, cartel);
+  const peticionesDelHistorial = Array.from(new Set(historial.map((t) => t.texto || '(sin piezas)')));
+
+  const elegirFirma = (campo: keyof Firma, valor: string) => {
+    if (!activo || logrado || indice !== 4) return;
     reproducirTono('select');
-    setCompararMostrado(true);
-    setLogrado(true);
-    lab.avanzar();
-    hablar(BIT.encargo4Logra);
-  };
-
-  /* ── Zona 4 · poner de fondo (encargo 5) ──────────────────────────────── */
-
-  const ponerDeFondo = (id: string) => {
-    if (fase !== 'estudio' || indice !== 4 || logrado) return;
-    reproducirTono('select');
-    setFondoCartelId(id);
-    setLogrado(true);
-    lab.avanzar();
-    hablar(BIT.encargo5Logra);
-  };
-
-  /* ── Zona 5 · la firma (encargo 6) ─────────────────────────────────────── */
-
-  const elegirFirma = (categoria: CategoriaFirma, id: string) => {
-    if (fase !== 'estudio' || indice !== 5 || logrado) return;
-    reproducirTono('select');
-    setFirma((prev) => ({ ...prev, [categoria]: id }));
+    setFirma((f) => ({ ...f, [campo]: valor }));
   };
 
   const firmar = () => {
-    if (fase !== 'estudio' || indice !== 5 || logrado) return;
-    const faltan = firmaFaltante(firma);
-    if (faltan.length > 0) {
+    if (!activo || logrado || indice !== 4 || !origen) return;
+    const sinElegir = [
+      !firma.herramienta && 'la herramienta',
+      !firma.peticion && 'la petición',
+      !firma.fecha && 'la fecha',
+    ].filter(Boolean) as string[];
+    if (sinElegir.length > 0) {
       reproducirTono('error');
-      hablar(BIT.encargo6Falla(faltan));
+      hablar(BIT.e5Incompleta(sinElegir.join(', ')));
       return;
     }
-    reproducirTono('correct');
-    setFirmaHecha(true);
-    setLogrado(true);
-    lab.avanzar();
-    hablar(BIT.encargo6Logra);
-  };
-
-  /* ── Zona 6 · la maestra (encargo 7) ──────────────────────────────────── */
-
-  const responderMaestra = (respuesta: 'propia' | 'ia') => {
-    if (fase !== 'estudio' || indice !== 6 || logrado) return;
-    setDeclaroAutoria(respuesta);
-    if (respuesta === 'propia') {
-      reproducirTono('error');
-      hablar(BIT.encargo7Falla);
+    const mal = [
+      firma.herramienta !== HERRAMIENTA && 'la herramienta',
+      firma.peticion !== origen.tanda.texto && 'la petición',
+      firma.fecha !== FECHA_TRABAJO && 'la fecha',
+    ].filter(Boolean) as string[];
+    if (mal.length > 0) {
+      lab.restar();
+      hablar(BIT.e5Mal(mal.join(', ')));
       return;
     }
-    reproducirTono('correct');
-    setLogrado(true);
-    const segundos = Math.max(1, Math.round((Date.now() - lab.sim.current.inicio) / 1000));
-    lab.terminar(segundos, () => hablar(BIT.cierre));
+    setFirmada(true);
+    lograr(BIT.e5Logra);
   };
 
-  /* ── Navegación entre encargos y arranque/repetición ──────────────────── */
+  /* ── La pregunta (encargo 6) ──────────────────────────────────────────── */
+
+  const responder = (i: number) => {
+    if (!activo || indice !== 5) return;
+    setRespuesta(i);
+    const op = PREGUNTA.opciones[i];
+    if (!op.correcta) {
+      reproducirTono('error');
+      hablar(op.porque);
+      return;
+    }
+    setLogrado(true);
+    lab.terminar(segundosDesde(lab.sim.current.inicio), () => hablar(BIT.cierre));
+  };
+
+  /* ── Navegación ───────────────────────────────────────────────────────── */
 
   const siguienteEncargo = () => {
-    if (fase !== 'estudio' || !logrado || indice >= TOTAL_ENCARGOS - 1) return;
+    if (!activo || !logrado || indice >= TOTAL_ENCARGOS - 1) return;
     reproducirTono('select');
     const hechos = indice + 1;
     setIndice(hechos);
     setLogrado(false);
-    const linea_ = ENTRA_AL_ENCARGO[hechos];
-    if (linea_) hablar(linea_);
+    const frase = ENTRA_AL_ENCARGO[hechos];
+    if (frase) hablar(frase);
   };
 
   const empezar = () => {
@@ -335,44 +338,21 @@ export function LabCreaConIa(props: ActivityProps & { alSalir?: () => void }) {
     reproducirTono('select');
     setIndice(0);
     setLogrado(false);
-    setPedidos(0);
-    setPiezas(PIEZAS_VACIAS);
-    setTandas({});
-    setEstados({});
-    setCompararMostrado(false);
-    setFondoCartelId(null);
+    setPeticion(PETICION_VACIA);
+    setHistorial([]);
+    setMirando(null);
+    setComparadas(null);
+    setCartel(null);
+    setRechazo(null);
+    setRechazos(0);
     setFirma(FIRMA_VACIA);
-    setFirmaHecha(false);
-    setDeclaroAutoria(null);
-    ia.reiniciar();
+    setFirmada(false);
+    setRespuesta(null);
     lab.reiniciar(() => hablar(BIT.inicio));
   };
 
-  /* ── Las acciones del pie de la ventana: el único gesto grande del paso ── */
-
-  let acciones: AccionAsistente[] | undefined;
-  if (fase === 'estudio') {
-    if (logrado && indice < TOTAL_ENCARGOS - 1) {
-      acciones = [{ id: 'siguiente', etiqueta: 'Siguiente encargo →', onClick: siguienteEncargo, principal: true }];
-    } else if (indice === 0 || indice === 1) {
-      acciones = [
-        { id: 'generar', etiqueta: ia.ocupado ? 'Generando…' : 'Generar', onClick: generar, principal: true, deshabilitada: ia.ocupado },
-      ];
-    } else if (indice === 3) {
-      acciones = tandas.tanda3
-        ? [{ id: 'comparar', etiqueta: 'Comparar con la tanda anterior', onClick: comparar, principal: true }]
-        : [{ id: 'generar', etiqueta: ia.ocupado ? 'Generando…' : 'Generar', onClick: generar, principal: true, deshabilitada: ia.ocupado }];
-    } else if (indice === 5) {
-      acciones = [{ id: 'firmar', etiqueta: 'Firmar', onClick: firmar, principal: true }];
-    } else if (indice === 6) {
-      acciones = [
-        { id: 'lo-hice-yo', etiqueta: 'Sí, lo hice yo', onClick: () => responderMaestra('propia') },
-        { id: 'con-ia', etiqueta: 'Lo generé con una IA, y aquí está la ficha.', onClick: () => responderMaestra('ia') },
-      ];
-    }
-  }
-
-  const descartadas = Object.values(estados).filter((v) => v === 'descartada').length;
+  const lupa = buscarImagen(historial, mirando);
+  const enCartel = buscarImagen(historial, rechazo?.id ?? cartel);
 
   return (
     <div className="cia-sala">
@@ -392,12 +372,12 @@ export function LabCreaConIa(props: ActivityProps & { alSalir?: () => void }) {
                 insigniaEmoji: '🪄',
                 titulo: '¡Tu cartel está firmado!',
                 detalle:
-                  'Armaste la petición con sus cuatro piezas, descartaste lo que no cumplía, descubriste que la misma petición nunca da lo mismo dos veces, y dejaste escrito de dónde salió tu ilustración.',
+                  'Pediste todo lo que necesitaba el comité, miraste cada imagen antes de usarla, comprobaste que la misma petición nunca da lo mismo dos veces, y firmaste de dónde salió el fondo.',
                 resumen: [
                   { etiqueta: 'Encargos', valor: `${TOTAL_ENCARGOS}` },
                   { etiqueta: 'Tiempo', valor: formatTiempo(lab.tiempoFinal) },
-                  { etiqueta: 'Veces que pediste', valor: `${pedidos}` },
-                  { etiqueta: 'Descartadas', valor: `${descartadas}` },
+                  { etiqueta: 'Generaciones', valor: `${historial.length}` },
+                  { etiqueta: 'Rechazadas por el comité', valor: `${rechazos}` },
                 ],
                 alRepetir: repetir,
               }
@@ -405,263 +385,298 @@ export function LabCreaConIa(props: ActivityProps & { alSalir?: () => void }) {
         }
       >
         <div className="cia-lienzo">
-          {fase !== 'portada' && (
-            <VentanaBase marca="Tecnia Genera" subtitulo="El Estudio de Generación" claseMarco="cia-marco">
-              <VentanaAsistente
-                className="cia-asis"
-                mensajes={ia.mensajes}
-                escribiendo={ia.ocupado}
-                onSaltarTecleo={ia.saltarTecleo}
-                vacio="Arma tu petición en el Estudio y pulsa Generar."
-                panel={
-                  <Estudio
-                    indice={indice}
-                    encargo={encargo}
-                    piezas={piezas}
-                    onPieza={elegirPieza}
-                    piezasBloqueadas={fase !== 'estudio' || logrado || !(indice === 0 || indice === 1 || indice === 3)}
-                    tandas={tandas}
-                    estados={estados}
-                    onDescartar={alDescartar}
-                    onElegir={alElegir}
-                    miraAntesActivo={indice === 2 && !logrado}
-                    ponerDeFondoActivo={indice === 4 && !logrado}
-                    onPonerDeFondo={ponerDeFondo}
-                    fondoCartelId={fondoCartelId}
-                    compararMostrado={compararMostrado}
-                    firma={firma}
-                    onFirma={elegirFirma}
-                    firmaBloqueada={fase !== 'estudio' || indice !== 5 || logrado}
-                    firmaHecha={firmaHecha}
-                    mostrarFicha={indice >= 5}
-                    declaroAutoria={declaroAutoria}
-                    mostrarMaestra={indice === 6}
-                  />
-                }
-                acciones={acciones}
-              />
+          {fase === 'portada' ? (
+            <PortadaDiseno portada={PORTADA} onEmpezar={empezar} />
+          ) : (
+            <VentanaBase
+              marca="Tecnia Imagina"
+              subtitulo="Estudio de imágenes"
+              claseMarco="cia-marco"
+              barraEstado={<span>Lunes {FECHA_TRABAJO} · {historial.length} generaciones</span>}
+            >
+              <div className="cia-estudio" data-testid="cia-estudio">
+                <header className="cia-cabecera">
+                  <div>
+                    <p className="cia-encargo-numero" data-testid="cia-encargo-numero">
+                      Encargo {indice + 1} de {TOTAL_ENCARGOS} · {encargo.titulo}
+                    </p>
+                    <p className="cia-encargo-situacion">{encargo.situacion}</p>
+                  </div>
+                  {logrado && indice < TOTAL_ENCARGOS - 1 && (
+                    <button type="button" className="cia-siguiente" data-testid="cia-siguiente" onClick={siguienteEncargo}>
+                      Siguiente encargo →
+                    </button>
+                  )}
+                </header>
+
+                <div className="cia-columnas">
+                  {/* ── Izquierda: el encargo y lo que el alumno hace ahora ── */}
+                  <section className="cia-col cia-col-mando">
+                    <blockquote className="cia-brief" data-testid="cia-brief">
+                      <p className="cia-brief-de">📨 Profe Ávila · comité de la Feria de Ciencias</p>
+                      <p>
+                        «Necesito el fondo del cartel vertical de la Feria de Ciencias: un volcán de bicarbonato, en dibujo de plastilina. El título lo
+                        pongo yo encima, así que la imagen va sin texto. No tenemos permiso de nadie para usar su cara, y es para la escuela: nada de
+                        marcas.»
+                      </p>
+                    </blockquote>
+
+                    {indice <= 3 && (
+                      <div className="cia-peticion" data-testid="cia-peticion">
+                        <p className="cia-titulo">Tu petición</p>
+                        <div className="cia-caja-peticion">
+                          <p className="cia-peticion-texto" data-testid="cia-peticion-texto">
+                            {textoDePeticion(peticion) || 'Todavía no pides nada: toca piezas aquí abajo.'}
+                          </p>
+                          <button type="button" className="cia-generar" data-testid="cia-generar" onClick={generarTanda} disabled={!peticionAbierta}>
+                            ✨ Generar
+                          </button>
+                        </div>
+                        <FilaChips
+                          etiqueta="Qué"
+                          testId="cia-fila-tema"
+                          semilla="tema"
+                          opciones={(Object.keys(TEMAS) as Tema[]).map((t) => ({ valor: t, texto: TEMAS[t].etiqueta, puesto: peticion.tema === t }))}
+                          onTocar={tocarTema}
+                          bloqueada={!peticionAbierta}
+                        />
+                        <FilaChips
+                          etiqueta="Cómo"
+                          testId="cia-fila-estilo"
+                          semilla="estilo"
+                          opciones={(Object.keys(ESTILOS) as Estilo[]).map((e) => ({ valor: e, texto: ESTILOS[e].etiqueta, puesto: peticion.estilo === e }))}
+                          onTocar={tocarEstilo}
+                          bloqueada={!peticionAbierta}
+                        />
+                        <FilaChips
+                          etiqueta="Para dónde"
+                          testId="cia-fila-formato"
+                          semilla="formato"
+                          opciones={(Object.keys(FORMATOS) as Formato[]).map((f) => ({
+                            valor: f,
+                            texto: FORMATOS[f].etiqueta,
+                            puesto: peticion.formato === f,
+                          }))}
+                          onTocar={tocarFormato}
+                          bloqueada={!peticionAbierta}
+                        />
+                        <FilaChips
+                          etiqueta="Qué no"
+                          testId="cia-fila-sin"
+                          semilla="sin"
+                          opciones={(Object.keys(ELEMENTOS) as Elemento[]).map((e) => ({
+                            valor: e,
+                            texto: ELEMENTOS[e].prohibicion,
+                            puesto: peticion.prohibidos.includes(e),
+                          }))}
+                          onTocar={tocarProhibido}
+                          bloqueada={!peticionAbierta}
+                          prohibicion
+                        />
+                      </div>
+                    )}
+
+                    {indice === 4 && (
+                      <div className="cia-ficha" data-testid="cia-ficha">
+                        <p className="cia-titulo">Ficha de procedencia del fondo</p>
+                        <FilaFirma
+                          etiqueta="Con qué herramienta"
+                          testId="cia-firma-herramienta"
+                          opciones={HERRAMIENTAS}
+                          elegida={firma.herramienta}
+                          onElegir={(v) => elegirFirma('herramienta', v)}
+                          bloqueada={logrado}
+                        />
+                        <FilaFirma
+                          etiqueta="Qué le pediste"
+                          testId="cia-firma-peticion"
+                          opciones={peticionesDelHistorial}
+                          elegida={firma.peticion}
+                          onElegir={(v) => elegirFirma('peticion', v)}
+                          bloqueada={logrado}
+                        />
+                        <FilaFirma
+                          etiqueta="Cuándo"
+                          testId="cia-firma-fecha"
+                          opciones={FECHAS}
+                          elegida={firma.fecha}
+                          onElegir={(v) => elegirFirma('fecha', v)}
+                          bloqueada={logrado}
+                        />
+                        <button type="button" className="cia-generar" data-testid="cia-firmar" onClick={firmar} disabled={logrado}>
+                          ✍️ Firmar
+                        </button>
+                      </div>
+                    )}
+
+                    {indice === 5 && (
+                      <div className="cia-pregunta" data-testid="cia-pregunta">
+                        <p className="cia-titulo">El comité pregunta</p>
+                        <p className="cia-pregunta-texto">{PREGUNTA.texto}</p>
+                        {barajadas(PREGUNTA.opciones, PREGUNTA.texto).map(([op, i]) => (
+                          <button
+                            key={i}
+                            type="button"
+                            className={`cia-respuesta${respuesta === i ? (op.correcta ? ' es-bien' : ' es-mal') : ''}`}
+                            data-opcion={i}
+                            aria-pressed={respuesta === i}
+                            onClick={() => responder(i)}
+                            disabled={lab.terminado}
+                          >
+                            {op.texto}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </section>
+
+                  {/* ── Centro: el historial de generaciones ── */}
+                  <section className="cia-col cia-col-historial" data-testid="cia-historial">
+                    <p className="cia-titulo">Historial</p>
+                    {historial.length === 0 && <p className="cia-vacio">Aquí aparecen las imágenes que generes. Cada vez salen tres.</p>}
+                    {historial
+                      .map((tanda, posicion) => ({ tanda, posicion }))
+                      .reverse()
+                      .map(({ tanda, posicion }) => {
+                        const comparada = comparadas?.includes(posicion) ?? false;
+                        return (
+                          <article
+                            key={tanda.numero}
+                            className={`cia-tanda${comparada ? ' es-comparada' : ''}`}
+                            data-testid="cia-tanda"
+                            data-numero={tanda.numero}
+                          >
+                            <p className="cia-tanda-cabeza">
+                              <b>Generación n.º {tanda.numero}</b> · {FECHA_TRABAJO}
+                            </p>
+                            <p className="cia-tanda-peticion">«{tanda.texto || '(sin piezas)'}»</p>
+                            <div className="cia-tanda-imagenes">
+                              {tanda.imagenes.map((im, i) => (
+                                <button
+                                  key={im.id}
+                                  type="button"
+                                  className={`cia-mirar${mirando === im.id ? ' es-mirada' : ''}${cartel === im.id ? ' es-cartel' : ''}`}
+                                  data-testid="cia-mirar"
+                                  data-imagen={im.id}
+                                  aria-label={`Mirar de cerca la imagen ${i + 1} de la generación ${tanda.numero}`}
+                                  onClick={() => {
+                                    reproducirTono('select');
+                                    setMirando(im.id);
+                                  }}
+                                >
+                                  <LienzoImagen imagen={im} ancho={im.formato === 'vertical' ? 84 : 132} />
+                                </button>
+                              ))}
+                            </div>
+                          </article>
+                        );
+                      })}
+                    {comparadas && (
+                      <p className="cia-comparar-nota" data-testid="cia-comparar-nota">
+                        Generaciones n.º {comparadas[0] + 1} y n.º {comparadas[1] + 1}: la misma petición, y de seis imágenes se repiten{' '}
+                        <b>
+                          {
+                            historial[comparadas[1]].imagenes.filter((b) => historial[comparadas[0]].imagenes.some((a) => sinId(a) === sinId(b)))
+                              .length
+                          }
+                        </b>
+                        .
+                      </p>
+                    )}
+                  </section>
+
+                  {/* ── Derecha: la lupa y el cartel ── */}
+                  <section className="cia-col cia-col-cartel">
+                    <div className="cia-lupa" data-testid="cia-lupa">
+                      <p className="cia-titulo">De cerca</p>
+                      {lupa ? (
+                        <>
+                          <LienzoImagen imagen={lupa.imagen} ancho={lupa.imagen.formato === 'vertical' ? 120 : 210} />
+                          <p className="cia-lupa-origen">
+                            Generación n.º {lupa.tanda.numero} · «{lupa.tanda.texto || '(sin piezas)'}»
+                          </p>
+                          {activo && indice === 3 && !logrado && (
+                            <button type="button" className="cia-al-cartel" data-testid="cia-al-cartel" onClick={() => alCartel(lupa.imagen.id)}>
+                              🖼️ Poner en el cartel
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        <p className="cia-vacio">Toca una imagen del historial para verla grande.</p>
+                      )}
+                    </div>
+
+                    <div className="cia-cartel" data-testid="cia-cartel">
+                      <p className="cia-titulo">El cartel</p>
+                      {rechazo && (
+                        <ul className="cia-rechazo" aria-label="Lo que dice el comité" data-testid="cia-rechazo">
+                          {rechazo.faltas.map((f) => (
+                            <li key={f}>{f}</li>
+                          ))}
+                        </ul>
+                      )}
+                      <div className={`cia-cartel-hoja${rechazo ? ' es-rechazado' : ''}`}>
+                        {enCartel && <LienzoImagen imagen={enCartel.imagen} ancho={138} />}
+                        <p className="cia-cartel-h1">Feria de Ciencias 2027</p>
+                        {rechazo && (
+                          <span className="cia-sello" aria-hidden="true">
+                            RECHAZADA
+                          </span>
+                        )}
+                      </div>
+                      {firmada && origen && (
+                        <p className="cia-cartel-firma" data-testid="cia-cartel-firma">
+                          Fondo generado con {HERRAMIENTA} el {FECHA_TRABAJO}. Petición: «{origen.tanda.texto}».
+                        </p>
+                      )}
+                    </div>
+                  </section>
+                </div>
+              </div>
             </VentanaBase>
           )}
-          {fase === 'portada' && <PortadaDiseno portada={PORTADA} onEmpezar={empezar} />}
         </div>
       </ArcadeSala>
     </div>
   );
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
- * El Estudio de Generación — el `panel` de la clase. Recibe todo por
- * parámetro; el estado entero vive en `LabCreaConIa`.
- * ══════════════════════════════════════════════════════════════════════════ */
-
-interface EstudioProps {
-  indice: number;
-  encargo: { titulo: string; situacion: string };
-  piezas: Piezas;
-  onPieza: (categoria: CategoriaPieza, id: string) => void;
-  piezasBloqueadas: boolean;
-  tandas: Tandas;
-  estados: Record<string, EstadoImagen>;
-  onDescartar: (id: string) => void;
-  onElegir: (id: string, tieneMotivo: boolean) => void;
-  miraAntesActivo: boolean;
-  ponerDeFondoActivo: boolean;
-  onPonerDeFondo: (id: string) => void;
-  fondoCartelId: string | null;
-  compararMostrado: boolean;
-  firma: FirmaSeleccion;
-  onFirma: (categoria: CategoriaFirma, id: string) => void;
-  firmaBloqueada: boolean;
-  firmaHecha: boolean;
-  mostrarFicha: boolean;
-  declaroAutoria: 'propia' | 'ia' | null;
-  mostrarMaestra: boolean;
-}
-
-function Estudio({
-  indice,
-  encargo,
-  piezas,
-  onPieza,
-  piezasBloqueadas,
-  tandas,
-  estados,
-  onDescartar,
-  onElegir,
-  miraAntesActivo,
-  ponerDeFondoActivo,
-  onPonerDeFondo,
-  fondoCartelId,
-  compararMostrado,
-  firma,
-  onFirma,
-  firmaBloqueada,
-  firmaHecha,
-  mostrarFicha,
-  declaroAutoria,
-  mostrarMaestra,
-}: EstudioProps) {
-  const mostrarPeticion = indice <= 4;
-  const mostrarBandeja = Boolean(tandas.tanda1);
-  const imagenFondo = fondoCartelId ? (tandas.tanda2 ?? []).find((im) => im.id === fondoCartelId) ?? null : null;
-  const repetidas =
-    compararMostrado && tandas.tanda2 && tandas.tanda3
-      ? tandas.tanda2.filter((a) => tandas.tanda3!.some((b) => b.id === a.id)).length
-      : null;
-
-  return (
-    <div className="cia-estudio" data-testid="cia-estudio">
-      <header className="cia-encargo-cabecera">
-        <p className="cia-encargo-numero" data-testid="cia-encargo-numero">
-          Encargo {indice + 1} de {TOTAL_ENCARGOS} · {encargo.titulo}
-        </p>
-        <p className="cia-encargo-situacion">{encargo.situacion}</p>
-      </header>
-
-      <div className="cia-estudio-cuerpo">
-        <div className="cia-zonas">
-          {mostrarPeticion && (
-            <section className="cia-zona" data-testid="cia-zona-peticion">
-              <p className="cia-zona-titulo">La petición</p>
-              <FilaPieza etiqueta="Qué" opciones={PIEZAS_QUE} elegida={piezas.que} deshabilitada={piezasBloqueadas} onElegir={(id) => onPieza('que', id)} testId="cia-fila-que" />
-              <FilaPieza etiqueta="Cómo" opciones={PIEZAS_COMO} elegida={piezas.como} deshabilitada={piezasBloqueadas} onElegir={(id) => onPieza('como', id)} testId="cia-fila-como" />
-              <FilaPieza etiqueta="Para dónde" opciones={PIEZAS_PARA_DONDE} elegida={piezas.paraDonde} deshabilitada={piezasBloqueadas} onElegir={(id) => onPieza('paraDonde', id)} testId="cia-fila-para-donde" />
-              <FilaPieza etiqueta="Qué no" opciones={PIEZAS_QUE_NO} elegida={piezas.queNo} deshabilitada={piezasBloqueadas} onElegir={(id) => onPieza('queNo', id)} testId="cia-fila-que-no" />
-              <p className="cia-peticion-armada" data-testid="cia-peticion-armada">
-                {construirPeticion(piezas) || 'Elige tus piezas…'}
-              </p>
-            </section>
-          )}
-
-          {mostrarBandeja && (
-            <section className="cia-zona" data-testid="cia-zona-bandeja">
-              <p className="cia-zona-titulo">La bandeja</p>
-              {tandas.tanda1 && (
-                <div className="cia-bandeja-grupo" data-testid="cia-grupo-tanda1">
-                  <p className="cia-bandeja-grupo-titulo">Tanda 1</p>
-                  <div className="cia-bandeja">
-                    {tandas.tanda1.map((im) => (
-                      <TarjetaImagen key={im.id} imagen={im} estado="ninguno" interactiva={false} mostrarPonerDeFondo={false} esFondo={false} />
-                    ))}
-                  </div>
-                </div>
-              )}
-              {tandas.tanda2 && (
-                <div className="cia-bandeja-grupo" data-testid="cia-grupo-tanda2">
-                  <p className="cia-bandeja-grupo-titulo">Tanda 2</p>
-                  <div className="cia-bandeja">
-                    {tandas.tanda2.map((im) => (
-                      <TarjetaImagen
-                        key={im.id}
-                        imagen={im}
-                        estado={estados[im.id] ?? 'ninguno'}
-                        interactiva={miraAntesActivo}
-                        onDescartar={onDescartar}
-                        onElegir={onElegir}
-                        mostrarPonerDeFondo={ponerDeFondoActivo && estados[im.id] === 'elegida'}
-                        onPonerDeFondo={onPonerDeFondo}
-                        esFondo={fondoCartelId === im.id}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-              {tandas.tanda3 && (
-                <div className="cia-bandeja-grupo" data-testid="cia-grupo-tanda3">
-                  <p className="cia-bandeja-grupo-titulo">Tanda 3</p>
-                  <div className="cia-bandeja">
-                    {tandas.tanda3.map((im) => (
-                      <TarjetaImagen key={im.id} imagen={im} estado="ninguno" interactiva={false} mostrarPonerDeFondo={false} esFondo={false} />
-                    ))}
-                  </div>
-                  {repetidas !== null && (
-                    <p className="cia-comparar-nota" data-testid="cia-comparar-nota">
-                      Imágenes repetidas entre la tanda 2 y la tanda 3: <b>{repetidas}</b>
-                    </p>
-                  )}
-                </div>
-              )}
-            </section>
-          )}
-
-          {mostrarFicha && (
-            <section className="cia-zona" data-testid="cia-zona-ficha">
-              <p className="cia-zona-titulo">La ficha de procedencia</p>
-              <SelectorFirma etiqueta="Herramienta" opciones={OPCIONES_HERRAMIENTA} elegida={firma.herramienta} deshabilitada={firmaBloqueada} onElegir={(id) => onFirma('herramienta', id)} testId="cia-firma-herramienta" />
-              <SelectorFirma etiqueta="Qué pediste" opciones={OPCIONES_QUE_PEDISTE} elegida={firma.quePediste} deshabilitada={firmaBloqueada} onElegir={(id) => onFirma('quePediste', id)} testId="cia-firma-que-pediste" />
-              <SelectorFirma etiqueta="Cuándo" opciones={OPCIONES_CUANDO} elegida={firma.cuando} deshabilitada={firmaBloqueada} onElegir={(id) => onFirma('cuando', id)} testId="cia-firma-cuando" />
-            </section>
-          )}
-
-          {mostrarMaestra && (
-            <section className="cia-zona cia-zona-maestra" data-testid="cia-zona-maestra">
-              <p className="cia-zona-titulo">La maestra pregunta</p>
-              <p className="cia-maestra-pregunta">¿Este dibujo lo hiciste tú?</p>
-              {declaroAutoria === 'propia' && (
-                <p className="cia-maestra-aviso" data-testid="cia-maestra-aviso">
-                  Dijiste que lo hiciste tú: el cartel se marca sin fuente. Puedes corregir tu respuesta.
-                </p>
-              )}
-            </section>
-          )}
-        </div>
-
-        <aside className="cia-cartel" data-testid="cia-cartel">
-          <p className="cia-cartel-titulo">Tu cartel</p>
-          <div className={`cia-cartel-lienzo${imagenFondo ? ' es-con-fondo' : ''}`} data-testid="cia-cartel-lienzo">
-            <p className="cia-cartel-h1">Feria de Ciencias</p>
-            {imagenFondo && (
-              <span className="cia-cartel-glifo" aria-hidden="true">
-                {imagenFondo.glifo}
-              </span>
-            )}
-          </div>
-          {firmaHecha && declaroAutoria !== 'propia' && (
-            <p className="cia-cartel-sello" data-testid="cia-cartel-sello">
-              📌 Tecnia Genera · {OPCIONES_CUANDO.find((o) => o.correcta)?.etiqueta}
-            </p>
-          )}
-          {declaroAutoria === 'propia' && (
-            <p className="cia-cartel-sinfuente" data-testid="cia-cartel-sinfuente">
-              ⚠ Sin fuente — no puede ir a la galería
-            </p>
-          )}
-        </aside>
-      </div>
-    </div>
-  );
-}
-
-function FilaPieza({
+function FilaChips<T extends string>({
   etiqueta,
-  opciones,
-  elegida,
-  deshabilitada,
-  onElegir,
   testId,
+  semilla,
+  opciones,
+  onTocar,
+  bloqueada,
+  prohibicion = false,
 }: {
   etiqueta: string;
-  opciones: PiezaOpcion[];
-  elegida: string | null;
-  deshabilitada: boolean;
-  onElegir: (id: string) => void;
   testId: string;
+  semilla: string;
+  opciones: { valor: T; texto: string; puesto: boolean }[];
+  onTocar: (v: T) => void;
+  bloqueada: boolean;
+  prohibicion?: boolean;
 }) {
   return (
-    <div className="cia-fila-pieza" data-testid={testId}>
-      <p className="cia-fila-pieza-etiqueta">{etiqueta}</p>
-      <div className="cia-fila-pieza-botones">
-        {opciones.map((op) => (
+    <div className="cia-fila" data-testid={testId}>
+      <p className="cia-fila-etiqueta">{etiqueta}</p>
+      <div className="cia-chips">
+        {barajadas(opciones, semilla).map(([op]) => (
           <button
-            key={op.id}
+            key={op.valor}
             type="button"
-            className={`cia-pieza-boton${elegida === op.id ? ' es-elegida' : ''}`}
-            data-pieza={op.id}
-            aria-pressed={elegida === op.id}
-            disabled={deshabilitada}
-            onClick={() => onElegir(op.id)}
+            className={`cia-chip${op.puesto ? ' es-puesto' : ''}${prohibicion ? ' es-prohibicion' : ''}`}
+            data-pieza={op.valor}
+            aria-pressed={op.puesto}
+            disabled={bloqueada}
+            onClick={() => {
+              reproducirTono('select');
+              onTocar(op.valor);
+            }}
           >
-            {op.etiqueta}
+            {prohibicion && <span aria-hidden="true">🚫 </span>}
+            {op.texto}
           </button>
         ))}
       </div>
@@ -669,95 +684,36 @@ function FilaPieza({
   );
 }
 
-function TarjetaImagen({
-  imagen,
-  estado,
-  interactiva,
-  onDescartar,
-  onElegir,
-  mostrarPonerDeFondo,
-  onPonerDeFondo,
-  esFondo,
-}: {
-  imagen: ImagenGenerada;
-  estado: EstadoImagen;
-  interactiva: boolean;
-  onDescartar?: (id: string) => void;
-  onElegir?: (id: string, tieneMotivo: boolean) => void;
-  mostrarPonerDeFondo: boolean;
-  onPonerDeFondo?: (id: string) => void;
-  esFondo: boolean;
-}) {
-  return (
-    <div
-      className={`cia-imagen${estado === 'elegida' ? ' es-elegida' : ''}${estado === 'descartada' ? ' es-descartada' : ''}`}
-      data-testid="cia-imagen"
-      data-imagen={imagen.id}
-      data-estado={estado}
-    >
-      <span className="cia-imagen-glifo" aria-hidden="true">
-        {imagen.glifo}
-      </span>
-      <p className="cia-imagen-nombre">{imagen.nombre}</p>
-      {imagen.motivo && (
-        <p className="cia-imagen-motivo" data-testid="cia-imagen-motivo">
-          {imagen.motivo}
-        </p>
-      )}
-      {interactiva && (
-        <div className="cia-imagen-botones">
-          <button type="button" className="cia-imagen-boton" onClick={() => onDescartar?.(imagen.id)} data-accion="descartar">
-            {estado === 'descartada' ? 'Recuperar' : 'Descartar'}
-          </button>
-          <button type="button" className="cia-imagen-boton es-elegir" onClick={() => onElegir?.(imagen.id, Boolean(imagen.motivo))} data-accion="elegir">
-            Elegir
-          </button>
-        </div>
-      )}
-      {mostrarPonerDeFondo && (
-        <button type="button" className="cia-imagen-boton es-fondo" onClick={() => onPonerDeFondo?.(imagen.id)} data-accion="poner-de-fondo">
-          Poner de fondo
-        </button>
-      )}
-      {esFondo && (
-        <span className="cia-imagen-badge" data-testid="cia-imagen-badge-fondo">
-          ✓ De fondo
-        </span>
-      )}
-    </div>
-  );
-}
-
-function SelectorFirma({
+function FilaFirma({
   etiqueta,
+  testId,
   opciones,
   elegida,
-  deshabilitada,
   onElegir,
-  testId,
+  bloqueada,
 }: {
   etiqueta: string;
-  opciones: OpcionFirma[];
-  elegida: string | null;
-  deshabilitada: boolean;
-  onElegir: (id: string) => void;
   testId: string;
+  opciones: string[];
+  elegida: string | null;
+  onElegir: (v: string) => void;
+  bloqueada: boolean;
 }) {
   return (
-    <div className="cia-firma-hueco" data-testid={testId}>
-      <p className="cia-firma-etiqueta">{etiqueta}</p>
-      <div className="cia-firma-opciones">
-        {opciones.map((op) => (
+    <div className="cia-fila" data-testid={testId}>
+      <p className="cia-fila-etiqueta">{etiqueta}</p>
+      <div className="cia-chips es-columna">
+        {barajadas(opciones, testId).map(([op]) => (
           <button
-            key={op.id}
+            key={op}
             type="button"
-            className={`cia-firma-boton${elegida === op.id ? ' es-elegida' : ''}`}
-            data-opcion={op.id}
-            aria-pressed={elegida === op.id}
-            disabled={deshabilitada}
-            onClick={() => onElegir(op.id)}
+            className={`cia-chip${elegida === op ? ' es-puesto' : ''}`}
+            data-valor={op}
+            aria-pressed={elegida === op}
+            disabled={bloqueada}
+            onClick={() => onElegir(op)}
           >
-            {op.etiqueta}
+            {op}
           </button>
         ))}
       </div>

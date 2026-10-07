@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useLabActividad } from '@/components/activities/lib/useLabActividad';
 import { VentanaBase } from '@/components/simuladores/VentanaBase';
 import {
@@ -241,7 +242,7 @@ export function LabComoFuncionanLosModelos(props: ActivityProps & { alSalir?: ()
               nunca mostraron juntas. Señala la única que involucra el <b>canal</b>, no el área:
             </p>
             <div className="flex flex-col gap-2" role="list">
-              {auditoria.huecos.map((h) => {
+              {ordenDeOpciones(auditoria.huecos.length, 'modelos-huecos').map((i) => auditoria.huecos[i]).map((h) => {
                 const id = `${h.rasgo}-${h.valor}-${h.etiqueta}`;
                 const activa = seleccion === id;
                 return (
@@ -601,7 +602,7 @@ export function LabComoFuncionanLosModelos(props: ActivityProps & { alSalir?: ()
                   ahora el modelo?
                 </p>
                 <div className="flex flex-col gap-2">
-                  {OPCIONES_VEREDICTO_XOR.map((op) => {
+                  {ordenDeOpciones(OPCIONES_VEREDICTO_XOR.length, 'modelos-xor').map((i) => OPCIONES_VEREDICTO_XOR[i]).map((op) => {
                     const activa = seleccion === op.id;
                     return (
                       <button

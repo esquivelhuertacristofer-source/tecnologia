@@ -16,6 +16,10 @@ import { LabPrivacidadEnJuegos } from './LabPrivacidadEnJuegos';
  * acciones sociales delicadas — sirve para probar que el cableo con
  * `useMuro`/`VentanaMuro` funciona antes de construir encima la clase que sí
  * es delicada (`n6-alto-al-ciberacoso`).
+ *
+ * 6-oct-2026 (§69.2): el laboratorio pasó a tres misiones dentro del muro —el
+ * perfil que habla de más, el desconocido amable que pide datos, publicar
+ * eligiendo antes— y la entrada lo cuenta así.
  */
 
 const CONFIG: ConfigEntradaN6 = {
@@ -26,10 +30,10 @@ const CONFIG: ConfigEntradaN6 = {
   globo:
     'Te presto Tecnia Muro otra vez. Esta vez el tema es a QUIÉN le llega lo que publicas — porque "público" significa cualquiera, y "cualquiera" incluye gente que juega los mismos juegos que tú.',
   arranqueSub:
-    'Tienes una publicación pública sobre tus horarios de juego. Vas a ver quién la puede leer, decidir quién debería verla de verdad, y practicar publicando con la audiencia correcta desde el principio.',
+    'Tu muro tiene tres publicaciones en público. Vas a ver tu perfil como lo ve un desconocido, cerrar lo que dice de más sin esconderlo todo, decidir qué hacer cuando alguien amable te pide datos, y publicar eligiendo la audiencia desde el principio.',
   stats: [
-    { etiqueta: 'Niveles de visibilidad', valor: '3', acento: '#22d3ee' },
-    { etiqueta: 'Publicación a revisar', valor: '1', acento: '#fbbf24' },
+    { etiqueta: 'Misiones', valor: '3', acento: '#22d3ee' },
+    { etiqueta: 'Niveles de audiencia', valor: '3', acento: '#fbbf24' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
   letrero: 'Los tres niveles de audiencia',
@@ -73,7 +77,7 @@ const CONFIG: ConfigEntradaN6 = {
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre Tecnia Muro',
   ctaDetalle:
-    'Revisa quién puede ver tu publicación sobre tus horarios de juego, ajústala, y después practica publicando algo nuevo eligiendo la audiencia correcta **desde antes**.',
+    'Todo pasa en Tecnia Muro: el selector de audiencia de cada publicación, «Así te ve un desconocido», el perfil de cada persona y Mensajes. Si te equivocas, vas a ver qué pasa y lo puedes arreglar: aquí no se pierden puntos.',
   assetsPendientes: false,
 };
 

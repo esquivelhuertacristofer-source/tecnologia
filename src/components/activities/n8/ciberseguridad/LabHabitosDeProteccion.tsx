@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useLabActividad } from '../../lib/useLabActividad';
 import { VentanaBase } from '../../../simuladores/VentanaBase';
 import {
@@ -750,7 +751,7 @@ export function LabHabitosDeProteccion(props: ActivityProps & { alSalir?: () => 
               <div className="flex flex-col gap-3">
                 <p className="text-sm text-slate-300">El panel de actualizaciones de Bit muestra tres apps. ¿Cuál necesita actualizarse AHORA MISMO?</p>
                 <ul className="flex flex-col gap-2" data-testid="lista-apps">
-                  {APPS.map((app) => (
+                  {ordenDeOpciones(APPS.length, 'habitos-apps').map((idx) => APPS[idx]).map((app) => (
                     <li key={app.id}>
                       <button
                         type="button"
@@ -807,28 +808,26 @@ export function LabHabitosDeProteccion(props: ActivityProps & { alSalir?: () => 
                 </div>
                 <p className="text-sm text-slate-300">Llegó un código a tu segundo dispositivo. ¿Qué haces?</p>
                 <div className="flex flex-col gap-2">
-                  <button
-                    type="button"
-                    data-testid="intento-aprobar"
-                    disabled={bloqueado}
-                    onClick={() => decidirIntento('aprobar')}
-                    className={`px-4 py-3 rounded-xl text-left text-sm font-semibold disabled:opacity-50 ${
-                      decisionIntento === 'aprobar' ? 'bg-slate-700 border border-slate-500 text-white' : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
-                    }`}
-                  >
-                    ✅ Aprobar, soy yo
-                  </button>
-                  <button
-                    type="button"
-                    data-testid="intento-bloquear"
-                    disabled={bloqueado}
-                    onClick={() => decidirIntento('bloquear')}
-                    className={`px-4 py-3 rounded-xl text-left text-sm font-semibold disabled:opacity-50 ${
-                      decisionIntento === 'bloquear' ? 'bg-slate-700 border border-slate-500 text-white' : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
-                    }`}
-                  >
-                    🚫 No fui yo, bloquear el intento
-                  </button>
+                  {ordenDeOpciones(2, 'habitos-intento').map((i) => {
+                    const op = [
+                      { id: 'aprobar', texto: '✅ Aprobar, soy yo' },
+                      { id: 'bloquear', texto: '🚫 No fui yo, bloquear el intento' },
+                    ][i];
+                    return (
+                      <button
+                        key={op.id}
+                        type="button"
+                        data-testid={`intento-${op.id}`}
+                        disabled={bloqueado}
+                        onClick={() => decidirIntento(op.id as 'aprobar' | 'bloquear')}
+                        className={`px-4 py-3 rounded-xl text-left text-sm font-semibold disabled:opacity-50 ${
+                          decisionIntento === op.id ? 'bg-slate-700 border border-slate-500 text-white' : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
+                        }`}
+                      >
+                        {op.texto}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -860,28 +859,26 @@ export function LabHabitosDeProteccion(props: ActivityProps & { alSalir?: () => 
                   onSeleccionar={() => {}}
                 />
                 <div className="flex flex-col gap-2">
-                  <button
-                    type="button"
-                    data-testid="correo-seguro"
-                    disabled={bloqueado}
-                    onClick={() => decidirCorreo('seguro')}
-                    className={`px-4 py-3 rounded-xl font-bold disabled:opacity-50 ${
-                      decisionCorreo === 'seguro' ? 'bg-emerald-500 text-slate-950 ring-2 ring-emerald-300' : 'bg-emerald-500 text-slate-950'
-                    }`}
-                  >
-                    ✅ Es seguro, voy a cambiar mi contraseña ahí
-                  </button>
-                  <button
-                    type="button"
-                    data-testid="correo-engano"
-                    disabled={bloqueado}
-                    onClick={() => decidirCorreo('engano')}
-                    className={`px-4 py-3 rounded-xl font-bold disabled:opacity-50 ${
-                      decisionCorreo === 'engano' ? 'bg-rose-500 text-white ring-2 ring-rose-300' : 'bg-rose-500 text-white'
-                    }`}
-                  >
-                    🚫 Parece un engaño, mejor no
-                  </button>
+                  {ordenDeOpciones(2, 'habitos-correo').map((i) => {
+                    const op = [
+                      { id: 'seguro', texto: '✅ Es seguro, voy a cambiar mi contraseña ahí' },
+                      { id: 'engano', texto: '🚫 Parece un engaño, mejor no' },
+                    ][i];
+                    return (
+                      <button
+                        key={op.id}
+                        type="button"
+                        data-testid={`correo-${op.id}`}
+                        disabled={bloqueado}
+                        onClick={() => decidirCorreo(op.id as 'seguro' | 'engano')}
+                        className={`px-4 py-3 rounded-xl font-semibold bg-slate-700 text-white disabled:opacity-50 ${
+                          decisionCorreo === op.id ? 'ring-2 ring-slate-300' : ''
+                        }`}
+                      >
+                        {op.texto}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -1047,7 +1044,7 @@ function McqBloque({
     <div className="flex flex-col gap-3">
       <p className="text-sm text-slate-200 leading-relaxed">{pregunta}</p>
       <div className="flex flex-col gap-2" data-testid="opciones-mcq">
-        {opciones.map((op) => (
+        {ordenDeOpciones(opciones.length, pregunta).map((idx) => opciones[idx]).map((op) => (
           <button
             key={op.id}
             type="button"

@@ -20,6 +20,10 @@ export {
   type AutorMuro,
   type ComentarioMuro,
   type ConsecuenciaMuro,
+  type ContactoMuro,
+  type EvidenciaMuro,
+  type MensajeMuro,
+  type MotivoReporte,
   type CopiaMuro,
   type ImagenMuro,
   type PerfilMuro,
@@ -28,7 +32,9 @@ export {
 } from './tiposMuro';
 
 export { useMuro } from './useMuro';
-export type { DatosPublicar, Muro, OpcionesMuro, ResultadoAccion, ResultadoComentar, ResultadoPublicar } from './useMuro';
+export type { DatosPublicar, Muro, OpcionesMuro, ResultadoAccion, ResultadoCaptura, ResultadoComentar, ResultadoMensaje, ResultadoPublicar } from './useMuro';
 
-export { VentanaMuro } from './VentanaMuro';
-export type { ComentarioEnCurso, CompositorMuro, VentanaMuroProps } from './VentanaMuro';
+export { ETIQUETA_MOTIVO, VentanaMuro } from './VentanaMuro';
+export { BandejaMuro } from './BandejaMuro';
+export type { BandejaMuroProps } from './BandejaMuro';
+export type { ComentarioEnCurso, CompositorMuro, ReporteEnCurso, VentanaMuroProps } from './VentanaMuro';

@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ActivityProps } from '@/types/activity-contract';
@@ -607,7 +608,7 @@ export function LabCompruebaLaRespuesta(props: ActivityProps & { alSalir?: () =>
         <div className="car-decidir">
           <p className="car-decidir-pregunta">{preguntaDecidir.texto}</p>
           <div className="car-opciones">
-            {preguntaDecidir.opciones.map((o) => (
+            {ordenDeOpciones(preguntaDecidir.opciones.length, preguntaDecidir.texto).map((k) => preguntaDecidir.opciones[k]).map((o) => (
               <button
                 key={o.id}
                 type="button"
@@ -744,7 +745,7 @@ export function LabCompruebaLaRespuesta(props: ActivityProps & { alSalir?: () =>
               <div className="car-pagina">
                 <p className="car-pagina-titulo">{claimActual.correccion.pregunta}</p>
                 <div className="car-opciones">
-                  {claimActual.correccion.opciones.map((o) => (
+                  {ordenDeOpciones(claimActual.correccion.opciones.length, claimActual.correccion.pregunta).map((k) => claimActual.correccion!.opciones[k]).map((o) => (
                     <button
                       key={o.id}
                       type="button"

@@ -11,6 +11,7 @@ import { Lamina } from '../motor-diapos/Lamina';
 import type { EscenarioProps } from '../VentanaDiapositivas';
 import { Atril, PantallaDelSalon, Publico, SALON, Salon } from './piezasAuditorio';
 import './auditorio.css';
+import { barajadas } from '@/lib/ordenDeOpciones';
 
 /**
  * El auditorio · «Presenta frente al grupo» (doc §27.3).
@@ -487,7 +488,7 @@ function FichaDelAtril({
         <div className="aud-ficha-decision">
           <p className="aud-ficha-pregunta">{decision.pregunta}</p>
           <div className="aud-ficha-opciones">
-            {decision.opciones.map((o, i) => (
+            {barajadas(decision.opciones, decision.pregunta).map(([o, i]) => (
               <button
                 key={o.texto}
                 type="button"

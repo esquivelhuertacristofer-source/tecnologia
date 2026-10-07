@@ -3,6 +3,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { reproducirTono } from '../n1/mision/audio';
+import { useGloboDeBit } from '../n1/arcade/ArcadeSala';
 import { detectarWebGL, RigArcade3D, type PaletaArcade } from './EscenaArcade3D';
 import '../n1/arcade/arcade.css';
 import './arcade3d.css';
@@ -96,6 +97,9 @@ export function ArcadeSala3D({
   children,
 }: ArcadeSala3DProps) {
   const [webgl, setWebgl] = useState(false);
+  /* El globo de Bit se recoge igual que en ArcadeSala: medido el 12-sep-2026,
+   * seguía tapando el lienzo y el botón del contrato a los 20 s. */
+  const { pantallaRef, retratoRef, recogido } = useGloboDeBit(bit);
 
   // Igual que Ordenador3D: primero respaldo (coincide con SSR), luego 3D.
   useEffect(() => {
@@ -127,7 +131,7 @@ export function ArcadeSala3D({
           )}
         </header>
 
-        <div className="escena3d">
+        <div className="escena3d" ref={pantallaRef}>
           {/* Con la mecánica terminada desmontamos la escena (canvas + sus
               botones <Html>, que portalan por encima) para que la pantalla
               final quede limpia y no se transparente la geometría 3D. */}
@@ -140,8 +144,8 @@ export function ArcadeSala3D({
           )}
 
           {bit && !final && (
-            <div className="bit-puesto">
-              <span className="bit-retrato">
+            <div className="bit-puesto" data-recogido={recogido ? 'si' : undefined}>
+              <span className="bit-retrato" ref={retratoRef}>
                 <Image src={BIT_CARA} alt="" fill sizes="62px" className="object-cover" />
               </span>
               <p className="bit-globo" key={bit} aria-live="polite">

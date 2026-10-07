@@ -104,6 +104,24 @@ export function archivosIniciales(): ArchivoWeb[] {
 
 const NOMBRES_DE_IMAGEN = IMAGENES_DE_PRACTICA.map((r) => r.nombre);
 
+/**
+ * El modelo de cada encargo (§69.13): cómo tiene que quedar la página, con
+ * textos de ejemplo. La sala lo pinta; el alumno nunca ve este código.
+ */
+const PIEZAS_DEL_MODELO = {
+  h1: '<h1>Robots del 6.º B</h1>',
+  p: '<p>Nos juntamos los martes a las dos para armar robots. Puede entrar quien quiera.</p>',
+  h2: '<h2>Nuestros proyectos</h2>',
+  ul: '<ul>\n    <li>El robot que sigue la línea</li>\n    <li>El brazo que recoge tapas</li>\n    <li>El coche por control remoto</li>\n  </ul>',
+  img: '<img src="robot.png" alt="Nuestro robot">',
+  a: '<a href="https://feriadeciencias.mx">La Feria de Ciencias de este año</a>',
+} as const;
+
+function modelo(...piezas: (keyof typeof PIEZAS_DEL_MODELO)[]): string {
+  const cuerpo = piezas.map((p) => `  ${PIEZAS_DEL_MODELO[p]}`).join('\n');
+  return PLANTILLA_HTML.replace(/<body>[\s\S]*<\/body>/, `<body>\n${cuerpo}\n</body>`);
+}
+
 /** «aquí», «clic aquí», «pincha aquí»… lo que un enlace nunca debería decir. */
 const TEXTOS_QUE_NO_DICEN_NADA = /^(aqu[ií]|ac[áa]|clic|click|clic aqu[ií]|click aqu[ií]|pincha( aqu[ií])?|pulsa( aqu[ií])?|ver m[áa]s|enlace|link)$/i;
 
@@ -115,8 +133,9 @@ export const GUION: GuionWeb = {
       id: 'titulo',
       titulo: 'El título grande',
       instruccion:
-        'Tu página está vacía. Escribe dentro del <body> el título del club: <h1>Robots del 6.º B</h1>. Ponle el nombre que quieras, pero que tenga algo escrito.',
-      pista: 'Se escribe así, en una línea: <h1>Robots del 6.º B</h1>. Abre, escribes, cierra.',
+        'Tu página está vacía. Ponle un título grande con el nombre del club, como en el modelo. El título grande es la etiqueta h1, que ya conoces: abre, escribes el nombre, cierra.',
+      pista: 'Escribe dentro del <body>, debajo del comentario: primero la etiqueta que abre el título, luego el nombre y luego la que lo cierra.',
+      modelo: modelo('h1'),
       senal: { archivo: 'index.html', control: 'editor' },
       logro: {
         tipo: 'pagina',
@@ -131,8 +150,9 @@ export const GUION: GuionWeb = {
       id: 'parrafo',
       titulo: 'Un párrafo que cuente de qué va',
       instruccion:
-        'Debajo del título, escribe un párrafo con <p> y </p>: qué hacen en el club, cuándo se juntan, quién puede entrar. Al menos veinte letras.',
-      pista: 'La etiqueta del párrafo es <p>. Ejemplo: <p>Nos juntamos los martes a las dos.</p>',
+        'Debajo del título, un párrafo que cuente qué hacen en el club, cuándo se juntan o quién puede entrar: al menos veinte letras. El párrafo es la etiqueta p.',
+      pista: 'Tiene la misma forma que el título: abres con la etiqueta p, escribes, y cierras.',
+      modelo: modelo('h1', 'p'),
       senal: { archivo: 'index.html', control: 'editor' },
       logro: { tipo: 'pagina', comprueba: (p) => buscar(p, 'p').some((n) => texto(n).trim().length >= 20) },
       aprendido: 'El <p> es un párrafo. El navegador le deja su espacio arriba y abajo sin que tú pidas nada.',
@@ -141,8 +161,9 @@ export const GUION: GuionWeb = {
       id: 'lista',
       titulo: 'Una lista con tres proyectos',
       instruccion:
-        'Ahora una lista. Se abre con <ul>, se cierra con </ul>, y dentro va cada cosa entre <li> y </li>. Escribe tres proyectos del club.',
-      pista: '<ul>\n  <li>El robot que sigue la línea</li>\n  <li>El brazo que recoge tapas</li>\n  <li>El coche por control remoto</li>\n</ul>',
+        'Ahora una lista con viñetas de tres proyectos del club, como en el modelo. Una lista con viñetas es la etiqueta ul, y cada punto es un li. Los li van DENTRO del ul.',
+      pista: 'Primero abre la lista. Luego cada punto, con su apertura y su cierre. Y al final cierra la lista. Las viñetas salen solas.',
+      modelo: modelo('h1', 'p', 'ul'),
       senal: { archivo: 'index.html', control: 'editor' },
       logro: {
         tipo: 'pagina',
@@ -157,8 +178,9 @@ export const GUION: GuionWeb = {
       id: 'imagen',
       titulo: 'Pon la foto del robot',
       instruccion:
-        'En esta práctica tienes dos imágenes: «robot.png» y «taller.png» (las ves abajo, en la mesa). Pon una con <img src="robot.png">. Esta etiqueta no se cierra: no lleva </img>.',
-      pista: 'Se escribe entera en una línea: <img src="robot.png">. Cuidado con el nombre: si te equivocas, abajo te dice cómo se llama de verdad.',
+        'En esta práctica tienes dos imágenes, «robot.png» y «taller.png» (las ves abajo, en la mesa). Pon una en la página. La imagen es la etiqueta img, y qué archivo es se dice dentro de ella con el atributo src. Esta etiqueta no se cierra.',
+      pista: 'El nombre del archivo va entre comillas, después de src=, todo dentro de la etiqueta. Si te equivocas en el nombre, abajo te dice cómo se llama de verdad.',
+      modelo: modelo('h1', 'p', 'ul', 'img'),
       senal: { archivo: 'index.html', control: 'editor' },
       logro: {
         tipo: 'pagina',
@@ -173,8 +195,8 @@ export const GUION: GuionWeb = {
       id: 'alt',
       titulo: 'Mira el aviso amarillo de abajo',
       instruccion:
-        'La foto se ve… y abajo hay un aviso: no tiene texto alternativo. Escríbelo dentro de la misma etiqueta: <img src="robot.png" alt="Nuestro robot siguiendo la línea negra">.',
-      pista: 'El «alt» va dentro de la etiqueta <img>, después del src, y entre comillas. Cuenta lo que se ve en la foto.',
+        'La foto se ve… y abajo, en «Lo que hay que arreglar», hay un aviso amarillo. Léelo y arréglalo: la foto tiene que seguir donde está.',
+      pista: 'El aviso pide un texto alternativo: es el atributo alt, y va dentro de la misma etiqueta de la imagen, entre comillas. Escribe en él lo que se ve en la foto.',
       senal: { control: 'problemas' },
       logro: {
         tipo: 'pagina',
@@ -190,8 +212,9 @@ export const GUION: GuionWeb = {
       id: 'enlace',
       titulo: 'Un enlace que diga a dónde lleva',
       instruccion:
-        'Pon un enlace a la feria: <a href="https://feriadeciencias.mx">La Feria de Ciencias de este año</a>. El texto tiene que decir a dónde va — «aquí» no vale, y el encargo no lo va a dar por bueno.',
-      pista: 'La etiqueta es <a>, y la dirección va en href, entre comillas. Lo que escribas entre <a> y </a> es lo que se lee y se pulsa.',
+        'Pon un enlace a la Feria de Ciencias; su dirección es https://feriadeciencias.mx. El enlace es la etiqueta a, y la dirección va en el atributo href. Lo que escribas dentro del enlace es lo que se lee y se pulsa: que diga a dónde lleva — «aquí» no vale.',
+      pista: 'Como en la imagen, la dirección va dentro de la etiqueta que abre, entre comillas, después de href=. Luego el texto que se pulsa, y la etiqueta que cierra.',
+      modelo: modelo('h1', 'p', 'ul', 'img', 'a'),
       senal: { archivo: 'index.html', control: 'editor' },
       logro: {
         tipo: 'pagina',
@@ -208,8 +231,9 @@ export const GUION: GuionWeb = {
       id: 'orden',
       titulo: 'Ordena la página',
       instruccion:
-        'Falta un subtítulo justo encima de la lista: <h2>Nuestros proyectos</h2>. Y fíjate en el orden de arriba abajo: primero el <h1>, luego el párrafo, luego el <h2> y luego la lista.',
-      pista: 'El <h2> es un título más pequeño que el <h1>. Escríbelo en su propia línea, justo antes de <ul>.',
+        'Compara tu página con el modelo: le falta un subtítulo, «Nuestros proyectos», justo encima de la lista. El subtítulo es la etiqueta h2, más pequeña que el h1. Déjala en el mismo orden que el modelo.',
+      pista: 'Una página se dibuja en el orden en que la escribes. ¿En qué renglón tiene que ir el subtítulo para que salga encima de la lista?',
+      modelo: modelo('h1', 'p', 'h2', 'ul', 'img', 'a'),
       senal: { archivo: 'index.html', control: 'editor' },
       logro: { tipo: 'pagina', comprueba: (p) => existe(p, 'h2') && enOrden(p, ['h1', 'p', 'h2', 'ul']) },
       aprendido: 'Una página se lee de arriba abajo, como un cartel. El orden en que escribes es el orden en que se ve.',

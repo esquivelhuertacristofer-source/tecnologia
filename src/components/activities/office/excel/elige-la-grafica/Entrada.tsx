@@ -35,7 +35,7 @@ const CONFIG: ConfigEntradaN4 = {
   parada: Math.max(1, RUTA_N6.findIndex((p) => p.id === ACTIVIDAD) + 1),
   globo: 'Hoy no aprendes a usar un botón. Aprendes a desconfiar de un dibujo.',
   arranqueSub:
-    'La feria de la escuela ya pasó, y hay números de sobra: boletos por puesto, boletos por semana, un presupuesto, horas de preparación. Vas a descubrir que cada gráfica contesta UNA pregunta —barras compara tamaños, líneas sigue el tiempo, pastel reparte un total, dispersión busca si dos cosas tienen que ver— eligiendo mal a propósito dos veces, para ver con tus ojos cómo la respuesta deja de leerse sin que ningún número cambie. Después vas a construir la MISMA gráfica dos veces, con los mismos datos, y a cortarle el eje a una sola: la misma diferencia real de tres boletos se va a ver casi nada en una y enorme en la otra. Y vas a armar dos pasteles que mienten por motivos distintos —uno con demasiadas rebanadas, otro con datos que no suman ningún total real— para entender que la mayoría de las gráficas que vas a ver en tu vida no están en Excel: están en las noticias y en las redes.',
+    'La feria de la escuela ya pasó, y hay números de sobra: boletos por puesto, boletos por semana, un presupuesto, horas de preparación. Cada pregunta de la feria te llega sin decirte qué gráfica usar: la eliges tú, entre cinco, y vas a descubrir que cada tipo contesta UNA pregunta. Y vas a elegir mal a propósito dos veces, para ver con tus ojos cómo la respuesta deja de leerse sin que ningún número cambie. Después vas a construir la MISMA gráfica dos veces, con los mismos datos, y a cortarle el eje a una sola: la misma diferencia real de tres boletos se va a ver casi nada en una y enorme en la otra. Y vas a armar dos pasteles que mienten por motivos distintos —uno con demasiadas rebanadas, otro con datos que no suman ningún total real— para entender que la mayoría de las gráficas que vas a ver en tu vida no están en Excel: están en las noticias y en las redes.',
   stats: [
     { etiqueta: 'Tipos de gráfica', valor: '5', acento: '#22d3ee' },
     { etiqueta: 'Encargos', valor: '13', acento: '#f5a524' },
@@ -49,7 +49,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 1,
       titulo: 'Cada gráfica contesta una pregunta',
       detalle:
-        'Barras: ¿cuál es más grande? Líneas: ¿cómo cambió con el tiempo? Pastel: ¿qué parte del total? Dispersión: ¿tienen que ver una cosa con la otra? Elegir mal no rompe ningún número: sólo deja de contestar la pregunta.',
+        '¿Cuál es más grande? ¿Cómo cambió? ¿Qué parte del total es cada cosa? ¿Tienen que ver dos cosas entre sí? Son cuatro preguntas distintas, y cada tipo de gráfica sabe contestar bien sólo una. Cuál con cuál lo descubres tú, eligiendo. Elegir mal no rompe ningún número: sólo deja de contestar la pregunta.',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
     {
@@ -84,7 +84,7 @@ const CONFIG: ConfigEntradaN4 = {
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre el libro de la feria',
   ctaDetalle:
-    'Se abre «La feria de la escuela.xlsx», con ocho tablas pequeñas listas para convertirse en gráficas. Trece encargos. Columnas, líneas y circular están en Insertar → Gráficos; barras y dispersión están en el panel «Gráficas», a la derecha; y el corte del eje se hace desde «Eje mínimo (Y)», en el panel «Diseño de gráfico» que aparece al marcar tu gráfica.',
+    'Se abre «La feria de la escuela.xlsx», con ocho tablas pequeñas listas para convertirse en gráficas. Trece encargos. Las cinco gráficas están en Insertar → Gráficos, y el corte del eje se hace desde «Eje mínimo (Y)», en el panel «Diseño de gráfico» que aparece al marcar tu gráfica.',
 };
 
 export function EntradaEligeLaGrafica(props: ActivityProps) {

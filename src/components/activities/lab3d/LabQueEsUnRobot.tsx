@@ -73,14 +73,13 @@ import {
   BANCO_ROBOT_INICIAL,
   CAJA_Z_CHOCA,
   CAJA_Z_LEJOS,
-  CAJA_Z_PARA,
   CX_CHAROLAS,
   ESPERADO_CHAROLAS,
   ESPERADO_ROBOT,
   OX_ROBOT,
   PIEZAS_ROBOT,
   PREGUNTA_SENSOR,
-  robotSeDetiene,
+  dondeSeDetiene,
   type PiezaRobot,
   type Pulso,
 } from './bancoRobot';
@@ -96,7 +95,11 @@ import {
   Zumbador3D,
   ZocaloPila3D,
 } from './piezasRobot3D';
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import './queEsUnRobot.css';
+
+/** Orden de pintado de la pregunta del sensor (índices originales), fijo por semilla. */
+const ORDEN_SENSOR = ordenDeOpciones(PREGUNTA_SENSOR.opciones.length, PREGUNTA_SENSOR.texto);
 
 const TOTAL_ENCARGOS = 9;
 
@@ -130,12 +133,12 @@ const LINEAS = {
  *  de la Parte 1, una frase por pieza. */
 const VOZ_TOMA: Readonly<Record<PiezaRobot, string>> = {
   'sensor-distancia': 'Sensor de distancia: mide qué tan lejos está lo que tiene enfrente.',
-  'sensor-luz': 'Sensor de luz: sabe si es de día. Los tres sensores meten información del mundo hacia adentro.',
+  'sensor-luz': 'Sensor de luz: nota si hay luz o si está oscuro.',
   'sensor-linea': 'Sensor de línea: mira el piso y distingue una raya negra de la loseta blanca.',
-  motor: 'Ahora las que hacen algo en el mundo. El motor gira la rueda. Salida.',
-  zumbador: 'El zumbador suena. Como el motor, saca algo del robot hacia afuera: salida.',
-  tarjeta: 'Y en medio queda la tarjeta. No mide ni suena: decide. Ahí vivirá tu programa en la siguiente parada.',
-  pila: 'Queda la pila. No es sensor, no es actuador y no decide. Sólo da energía. Enchúfala en su bahía y sube el interruptor.',
+  motor: 'El motor: le llega corriente y hace girar una rueda.',
+  zumbador: 'El zumbador: le llega corriente y pita.',
+  tarjeta: 'La tarjeta: una plaquita con un chip. Ahí vivirá tu programa en la siguiente parada.',
+  pila: 'La pila guarda la energía. Ésa no va en una charola: tiene su propia bahía, y luego hay que subir el interruptor.',
 };
 
 const VOZ_ACIERTO_CHAROLA: Readonly<Record<string, string>> = {
@@ -415,13 +418,15 @@ export function LabQueEsUnRobot(props: ActivityProps & { alSalir?: () => void })
     setChoque(false);
 
     const evalua = evaluar(BANCO_ROBOT, banco, ESPERADO_ROBOT);
-    const detiene = robotSeDetiene(banco);
+    // §69.6: dónde se queda la caja lo decide el rayo del sensor.
+    const parada = dondeSeDetiene(banco);
+    const detiene = parada !== null;
 
     timers.despues(() => setPulso('sensor'), 450);
     timers.despues(() => setPulso('tarjeta'), 900);
     timers.despues(() => {
       setPulso(detiene ? 'actuador' : null);
-      setCajaZ(detiene ? CAJA_Z_PARA : CAJA_Z_CHOCA);
+      setCajaZ(parada ?? CAJA_Z_CHOCA);
       if (!detiene) {
         setChoque(true);
         setChoques((c) => c + 1);
@@ -558,21 +563,28 @@ export function LabQueEsUnRobot(props: ActivityProps & { alSalir?: () => void })
 
   const letreros = useMemo<LetreroMundo[]>(() => {
     if (fase === 'charolas') {
+      // §69.6: las charolas están a 1,0 una de otra; con el ancho por defecto
+      // (1,15) los letreros se tapaban, y el de la bahía, delante, tapaba a las
+      // tres. La bahía lleva el suyo bajo y a un lado.
       return BANCO_CHAROLAS.anclajes.map((a) => ({
         id: `letrero-${a.id}`,
         titulo: a.etiqueta,
-        punto: [a.punto[0], a.punto[1] + 0.5, a.punto[2] - 0.35] as Punto3,
+        punto:
+          a.id === 'bahia-pila'
+            ? ([a.punto[0] - 0.6, a.punto[1] + 0.12, a.punto[2] + 0.35] as Punto3)
+            : ([a.punto[0], a.punto[1] + 0.55, a.punto[2] - 0.35] as Punto3),
+        ancho: a.id === 'bahia-pila' ? 0.62 : 0.84,
         ancla: a.punto,
         color: a.id === 'charola-entra' ? '#22D3EE' : a.id === 'charola-decide' ? '#A78BFA' : a.id === 'charola-sale' ? '#FBBF24' : '#4ADE80',
       }));
     }
     if (preguntaAbierta) {
-      return PREGUNTA_SENSOR.opciones.map((texto, i) => ({
+      return ORDEN_SENSOR.map((i, j) => ({
         id: `opcion-${i}`,
-        titulo: `Opción ${String.fromCharCode(65 + i)}`,
-        texto,
-        punto: [OX_ROBOT + (i - 1) * 0.55, -0.15, 2.1] as Punto3,
-        ancla: [OX_ROBOT + (i - 1) * 0.55, -0.55, 2.1] as Punto3,
+        titulo: `Opción ${String.fromCharCode(65 + j)}`,
+        texto: PREGUNTA_SENSOR.opciones[i],
+        punto: [OX_ROBOT + (j - 1) * 0.55, -0.15, 2.1] as Punto3,
+        ancla: [OX_ROBOT + (j - 1) * 0.55, -0.55, 2.1] as Punto3,
         color: '#A78BFA',
         ancho: 0.9,
       }));
@@ -606,13 +618,13 @@ export function LabQueEsUnRobot(props: ActivityProps & { alSalir?: () => void })
       });
     }
     if (preguntaAbierta) {
-      PREGUNTA_SENSOR.opciones.forEach((texto, i) => {
+      ORDEN_SENSOR.forEach((i, j) => {
         lista.push({
           id: `resp-${i}`,
           forma: 'boton',
-          punto: [OX_ROBOT + (i - 1) * 0.55, -0.55, 2.1],
+          punto: [OX_ROBOT + (j - 1) * 0.55, -0.55, 2.1],
           mira: [0, 0, 1],
-          etiqueta: texto,
+          etiqueta: PREGUNTA_SENSOR.opciones[i],
           encendido: respuestaMarcada === i,
           activo: interactivo,
           color: respuestaMarcada === i ? (i === PREGUNTA_SENSOR.correcta ? '#4ADE80' : '#EF4444') : '#A78BFA',
@@ -753,7 +765,7 @@ export function LabQueEsUnRobot(props: ActivityProps & { alSalir?: () => void })
         <div className="lb3-respaldo-grupo">
           <span className="qer-pregunta">{PREGUNTA_SENSOR.texto}</span>
           <div className="lb3-respaldo-fila">
-            {PREGUNTA_SENSOR.opciones.map((texto, i) => (
+            {ORDEN_SENSOR.map((i) => [PREGUNTA_SENSOR.opciones[i], i] as const).map(([texto, i]) => (
               <button
                 key={texto}
                 type="button"

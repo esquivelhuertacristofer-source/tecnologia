@@ -1,48 +1,32 @@
 /**
- * N6 · «Diseño y multimedia», parada 3 de 3 · `n6-crea-con-ia`.
+ * N6 · «Diseño y multimedia», parada 3 de 3 · `n6-crea-con-ia` (§69.3).
  *
- * Lo que hay que cuidar aquí, distinto de las otras clases de IA: el Estudio
- * de Generación es el `panel` de `VentanaAsistente` (no un chat de fichas
- * como `n5-uso-responsable-de-ia`), las tres tandas de imágenes son datos
- * FIJOS del guion (cero azar), y la ficha de procedencia tiene que exigir
- * las TRES opciones correctas, no «casi».
+ * La clase ya no tiene tandas fijas: la imagen sale de la petición con el
+ * generador de `simuladores/generador`. Como el generador es determinista por
+ * semilla, la prueba calcula con `generar` lo mismo que verá el alumno y así
+ * sabe, sin mirar el componente, qué imagen cumple y cuál no.
  *
- * Se juega mal a propósito: Generar sin piezas, elegir la imagen con el
- * defecto, descartar las tres (y recuperarlas), elegir y luego descartar la
- * elegida, firmar incompleto, y declarar autoría propia y corregir sin
- * perder la ficha.
+ * Se juega MAL a propósito: generar sin piezas, la petición vaga, olvidar
+ * «sin texto», cambiar algo entre las dos generaciones, poner en el cartel una
+ * imagen que no cumple, firmar incompleto y firmar con otra petición del
+ * historial, y contestar mal la pregunta.
  */
 
 import fs from 'fs';
 import path from 'path';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { EntradaCreaConIa } from '@/components/activities/ia/EntradaCreaConIa';
-import {
-  ELEGIBLE_TANDA_2,
-  FECHA_TRABAJO,
-  FICHAS_DEL_ESTUDIO,
-  GUION_CREA_CON_IA,
-  TANDA_2,
-  TANDA_3,
-  TOTAL_ENCARGOS,
-} from '@/components/activities/ia/guionCreaConIa';
+import { ENCARGO, FECHA_TRABAJO, HERRAMIENTA, PREGUNTA, TOTAL_ENCARGOS } from '@/components/activities/ia/LabCreaConIa';
 import { RUTA_N6_DISENO_MULTIMEDIA } from '@/components/activities/n4/estudio/EntradaN4Base';
-import { validarGuion } from '@/components/simuladores/asistente';
+import { cumple, generar, PETICION_VACIA, textoDePeticion, type Peticion, type Tanda } from '@/components/simuladores/generador';
 import { CURRICULO } from '@/data/curriculo';
 
 function montar() {
   const onProgress = jest.fn();
   const onScore = jest.fn();
   const onComplete = jest.fn();
-  const utils = render(
-    <EntradaCreaConIa config={{}} onProgress={onProgress} onScore={onScore} onComplete={onComplete} />,
-  );
+  const utils = render(<EntradaCreaConIa config={{}} onProgress={onProgress} onScore={onScore} onComplete={onComplete} />);
   return { ...utils, onProgress, onScore, onComplete };
-}
-
-function saltarSiTeclea() {
-  const saltar = screen.queryByTestId('asis-saltar');
-  if (saltar) fireEvent.click(saltar);
 }
 
 function abrirLaboratorio() {
@@ -52,68 +36,80 @@ function abrirLaboratorio() {
   return utils;
 }
 
-const pieza = (selector: string) => document.querySelector(selector) as HTMLElement;
+const bit = () => document.querySelector('.bit-globo')?.textContent ?? '';
+const tandasEnPantalla = () => screen.queryAllByTestId('cia-tanda').length;
+const logrado = () => screen.queryByTestId('cia-siguiente') !== null;
+const ultimoPuntaje = (onScore: jest.Mock) => onScore.mock.calls[onScore.mock.calls.length - 1][0] as number;
 
-function elegirPieza(fila: string, id: string) {
-  fireEvent.click(pieza(`[data-testid="${fila}"] [data-pieza="${id}"]`));
+function chip(fila: string, valor: string) {
+  return document.querySelector(`[data-testid="${fila}"] [data-pieza="${valor}"]`) as HTMLButtonElement;
+}
+/** Deja la pieza puesta o quitada sin depender de cómo estaba (los chips se alternan). */
+function poner(fila: string, valor: string, puesta = true) {
+  const b = chip(fila, valor);
+  if ((b.getAttribute('aria-pressed') === 'true') !== puesta) fireEvent.click(b);
+}
+function pedirLoDelComite() {
+  poner('cia-fila-tema', 'volcan');
+  poner('cia-fila-estilo', 'plastilina');
+  poner('cia-fila-formato', 'vertical');
+  for (const e of ['texto', 'persona', 'marca']) poner('cia-fila-sin', e);
+}
+const generarTanda = () => fireEvent.click(screen.getByTestId('cia-generar'));
+const siguiente = () => fireEvent.click(screen.getByTestId('cia-siguiente'));
+
+const COMPLETA: Peticion = { tema: 'volcan', estilo: 'plastilina', formato: 'vertical', prohibidos: ['texto', 'persona', 'marca'] };
+const SOLO_TEMA: Peticion = { ...PETICION_VACIA, tema: 'volcan' };
+
+/**
+ * El recorrido limpio hasta un encargo: 1 = una pieza (gen 1), 2 = la del
+ * comité (gen 2), 3 = la misma otra vez (gen 3). Devuelve las tandas tal
+ * como las calcula el generador, en el mismo orden.
+ */
+function hastaElEncargo(n: number): Tanda[] {
+  const tandas: Tanda[] = [];
+  if (n <= 1) return tandas;
+  poner('cia-fila-tema', 'volcan');
+  generarTanda();
+  tandas.push(generar(SOLO_TEMA, 1));
+  siguiente();
+  if (n <= 2) return tandas;
+  pedirLoDelComite();
+  generarTanda();
+  tandas.push(generar(COMPLETA, 2));
+  siguiente();
+  if (n <= 3) return tandas;
+  generarTanda();
+  tandas.push(generar(COMPLETA, 3));
+  siguiente();
+  return tandas;
 }
 
-function elegirFirma(hueco: string, id: string) {
-  fireEvent.click(pieza(`[data-testid="${hueco}"] [data-opcion="${id}"]`));
+/**
+ * Las imágenes de las generaciones con la petición del comité. OJO: la de una
+ * sola pieza (gen 1) también puede traer una que cumpla —con «volcán» a secas,
+ * la gen 1 trae una—, y entonces la firma correcta es ESA petición, no la
+ * completa. La prueba elige de aquí para saber qué firma espera.
+ */
+const delComite = (tandas: Tanda[]) => tandas.slice(1).flatMap((t) => t.imagenes);
+
+function mirar(id: string) {
+  fireEvent.click(document.querySelector(`[data-testid="cia-mirar"][data-imagen="${id}"]`)!);
 }
-
-function armarPeticionCompleta() {
-  elegirPieza('cia-fila-que', 'volcan');
-  elegirPieza('cia-fila-como', 'noche');
-  elegirPieza('cia-fila-para-donde', 'cartel');
-  elegirPieza('cia-fila-que-no', 'sinPersonas');
+function alCartel(id: string) {
+  mirar(id);
+  fireEvent.click(screen.getByTestId('cia-al-cartel'));
 }
-
-function generar() {
-  fireEvent.click(screen.getByRole('button', { name: 'Generar' }));
-  saltarSiTeclea();
+function firmar(campo: 'herramienta' | 'peticion' | 'fecha', valor: string) {
+  const b = Array.from(document.querySelectorAll<HTMLButtonElement>(`[data-testid="cia-firma-${campo}"] [data-valor]`)).find(
+    (x) => x.dataset.valor === valor,
+  );
+  if (!b) throw new Error(`no hay opción «${valor}» en ${campo}`);
+  fireEvent.click(b);
 }
-
-function siguienteEncargo() {
-  fireEvent.click(screen.getByRole('button', { name: /Siguiente encargo/ }));
-}
-
-/** Lleva la partida hasta el final del encargo 3 (elegida t2-a, B y C fuera). */
-function pasarMiraAntes() {
-  fireEvent.click(pieza('[data-imagen="t2-b"] [data-accion="descartar"]'));
-  fireEvent.click(pieza('[data-imagen="t2-c"] [data-accion="descartar"]'));
-  fireEvent.click(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"] [data-accion="elegir"]`));
-}
-
-function firmarBien() {
-  elegirFirma('cia-firma-herramienta', 'tecnia-genera');
-  elegirFirma('cia-firma-que-pediste', 'peticion-completa');
-  elegirFirma('cia-firma-cuando', 'fecha-trabajo');
-  fireEvent.click(screen.getByRole('button', { name: 'Firmar' }));
-}
-
-/** Recorrido perfecto, encargos 1 a 6 (deja al alumno frente a la pregunta de la maestra). */
-function recorrerHastaLaMaestra() {
-  elegirPieza('cia-fila-que', 'volcan');
-  generar(); // encargo 1
-  siguienteEncargo();
-
-  armarPeticionCompleta();
-  generar(); // encargo 2
-  siguienteEncargo();
-
-  pasarMiraAntes(); // encargo 3
-  siguienteEncargo();
-
-  generar(); // encargo 4: pide otra vez
-  fireEvent.click(screen.getByRole('button', { name: /Comparar con la tanda anterior/ }));
-  siguienteEncargo();
-
-  fireEvent.click(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"] [data-accion="poner-de-fondo"]`)); // encargo 5
-  siguienteEncargo();
-
-  firmarBien(); // encargo 6
-  siguienteEncargo();
+function contestarBien() {
+  const i = PREGUNTA.opciones.findIndex((o) => o.correcta);
+  fireEvent.click(document.querySelector(`[data-testid="cia-pregunta"] [data-opcion="${i}"]`)!);
 }
 
 describe('n6-crea-con-ia', () => {
@@ -124,281 +120,253 @@ describe('n6-crea-con-ia', () => {
     expect(unidad.actividades[2].id).toBe('n6-crea-con-ia');
     expect(unidad.actividades[2].estado).toBe('disponible');
     expect(RUTA_N6_DISENO_MULTIMEDIA[2].id).toBe('n6-crea-con-ia');
-    expect(TOTAL_ENCARGOS).toBe(7);
+    expect(TOTAL_ENCARGOS).toBe(6);
   });
 
-  it('el guion está sano: sin reglas inalcanzables, sin ids huérfanos, todas las fichas cubiertas', () => {
-    expect(validarGuion(GUION_CREA_CON_IA, FICHAS_DEL_ESTUDIO)).toEqual([]);
-  });
-
-  it('la tanda 3 no repite ni una imagen de la tanda 2 — es la lección entera de la clase', () => {
-    const idsTanda2 = new Set(TANDA_2.map((im) => im.id));
-    const repetidas = TANDA_3.filter((im) => idsTanda2.has(im.id));
-    expect(repetidas).toEqual([]);
-  });
-
-  it('la fecha de la firma no es la de hoy: HOY no puede coincidir con el dato del guion', () => {
-    // Trampa medida el 21-ago-2026: si el guion usara esa misma fecha, un
-    // defecto «lee el reloj en vez del dato» pasaría inadvertido siempre.
-    expect(FECHA_TRABAJO).not.toBe('21 de agosto de 2026');
-    expect(FECHA_TRABAJO).not.toBe(new Date().toDateString());
+  it('la fecha de la firma no es la de hoy: un defecto «lee el reloj» no pasaría inadvertido', () => {
+    expect(FECHA_TRABAJO).not.toBe(new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }));
   });
 
   it('barrido de la casa: sin fetch, sin /api/, sin proveedores de IA reales, sin Math.random', () => {
-    const raiz = path.join(process.cwd(), 'src', 'components', 'activities', 'ia');
-    const archivos = ['LabCreaConIa.tsx', 'EntradaCreaConIa.tsx', 'guionCreaConIa.ts', 'creaConIa.css'];
-    const prohibido = /fetch\(|\/api\/|anthropic|openai|Math\.random/i;
+    const archivos = [
+      'src/components/activities/ia/LabCreaConIa.tsx',
+      'src/components/activities/ia/EntradaCreaConIa.tsx',
+      'src/components/activities/ia/estudioImagina.css',
+      'src/components/simuladores/generador/imagen.ts',
+      'src/components/simuladores/generador/LienzoImagen.tsx',
+    ];
     for (const archivo of archivos) {
-      const contenido = fs.readFileSync(path.join(raiz, archivo), 'utf8');
-      expect(contenido).not.toMatch(prohibido);
+      expect(fs.readFileSync(path.join(process.cwd(), archivo), 'utf8')).not.toMatch(/fetch\(|\/api\/|anthropic|openai|Math\.random/i);
     }
   });
 
-  it('la entrada es suya y el laboratorio abre con la portada de objetivos, no con la mesa', () => {
+  it('la entrada es suya y el laboratorio abre con la portada de objetivos, no con el estudio', () => {
     montar();
     expect(screen.getByText('Generar no es buscar')).toBeInTheDocument();
     expect(screen.getByText('Citar es decir tres cosas')).toBeInTheDocument();
-
     fireEvent.click(screen.getByRole('button', { name: /Abre el generador/ }));
     const portada = screen.getByTestId('psn-portada');
     expect(within(portada).getByText('Crea con IA: pídelo bien, míralo, y di de dónde salió')).toBeInTheDocument();
     expect(screen.queryByTestId('cia-estudio')).toBeNull();
   });
 
-  it('encargo 1: con una sola pieza salen tres imágenes genéricas y el encargo cierra solo', () => {
+  it('el mensaje de la Profe Ávila está a la vista desde el primer encargo', () => {
     abrirLaboratorio();
-    expect(screen.getByTestId('cia-encargo-numero').textContent).toMatch(/Encargo 1 de 7/);
-
-    // Jugar mal: pulsar Generar sin elegir nada no manda nada.
-    fireEvent.click(screen.getByRole('button', { name: 'Generar' }));
-    expect(screen.queryByTestId('cia-grupo-tanda1')).toBeNull();
-    expect(screen.getByText(/Todavía te falta elegir: Qué/)).toBeInTheDocument();
-
-    elegirPieza('cia-fila-que', 'volcan');
-    generar();
-
-    expect(screen.getByTestId('cia-grupo-tanda1')).toBeInTheDocument();
-    expect(screen.getAllByTestId('cia-imagen')).toHaveLength(3);
-    expect(screen.getByRole('button', { name: /Siguiente encargo/ })).toBeInTheDocument();
+    const brief = screen.getByTestId('cia-brief').textContent ?? '';
+    expect(brief).toMatch(/vertical/);
+    expect(brief).toMatch(/plastilina/);
+    expect(brief).toMatch(/sin texto/);
+    expect(brief).toMatch(/nada de\s+marcas/);
   });
 
-  it('encargo 2: pulsar Generar con piezas incompletas dice cuáles faltan, sin mandar nada', () => {
+  it('encargo 1, jugar mal: sin piezas no genera; con dos genera pero no cierra; con una cierra', () => {
     abrirLaboratorio();
-    elegirPieza('cia-fila-que', 'volcan');
-    generar();
-    siguienteEncargo();
+    generarTanda();
+    expect(tandasEnPantalla()).toBe(0);
+    expect(bit()).toMatch(/cero piezas/);
 
-    elegirPieza('cia-fila-como', 'noche');
-    fireEvent.click(screen.getByRole('button', { name: 'Generar' }));
-    expect(screen.getByText(/Todavía te falta elegir: Para dónde, Qué no/)).toBeInTheDocument();
-    expect(screen.queryByTestId('cia-grupo-tanda2')).toBeNull();
+    poner('cia-fila-tema', 'volcan');
+    poner('cia-fila-estilo', 'noche');
+    generarTanda();
+    expect(tandasEnPantalla()).toBe(1);
+    expect(logrado()).toBe(false);
+    expect(bit()).toMatch(/2 piezas/);
 
-    elegirPieza('cia-fila-para-donde', 'cartel');
-    elegirPieza('cia-fila-que-no', 'sinPersonas');
-    generar();
-
-    expect(screen.getByTestId('cia-grupo-tanda2')).toBeInTheDocument();
-    const b = pieza('[data-imagen="t2-b"]');
-    expect(within(b).getByTestId('cia-imagen-motivo').textContent).toMatch(/letras revueltas/);
+    poner('cia-fila-estilo', 'noche', false);
+    expect(screen.getByTestId('cia-peticion-texto').textContent).toBe('Un volcán de bicarbonato');
+    generarTanda();
+    expect(tandasEnPantalla()).toBe(2);
+    expect(logrado()).toBe(true);
   });
 
-  it('encargo 3, jugar mal: elegir la imagen con defecto no cierra el encargo', () => {
+  it('lo que sale es lo que dice el generador para esa petición, y ninguna tarjeta trae escrito su defecto', () => {
     abrirLaboratorio();
-    elegirPieza('cia-fila-que', 'volcan');
-    generar();
-    siguienteEncargo();
-    armarPeticionCompleta();
-    generar();
-    siguienteEncargo();
-
-    fireEvent.click(pieza('[data-imagen="t2-c"] [data-accion="elegir"]'));
-    expect(screen.getByText(/Esa no cumple lo que pediste/)).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Siguiente encargo/ })).toBeNull();
+    poner('cia-fila-tema', 'volcan');
+    generarTanda();
+    const esperada = generar(SOLO_TEMA, 1);
+    const enPantalla = screen.getAllByTestId('cia-mirar').map((b) => b.getAttribute('data-imagen'));
+    expect(enPantalla).toEqual(esperada.imagenes.map((im) => im.id));
+    for (const b of screen.getAllByTestId('cia-mirar')) {
+      expect(b.textContent).not.toMatch(/cumple|defecto|descart|falta|persona|marca de|letras/i);
+    }
   });
 
-  it('encargo 3, jugar mal: descartar las tres NO es un callejón sin salida — se puede recuperar', () => {
+  it('encargo 2, jugar mal: olvidar «sin texto» genera, pero el encargo no cierra y Bit dice cuántas faltan', () => {
     abrirLaboratorio();
-    elegirPieza('cia-fila-que', 'volcan');
-    generar();
-    siguienteEncargo();
-    armarPeticionCompleta();
-    generar();
-    siguienteEncargo();
+    hastaElEncargo(2);
+    pedirLoDelComite();
+    poner('cia-fila-sin', 'texto', false);
+    generarTanda();
+    expect(logrado()).toBe(false);
+    expect(bit()).toMatch(/le falta una/);
+    // Bit no dicta cuál: la clase no dice «sin texto».
+    expect(bit()).not.toMatch(/texto/);
 
-    fireEvent.click(pieza('[data-imagen="t2-a"] [data-accion="descartar"]'));
-    fireEvent.click(pieza('[data-imagen="t2-b"] [data-accion="descartar"]'));
-    fireEvent.click(pieza('[data-imagen="t2-c"] [data-accion="descartar"]'));
-    expect(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"]`).getAttribute('data-estado')).toBe('descartada');
+    poner('cia-fila-estilo', 'acuarela');
+    generarTanda();
+    expect(bit()).toMatch(/le faltan 2/);
 
-    // Recuperar: descartar otra vez la trae de vuelta.
-    fireEvent.click(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"] [data-accion="descartar"]`));
-    expect(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"]`).getAttribute('data-estado')).toBe('ninguno');
-    fireEvent.click(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"] [data-accion="elegir"]`));
-    expect(screen.getByRole('button', { name: /Siguiente encargo/ })).toBeInTheDocument();
+    pedirLoDelComite();
+    generarTanda();
+    expect(logrado()).toBe(true);
   });
 
-  it('encargo 3, jugar mal: elegir y luego descartar la elegida deja el encargo abierto otra vez', () => {
+  it('encargo 3, jugar mal: cambiar algo entre las dos no vale; repetir sin tocar nada cierra y las tandas no coinciden', () => {
     abrirLaboratorio();
-    elegirPieza('cia-fila-que', 'volcan');
-    generar();
-    siguienteEncargo();
-    armarPeticionCompleta();
-    generar();
-    siguienteEncargo();
+    hastaElEncargo(3);
+    // Cambia una pieza y la regresa: la petición nueva es igual a la anterior,
+    // pero primero se genera una distinta.
+    poner('cia-fila-estilo', 'noche');
+    generarTanda();
+    expect(logrado()).toBe(false);
+    pedirLoDelComite();
+    generarTanda();
+    expect(logrado()).toBe(false);
+    expect(bit()).toMatch(/Cambiaste algo/);
+    generarTanda();
+    expect(logrado()).toBe(true);
 
-    // Elige la buena ANTES de descartar las otras dos: el encargo sigue abierto.
-    fireEvent.click(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"] [data-accion="elegir"]`));
-    expect(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"]`).getAttribute('data-estado')).toBe('elegida');
-    expect(screen.queryByRole('button', { name: /Siguiente encargo/ })).toBeNull();
-
-    // La deshace: descartar la que estaba elegida le quita la elección.
-    fireEvent.click(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"] [data-accion="descartar"]`));
-    expect(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"]`).getAttribute('data-estado')).toBe('descartada');
-
-    // La recupera y esta vez completa el encargo de verdad.
-    fireEvent.click(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"] [data-accion="descartar"]`));
-    fireEvent.click(pieza('[data-imagen="t2-b"] [data-accion="descartar"]'));
-    fireEvent.click(pieza('[data-imagen="t2-c"] [data-accion="descartar"]'));
-    fireEvent.click(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"] [data-accion="elegir"]`));
-    expect(screen.getByRole('button', { name: /Siguiente encargo/ })).toBeInTheDocument();
+    const comparadas = document.querySelectorAll('.cia-tanda.es-comparada');
+    expect(comparadas).toHaveLength(2);
+    expect(screen.getByTestId('cia-comparar-nota').textContent).toMatch(/se repiten\s*0/);
   });
 
-  it('encargo 4: pedir lo mismo otra vez trae tres imágenes distintas, y Comparar exige que ya hayan llegado', () => {
-    abrirLaboratorio();
-    elegirPieza('cia-fila-que', 'volcan');
-    generar();
-    siguienteEncargo();
-    armarPeticionCompleta();
-    generar();
-    siguienteEncargo();
-    pasarMiraAntes();
-    siguienteEncargo();
+  it('encargo 4, jugar mal: el comité rechaza una imagen que no cumple, dice qué le falta, y cuesta', () => {
+    const { onScore } = abrirLaboratorio();
+    const tandas = hastaElEncargo(4);
+    const todas = tandas.flatMap((t) => t.imagenes);
+    const mala = todas.find((im) => !cumple(im, ENCARGO))!;
+    const buena = todas.find((im) => cumple(im, ENCARGO))!;
+    expect(mala).toBeDefined();
+    expect(buena).toBeDefined();
 
-    // Antes de generar, el botón sigue siendo «Generar»: Comparar no existe todavía.
-    expect(screen.queryByRole('button', { name: /Comparar con la tanda anterior/ })).toBeNull();
+    alCartel(mala.id);
+    expect(logrado()).toBe(false);
+    expect(ultimoPuntaje(onScore)).toBe(94);
+    const motivos = Array.from(screen.getByTestId('cia-rechazo').querySelectorAll('li')).map((li) => li.textContent);
+    expect(motivos.length).toBeGreaterThan(0);
 
-    generar();
-    expect(screen.getByTestId('cia-grupo-tanda3')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Comparar con la tanda anterior/ })).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: /Comparar con la tanda anterior/ }));
-    expect(screen.getByTestId('cia-comparar-nota').textContent).toMatch(/repetidas[\s\S]*0/);
-    expect(screen.getByRole('button', { name: /Siguiente encargo/ })).toBeInTheDocument();
+    alCartel(buena.id);
+    expect(logrado()).toBe(true);
+    expect(screen.queryByTestId('cia-rechazo')).toBeNull();
   });
 
-  it('encargo 5: «Poner de fondo» sólo aparece sobre la imagen elegida', () => {
-    abrirLaboratorio();
-    elegirPieza('cia-fila-que', 'volcan');
-    generar();
-    siguienteEncargo();
-    armarPeticionCompleta();
-    generar();
-    siguienteEncargo();
-    pasarMiraAntes();
-    siguienteEncargo();
-    generar();
-    fireEvent.click(screen.getByRole('button', { name: /Comparar con la tanda anterior/ }));
-    siguienteEncargo();
-
-    expect(pieza(`[data-imagen="t2-b"] [data-accion="poner-de-fondo"]`)).toBeNull();
-    expect(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"] [data-accion="poner-de-fondo"]`)).not.toBeNull();
-
-    fireEvent.click(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"] [data-accion="poner-de-fondo"]`));
-    expect(screen.getByTestId('cia-cartel-lienzo').className).toMatch(/es-con-fondo/);
-    expect(screen.getByTestId('cia-imagen-badge-fondo')).toBeInTheDocument();
+  it('una petición completa siempre deja una imagen que pasa el comité (lo que la clase promete al alumno)', () => {
+    for (let n = 1; n <= 200; n++) expect(generar(COMPLETA, n).imagenes.some((im) => cumple(im, ENCARGO))).toBe(true);
   });
 
-  it('encargo 6: firmar con opciones malas dice cuáles faltan — no «casi»', () => {
-    abrirLaboratorio();
-    elegirPieza('cia-fila-que', 'volcan');
-    generar();
-    siguienteEncargo();
-    armarPeticionCompleta();
-    generar();
-    siguienteEncargo();
-    pasarMiraAntes();
-    siguienteEncargo();
-    generar();
-    fireEvent.click(screen.getByRole('button', { name: /Comparar con la tanda anterior/ }));
-    siguienteEncargo();
-    fireEvent.click(pieza(`[data-imagen="${ELEGIBLE_TANDA_2}"] [data-accion="poner-de-fondo"]`));
-    siguienteEncargo();
+  it('encargo 5, jugar mal: firmar incompleto no cuesta; firmar con otra petición del historial sí', () => {
+    const { onScore } = abrirLaboratorio();
+    const tandas = hastaElEncargo(4);
+    const buena = delComite(tandas).find((im) => cumple(im, ENCARGO))!;
+    alCartel(buena.id);
+    siguiente();
 
-    elegirFirma('cia-firma-herramienta', 'lo-hice-yo');
-    elegirFirma('cia-firma-que-pediste', 'un-dibujo');
-    elegirFirma('cia-firma-cuando', 'no-me-acuerdo');
-    fireEvent.click(screen.getByRole('button', { name: 'Firmar' }));
-    expect(screen.getByText(/Todavía falta: Herramienta, Qué pediste, Cuándo/)).toBeInTheDocument();
-    expect(screen.queryByTestId('cia-cartel-sello')).toBeNull();
+    // Las peticiones a elegir son las del historial, no una lista inventada.
+    const ofrecidas = Array.from(document.querySelectorAll<HTMLElement>('[data-testid="cia-firma-peticion"] [data-valor]')).map((b) => b.dataset.valor);
+    expect(new Set(ofrecidas)).toEqual(new Set([textoDePeticion(SOLO_TEMA), textoDePeticion(COMPLETA)]));
 
-    elegirFirma('cia-firma-herramienta', 'tecnia-genera');
-    fireEvent.click(screen.getByRole('button', { name: 'Firmar' }));
-    expect(screen.getByText(/Todavía falta: Qué pediste, Cuándo/)).toBeInTheDocument();
+    firmar('herramienta', HERRAMIENTA);
+    fireEvent.click(screen.getByTestId('cia-firmar'));
+    expect(ultimoPuntaje(onScore)).toBe(100);
+    expect(bit()).toMatch(/la petición, la fecha/);
 
-    elegirFirma('cia-firma-que-pediste', 'peticion-completa');
-    elegirFirma('cia-firma-cuando', 'fecha-trabajo');
-    fireEvent.click(screen.getByRole('button', { name: 'Firmar' }));
-    expect(screen.getByTestId('cia-cartel-sello').textContent).toMatch(FECHA_TRABAJO);
+    firmar('peticion', textoDePeticion(SOLO_TEMA));
+    firmar('fecha', FECHA_TRABAJO);
+    fireEvent.click(screen.getByTestId('cia-firmar'));
+    expect(logrado()).toBe(false);
+    expect(ultimoPuntaje(onScore)).toBe(94);
+    expect(bit()).toMatch(/la petición no coincide/);
+
+    firmar('peticion', textoDePeticion(COMPLETA));
+    fireEvent.click(screen.getByTestId('cia-firmar'));
+    expect(logrado()).toBe(true);
+    expect(screen.getByTestId('cia-cartel-firma').textContent).toContain(textoDePeticion(COMPLETA));
   });
 
-  it('encargo 7: declarar autoría propia marca el cartel sin fuente, y corregir lo restaura SIN rehacer la ficha', () => {
-    abrirLaboratorio();
-    recorrerHastaLaMaestra();
-
-    expect(screen.getByText('¿Este dibujo lo hiciste tú?')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Sí, lo hice yo' }));
-    expect(screen.getByTestId('cia-cartel-sinfuente')).toBeInTheDocument();
-    expect(screen.queryByTestId('cia-cartel-sello')).toBeNull();
-    expect(screen.getByTestId('cia-maestra-aviso')).toBeInTheDocument();
-
-    // Corregir: la firma ya estaba hecha, no hay que rehacer nada.
-    fireEvent.click(screen.getByRole('button', { name: /Lo generé con una IA/ }));
-    expect(screen.getByTestId('cia-cartel-sello')).toBeInTheDocument();
-    expect(screen.queryByTestId('cia-cartel-sinfuente')).toBeNull();
-  });
-
-  it('Generar se apaga mientras el asistente contesta: no queda botón para mandar una segunda tanda', () => {
-    abrirLaboratorio();
-    elegirPieza('cia-fila-que', 'volcan');
-    const antes = screen.getAllByTestId('asis-msg').length; // el saludo
-    fireEvent.click(screen.getByRole('button', { name: 'Generar' }));
-    // Con velocidad > 0, el asistente sigue «ocupado» mientras teclea: el
-    // botón real de Generar desaparece (se sustituye por «Generando…»,
-    // deshabilitado), así que un segundo gesto no tiene a dónde llegar.
-    expect(screen.queryByRole('button', { name: 'Generar' })).toBeNull();
-    expect(screen.getByRole('button', { name: 'Generando…' })).toBeDisabled();
-    saltarSiTeclea();
-    const despues = screen.getAllByTestId('asis-msg').length;
-    // Una sola tanda: la petición del alumno y una respuesta, nada más.
-    expect(despues).toBe(antes + 2);
-    expect(screen.getAllByTestId('asis-msg').filter((m) => m.getAttribute('data-tipo') === 'usuario')).toHaveLength(1);
+  it('se firma la petición que DE VERDAD generó la imagen: si la buena salió de la vaga, se firma la vaga', () => {
+    const { onScore } = abrirLaboratorio();
+    hastaElEncargo(4);
+    // En el encargo 4 se puede seguir generando: con «volcán» a secas hasta
+    // que salga, por suerte, una que el comité aprobaría.
+    for (const [fila, valor] of [['cia-fila-estilo', 'plastilina'], ['cia-fila-formato', 'vertical'], ['cia-fila-sin', 'texto'], ['cia-fila-sin', 'persona'], ['cia-fila-sin', 'marca']]) {
+      poner(fila, valor, false);
+    }
+    let deLaVaga: ReturnType<typeof generar>['imagenes'][number] | undefined;
+    for (let n = 4; n <= 60 && !deLaVaga; n++) {
+      generarTanda();
+      deLaVaga = generar(SOLO_TEMA, n).imagenes.find((im) => cumple(im, ENCARGO));
+    }
+    expect(deLaVaga).toBeDefined();
+    alCartel(deLaVaga!.id);
+    siguiente();
+    firmar('herramienta', HERRAMIENTA);
+    firmar('fecha', FECHA_TRABAJO);
+    firmar('peticion', textoDePeticion(COMPLETA));
+    fireEvent.click(screen.getByTestId('cia-firmar'));
+    expect(logrado()).toBe(false);
+    expect(ultimoPuntaje(onScore)).toBe(94);
+    firmar('peticion', textoDePeticion(SOLO_TEMA));
+    fireEvent.click(screen.getByTestId('cia-firmar'));
+    expect(logrado()).toBe(true);
   });
 
   it('el camino de salida funciona a media práctica', () => {
     abrirLaboratorio();
-    elegirPieza('cia-fila-que', 'volcan');
-    generar();
+    poner('cia-fila-tema', 'volcan');
+    generarTanda();
     fireEvent.click(screen.getByRole('button', { name: 'Salir' }));
     expect(screen.getByRole('button', { name: /Abre el generador/ })).toBeInTheDocument();
   });
 
-  it('recorrido completo: se puede terminar, saca 100 y tres estrellas, y el camino de salida funciona desde el cierre', () => {
+  it('recorrido completo: contestar mal no cuesta, se termina con 100 y la salida funciona desde el cierre', () => {
     const { onComplete, onProgress, onScore } = abrirLaboratorio();
-    recorrerHastaLaMaestra();
-    fireEvent.click(screen.getByRole('button', { name: /Lo generé con una IA/ }));
+    const tandas = hastaElEncargo(4);
+    alCartel(delComite(tandas).find((im) => cumple(im, ENCARGO))!.id);
+    siguiente();
+    firmar('herramienta', HERRAMIENTA);
+    firmar('peticion', textoDePeticion(COMPLETA));
+    firmar('fecha', FECHA_TRABAJO);
+    fireEvent.click(screen.getByTestId('cia-firmar'));
+    siguiente();
+
+    const mala = PREGUNTA.opciones.findIndex((o) => !o.correcta);
+    fireEvent.click(document.querySelector(`[data-testid="cia-pregunta"] [data-opcion="${mala}"]`)!);
+    expect(onComplete).not.toHaveBeenCalled();
+    expect(bit()).toContain(PREGUNTA.opciones[mala].porque);
+    contestarBien();
 
     expect(onComplete).toHaveBeenCalledTimes(1);
-    const resultado = onComplete.mock.calls[0][0];
-    expect(resultado.score).toBe(100);
-    expect(resultado.stars).toBe(3);
+    expect(onComplete.mock.calls[0][0].score).toBe(100);
     expect(Math.max(...onProgress.mock.calls.map((c: [number]) => c[0]))).toBe(1);
     expect(Math.min(...onScore.mock.calls.map((c: [number]) => c[0]))).toBe(100);
-
     expect(screen.getByText('¡Tu cartel está firmado!')).toBeInTheDocument();
-    expect(screen.getByText(/Creador que cita/)).toBeInTheDocument();
-    expect(screen.getByText('Veces que pediste')).toBeInTheDocument();
+    expect(screen.getByText('Rechazadas por el comité')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Volver a la entrada' }));
     expect(screen.getByRole('button', { name: /Abre el generador/ })).toBeInTheDocument();
+  });
+
+  it('con un rechazo y una firma mala el puntaje cierra en 88, y repetir lo deja limpio', () => {
+    const { onComplete, onScore } = abrirLaboratorio();
+    const tandas = hastaElEncargo(4);
+    const todas = tandas.flatMap((t) => t.imagenes);
+    alCartel(todas.find((im) => !cumple(im, ENCARGO))!.id);
+    alCartel(delComite(tandas).find((im) => cumple(im, ENCARGO))!.id);
+    siguiente();
+    firmar('herramienta', 'Lo dibujé yo');
+    firmar('peticion', textoDePeticion(COMPLETA));
+    firmar('fecha', FECHA_TRABAJO);
+    fireEvent.click(screen.getByTestId('cia-firmar'));
+    firmar('herramienta', HERRAMIENTA);
+    fireEvent.click(screen.getByTestId('cia-firmar'));
+    siguiente();
+    contestarBien();
+    expect(onComplete.mock.calls[0][0].score).toBe(88);
+
+    fireEvent.click(screen.getByRole('button', { name: /Repetir|Jugar otra vez|Otra vez/ }));
+    expect(ultimoPuntaje(onScore)).toBe(100);
+    expect(tandasEnPantalla()).toBe(0);
+    expect(screen.getByTestId('cia-encargo-numero').textContent).toMatch(/Encargo 1 de 6/);
   });
 });

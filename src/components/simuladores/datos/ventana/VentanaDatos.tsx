@@ -16,6 +16,7 @@ import { MAX_FILAS_TABLA, type HerramientaDatos, type PanelDatosProps, type Resu
  */
 import '../../codigo/ventana/ventanaCodigo.css';
 import './ventanaDatos.css';
+import { barajadas } from '@/lib/ordenDeOpciones';
 
 /**
  * TECNIA DATOS · LA VENTANA
@@ -334,7 +335,7 @@ function Encargo({ datos }: { datos: Datos }) {
 
       {paso.logro.tipo === 'eleccion' && (
         <div className="dat-encargo-opciones">
-          {paso.logro.opciones.map((o, i) => (
+          {barajadas(paso.logro.opciones, paso.id).map(([o, i]) => (
             <button
               key={o}
               type="button"
@@ -515,7 +516,12 @@ export function VentanaDatos({
           {panelFijo && (
             <section className="dat-panel" data-testid="dat-panel" aria-label={panelFijo.titulo}>
               <h3 className="dat-lateral-titulo">{panelFijo.titulo}</h3>
-              <panelFijo.Cuerpo ejecucion={datos.ejecucion} texto={datos.texto} senalarLinea={datos.senalarLinea} />
+              <panelFijo.Cuerpo
+                ejecucion={datos.ejecucion}
+                texto={datos.texto}
+                senalarLinea={datos.senalarLinea}
+                revisar={datos.revisar}
+              />
             </section>
           )}
           {esquema && <PanelEsquema esquema={datos.esquema} />}

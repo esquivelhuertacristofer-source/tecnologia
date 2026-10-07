@@ -1,4 +1,5 @@
 import type { GuionHojas } from '@/components/office/motor-hojas/guion';
+import type { Equivocacion } from '@/components/office/motor/guion';
 import { hojaDe, type Celda, type Grafica, type Libro, type TipoGrafica } from '@/components/office/motor-hojas/modelo';
 
 /**
@@ -21,7 +22,7 @@ import { hojaDe, type Celda, type Grafica, type Libro, type TipoGrafica } from '
  * `barras` y `dispersion` estaban en `TipoGrafica` (`modelo.ts`) y en
  * `Grafica.tsx` desde el §45.5, y no tenían botón: `INSERTAR_BASICO`
  * (`tecniaHojas.ts`) sólo declara los tres gráficos que nombra el bloque 17.
- * Entran aquí por `controles.ts` y el panel «Gráficas» (`PanelGraficas.tsx`),
+ * Entran aquí por `controles.ts` y la cinta propia de la clase (`CINTA_ELIGE_GRAFICA`, §69.8),
  * sin tocar `motor-hojas/cinta.ts` ni `tecniaHojas.ts` — el mismo molde que
  * `of-excel-tablas-y-filtros` ya usó para sus nueve botones.
  *
@@ -309,9 +310,127 @@ function graficaDe(libro: Libro, tipo: TipoGrafica, datos: string): Grafica | un
 
 const existe = (libro: Libro, tipo: TipoGrafica, datos: string): boolean => !!graficaDe(libro, tipo, datos);
 
-/** Encargo 1: barras sobre los cinco puestos. ¿Cuál vendió más? */
+/** §69.8 · el rango de una tabla, con su fila de encabezados y sin ella. */
+export function conYSinEncabezado(rango: string): string[] {
+  const [desde, hasta] = rango.split(':');
+  const m = /^([A-Z]+)(\d+)$/.exec(desde);
+  if (!m) return [rango];
+  return [rango, `${m[1]}${Number(m[2]) + 1}:${hasta}`];
+}
+
+/** §69.8 · ¿hay una gráfica de alguno de esos tipos sobre esa tabla, con o sin encabezado? */
+function contesta(libro: Libro, tipos: readonly TipoGrafica[], rango: string): boolean {
+  return conYSinEncabezado(rango).some((datos) => tipos.some((t) => existe(libro, t, datos)));
+}
+
+/** La gráfica de ese tipo sobre esa tabla, con o sin encabezado. */
+function graficaSobre(libro: Libro, tipo: TipoGrafica, rango: string): Grafica | undefined {
+  for (const datos of conYSinEncabezado(rango)) {
+    const g = graficaDe(libro, tipo, datos);
+    if (g) return g;
+  }
+  return undefined;
+}
+
+/**
+ * §69.8 · lo que tiene mal una gráfica sobre esa tabla, por tipo. Lee la MÁS
+ * RECIENTE primero: es la que el alumno acaba de dibujar, y las anteriores ya
+ * se cobraron.
+ */
+type JuicioPorTipo = Partial<Record<TipoGrafica, { motivo: string; cuesta: boolean }>>;
+
+function equivocadoSobre(rango: string, juicio: JuicioPorTipo): (libro: Libro) => Equivocacion | null {
+  const rangos = conYSinEncabezado(rango);
+  return (libro) => {
+    const graficas = hojaDe(libro, HOJA)?.graficas ?? [];
+    for (let i = graficas.length - 1; i >= 0; i--) {
+      const g = graficas[i];
+      const j = rangos.includes(g.datos) ? juicio[g.tipo] : undefined;
+      if (j) {
+        return {
+          clave: g.tipo,
+          titulo: j.cuesta ? 'Esa gráfica no contesta la pregunta' : 'Se puede leer, pero cuesta',
+          motivo: j.motivo,
+          cuesta: j.cuesta,
+        };
+      }
+    }
+    return null;
+  };
+}
+
+const DOS_NUMEROS = 'Una dispersión pone cada cosa como un punto con DOS números, uno en cada eje, para ver si van juntos. Aquí hay uno solo por renglón.';
+
+export const EQUIVOCADO_E1 = equivocadoSobre(RANGO_T1, {
+  lineas: {
+    motivo: 'Una línea une cada puesto con el siguiente, como si hubiera un camino de Palomitas a Tiro al blanco. Los puestos no van en ningún orden: la pregunta es cuál es más grande.',
+    cuesta: true,
+  },
+  circular: {
+    motivo: 'Un pastel reparte un total en rebanadas: dice qué parte del total es cada puesto. Para ver cuál vendió MÁS, el ojo tiene que comparar ángulos, y eso es justo lo que peor hace.',
+    cuesta: true,
+  },
+  dispersion: { motivo: DOS_NUMEROS, cuesta: true },
+});
+
+export const EQUIVOCADO_E3 = equivocadoSobre(RANGO_T2, {
+  circular: {
+    motivo: 'El pastel reparte entre rebanadas el total de las seis semanas y pierde el orden: no deja ver si la venta subió o bajó.',
+    cuesta: true,
+  },
+  dispersion: { motivo: DOS_NUMEROS, cuesta: true },
+  columnas: {
+    motivo: 'Se ve cada semana, pero no el camino de una a la siguiente: la subida hay que adivinarla barra por barra. ¿Qué dibujo traza ese camino?',
+    cuesta: false,
+  },
+  barras: {
+    motivo: 'Se ve cada semana, pero acostada y sin el camino de una a la siguiente. ¿Qué dibujo traza cómo fue cambiando?',
+    cuesta: false,
+  },
+});
+
+export const EQUIVOCADO_E5 = equivocadoSobre(RANGO_T3, {
+  lineas: {
+    motivo: 'Una línea une las categorías como si una se fuera convirtiendo en la otra. Aquí no hay tiempo ni orden: hay un total repartido.',
+    cuesta: true,
+  },
+  dispersion: { motivo: DOS_NUMEROS, cuesta: true },
+  columnas: {
+    motivo: 'Comparan las cuatro categorías, pero no dicen qué parte del TOTAL es cada una: la mitad, la cuarta parte… ¿Qué dibujo enseña un todo?',
+    cuesta: false,
+  },
+  barras: {
+    motivo: 'Comparan las cuatro categorías, pero no dicen qué parte del TOTAL es cada una. ¿Qué dibujo enseña un todo?',
+    cuesta: false,
+  },
+});
+
+export const EQUIVOCADO_E6 = equivocadoSobre(RANGO_T4, {
+  lineas: {
+    motivo: 'La línea une a cada puesto con el siguiente como si hubiera un camino entre ellos, y no pone las horas contra los boletos.',
+    cuesta: true,
+  },
+  circular: {
+    motivo: 'Un pastel reparte UN total, y aquí hay dos medidas por puesto: las horas y los boletos.',
+    cuesta: true,
+  },
+  columnas: {
+    motivo: 'Ves las horas y los boletos de cada puesto, uno al lado del otro, pero no si van juntos: tendrías que comparar puesto por puesto. ¿Qué dibujo pone cada puesto como un punto?',
+    cuesta: false,
+  },
+  barras: {
+    motivo: 'Ves las horas y los boletos de cada puesto, pero no si van juntos. ¿Qué dibujo pone cada puesto como un punto?',
+    cuesta: false,
+  },
+});
+
+/**
+ * Encargo 1: ¿cuál puesto vendió más? Contesta cualquier gráfica que ponga
+ * los puestos uno al lado de otro: barras, o columnas, que son las mismas
+ * barras de pie (§69.8).
+ */
 export function seHizoBarrasDePuestos(libro: Libro): boolean {
-  return existe(libro, 'barras', RANGO_T1);
+  return contesta(libro, ['barras', 'columnas'], RANGO_T1);
 }
 
 /**
@@ -325,37 +444,37 @@ export function seHizoBarrasDePuestos(libro: Libro): boolean {
  */
 export function seHizoLineaDePuestos(libro: Libro): boolean {
   if (!seHizoBarrasDePuestos(libro)) return false;
-  return existe(libro, 'lineas', RANGO_T1);
+  return contesta(libro, ['lineas'], RANGO_T1);
 }
 
 /** Encargo 3: línea sobre las seis semanas. ¿Cómo cambió con el tiempo? */
 export function seHizoLineaDeSemanas(libro: Libro): boolean {
   if (!seHizoLineaDePuestos(libro)) return false;
-  return existe(libro, 'lineas', RANGO_T2);
+  return contesta(libro, ['lineas'], RANGO_T2);
 }
 
 /** Encargo 4 (a propósito, mal elegida): un pastel sobre la misma evolución. */
 export function seHizoPastelDeSemanas(libro: Libro): boolean {
   if (!seHizoLineaDeSemanas(libro)) return false;
-  return existe(libro, 'circular', RANGO_T2);
+  return contesta(libro, ['circular'], RANGO_T2);
 }
 
 /** Encargo 5: pastel sobre las cuatro categorías del presupuesto. */
 export function seHizoPastelDePresupuesto(libro: Libro): boolean {
   if (!seHizoPastelDeSemanas(libro)) return false;
-  return existe(libro, 'circular', RANGO_T3);
+  return contesta(libro, ['circular'], RANGO_T3);
 }
 
 /** Encargo 6: dispersión de horas de preparación contra boletos vendidos. */
 export function seHizoDispersionDeHorasYBoletos(libro: Libro): boolean {
   if (!seHizoPastelDePresupuesto(libro)) return false;
-  return existe(libro, 'dispersion', RANGO_T4);
+  return contesta(libro, ['dispersion'], RANGO_T4);
 }
 
 /** Encargo 7: la primera de las dos gráficas gemelas, eje sin cortar. */
 export function seHizoColumnasDeResultadoA(libro: Libro): boolean {
   if (!seHizoDispersionDeHorasYBoletos(libro)) return false;
-  return existe(libro, 'columnas', RANGO_T7);
+  return contesta(libro, ['columnas'], RANGO_T7);
 }
 
 /**
@@ -369,26 +488,26 @@ export function seHizoColumnasDeResultadoA(libro: Libro): boolean {
  */
 export function seHizoColumnasDeResultadoB(libro: Libro): boolean {
   if (!seHizoColumnasDeResultadoA(libro)) return false;
-  return existe(libro, 'columnas', RANGO_T8);
+  return contesta(libro, ['columnas'], RANGO_T8);
 }
 
 /** Encargo 9: se le corta el eje a la gráfica B, y sólo a ella. */
 export function seCortoElEjeDeB(libro: Libro): boolean {
   if (!seHizoColumnasDeResultadoB(libro)) return false;
-  const g = graficaDe(libro, 'columnas', RANGO_T8);
+  const g = graficaSobre(libro, 'columnas', RANGO_T8);
   return !!g && g.minY === EJE_MINIMO_DEL_CORTE;
 }
 
 /** Encargo 12: pastel de las veinte rebanadas. */
 export function seHizoPastelDeDisfraces(libro: Libro): boolean {
   if (!seCortoElEjeDeB(libro)) return false;
-  return existe(libro, 'circular', RANGO_T5);
+  return contesta(libro, ['circular'], RANGO_T5);
 }
 
 /** Encargo 13: pastel de tres medidas que no suman ningún total real. */
 export function seHizoPastelDeResumenSinTotal(libro: Libro): boolean {
   if (!seHizoPastelDeDisfraces(libro)) return false;
-  return existe(libro, 'circular', RANGO_T6);
+  return contesta(libro, ['circular'], RANGO_T6);
 }
 
 /* ── el guion ───────────────────────────────────────────────────────────────*/
@@ -403,17 +522,15 @@ export const GUION_ELIGE_LA_GRAFICA: GuionHojas = {
     objetivo:
       'Vas a aprender que cada tipo de gráfica contesta UNA pregunta —cuál es más grande, cómo cambió, qué parte del total, si dos cosas tienen que ver— y que elegir mal no rompe nada: simplemente deja de leerse. Y vas a aprender a desconfiar: el eje cortado es la mentira más común de una gráfica, y no siempre está mal usarlo — lo que está mal es no decirlo.',
     vasAHacer: [
-      'Comparar puestos de la feria con barras, y ver qué pasa si los comparas con una línea',
-      'Enseñar una evolución en el tiempo con una línea, y ver qué pasa si la repartes en un pastel',
-      'Repartir un presupuesto real en un pastel de pocas porciones',
-      'Descubrir con una dispersión si preparar más de verdad ayuda a vender más',
+      'Elegir tú la gráfica que contesta cada pregunta de la feria: cuál vendió más, cómo cambió, qué parte del total, si dos cosas tienen que ver',
+      'Elegir mal a propósito dos veces, y ver la respuesta dejar de leerse sin que ningún número cambie',
       'Construir la MISMA gráfica dos veces, con los mismos datos, y cortarle el eje a una — y ver cómo cambia la historia sin que cambie un solo número',
       'Armar un pastel de veinte porciones y otro de datos que no suman ningún total, y ver por qué los dos mienten aunque nadie haya inventado un número',
     ],
     requisitos:
       'Las tres clases pasadas del grado Intermedio: marcar un rango, escribir una fórmula y usar el panel «Diseño de gráfico» que ya conoces de `n5-mi-primera-grafica`.',
     ayuda:
-      'Columnas, líneas y circular están en Insertar → Gráficos. Barras y dispersión están en el panel «Gráficas», a la derecha de la hoja. Al marcar una gráfica sale el panel «Diseño de gráfico», con un campo nuevo: «Eje mínimo (Y)».',
+      'Las cinco gráficas están en Insertar → Gráficos. Al marcar una gráfica sale el panel «Diseño de gráfico», con un campo nuevo: «Eje mínimo (Y)».',
   },
 
   pasos: [
@@ -421,19 +538,21 @@ export const GUION_ELIGE_LA_GRAFICA: GuionHojas = {
       id: 'barras-de-puestos',
       titulo: '¿Cuál puesto vendió más?',
       instruccion:
-        'Marca desde **A4 hasta B9** —los cinco puestos y sus boletos— y, en el panel **«Gráficas»**, pulsa **Barras**.',
-      pista: 'A4 es «Puesto» y B9 es el último dato, cinco filas más abajo. Marca el rectángulo entero.',
-      senal: { control: 'grafico-barras' },
+        'Arriba está la tabla «Boletos vendidos por puesto» (de **A4 a B9**). La pregunta es: **¿cuál puesto vendió más?** Marca la tabla y haz la gráfica que lo conteste de un vistazo. Los cinco tipos están en Insertar → Gráficos: el que elijas es tu respuesta.',
+      pista:
+        'Esta pregunta compara cantidades de cosas distintas, que no van en ningún orden. ¿Qué dibujo pone una al lado de otra para ver cuál es la más larga?',
+      senal: { pestana: 'insertar', grupo: 'graficos' },
       logro: { tipo: 'documento', comprueba: seHizoBarrasDePuestos },
+      equivocado: EQUIVOCADO_E1,
       aprendido:
-        'Ahí está: Pintacaritas gana con 71, y se lee sin pensar —la barra más larga es la respuesta—. **Barras contesta «¿cuál es más grande?»**, y lo contesta bien porque cada puesto es una categoría suelta, sin ningún orden entre ellas: da igual si Palomitas va primero o al final, la pregunta no cambia.',
+        'Ahí está: Pintacaritas gana con 71, y se lee sin pensar —la barra más larga es la respuesta—. **Barras —o columnas, que son las mismas barras de pie— contesta «¿cuál es más grande?»**, y lo contesta bien porque cada puesto es una categoría suelta, sin ningún orden entre ellas: da igual si Palomitas va primero o al final, la pregunta no cambia.',
     },
     {
       id: 'linea-de-puestos-mal',
       titulo: 'A propósito: compáralos con una línea',
       instruccion:
         'Sin cambiar la selección, marca otra vez **A4 hasta B9** y, en Insertar → Gráficos, pulsa **Gráfico de líneas**.',
-      pista: 'Mismo rango de antes, A4:B9. Esta vez el botón está en la cinta, no en el panel «Gráficas».',
+      pista: 'Mismo rango de antes, A4:B9, y el mismo grupo de la cinta: Insertar → Gráficos.',
       senal: { control: 'grafico-lineas' },
       logro: { tipo: 'documento', comprueba: seHizoLineaDePuestos },
       aprendido:
@@ -443,10 +562,12 @@ export const GUION_ELIGE_LA_GRAFICA: GuionHojas = {
       id: 'linea-de-semanas',
       titulo: 'Y ahora sí: la evolución de verdad',
       instruccion:
-        'Marca desde **A25 hasta B31** —las seis semanas antes de la feria— y pulsa **Gráfico de líneas**.',
-      pista: 'A25 es «Semana» y B31 es la última, seis filas más abajo.',
-      senal: { control: 'grafico-lineas' },
+        'Más abajo, «Boletos vendidos cada semana, antes de la feria» (de **A25 a B31**). La pregunta: **¿cómo fue cambiando la venta conforme se acercaba la feria?** Haz la gráfica que lo cuente.',
+      pista:
+        'Esta pregunta no compara cosas distintas: sigue a una misma cosa a lo largo del tiempo, y la semana 2 vino DESPUÉS de la 1. ¿Qué dibujo une cada punto con el que sigue?',
+      senal: { pestana: 'insertar', grupo: 'graficos' },
       logro: { tipo: 'documento', comprueba: seHizoLineaDeSemanas },
+      equivocado: EQUIVOCADO_E3,
       aprendido:
         'Ahora la línea sí tiene un camino que contar: sube semana con semana, de 30 a 120, y el ojo sigue exactamente cómo se fue acercando la feria. Aquí SÍ hay un orden real entre los puntos —la semana 2 vino después de la 1, no al lado—, que es justo lo que le faltaba al encargo anterior. **Ésta es la pregunta que una línea sabe contestar de verdad.**',
     },
@@ -454,7 +575,7 @@ export const GUION_ELIGE_LA_GRAFICA: GuionHojas = {
       id: 'pastel-de-semanas-mal',
       titulo: 'A propósito: repártelo en un pastel',
       instruccion: 'Sin cambiar la selección, marca otra vez **A25 hasta B31** y pulsa **Gráfico circular**.',
-      pista: 'Mismo rango, A25:B31. El botón circular está junto al de líneas, en Insertar → Gráficos.',
+      pista: 'Mismo rango, A25:B31, y el mismo grupo: Insertar → Gráficos.',
       senal: { control: 'grafico-circular' },
       logro: { tipo: 'documento', comprueba: seHizoPastelDeSemanas },
       aprendido:
@@ -463,20 +584,25 @@ export const GUION_ELIGE_LA_GRAFICA: GuionHojas = {
     {
       id: 'pastel-de-presupuesto',
       titulo: 'El presupuesto, repartido de verdad',
-      instruccion: 'Marca desde **A46 hasta B50** —las cuatro categorías del presupuesto— y pulsa **Gráfico circular**.',
-      pista: 'A46 es «Categoría» y B50 es la última, cuatro filas más abajo.',
-      senal: { control: 'grafico-circular' },
+      instruccion:
+        'El «Presupuesto de la feria» (de **A46 a B50**) se repartió en cuatro categorías. La pregunta: **¿qué parte del total se llevó cada una?** Haz la gráfica que lo conteste.',
+      pista:
+        'Son partes de un mismo total: las cuatro juntas son el presupuesto entero. ¿Qué dibujo es un todo cortado en pedazos?',
+      senal: { pestana: 'insertar', grupo: 'graficos' },
       logro: { tipo: 'documento', comprueba: seHizoPastelDePresupuesto },
+      equivocado: EQUIVOCADO_E5,
       aprendido: `Aquí el pastel sí funciona: son sólo cuatro rebanadas, y las cuatro juntas SUMAN el presupuesto entero —${TOTAL_PRESUPUESTO} pesos, ni un peso de más ni de menos—. Con pocas porciones que forman un todo real, «¿qué parte del total es cada gasto?» es exactamente la pregunta que hay que contestar, y el pastel la contesta de un vistazo: Premios se lleva la rebanada más grande.`,
     },
     {
       id: 'dispersion-horas-boletos',
       titulo: '¿Ayuda preparar más a vender más?',
       instruccion:
-        'Marca desde **A67 hasta C72** —puesto, horas de preparación y boletos vendidos— y, en el panel **«Gráficas»**, pulsa **Dispersión**.',
-      pista: 'A67 es «Puesto» y C72 es el último dato de boletos, cinco filas más abajo: las tres columnas completas.',
-      senal: { control: 'grafico-dispersion' },
+        'La tabla de **A67 a C72** tiene, de cada puesto, las horas que se preparó y los boletos que vendió. La pregunta: **¿ayuda preparar más a vender más?** Marca las tres columnas y haz la gráfica que deje ver si una cosa tiene que ver con la otra.',
+      pista:
+        'Aquí hay DOS números por puesto, y la pregunta es si van juntos. ¿Qué dibujo pone cada puesto como un punto, con las horas en un eje y los boletos en el otro?',
+      senal: { pestana: 'insertar', grupo: 'graficos' },
       logro: { tipo: 'documento', comprueba: seHizoDispersionDeHorasYBoletos },
+      equivocado: EQUIVOCADO_E6,
       aprendido:
         'Cada punto es un puesto, y sube de izquierda a derecha: el que menos preparó (Laberinto, 2 horas) fue el que menos vendió, y el que más preparó (Pintacaritas, 7 horas) fue el que más vendió. **Dispersión contesta «¿tienen que ver una cosa con la otra?»**, y es la única de las cinco gráficas que puede hacer esa pregunta con DOS medidas a la vez —horas y boletos— en vez de una sola.',
     },

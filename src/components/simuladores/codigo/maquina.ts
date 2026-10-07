@@ -26,12 +26,38 @@
  * secundaria en una consola con acceso a `window`, `fetch` y `localStorage` de
  * la plataforma. Ni siquiera hace falta mala intención — basta un alumno
  * pegando algo que encontró.
+ *
+ * ── M4 (§69.21): módulos y un disco ─────────────────────────────────────────
+ *
+ * Un módulo importado se analiza y se compila **la primera vez que se importa**,
+ * al final de la misma cinta (`compilar(…, { codigo })`), y su nivel de arriba
+ * corre en un marco propio cuyas `globales` son las del módulo. Por eso las
+ * variables de arriba se leen con `globalesDe(m)` y no con `m.globales`: en el
+ * programa que se corre son la misma cosa, y en un módulo no. Las funciones
+ * guardan las globales de su módulo al definirse (`FuncionV.globales`).
+ *
+ * `tramos` dice de qué archivo es cada trozo de la cinta: con eso un error
+ * dentro de `clima.py` sale como «clima.py · línea 4» en vez de señalar la
+ * línea 4 del archivo que se estaba corriendo.
+ *
+ * El disco (`Opciones.archivos`) es una copia: lo que el programa escribe se
+ * queda en `m.disco` y se anota en `m.escritos`, y la clase decide qué hacer con
+ * ello. Nada de esto toca el disco ni el `localStorage` de nadie.
  */
 
 import { type ErrorPy, fallo, Tropiezo } from './errores';
 import { compilar, type Ins, OP } from './compilar';
 import { analizar } from './sintaxis';
-import { METODOS_CADENA, METODOS_DICC, METODOS_LISTA, NATIVAS, TOPES } from './subconjunto';
+import {
+  METODOS_ARCHIVO,
+  METODOS_CADENA,
+  METODOS_DICC,
+  METODOS_LISTA,
+  MODULOS_AUSENTES,
+  MODULOS_DE_FABRICA,
+  NATIVAS,
+  TOPES,
+} from './subconjunto';
 import {
   aTexto,
   bool,
@@ -66,8 +92,11 @@ import {
   sumar,
   tamanoDeRango,
   tupla,
+  type ArchivoV,
   type Dicc,
+  type FuncionV,
   type IteradorV,
+  type ModuloV,
   type Lista,
   type Par,
   type Valor,
@@ -83,6 +112,10 @@ export interface Marco {
   base: number;
   nombre: string;
   lineaLlamada: number;
+  /** Las variables de arriba que ve este marco: las del programa o las de un módulo (M4). */
+  globales: Map<string, Valor>;
+  /** Sólo en el marco del nivel de arriba de un módulo que se está importando. */
+  modulo: ModuloV | null;
 }
 
 export interface Topes {
@@ -101,6 +134,14 @@ export interface Maquina {
   marcos: Marco[];
   /** Las líneas de la consola, ya como texto. */
   salida: string[];
+  /**
+   * Qué líneas de `salida` salieron de un `input` (la pregunta con la respuesta
+   * pegada), por su índice, en orden. Un eco se ve igual que un `print` y no lo
+   * es: el juez de programas (§68.4) sólo juzga lo que el programa **contesta**,
+   * y un encargo que busca «tu nombre en la salida» no puede darse por hecho con
+   * el eco de la propia pregunta.
+   */
+  ecos: number[];
   estado: Estado;
   error: ErrorPy | null;
   pasos: number;
@@ -109,11 +150,30 @@ export interface Maquina {
   /** Lo que `input()` está preguntando mientras el estado es `esperando`. */
   pregunta: string | null;
   topes: Topes;
+  /* ── M4 ── */
+  /** El nombre del archivo que se corre (`estacion.py`). Ver `Opciones.archivo`. */
+  archivo: string;
+  /** Los archivos que ve `open` e `import`: los del proyecto y lo que se escriba. */
+  disco: Map<string, string>;
+  /** Lo que el programa abrió para escribir, en el orden en que lo abrió. */
+  escritos: string[];
+  modulos: Map<string, ModuloV>;
+  /** Los que están a media importación: para cazar dos módulos que se importan entre ellos. */
+  cargando: Set<string>;
+  /** Dónde empieza en la cinta cada módulo importado, en orden. Antes del primero, el archivo que se corre. */
+  tramos: { desde: number; archivo: string }[];
 }
 
 export interface Opciones {
   entradas?: string[];
   topes?: Partial<Topes>;
+  /**
+   * Los archivos del proyecto (M4), por nombre: los `.py` que se pueden importar
+   * y los de datos que se pueden abrir. El que se corre no hace falta que esté.
+   */
+  archivos?: Readonly<Record<string, string>>;
+  /** Cómo se llama el archivo que se corre. Sólo se usa para decir que no se importe a sí mismo. */
+  archivo?: string;
 }
 
 export type Arranque = { ok: true; maq: Maquina } | { ok: false; error: ErrorPy };
@@ -122,6 +182,31 @@ export type Arranque = { ok: true; maq: Maquina } | { ok: false; error: ErrorPy 
 const VALORES_NATIVOS = new Map<string, Valor>(NATIVAS.map((n) => [n, { t: 'nativa', nombre: n } as Valor]));
 
 /* ── arrancar ───────────────────────────────────────────────────────────────*/
+
+function nuevaMaquina(fuente: string, codigo: Ins[], opciones: Opciones): Maquina {
+  return {
+    fuente,
+    codigo,
+    pc: 0,
+    pila: [],
+    globales: new Map(),
+    marcos: [],
+    salida: [],
+    ecos: [],
+    estado: 'lista',
+    error: null,
+    pasos: 0,
+    entradas: [...(opciones.entradas ?? [])],
+    pregunta: null,
+    topes: { ...TOPES, ...opciones.topes },
+    archivo: opciones.archivo ?? 'programa.py',
+    disco: new Map(Object.entries(opciones.archivos ?? {})),
+    escritos: [],
+    modulos: new Map(),
+    cargando: new Set(),
+    tramos: [],
+  };
+}
 
 export function crearMaquina(fuente: string, opciones: Opciones = {}): Arranque {
   const arbol = analizar(fuente);
@@ -133,24 +218,7 @@ export function crearMaquina(fuente: string, opciones: Opciones = {}): Arranque 
     if (e instanceof Tropiezo) return { ok: false, error: e.detalle };
     throw e;
   }
-  return {
-    ok: true,
-    maq: {
-      fuente,
-      codigo,
-      pc: 0,
-      pila: [],
-      globales: new Map(),
-      marcos: [],
-      salida: [],
-      estado: 'lista',
-      error: null,
-      pasos: 0,
-      entradas: [...(opciones.entradas ?? [])],
-      pregunta: null,
-      topes: { ...TOPES, ...opciones.topes },
-    },
-  };
+  return { ok: true, maq: nuevaMaquina(fuente, codigo, opciones) };
 }
 
 /** Sólo mirar si el programa está bien escrito, sin ejecutarlo. Para el editor. */
@@ -164,6 +232,24 @@ export function revisar(fuente: string): ErrorPy | null {
 export function lineaActual(m: Maquina): number {
   const ins = m.codigo[m.pc];
   return ins ? ins.linea : 0;
+}
+
+/** De qué archivo es la instrucción `pc`: `null` si es del que se corre (M4). */
+function archivoDe(m: Maquina, pc: number): string | null {
+  let a: string | null = null;
+  for (const t of m.tramos) if (pc >= t.desde) a = t.archivo;
+  return a;
+}
+
+/** En qué archivo va la ejecución ahora, para que la ventana abra esa pestaña. `null`: el que se corre. */
+export function archivoActual(m: Maquina): string | null {
+  return archivoDe(m, m.pc);
+}
+
+/** Las variables de arriba que se leen y se escriben desde donde va la ejecución. */
+function globalesDe(m: Maquina): Map<string, Valor> {
+  const marco = m.marcos[m.marcos.length - 1];
+  return marco ? marco.globales : m.globales;
 }
 
 export interface Vistazo {
@@ -188,7 +274,7 @@ export function variables(m: Maquina): Vistazo[] {
       salida.push({ nombre, valor, texto: repr(valor), ambito: 'local' });
     }
   }
-  for (const [nombre, valor] of m.globales) {
+  for (const [nombre, valor] of globalesDe(m)) {
     salida.push({ nombre, valor, texto: repr(valor), ambito: 'global' });
   }
   return salida;
@@ -263,10 +349,39 @@ export function correr(m: Maquina, presupuesto = Number.POSITIVE_INFINITY): void
   }
 }
 
+/** Una comparación por su código de `COMP_COD`. La usan `COMP` y cada eslabón de `COMP_CADENA`. */
+function comparacion(a: Valor, b: Valor, codigo: number): boolean {
+  switch (codigo) {
+    case 0:
+      return iguales(a, b);
+    case 1:
+      return !iguales(a, b);
+    case 2:
+      return comparar(a, b) < 0;
+    case 3:
+      return comparar(a, b) > 0;
+    case 4:
+      return comparar(a, b) <= 0;
+    case 5:
+      return comparar(a, b) >= 0;
+    case 6:
+      return contiene(b, a);
+    default:
+      return !contiene(b, a);
+  }
+}
+
 /** Contestar a un `input()` que está esperando. */
 export function responder(m: Maquina, texto: string): void {
   if (m.estado !== 'esperando') return;
-  m.salida[m.salida.length - 1] += texto;
+  /* Si limpiaron la consola con la pregunta pendiente, la línea del eco ya no
+   * está: antes esto escribía en `salida[-1]`, una propiedad y no una línea. */
+  if (m.salida.length === 0 || m.ecos[m.ecos.length - 1] !== m.salida.length - 1) {
+    m.ecos.push(m.salida.length);
+    m.salida.push(texto);
+  } else {
+    m.salida[m.salida.length - 1] += texto;
+  }
   m.pila.push(cad(texto));
   m.pregunta = null;
   m.estado = 'corriendo';
@@ -276,21 +391,10 @@ export function responder(m: Maquina, texto: string): void {
 export function ejecutar(fuente: string, opciones: Opciones = {}): Maquina {
   const a = crearMaquina(fuente, opciones);
   if (!a.ok) {
-    return {
-      fuente,
-      codigo: [],
-      pc: 0,
-      pila: [],
-      globales: new Map(),
-      marcos: [],
-      salida: [],
-      estado: 'error',
-      error: a.error,
-      pasos: 0,
-      entradas: [],
-      pregunta: null,
-      topes: { ...TOPES, ...opciones.topes },
-    };
+    const rota = nuevaMaquina(fuente, [], { ...opciones, entradas: [] });
+    rota.estado = 'error';
+    rota.error = a.error;
+    return rota;
   }
   correr(a.maq);
   return a.maq;
@@ -300,6 +404,9 @@ function tropiezo(m: Maquina, e: unknown): void {
   if (!(e instanceof Tropiezo)) throw e;
   const detalle = e.detalle;
   if (detalle.linea === 0) detalle.linea = lineaAnterior(m);
+  /* Un error de escritura de un módulo ya trae su archivo; uno de ejecución lo
+   * saca de la instrucción que falló. */
+  if (detalle.archivo === undefined) detalle.archivo = archivoDe(m, Math.max(0, m.pc - 1));
   m.error = detalle;
   m.estado = 'error';
 }
@@ -339,8 +446,17 @@ function unaInstruccion(m: Maquina): void {
       return;
 
     case OP.LEE_GLOBAL: {
-      const v = m.globales.get(ins.s) ?? VALORES_NATIVOS.get(ins.s);
-      if (v === undefined) throw noExiste(m, ins.s);
+      const g = globalesDe(m);
+      const v = g.get(ins.s) ?? VALORES_NATIVOS.get(ins.s);
+      if (v === undefined) {
+        /* `__name__` no se guarda en las globales: saldría en el panel de
+         * variables de todas las clases y contaría como «una caja tuya». */
+        if (ins.s === '__name__') {
+          pila.push(cad(nombreDelModulo(m, g)));
+          return;
+        }
+        throw noExiste(m, ins.s);
+      }
       pila.push(v);
       return;
     }
@@ -359,7 +475,7 @@ function unaInstruccion(m: Maquina): void {
     }
 
     case OP.GUARDA_GLOBAL:
-      m.globales.set(ins.s, pila.pop() as Valor);
+      globalesDe(m).set(ins.s, pila.pop() as Valor);
       return;
 
     case OP.GUARDA_LOCAL:
@@ -463,32 +579,20 @@ function unaInstruccion(m: Maquina): void {
     case OP.COMP: {
       const b = pila.pop() as Valor;
       const a = pila.pop() as Valor;
-      switch (ins.n) {
-        case 0:
-          pila.push(iguales(a, b) ? CIERTO : FALSO);
-          return;
-        case 1:
-          pila.push(iguales(a, b) ? FALSO : CIERTO);
-          return;
-        case 2:
-          pila.push(comparar(a, b) < 0 ? CIERTO : FALSO);
-          return;
-        case 3:
-          pila.push(comparar(a, b) > 0 ? CIERTO : FALSO);
-          return;
-        case 4:
-          pila.push(comparar(a, b) <= 0 ? CIERTO : FALSO);
-          return;
-        case 5:
-          pila.push(comparar(a, b) >= 0 ? CIERTO : FALSO);
-          return;
-        case 6:
-          pila.push(contiene(b, a) ? CIERTO : FALSO);
-          return;
-        default:
-          pila.push(contiene(b, a) ? FALSO : CIERTO);
-          return;
+      pila.push(comparacion(a, b, ins.n) ? CIERTO : FALSO);
+      return;
+    }
+
+    case OP.COMP_CADENA: {
+      const b = pila.pop() as Valor;
+      const a = pila.pop() as Valor;
+      if (comparacion(a, b, Number(ins.s))) {
+        pila.push(b);
+      } else {
+        pila.push(FALSO);
+        m.pc = ins.n;
       }
+      return;
     }
 
     case OP.SALTA:
@@ -519,9 +623,13 @@ function unaInstruccion(m: Maquina): void {
       return;
     }
 
-    case OP.DEF:
-      pila.push(ins.k as Valor);
+    case OP.DEF: {
+      /* Una función de un módulo se lleva las variables de su módulo. */
+      const fn = ins.k as FuncionV;
+      const g = globalesDe(m);
+      pila.push(g === m.globales ? fn : { ...fn, globales: g });
       return;
+    }
 
     case OP.DESEMPAQUETA: {
       const v = pila.pop() as Valor;
@@ -539,12 +647,13 @@ function unaInstruccion(m: Maquina): void {
 
     case OP.ITER: {
       const v = pila.pop() as Valor;
-      if (v.t !== 'cad' && v.t !== 'lista' && v.t !== 'tupla' && v.t !== 'dicc' && v.t !== 'rango') {
+      if (v.t === 'archivo') exigeLegible(v, 'recorrer con un «for»');
+      if (v.t !== 'cad' && v.t !== 'lista' && v.t !== 'tupla' && v.t !== 'dicc' && v.t !== 'rango' && v.t !== 'archivo') {
         throw fallo('tipo', `no se puede recorrer ${enCastellano(v)} con un «for»`, {
           pista:
             v.t === 'ent' || v.t === 'flo'
               ? 'para repetir un número de veces se escribe: for i in range(5):'
-              : 'se recorren textos, listas, tuplas, diccionarios y range(...)',
+              : 'se recorren textos, listas, tuplas, diccionarios, range(...) y archivos abiertos',
         });
       }
       /* Las claves de un diccionario se congelan al empezar el «for»: si el
@@ -579,7 +688,64 @@ function unaInstruccion(m: Maquina): void {
     case OP.METODO: {
       const args = ins.n === 0 ? [] : pila.splice(pila.length - ins.n, ins.n);
       const obj = pila.pop() as Valor;
+      if (obj.t === 'modulo') {
+        /* `clima.clasifica(t)` no es un método: es llamar a algo del módulo. */
+        llamar(m, deModulo(obj, ins.s), args, ins.linea, `${obj.nombre}.${ins.s}`);
+        return;
+      }
+      if (obj.t === 'archivo') {
+        pila.push(metodoDeArchivo(m, obj, ins.s, args));
+        return;
+      }
       pila.push(metodo(obj, ins.s, args));
+      return;
+    }
+
+    case OP.IMPORTA: {
+      const listo = importar(m, ins.s, ins.linea);
+      if (listo) pila.push(listo);
+      return;
+    }
+
+    case OP.DE_MODULO: {
+      const mod = pila[pila.length - 1] as ModuloV;
+      const v = mod.globales.get(ins.s);
+      if (v === undefined) {
+        throw fallo('importacion', `«${mod.nombre}» no tiene ninguna «${ins.s}» que se pueda importar`, {
+          pista: pistaDeModulo(mod, ins.s),
+        });
+      }
+      pila.push(v);
+      return;
+    }
+
+    case OP.ATRIBUTO: {
+      const obj = pila.pop() as Valor;
+      if (obj.t === 'modulo') {
+        pila.push(deModulo(obj, ins.s));
+        return;
+      }
+      throw sinAtributo(obj, ins.s);
+    }
+
+    case OP.FIN_MODULO: {
+      const marco = m.marcos.pop() as Marco;
+      const mod = marco.modulo as ModuloV;
+      m.cargando.delete(mod.nombre);
+      m.modulos.set(mod.nombre, mod);
+      pila.length = marco.base;
+      pila.push(mod);
+      m.pc = marco.retorno;
+      return;
+    }
+
+    case OP.CON: {
+      const v = pila[pila.length - 1];
+      if (v.t !== 'archivo') {
+        throw fallo('tipo', `«with» aquí sólo sirve para abrir archivos, y le diste ${enCastellano(v)}`, {
+          pista: 'se escribe: with open("datos.csv") as f:',
+        });
+      }
       return;
     }
 
@@ -616,6 +782,10 @@ function siguienteDe(it: IteradorV): Valor | null {
       const claves = it.claves as Valor[];
       return it.i < claves.length ? claves[it.i++] : null;
     }
+    case 'archivo':
+      /* Python lanza un error si cierras el archivo a medio «for»: aquí también. */
+      exigeLegible(v, 'seguir leyendo');
+      return leerLinea(v);
     default:
       return null;
   }
@@ -630,14 +800,23 @@ function siguienteDe(it: IteradorV): Valor | null {
  * mano.
  */
 function noExiste(m: Maquina, nombre: string): Tropiezo {
-  const candidatos = [...m.globales.keys(), ...NATIVAS];
+  const candidatos = [...globalesDe(m).keys(), ...NATIVAS];
   const marco = m.marcos[m.marcos.length - 1];
   if (marco) candidatos.push(...marco.locales.keys());
   const cerca = candidatos.find((c) => c !== nombre && parecidos(c, nombre));
+  /* `nombre = Valentina`: lo que no existe es TODO el lado derecho de una
+   * asignación. Es la forma de un texto sin comillas —el error más común del
+   * primer día, y el que `n6-primeras-lineas-python` provoca a propósito—, pero
+   * también la de una caja usada antes de crearla; la pista nombra las dos.
+   * Sólo en el archivo que se corre: la línea de un módulo no está en `fuente`. */
+  const linea = archivoActual(m) === null ? (m.fuente.split('\n')[lineaActual(m) - 1] ?? '') : '';
+  const ladoDerecho = new RegExp(`^\\s*[A-Za-z_]\\w*\\s*=\\s*${nombre}\\s*$`).test(linea);
   return fallo('nombre', `no existe ninguna variable llamada «${nombre}»`, {
     pista: cerca
       ? `¿querías decir «${cerca}»? Python distingue mayúsculas de minúsculas y los acentos`
-      : 'las variables hay que crearlas antes de usarlas, y se escriben siempre igual: «Total» y «total» son distintas',
+      : ladoDerecho
+        ? `¿querías guardar el texto «${nombre}»? Un texto va entre comillas: sin ellas, Python busca una caja que se llame así. Y si es una caja, hay que crearla antes de esta línea`
+        : 'las variables hay que crearlas antes de usarlas, y se escriben siempre igual: «Total» y «total» son distintas',
   });
 }
 
@@ -703,7 +882,15 @@ function llamar(m: Maquina, quien: Valor, args: Valor[], linea: number, escrito:
     }
     const locales = new Map<string, Valor>();
     for (let i = 0; i < args.length; i += 1) locales.set(quien.params[i], args[i]);
-    m.marcos.push({ locales, retorno: m.pc, base: m.pila.length, nombre: quien.nombre, lineaLlamada: linea });
+    m.marcos.push({
+      locales,
+      retorno: m.pc,
+      base: m.pila.length,
+      nombre: quien.nombre,
+      lineaLlamada: linea,
+      globales: quien.globales ?? m.globales,
+      modulo: null,
+    });
     m.pc = quien.dir;
     return;
   }
@@ -774,7 +961,10 @@ function nativa(m: Maquina, nombre: string, args: Valor[]): Valor | null {
           pista: 'si el «print» está dentro de un «while», mira si la condición se vuelve falsa alguna vez',
         });
       }
-      m.salida.push(linea);
+      /* Un «\n» dentro de lo impreso es un renglón más, como en la consola de
+       * Python: `print(f.read())` salía en UNA línea con saltos dentro y el juez,
+       * que compara renglones, la daba por mala (M4, §69.21). */
+      for (const renglon of linea.split('\n')) m.salida.push(renglon);
       return NADA;
     }
 
@@ -783,9 +973,11 @@ function nativa(m: Maquina, nombre: string, args: Valor[]): Valor | null {
       const pregunta = args.length === 1 ? aTexto(args[0]) : '';
       if (m.entradas.length > 0) {
         const respuesta = m.entradas.shift() as string;
+        m.ecos.push(m.salida.length);
         m.salida.push(pregunta + respuesta);
         return cad(respuesta);
       }
+      m.ecos.push(m.salida.length);
       m.salida.push(pregunta);
       m.pregunta = pregunta;
       m.estado = 'esperando';
@@ -860,12 +1052,9 @@ function nativa(m: Maquina, nombre: string, args: Valor[]): Valor | null {
       exigeArgs('list', args, 1, 1);
       return lista(elementosDe(args[0]));
 
-    case 'sum': {
+    case 'sum':
       exigeArgs('sum', args, 1, 1);
-      let acumulado: Valor = ent(0);
-      for (const x of elementosDe(args[0])) acumulado = sumar(acumulado, x);
-      return acumulado;
-    }
+      return sumaComoPython(elementosDe(args[0]));
 
     case 'min':
     case 'max': {
@@ -910,6 +1099,50 @@ function nativa(m: Maquina, nombre: string, args: Valor[]): Valor | null {
       exigeArgs('type', args, 1, 1);
       return { t: 'tipo', nombre: nombreDeTipo(args[0]) };
 
+    case 'open':
+      return abrir(m, args);
+
+    case 'repr':
+      /* Con archivos hace falta ver el «
+» del final de cada línea (M4). */
+      exigeArgs('repr', args, 1, 1);
+      return cad(repr(args[0]));
+
+    case 'math.sqrt': {
+      exigeArgs('math.sqrt', args, 1, 1);
+      const x = comoNumeroJs(args[0], 'lo que se le da a math.sqrt()');
+      if (x < 0) {
+        throw fallo('valor', `math.sqrt() no saca la raíz de un número negativo, y le diste ${aTexto(args[0])}`, {
+          pista: 'la raíz cuadrada de un negativo no es un número real: comprueba antes con un «if»',
+        });
+      }
+      return flo(Math.sqrt(x));
+    }
+
+    case 'math.floor':
+    case 'math.ceil': {
+      exigeArgs(nombre, args, 1, 1);
+      const v = args[0];
+      if (v.t === 'ent') return v;
+      const x = comoNumeroJs(v, `lo que se le da a ${nombre}()`);
+      /* Como en Python, devuelven un entero aunque les des un decimal. */
+      return ent(nombre === 'math.floor' ? Math.floor(x) : Math.ceil(x));
+    }
+
+    case 'statistics.mean':
+      exigeArgs('statistics.mean', args, 1, 1);
+      return mediaComoPython(numerosDe(args[0], 'mean'));
+
+    case 'statistics.median': {
+      exigeArgs('statistics.median', args, 1, 1);
+      const datos = numerosDe(args[0], 'median');
+      datos.sort((a, b) => comparar(a, b));
+      const n = datos.length;
+      if (n % 2 === 1) return datos[(n - 1) / 2];
+      /* Par: la media de los dos de en medio, con `/`. Siempre da decimal. */
+      return dividir(sumar(datos[n / 2 - 1], datos[n / 2]), ent(2));
+    }
+
     default:
       throw fallo('nombre', `no existe ninguna función llamada «${nombre}»`);
   }
@@ -922,15 +1155,393 @@ function nativa(m: Maquina, nombre: string, args: Valor[]): Valor | null {
  *
  * Se copia porque un ejercicio de promedios que aquí da 2 y en Python 3 da otra
  * cosa es la clase enseñando algo falso.
+ *
+ * ── Con decimales, se redondea el número que DE VERDAD está guardado ─────────
+ *
+ * Corregido el 12-sep-2026, medido contra CPython 3.14: la versión anterior
+ * multiplicaba `x * 10^n` y redondeaba el producto, y esa multiplicación ya
+ * redondea. `6.35` se guarda como 6,3499999…, pero `6.35 * 10` da 63,5 exacto,
+ * así que salía un empate que no existe: `round(6.35, 1)` daba 6.4 (Python:
+ * 6.3), `round(2.675, 2)` 2.68 (2.67) y `round(0.15, 1)` 0.2 (0.1). Justo lo
+ * que teclea un alumno de promedios.
+ *
+ * Ahora se leen los dígitos exactos del número guardado —`toFixed(100)` los da
+ * sin redondear por el camino— y sólo si detrás del decimal pedido hay un 5 y
+ * nada más se aplica «al par»; si no, `toFixed` ya redondea al más cercano. Con
+ * cero o menos decimales el producto no pierde nada y sigue el camino de antes.
  */
 function redondeaComoPython(x: number, decimales: number): number {
-  const f = Math.pow(10, decimales);
-  const y = x * f;
-  const abajo = Math.floor(y);
-  let r: number;
-  if (y - abajo === 0.5) r = abajo % 2 === 0 ? abajo : abajo + 1;
-  else r = Math.round(y);
-  return decimales === 0 ? r : r / f;
+  if (decimales <= 0 || !Number.isFinite(x) || Math.abs(x) >= 1e21) {
+    const f = Math.pow(10, -decimales);
+    const y = decimales < 0 ? x / f : x;
+    const abajo = Math.floor(y);
+    const r = y - abajo === 0.5 ? (abajo % 2 === 0 ? abajo : abajo + 1) : Math.round(y);
+    return decimales < 0 ? r * f : r;
+  }
+  if (decimales > 100) return x;
+  const digitos = Math.abs(x).toFixed(100);
+  const punto = digitos.indexOf('.');
+  const empate = /^50*$/.test(digitos.slice(punto + 1 + decimales));
+  if (empate && Number(digitos[punto + decimales]) % 2 === 0) {
+    return Number((x < 0 ? '-' : '') + digitos.slice(0, punto + 1 + decimales));
+  }
+  return Number(x.toFixed(decimales));
+}
+
+/* ── M4: módulos ────────────────────────────────────────────────────────────*/
+
+/**
+ * `import nombre`: devuelve el módulo si ya está (o es de fábrica), o **empieza a
+ * ejecutarlo** y devuelve `null` — entonces es `FIN_MODULO` quien lo apila al
+ * acabar su nivel de arriba.
+ */
+function importar(m: Maquina, nombre: string, linea: number): ModuloV | null {
+  const hecho = m.modulos.get(nombre);
+  if (hecho) return hecho;
+
+  const deFabrica = MODULOS_DE_FABRICA[nombre];
+  if (deFabrica) {
+    const globales = new Map<string, Valor>();
+    for (const n of deFabrica) {
+      globales.set(n, n === 'pi' ? flo(Math.PI) : ({ t: 'nativa', nombre: `${nombre}.${n}` } as Valor));
+    }
+    const mod: ModuloV = { t: 'modulo', nombre, globales, deFabrica: true };
+    m.modulos.set(nombre, mod);
+    return mod;
+  }
+
+  const archivo = `${nombre}.py`;
+  if (archivo === m.archivo) {
+    throw fallo('importacion', `«${archivo}» es el archivo que estás corriendo: no se importa a sí mismo`, {
+      pista: 'lo que esté en este archivo ya lo puedes usar sin importarlo',
+    });
+  }
+  if (m.cargando.has(nombre)) {
+    throw fallo('importacion', `«${archivo}» y otro módulo se están importando el uno al otro`, {
+      pista: 'pasa lo que comparten a un tercer módulo que importen los dos, o que sólo uno importe al otro',
+    });
+  }
+  const fuente = m.disco.get(archivo);
+  if (fuente === undefined) {
+    const propios = [...m.disco.keys()].filter((a) => a.endsWith('.py') && a !== m.archivo).map((a) => a.slice(0, -3));
+    const todos = [...propios, ...Object.keys(MODULOS_DE_FABRICA)];
+    const cerca = todos.find((t) => parecidos(t, nombre));
+    throw fallo('modulo', `no hay ningún módulo llamado «${nombre}»`, {
+      pista:
+        MODULOS_AUSENTES[nombre] ??
+        (cerca ? `¿querías decir «${cerca}»? ` : '') + `aquí se pueden importar: ${todos.join(', ')}`,
+    });
+  }
+
+  const arbol = analizar(fuente);
+  if (!arbol.ok) {
+    arbol.error.archivo = archivo;
+    throw new Tropiezo(arbol.error);
+  }
+  const desde = m.codigo.length;
+  m.tramos.push({ desde, archivo });
+  try {
+    compilar(arbol.programa, { codigo: m.codigo, modulo: true });
+  } catch (e) {
+    if (e instanceof Tropiezo) e.detalle.archivo = archivo;
+    throw e;
+  }
+  const mod: ModuloV = { t: 'modulo', nombre, globales: new Map(), deFabrica: false };
+  m.cargando.add(nombre);
+  m.marcos.push({
+    locales: new Map(),
+    retorno: m.pc,
+    base: m.pila.length,
+    nombre: `import ${nombre}`,
+    lineaLlamada: linea,
+    globales: mod.globales,
+    modulo: mod,
+  });
+  m.pc = desde;
+  return null;
+}
+
+/** `__name__`: «__main__» en el archivo que se corre; el nombre del módulo dentro de uno importado. */
+function nombreDelModulo(m: Maquina, g: Map<string, Valor>): string {
+  if (g === m.globales) return '__main__';
+  for (const mod of m.modulos.values()) if (mod.globales === g) return mod.nombre;
+  for (const marco of m.marcos) if (marco.modulo && marco.modulo.globales === g) return marco.modulo.nombre;
+  return '__main__';
+}
+
+function deModulo(mod: ModuloV, nombre: string): Valor {
+  const v = mod.globales.get(nombre);
+  if (v === undefined) {
+    throw fallo('atributo', `el módulo «${mod.nombre}» no tiene nada llamado «${nombre}»`, { pista: pistaDeModulo(mod, nombre) });
+  }
+  return v;
+}
+
+function pistaDeModulo(mod: ModuloV, nombre: string): string {
+  const hay = [...mod.globales.keys()];
+  const cerca = hay.find((h) => parecidos(h, nombre));
+  if (cerca) return `¿querías decir «${cerca}»?`;
+  if (hay.length === 0) return `«${mod.nombre}» está vacío: todavía no define nada`;
+  return `lo que tiene «${mod.nombre}» es: ${hay.join(', ')}`;
+}
+
+/** `x.nombre` sin paréntesis sobre lo que no es un módulo. */
+function sinAtributo(obj: Valor, nombre: string): Tropiezo {
+  const metodos =
+    obj.t === 'cad' ? METODOS_CADENA : obj.t === 'lista' ? METODOS_LISTA : obj.t === 'dicc' ? METODOS_DICC : obj.t === 'archivo' ? METODOS_ARCHIVO : [];
+  if (metodos.includes(nombre)) {
+    return fallo('atributo', `«${nombre}» tiene que llamarse con paréntesis`, {
+      pista: `escribe .${nombre}() con sus paréntesis, aunque no lleve nada dentro`,
+    });
+  }
+  return fallo('atributo', `${enCastellano(obj)} no tiene nada llamado «${nombre}»`, {
+    pista: 'con un punto se le pide algo a un módulo, como math.pi, o se llama a un método con paréntesis, como texto.upper()',
+  });
+}
+
+/* ── M4: archivos ───────────────────────────────────────────────────────────*/
+
+function abrir(m: Maquina, args: Valor[]): ArchivoV {
+  exigeArgs('open', args, 1, 2);
+  const nombre = comoTexto(args[0], 'el nombre del archivo');
+  const modo = args.length === 2 ? comoTexto(args[1], 'el modo de open()') : 'r';
+  if (modo !== 'r' && modo !== 'w' && modo !== 'a') {
+    throw fallo('valor', `«${modo}» no es un modo de open()`, {
+      pista: 'los modos son "r" para leer (el de siempre), "w" para escribir desde cero y "a" para añadir al final',
+    });
+  }
+  if (modo === 'r') {
+    const texto = m.disco.get(nombre);
+    if (texto === undefined) {
+      const hay = [...m.disco.keys()];
+      const cerca = hay.find((h) => h !== nombre && parecidos(h, nombre));
+      throw fallo('archivo', `no existe ningún archivo llamado «${nombre}»`, {
+        pista: cerca
+          ? `¿querías decir «${cerca}»? El nombre tiene que ser exacto, con su extensión`
+          : hay.length > 0
+            ? `los archivos que hay son: ${hay.join(', ')}`
+            : 'esta clase no trae archivos: no hay nada que abrir',
+      });
+    }
+    return { t: 'archivo', nombre, modo, texto, pos: 0, abierto: true };
+  }
+  if (modo === 'w' || !m.disco.has(nombre)) m.disco.set(nombre, '');
+  if (!m.escritos.includes(nombre)) m.escritos.push(nombre);
+  return { t: 'archivo', nombre, modo, texto: '', pos: 0, abierto: true };
+}
+
+function exigeLegible(f: ArchivoV, para: string): void {
+  if (!f.abierto) {
+    throw fallo('valor', `«${f.nombre}» ya está cerrado: no se puede ${para}`, {
+      pista: 'después de .close() —o de salir del «with»— el archivo ya no se lee; ábrelo otra vez si lo necesitas',
+    });
+  }
+  if (f.modo !== 'r') {
+    throw fallo('operacion', `«${f.nombre}» se abrió para escribir, no para leer`, {
+      pista: 'para leerlo, ábrelo con open(nombre) o open(nombre, "r")',
+    });
+  }
+}
+
+function leerLinea(f: ArchivoV): Valor | null {
+  if (f.pos >= f.texto.length) return null;
+  const fin = f.texto.indexOf('\n', f.pos);
+  const hasta = fin === -1 ? f.texto.length : fin + 1;
+  const linea = f.texto.slice(f.pos, hasta);
+  f.pos = hasta;
+  return cad(linea);
+}
+
+function metodoDeArchivo(m: Maquina, f: ArchivoV, nombre: string, args: Valor[]): Valor {
+  switch (nombre) {
+    case 'close':
+      exigeArgs('close', args, 0, 0);
+      f.abierto = false;
+      return NADA;
+    case 'read': {
+      exigeArgs('read', args, 0, 0);
+      exigeLegible(f, 'leer');
+      const resto = f.texto.slice(f.pos);
+      f.pos = f.texto.length;
+      return cad(resto);
+    }
+    case 'readline': {
+      exigeArgs('readline', args, 0, 0);
+      exigeLegible(f, 'leer');
+      return leerLinea(f) ?? cad('');
+    }
+    case 'readlines': {
+      exigeArgs('readlines', args, 0, 0);
+      exigeLegible(f, 'leer');
+      const lineas: Valor[] = [];
+      for (let l = leerLinea(f); l !== null; l = leerLinea(f)) lineas.push(l);
+      return lista(lineas);
+    }
+    case 'write': {
+      exigeArgs('write', args, 1, 1);
+      if (!f.abierto) {
+        throw fallo('valor', `«${f.nombre}» ya está cerrado: no se puede escribir`, {
+          pista: 'escribe antes de .close(), o dentro del «with»',
+        });
+      }
+      if (f.modo === 'r') {
+        throw fallo('operacion', `«${f.nombre}» se abrió para leer, no para escribir`, {
+          pista: 'para escribir, ábrelo con open(nombre, "w") —desde cero— o con "a" —al final—',
+        });
+      }
+      const v = args[0];
+      if (v.t !== 'cad') {
+        throw fallo('tipo', `write() escribe textos, y le diste ${enCastellano(v)}`, {
+          pista: 'conviértelo antes con str(...), y no olvides el "\\n" si quieres cambiar de línea',
+        });
+      }
+      const nuevo = (m.disco.get(f.nombre) ?? '') + v.v;
+      if (nuevo.length > m.topes.TAMANO) {
+        throw fallo('limite', `«${f.nombre}» ya pasa de ${m.topes.TAMANO.toLocaleString('es-MX')} caracteres, puede que sea un bucle infinito`, {
+          pista: 'mira si el write() está dentro de un bucle que no para',
+        });
+      }
+      m.disco.set(f.nombre, nuevo);
+      return ent(v.v.length);
+    }
+    default:
+      throw sinMetodo('un archivo', nombre, METODOS_ARCHIVO);
+  }
+}
+
+/* `BigInt(…)` y no `0n`: el `target` de la plataforma es anterior a ES2020. */
+const B0 = BigInt(0);
+const B1 = BigInt(1);
+const B32 = BigInt(32);
+const B52 = BigInt(52);
+
+/* ── M4: las cuentas de la librería, como las hace CPython ──────────────────*/
+
+/**
+ * `sum()` de CPython 3.12+: los enteros se suman exactos hasta el primer
+ * decimal, y desde ahí **suma compensada de Neumaier**, enteros incluidos
+ * (medido: `sum([1e16, 1.0, 1, -1e16])` da 2.0 en 3.14). Hasta el 6-oct-2026
+ * aquí se sumaba a la ingenua y `sum([0.1] * 10)` daba 0.9999999999999999 donde
+ * Python da 1.0.
+ */
+function sumaComoPython(cosas: Valor[]): Valor {
+  let acumulado: Valor = ent(0);
+  let i = 0;
+  for (; i < cosas.length; i += 1) {
+    const x = cosas[i];
+    if (x.t === 'flo' && (acumulado.t === 'ent' || acumulado.t === 'bool')) break;
+    acumulado = sumar(acumulado, x);
+  }
+  if (i === cosas.length) return acumulado;
+  /* El primer decimal: una suma normal, como hace CPython al cambiar de camino. */
+  let f = (sumar(acumulado, cosas[i]) as { v: number }).v;
+  let c = 0;
+  for (i += 1; i < cosas.length; i += 1) {
+    const v = cosas[i];
+    if (v.t !== 'flo' && v.t !== 'ent' && v.t !== 'bool') {
+      /* Lo que no es número: que lo explique `sumar`, con su mensaje. */
+      sumar(flo(f), v);
+    }
+    const x = v.t === 'bool' ? (v.v ? 1 : 0) : (v as { v: number }).v;
+    const t = f + x;
+    if (Math.abs(f) >= Math.abs(x)) c += f - t + x;
+    else c += x - t + f;
+    f = t;
+  }
+  if (c !== 0 && Number.isFinite(c)) f += c;
+  return flo(f);
+}
+
+function numerosDe(v: Valor, quien: string): Valor[] {
+  const datos = elementosDe(v);
+  if (datos.length === 0) {
+    throw fallo('estadistica', `${quien}() necesita al menos un dato, y le diste una lista vacía`, {
+      pista: 'comprueba antes con un «if len(lista) > 0:»',
+    });
+  }
+  for (const d of datos) {
+    if (d.t !== 'ent' && d.t !== 'flo' && d.t !== 'bool') {
+      throw fallo('tipo', `statistics.${quien}() trabaja con números, y en la lista hay ${enCastellano(d)}`, {
+        pista: 'si los datos vienen de un archivo, son textos: conviértelos con float(...) al leerlos',
+      });
+    }
+  }
+  return datos;
+}
+
+/**
+ * `statistics.mean`, exacto: CPython suma los datos como fracciones exactas y
+ * redondea una sola vez al final. Con enteros, si la división es exacta
+ * devuelve un **entero** (`mean([2, 4])` es 3, no 3.0). Con decimales,
+ * `mean([0.1, 0.2, 0.3])` da 0.2 — la suma ingenua entre 3 daría
+ * 0.19999999999999998. Medido con CPython 3.14.
+ */
+function mediaComoPython(datos: Valor[]): Valor {
+  const n = BigInt(datos.length);
+  if (datos.every((d) => d.t !== 'flo')) {
+    let total = B0;
+    for (const d of datos) total += d.t === 'bool' ? (d.v ? B1 : B0) : BigInt((d as { v: number }).v);
+    if (total % n === B0) return ent(Number(total / n));
+    return flo(fraccionADoble(total, n));
+  }
+  let num = B0;
+  let den = B1;
+  for (const d of datos) {
+    const [a, b] = d.t === 'flo' ? fraccionDe(d.v) : [d.t === 'bool' ? (d.v ? B1 : B0) : BigInt((d as { v: number }).v), B1];
+    /* Los denominadores son potencias de 2: el común es el mayor. */
+    if (b > den) {
+      num *= b / den;
+      den = b;
+    }
+    num += a * (den / b);
+  }
+  return flo(fraccionADoble(num, den * n));
+}
+
+/** El número exacto que guarda un `double`, como fracción con denominador potencia de 2. */
+function fraccionDe(x: number): [bigint, bigint] {
+  if (Number.isInteger(x) && Math.abs(x) <= Number.MAX_SAFE_INTEGER) return [BigInt(x), B1];
+  const vista = new DataView(new ArrayBuffer(8));
+  vista.setFloat64(0, x);
+  const alto = vista.getUint32(0);
+  const bajo = vista.getUint32(4);
+  const exponente = (alto >>> 20) & 0x7ff;
+  let mantisa = (BigInt(alto & 0xfffff) << B32) | BigInt(bajo);
+  let e: number;
+  if (exponente === 0) e = -1074;
+  else {
+    mantisa |= B1 << B52;
+    e = exponente - 1075;
+  }
+  const num = alto >>> 31 ? -mantisa : mantisa;
+  return e >= 0 ? [num << BigInt(e), B1] : [num, B1 << BigInt(-e)];
+}
+
+/**
+ * `num / den` al `double` más cercano, empates al par. Se saca un cociente con
+ * al menos 55 bits y el resto se pega como bit pegajoso: así `Number(bigint)`,
+ * que ya redondea bien, ve si había algo detrás.
+ */
+function fraccionADoble(num: bigint, den: bigint): number {
+  if (num === B0) return 0;
+  const negativo = num < B0;
+  if (negativo) num = -num;
+  const bits = (b: bigint) => b.toString(2).length;
+  const k = 55 - (bits(num) - bits(den));
+  let q: bigint;
+  let r: bigint;
+  if (k >= 0) {
+    const a = num << BigInt(k);
+    q = a / den;
+    r = a % den;
+  } else {
+    const b = den << BigInt(-k);
+    q = num / b;
+    r = num % b;
+  }
+  if (r !== B0) q |= B1;
+  const v = Number(q) * Math.pow(2, -k);
+  return negativo ? -v : v;
 }
 
 /* ── métodos ────────────────────────────────────────────────────────────────*/

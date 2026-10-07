@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { EditorCodigo, colorear } from '@/components/simuladores/codigo/ventana';
 import '@/components/simuladores/codigo/ventana/ventanaCodigo.css';
 import type { FichaBloque, Programa } from '@/components/simuladores/bloques';
@@ -48,6 +48,13 @@ export function CaraDeTexto({ programa, catalogo, nodoActivo, salida, accionar }
   // instrucción.
   const lineaEnCurso = (nodoActivo && lineaDe[nodoActivo]) || 0;
 
+  // La consola sigue al último renglón: con más de seis, lo nuevo quedaba fuera de vista.
+  const listaRef = useRef<HTMLUListElement>(null);
+  useEffect(() => {
+    const lista = listaRef.current;
+    if (lista) lista.scrollTop = lista.scrollHeight;
+  }, [salida]);
+
   return (
     <div className="bvc-cara" data-testid="bvc-cara">
       <EditorCodigo
@@ -64,7 +71,7 @@ export function CaraDeTexto({ programa, catalogo, nodoActivo, salida, accionar }
         {salida.length === 0 ? (
           <p className="bvc-consola-vacia">Todavía no corriste el programa.</p>
         ) : (
-          <ul className="bvc-consola-lista">
+          <ul className="bvc-consola-lista" ref={listaRef}>
             {salida.map((linea, i) => (
               <li key={i}>{linea}</li>
             ))}

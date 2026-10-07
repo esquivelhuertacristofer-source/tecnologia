@@ -46,10 +46,13 @@
   color: #56699f;
 }
 
+/* Sin `min-height: 0` la lista no encoge dentro de la consola y el `overflow: hidden`
+   de arriba cortaba en silencio todo lo que pasara de seis renglones (§69.12). */
 .bvc-consola-lista {
   margin: 0;
   padding: 0;
   list-style: none;
+  min-height: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;

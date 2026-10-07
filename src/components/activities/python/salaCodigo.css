@@ -241,6 +241,22 @@
   overflow-y: auto;
 }
 
+/* Con las columnas apiladas (≤ 860 px) repartir el alto ya no tiene sentido:
+   la barra se envuelve en tres o cuatro renglones, `.cod-cuerpo` se encoge y
+   `.cod-izquierda` —con su propio scroll— dejaba al editor en 111 px a 400 de
+   ancho, un scroll metido en otro (medido el 6-oct-2026 en la quinta puerta de
+   `n10-python-intermedio`). Aquí cada pieza toma su alto natural y scrollea el
+   cuerpo de la ventana entero, que ya trae `overflow-y: auto`. */
+@media (max-width: 860px) {
+  .pyc-marco .cod,
+  .pyc-marco .cod-cuerpo,
+  .pyc-marco .cod-izquierda,
+  .pyc-marco .cod-lateral {
+    flex: none;
+    overflow: visible;
+  }
+}
+
 /* ───────────────────────── los paneles de cada clase ─────────────────────── */
 
 /*
@@ -326,6 +342,17 @@ button.pyc-fila:hover {
   font-size: 12.5px;
   font-weight: 700;
   line-height: 1.4;
+}
+
+/* El título del Semáforo cuando va debajo del tablero del juez (§68.5): ahí ya no
+ * tiene la cabecera del panel para él solo. */
+.pyc-semaforo-titulo {
+  margin: 4px 0 8px;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #8ea3d8;
 }
 
 .pyc-nota {

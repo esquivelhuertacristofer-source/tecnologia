@@ -349,3 +349,14 @@ test('la entrada habla de ESTA clase, no de la que se copió', () => {
   fireEvent.click(screen.getByText('Abre el editor'));
   expect(screen.getByTestId('pgw-portada')).toBeInTheDocument();
 });
+
+/* ── §69.13 · la meta se ve, el código no se dicta ─────────────────────────── */
+
+test('§69.13 · el arreglo y el párrafo nuevo no traen la línea hecha; el párrafo trae modelo', () => {
+  const dictada = /<(\w+)[^>]*>(?!\s*y\s*<)[^<]{2,}<\/\1>/;
+  for (const id of ['arreglala', 'una-linea-mas']) {
+    const paso = GUION.pasos.find((p) => p.id === id)!;
+    expect([id, dictada.test(`${paso.instruccion} ${paso.pista}`), /vuelve a poner/i.test(paso.instruccion)]).toEqual([id, false, false]);
+  }
+  expect(GUION.pasos.filter((p) => p.modelo).map((p) => p.id)).toEqual(['una-linea-mas']);
+});

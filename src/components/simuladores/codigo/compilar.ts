@@ -83,6 +83,23 @@ export const OP = {
   DEF: 27,
   DESEMPAQUETA: 28,
   FIN: 29,
+  /**
+   * Un eslabón de `a < b < c` que no es el último: compara con el código de
+   * comparación en `s`; si es cierto deja `b` para el siguiente eslabón, y si
+   * no, deja `False` y salta a `n`, el final de la cadena.
+   */
+  COMP_CADENA: 30,
+  /* ── M4 (§69.21) ── */
+  /** `import x`: deja el módulo `s` en la pila (lo carga la primera vez). */
+  IMPORTA: 31,
+  /** `from x import n`: con el módulo arriba, apila su `s` sin quitarlo. */
+  DE_MODULO: 32,
+  /** `x.n` sin llamar: quita `x` y apila su `s`. */
+  ATRIBUTO: 33,
+  /** El final del nivel de arriba de un módulo: vuelve a quien lo importó. */
+  FIN_MODULO: 34,
+  /** `with expr as f:` — comprueba que `expr` sea un archivo abierto y lo deja. */
+  CON: 35,
 } as const;
 
 export const BIN_COD: Readonly<Record<OpBin, number>> = { '+': 0, '-': 1, '*': 2, '/': 3, '//': 4, '%': 5, '**': 6 };
@@ -120,8 +137,14 @@ export interface Compilado {
   globales: string[];
 }
 
-export function compilar(programa: Sent[]): Compilado {
-  const c = new Compilador();
+/**
+ * `codigo`: la cinta a la que se añade. Un módulo importado (M4) se compila **al
+ * final de la cinta del programa que lo importa**, así las direcciones de sus
+ * saltos y de sus funciones valen tal cual y la máquina no tiene que saber que
+ * hay dos archivos para ejecutar: sólo para decir de cuál es una línea.
+ */
+export function compilar(programa: Sent[], opciones: { codigo?: Ins[]; modulo?: boolean } = {}): Compilado {
+  const c = new Compilador(opciones.codigo ?? [], opciones.modulo ?? false);
   c.programa(programa);
   return { codigo: c.codigo, globales: [...c.globalesAsignadas] };
 }
@@ -138,8 +161,13 @@ interface Bucle {
 }
 
 class Compilador {
-  readonly codigo: Ins[] = [];
   readonly globalesAsignadas = new Set<string>();
+
+  constructor(
+    readonly codigo: Ins[],
+    private readonly esModulo: boolean,
+  ) {}
+
   /** `null` en el nivel de arriba; el conjunto de locales dentro de un `def`. */
   private locales: Set<string> | null = null;
   private bucles: Bucle[] = [];
@@ -166,7 +194,7 @@ class Compilador {
 
   programa(sents: Sent[]): void {
     this.cuerpo(sents);
-    this.emite(OP.FIN, sents.length > 0 ? sents[sents.length - 1].linea : 1);
+    this.emite(this.esModulo ? OP.FIN_MODULO : OP.FIN, sents.length > 0 ? sents[sents.length - 1].linea : 1);
   }
 
   private cuerpo(sents: Sent[]): void {
@@ -347,6 +375,37 @@ class Compilador {
         else this.emite(OP.CONST, s.linea, { k: NADA });
         this.emite(OP.RETORNA, s.linea);
         break;
+
+      case 'importa':
+        for (const m of s.modulos) {
+          this.emite(OP.IMPORTA, s.linea, { s: m.nombre });
+          this.guardaNombre(m.alias ?? m.nombre, s.linea);
+        }
+        break;
+
+      case 'desde':
+        this.emite(OP.IMPORTA, s.linea, { s: s.modulo });
+        for (const n of s.nombres) {
+          this.emite(OP.DE_MODULO, s.linea, { s: n.nombre });
+          this.guardaNombre(n.alias ?? n.nombre, s.linea);
+        }
+        this.emite(OP.POP, s.linea);
+        break;
+
+      case 'con':
+        /* Abrir, guardar, el bloque, cerrar. Sin `try` no hay excepciones que
+         * atrapar: un error dentro del bloque para el programa entero, y un
+         * archivo que se queda abierto en un programa parado no le hace nada a
+         * nadie. Un `break` dentro de un `with` dentro de un bucle sí se salta el
+         * cierre; es la única diferencia con Python y no cambia lo que se lee. */
+        this.expresion(s.expr);
+        this.emite(OP.CON, s.linea);
+        this.guardaNombre(s.nombre, s.linea);
+        this.cuerpo(s.cuerpo);
+        this.leeNombre(s.nombre, s.linea);
+        this.emite(OP.METODO, s.linea, { n: 0, s: 'close' });
+        this.emite(OP.POP, s.linea);
+        break;
     }
     if (!marcaPropia && this.codigo.length > marca) this.codigo[marca].inicio = true;
   }
@@ -457,6 +516,17 @@ class Compilador {
         this.expresion(e.der);
         this.emite(OP.COMP, e.linea, { n: COMP_COD[e.op] });
         break;
+      case 'cadena': {
+        const finales: number[] = [];
+        this.expresion(e.args[0]);
+        e.ops.forEach((op, i) => {
+          this.expresion(e.args[i + 1]);
+          if (i < e.ops.length - 1) finales.push(this.emite(OP.COMP_CADENA, e.linea, { s: String(COMP_COD[op]) }));
+          else this.emite(OP.COMP, e.linea, { n: COMP_COD[op] });
+        });
+        finales.forEach((f) => this.parchea(f));
+        break;
+      }
       case 'logica': {
         this.expresion(e.izq);
         const salto = this.emite(e.op === 'and' ? OP.SALTA_SI_NO_DEJA : OP.SALTA_SI_SI_DEJA, e.linea);
@@ -489,6 +559,10 @@ class Compilador {
         this.expresion(e.obj);
         e.args.forEach((a) => this.expresion(a));
         this.emite(OP.METODO, e.linea, { n: e.args.length, s: e.nombre });
+        break;
+      case 'atributo':
+        this.expresion(e.obj);
+        this.emite(OP.ATRIBUTO, e.linea, { s: e.nombre });
         break;
     }
   }
@@ -527,6 +601,16 @@ function localesDe(def: Extract<Sent, { t: 'def' }>): Set<string> {
           break;
         case 'def':
           nombres.add(s.nombre);
+          break;
+        case 'importa':
+          s.modulos.forEach((m) => nombres.add(m.alias ?? m.nombre));
+          break;
+        case 'desde':
+          s.nombres.forEach((n) => nombres.add(n.alias ?? n.nombre));
+          break;
+        case 'con':
+          nombres.add(s.nombre);
+          mira(s.cuerpo);
           break;
         default:
           break;

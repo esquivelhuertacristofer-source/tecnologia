@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useCallback, useState } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
 import { reproducirTono } from '../../n1/mision/audio';
@@ -605,7 +606,7 @@ function Practica({ alSalir, alRepetir, ...props }: PropsLab & { alRepetir: () =
                   {PREGUNTAS_IDENTIFICA[pasos].pregunta}
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {PREGUNTAS_IDENTIFICA[pasos].opciones.map((op) => (
+                  {ordenDeOpciones(PREGUNTAS_IDENTIFICA[pasos].opciones.length, PREGUNTAS_IDENTIFICA[pasos].pregunta).map((k) => PREGUNTAS_IDENTIFICA[pasos].opciones[k]).map((op) => (
                     <button
                       key={op.texto}
                       type="button"
@@ -630,7 +631,7 @@ function Practica({ alSalir, alRepetir, ...props }: PropsLab & { alRepetir: () =
 
             {grupo === 'no-intercambiable' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {PREGUNTA_NO_INTERCAMBIABLE.opciones.map((op) => (
+                {ordenDeOpciones(PREGUNTA_NO_INTERCAMBIABLE.opciones.length, PREGUNTA_NO_INTERCAMBIABLE.pregunta).map((k) => PREGUNTA_NO_INTERCAMBIABLE.opciones[k]).map((op) => (
                   <button
                     key={op.texto}
                     type="button"
@@ -667,7 +668,7 @@ function Practica({ alSalir, alRepetir, ...props }: PropsLab & { alRepetir: () =
 
             {grupo === 'conectividad-quiz' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {PREGUNTA_CONECTIVIDAD.opciones.map((op) => (
+                {ordenDeOpciones(PREGUNTA_CONECTIVIDAD.opciones.length, PREGUNTA_CONECTIVIDAD.pregunta).map((k) => PREGUNTA_CONECTIVIDAD.opciones[k]).map((op) => (
                   <button
                     key={op.texto}
                     type="button"
@@ -691,7 +692,7 @@ function Practica({ alSalir, alRepetir, ...props }: PropsLab & { alRepetir: () =
 
             {grupo === 'diagnostico' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {PREGUNTA_DIAGNOSTICO.opciones.map((op) => (
+                {ordenDeOpciones(PREGUNTA_DIAGNOSTICO.opciones.length, PREGUNTA_DIAGNOSTICO.pregunta).map((k) => PREGUNTA_DIAGNOSTICO.opciones[k]).map((op) => (
                   <button
                     key={op.texto}
                     type="button"

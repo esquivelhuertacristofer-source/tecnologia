@@ -14,6 +14,13 @@ import { LabDatosConPython } from './LabDatosConPython';
  * clase: no SQL, no ordenamiento — Python real sobre una lista de
  * diccionarios, con un dato que falta de verdad.
  *
+ * ── Reescrita el 12-sep-2026 (§68.3) ──────────────────────────────────────────
+ *
+ * El laboratorio dejó de dictar sus nueve encargos y pasó al juez: seis
+ * problemas con diecinueve casos ocultos. La entrada se reescribió con él,
+ * porque una entrada que describe la clase anterior miente sin que ninguna
+ * prueba se entere.
+ *
  * El video se grabó y se publicó el 2-sep-2026: ya existe
  * `public/assets/actividades/n9-datos-con-python/video-explicativo.mp4` y la bandera bajó a
  * `assetsPendientes: false`. OJO si escribes pruebas: con el video puesto, el
@@ -27,57 +34,57 @@ const CONFIG: ConfigEntradaN5 = {
   ruta: RUTA_N9_ALGORITMOS_Y_DATOS,
   parada: 3,
   globo:
-    'El grupo ya tiene sus calificaciones capturadas... pero un registro no tiene número: a Emilio le falta la nota. Vas a limpiarlo, filtrarlo y sacar una conclusión real, con código de verdad.',
+    'La app de calificaciones del grupo necesita su reporte. Pero Emilio no ha entregado, y otro alumno entregó en blanco. Hoy escribes tú las funciones, y un juez las prueba con grupos que no has visto.',
   arranqueSub:
-    'Vas a trabajar con **8 registros reales** —uno sin calificación todavía— escribiendo Python de verdad: nada de `SELECT` y nada de ordenar a mano. Vas a **provocar un error real** al sumar un dato que falta, limpiarlo, filtrar quién va reprobando, calcular el promedio con `sum()`, encontrar los extremos con `max()` y `min()`, y cerrar con un reporte que decide una conclusión sobre el grupo.',
+    'Abres **reporte_calificaciones.py**. Seis problemas, cada uno con su enunciado, sus ejemplos y **casos ocultos**. Nadie te dice qué teclear: escribes la función, la envías y lees por qué falla la que falla. Y en casi todos hay una trampa: **un dato que falta no es un cero**.',
   stats: [
-    { etiqueta: 'Encargos', valor: '9', acento: '#2dd4bf' },
-    { etiqueta: 'Registros', valor: '8', acento: '#facc15' },
+    { etiqueta: 'Problemas', valor: '6', acento: '#2dd4bf' },
+    { etiqueta: 'Casos ocultos', valor: '19', acento: '#f59e0b' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
-  letrero: 'Las cuatro piezas de tu proyecto de datos',
+  letrero: 'Limpiar, filtrar, agregar y concluir',
   fichas: [
     {
-      key: 'lista-de-diccionarios',
+      key: 'lista-de-registros',
       tag: 'La forma del dato',
       numero: 1,
-      titulo: 'Una lista de diccionarios',
+      titulo: 'Una lista de registros',
       detalle:
-        'Cada registro es un diccionario —`{"nombre": "Sofía", "calificacion": 8.5}`— y el conjunto completo es una lista de esos diccionarios. Recorrerla con `for` te entrega, uno por uno, cada registro entero.',
+        'Cada alumno es un diccionario con su nombre y su calificación, y el grupo es una lista de esos diccionarios. Tus seis funciones reciben esa lista y devuelven una sola respuesta: un número, un nombre, una lista o una palabra.',
       acento: { c: '#2dd4bf', deep: '#0f766e' },
     },
     {
-      key: 'el-dato-que-falta',
-      tag: 'El error real',
+      key: 'none-no-es-cero',
+      tag: 'El centro de la clase',
       numero: 2,
-      titulo: 'None revienta la cuenta',
+      titulo: 'None no es un cero',
       detalle:
-        'Un registro sin calificación no es un cero: es `None`. Sumarlo o compararlo con un número es un error de verdad, no una advertencia — y hay que limpiarlo antes de calcular nada.',
+        'Quien no ha entregado no tiene calificación: None. Quien entregó en blanco sacó cero, y eso sí es un dato. Si tu código los confunde no revienta: da un número que parece bueno y está mal.',
       acento: { c: '#fb7185', deep: '#9f1239' },
     },
     {
-      key: 'filtrar-de-verdad',
-      tag: 'No es lo mismo',
+      key: 'entre-cuantos',
+      tag: 'Agregar',
       numero: 3,
-      titulo: 'Filtrar guarda, no sólo imprime',
+      titulo: 'Entre cuántos, y de quién',
       detalle:
-        'Filtrar de verdad es construir una lista NUEVA con sólo los registros que cumplen la condición, para poder contarla, recorrerla o reutilizarla después — no sólo imprimir lo que pasó el filtro.',
+        'Un promedio depende de entre cuántos divides, y un «más de la mitad» de sobre quiénes lo cuentas. max() te da el número más alto, pero no de quién es: eso lo tiene que recordar tu función.',
       acento: { c: '#facc15', deep: '#b45309' },
     },
     {
-      key: 'sum-max-min',
-      tag: 'Herramientas nuevas',
+      key: 'el-juez',
+      tag: 'Quién corrige',
       numero: 4,
-      titulo: 'sum(), max() y min()',
+      titulo: 'Un juez con grupos que no ves',
       detalle:
-        'Tres funciones de fábrica que hoy usas por primera vez en todo el curso: suman una lista completa, o encuentran su valor más alto o más bajo, sin que tú escribas el bucle que las calcula.',
+        'Corre tus funciones con grupos que no elegiste: con ceros, con empates, con alguien justo en el límite y con nadie que haya entregado. Te dice qué caso falló, pero no sus datos.',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
   ],
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
-  ctaTitulo: 'Abre tu proyecto de datos',
+  ctaTitulo: 'Abre el editor de código',
   ctaDetalle:
-    'Nueve encargos: provoca y arregla un error real con un dato que falta, filtra construyendo listas nuevas, agrega con sum(), max() y min(), y cierra con un reporte que saca una conclusión sobre el grupo.',
+    'Seis problemas con juez y diecinueve casos ocultos: contar, promediar, filtrar, encontrar al mejor, agrupar por niveles y concluir, y una pregunta de cierre sobre lo que cambia un cero.',
   assetsPendientes: false,
 };
 

@@ -69,13 +69,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { StrictMode, useCallback, useRef, useState } from 'react';
-import { act, renderHook } from '@testing-library/react';
+import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
 
 import { useAgenda } from '@/components/simuladores/agenda/useAgenda';
 import { useAsistente } from '@/components/simuladores/asistente/useAsistente';
 import { useBloques } from '@/components/simuladores/bloques/useBloques';
 import { nuevoBloque, type FichaBloque, type Programa } from '@/components/simuladores/bloques/arbolBloques';
 import { useCodigo } from '@/components/simuladores/codigo/ventana/useCodigo';
+import { EJECUCION_VACIA } from '@/components/simuladores/codigo/ventana/tiposCodigo';
+import { crearPanelJuez, limpiarRegistro, type Problema } from '@/components/simuladores/juez';
 import { useCorreo } from '@/components/simuladores/correo/useCorreo';
 import type { MensajeCorreo, RemitenteCorreo } from '@/components/simuladores/correo/tiposCorreo';
 import { useDatos } from '@/components/simuladores/datos/ventana/useDatos';
@@ -93,6 +95,10 @@ import type { ArchivoSO, CarpetaSO } from '@/components/simuladores/sistema/tipo
 import { useTablero } from '@/components/simuladores/tablero/useTablero';
 import type { ColumnaTablero } from '@/components/simuladores/tablero/tiposTablero';
 import { useEstudioWeb } from '@/components/simuladores/web/useEstudioWeb';
+import { useJuego } from '@/components/simuladores/juego/ventana/useJuego';
+import { CATALOGO_JUEGO, guionesDe } from '@/components/simuladores/juego/catalogo';
+import { meterVarias } from '@/components/simuladores/juego/guiones';
+import { nivelVacio, nuevoActor, ponerActor, rellenarFila, type Nivel } from '@/components/simuladores/juego/modelo';
 import { useLabActividad } from '@/components/activities/lib/useLabActividad';
 import type { ActivityProps } from '@/types/activity-contract';
 
@@ -194,7 +200,34 @@ const ENCARGO_CONFIRMA = {
   logro: { tipo: 'confirma' as const, boton: 'Entendido' },
 };
 
+/**
+ * Un problema de juguete para conducir el juez. Dos casos y uno oculto, que es
+ * el mínimo que `revisarProblema` admite, y una solución que los pasa.
+ */
+const PROBLEMA_DE_JUGUETE: Problema = {
+  id: 'juguete',
+  titulo: 'Juguete',
+  enunciado: 'Devuelve el doble.',
+  firma: 'doble(n) → un número',
+  casos: [
+    { nombre: 'dos', llamada: 'print(doble(2))', esperada: ['4'] },
+    { nombre: 'cero', llamada: 'print(doble(0))', esperada: ['0'] },
+    { nombre: 'negativo', llamada: 'print(doble(-3))', esperada: ['-6'], oculto: true },
+  ],
+  pistas: ['una', 'dos', 'tres'],
+};
+
+const SOLUCION_DE_JUGUETE = ['def doble(n):', '    return n * 2'].join('\n');
+
 /** Monta un gancho dentro de `<StrictMode>`. Todo el sentido de esta prueba. */
+/** Un suelo, el héroe a una casilla de una puerta que gana al tocarla. */
+function nivelDeUnaVictoria(): Nivel {
+  let n = rellenarFila(nivelVacio('victoria', 3), 11, 1);
+  n = ponerActor(n, nuevoActor('heroe', 1, 9, 'heroe', guionesDe('heroe', 'heroe')));
+  const puerta = nuevoActor('puerta', 1, 10, 'puerta', guionesDe('puerta', 'puerta'));
+  return ponerActor(n, { ...puerta, guiones: meterVarias(puerta.guiones, 'puerta', 'al-tocar-heroe', ['ganar']) });
+}
+
 function enModoEstricto<T>(usar: () => T) {
   return renderHook(usar, { wrapper: StrictMode });
 }
@@ -214,6 +247,8 @@ const ARMAZONES: Record<string, Armazon> = {
   },
 
   aprendizaje: { avisos: [], sinGancho: 'módulos puros (arbol, examen, modelo, senales): ni un `useState`' },
+
+  generador: { avisos: [], sinGancho: 'Tecnia Imagina (§69.3): un módulo puro (`imagen.ts`) y un dibujo sin estado (`LienzoImagen`)' },
 
   asistente: {
     avisos: ['onRespuesta', 'onFinTecleo'],
@@ -256,6 +291,69 @@ const ARMAZONES: Record<string, Armazon> = {
       });
       const acciones = onEvento.mock.calls.filter(([e]) => e.tipo === 'accion').length;
       return { onEventoAccion: acciones };
+    },
+  },
+
+  /*
+   * Tecnia Juegos (12-sep-2026, §67). Sus avisos salen del reloj del juego
+   * (`onSonido` por cada tic con sonido, `onPartidaTerminada` al ganar o
+   * perder), así que el gesto es ▶ y unos cuadros de reloj falso: el héroe
+   * nace justo encima de una puerta que gana al primer contacto. Un tic, una
+   * victoria, un aviso de cada.
+   */
+  juego: {
+    avisos: ['onPartidaTerminada', 'onSonido'],
+    conducir: () => {
+      const onSonido = jest.fn();
+      const onPartidaTerminada = jest.fn();
+      jest.useFakeTimers();
+      try {
+        const { result } = enModoEstricto(() =>
+          useJuego({ inicial: nivelDeUnaVictoria(), fichas: CATALOGO_JUEGO, onSonido, onPartidaTerminada }),
+        );
+        act(() => {
+          result.current.jugar();
+        });
+        act(() => {
+          jest.advanceTimersByTime(400);
+        });
+      } finally {
+        jest.useRealTimers();
+      }
+      return { onPartidaTerminada: onPartidaTerminada.mock.calls.length, onSonido: onSonido.mock.calls.length };
+    },
+  },
+
+  /*
+   * El juez (12-sep-2026, §68). Es el único paquete de aquí cuyo estado vive en
+   * un COMPONENTE y no en un gancho —`crearPanelJuez` devuelve el panel—, así
+   * que se conduce pintando el panel dentro de `<StrictMode>` y pulsando sus
+   * dos botones: un envío, un `onEnvio`; una pista pedida, un `onPista`.
+   *
+   * El juez también usa `revisar`, el aviso que el panel manda HACIA EL ARMAZÓN
+   * de código (no hacia la clase) para que el encargo se vuelva a comprobar. No
+   * entra en el censo porque no es una `Opciones*`: es una prop del panel.
+   */
+  juez: {
+    avisos: ['onEnvio', 'onPista'],
+    conducir: () => {
+      limpiarRegistro();
+      const onEnvio = jest.fn();
+      const onPista = jest.fn();
+      const Panel = crearPanelJuez({ problemas: [PROBLEMA_DE_JUGUETE], onEnvio, onPista });
+      render(
+        <StrictMode>
+          <Panel
+            ejecucion={EJECUCION_VACIA}
+            texto={SOLUCION_DE_JUGUETE}
+            senalarLinea={() => {}}
+            revisar={() => {}}
+          />
+        </StrictMode>,
+      );
+      fireEvent.click(screen.getByTestId('jz-enviar'));
+      fireEvent.click(screen.getByTestId('jz-pista'));
+      return { onEnvio: onEnvio.mock.calls.length, onPista: onPista.mock.calls.length };
     },
   },
 

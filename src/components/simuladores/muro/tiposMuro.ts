@@ -60,11 +60,13 @@ export interface ComentarioMuro {
   autor: AutorMuro;
   texto: string;
   fecha: string;
+  /** §69.1: si el alumno lo reportó, con qué motivo. */
+  motivoReporte?: MotivoReporte;
 }
 
-/** Las cinco acciones que el armazón sabe ofrecer. Cuáles se muestran en
+/** Las acciones que el armazón sabe ofrecer (`capturar` llegó con §69.1). Cuáles se muestran en
  *  cada publicación lo decide la actividad vía `PublicacionMuro.acciones`. */
-export type AccionMuro = 'me-gusta' | 'comentar' | 'compartir' | 'reportar' | 'borrar';
+export type AccionMuro = 'me-gusta' | 'comentar' | 'compartir' | 'reportar' | 'borrar' | 'capturar';
 
 /** Un rastro de que la publicación sobrevivió a su propio borrado. */
 export interface CopiaMuro {
@@ -88,6 +90,8 @@ export interface PublicacionMuro {
   compartidos: number;
   acciones: AccionMuro[];
   reportada?: boolean;
+  /** §69.1: con qué motivo se reportó (si se reportó con motivo). */
+  motivoReporte?: MotivoReporte;
   /** «Borrar no borra»: nunca se quita del arreglo, sólo se marca. */
   borrada?: boolean;
   copiasSobrevivientes: CopiaMuro[];
@@ -125,13 +129,71 @@ export interface PerfilMuro {
  */
 export function publicacionesVisibles(
   publicaciones: PublicacionMuro[],
-  opciones?: { incluirBorradas?: boolean; visibilidad?: Visibilidad[] },
+  opciones?: { incluirBorradas?: boolean; visibilidad?: Visibilidad[]; ocultarAutores?: readonly string[] },
 ): PublicacionMuro[] {
   const incluirBorradas = opciones?.incluirBorradas ?? false;
   const permitidas = opciones?.visibilidad;
-  return publicaciones.filter((p) => {
+  const ocultos = opciones?.ocultarAutores ?? [];
+  const filtradas = publicaciones.filter((p) => {
     if (p.borrada && !incluirBorradas) return false;
     if (permitidas && !permitidas.includes(p.visibilidad)) return false;
+    if (ocultos.includes(p.autor.id)) return false;
     return true;
   });
+  if (ocultos.length === 0) return filtradas;
+  // Lo bloqueado no se borra: se deja de VER. Los comentarios de una persona
+  // bloqueada siguen en el dato y desaparecen de la vista (§69.1).
+  return filtradas.map((p) =>
+    p.comentarios.some((c) => ocultos.includes(c.autor.id))
+      ? { ...p, comentarios: p.comentarios.filter((c) => !ocultos.includes(c.autor.id)) }
+      : p,
+  );
+}
+
+// ── §69.1 · Bloquear, capturar, reportar con motivo y mensajes privados ─────
+//
+// Aditivo: ninguna de las clases que ya montan el muro los usa, y sin ellos
+// la ventana no pinta ni un control nuevo.
+
+/**
+ * Por qué se reporta. Sólo `acoso` hace que la plataforma actúe en un caso de
+ * burlas; `datos-personales` (§69.2) es el de un desconocido que pide datos.
+ */
+export type MotivoReporte = 'no-me-gusta' | 'spam' | 'acoso' | 'falso' | 'datos-personales';
+
+/**
+ * Una captura. Es una COPIA del texto en el momento de tomarla: sobrevive a
+ * que el comentario se oculte (por bloquear) o se borre. Por eso el orden
+ * importa: lo que ya no se ve, no se puede capturar.
+ */
+export interface EvidenciaMuro {
+  id: string;
+  publicacionId: string;
+  /** Si es la captura de un comentario; si falta, es de la publicación. */
+  comentarioId?: string;
+  autor: AutorMuro;
+  texto: string;
+}
+
+/**
+ * Alguien a quien se le puede escribir en privado. `relacion` es un dato para
+ * que la ACTIVIDAD evalúe; la ventana nunca la pinta («Mamá» no lleva una
+ * etiqueta de «adulto de confianza»: eso es justo lo que el alumno decide).
+ */
+export interface ContactoMuro {
+  id: string;
+  nombre: string;
+  avatar?: string;
+  relacion: 'adulto' | 'amigo' | 'otro';
+}
+
+export interface MensajeMuro {
+  id: string;
+  /** `contactoId` de la conversación. */
+  conversacion: string;
+  /** `true` si lo escribió el alumno; `false` si es la respuesta del contacto. */
+  delAlumno: boolean;
+  texto: string;
+  /** Ids de `EvidenciaMuro` adjuntas. */
+  adjuntos: string[];
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ArrowLeft, Check, Send, Sparkles } from 'lucide-react';
@@ -526,7 +527,7 @@ export function LabPreguntaALaIA({
             <div className="pia-reflexion">
               <p className="pia-reflexion-pregunta">{ronda.reflexionPregunta}</p>
               <div className="pia-reflexion-opciones">
-                {ronda.opciones.map((op) => {
+                {ordenDeOpciones(ronda.opciones.length, ronda.reflexionPregunta).map((k) => ronda.opciones[k]).map((op) => {
                   const esElegidaCorrecta = opcionCorrecta === op.id;
                   const esElegidaFallida = opcionFallida === op.id && !opcionCorrecta;
                   return (

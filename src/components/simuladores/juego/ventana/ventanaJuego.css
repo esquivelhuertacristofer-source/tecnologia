@@ -1,0 +1,542 @@
+/*
+ * TECNIA JUEGOS — la hoja de la ventana.
+ *
+ * Fondo oscuro con drama de luz y color pleno (reglas de la casa). El
+ * escenario es un espacio lógico de 352×192 píxeles escalado con `transform`
+ * (`--jg-escala`), para que el píxel se vea nítido y el nivel entero quepa.
+ */
+
+.jg {
+  --jg-escala: 1.75;
+  --jg-fondo: #070b1d;
+  --jg-panel: #0d1433;
+  --jg-borde: rgba(129, 140, 248, 0.28);
+  --jg-acento: #22d3ee;
+  --jg-jugar: #22c55e;
+  --jg-probar: #f59e0b;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  /* El globo de Bit (ArcadeSala) se pinta encima del pie de la pantalla:
+   * se deja sitio para que el editor de guiones pueda subir por encima. */
+  padding-bottom: 120px;
+  background: radial-gradient(120% 80% at 50% 0%, #16204d 0%, var(--jg-fondo) 60%);
+  color: #e8ecff;
+  font: 500 13px/1.4 system-ui, sans-serif;
+  user-select: none;
+}
+
+/* ── barra ───────────────────────────────────────────────────────────────── */
+
+.jg-barra {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: linear-gradient(#131c46, #0b1130);
+  border-bottom: 1px solid var(--jg-borde);
+}
+
+.jg-mando {
+  border: 0;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font: 900 14px/1 system-ui, sans-serif;
+  color: #04110a;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45), 0 0 18px rgba(34, 197, 94, 0.25);
+  transition: transform 0.08s;
+}
+.jg-mando:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
+}
+.jg-mando:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.jg-mando.es-jugar {
+  background: linear-gradient(#4ade80, var(--jg-jugar));
+}
+.jg-mando.es-parar {
+  background: linear-gradient(#fca5a5, #ef4444);
+  color: #2b0505;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45), 0 0 18px rgba(239, 68, 68, 0.3);
+}
+.jg-mando.es-probar {
+  background: linear-gradient(#fcd34d, var(--jg-probar));
+  color: #2a1700;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45), 0 0 18px rgba(245, 158, 11, 0.25);
+}
+
+.jg-barra-ayuda {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+  color: #a5b4fc;
+}
+
+/* ── el medio ────────────────────────────────────────────────────────────── */
+
+.jg-medio {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  align-items: flex-start;
+}
+
+.jg-izquierda {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jg-lado {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.jg-seccion {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8fa6e0;
+}
+
+/* ── el escenario ────────────────────────────────────────────────────────── */
+
+.jg-escenario-caja {
+  width: calc(352px * var(--jg-escala));
+  height: calc(192px * var(--jg-escala));
+  border-radius: 12px;
+  border: 3px solid #1e2a5e;
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.25), 0 12px 40px rgba(0, 0, 0, 0.55), inset 0 0 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+.jg-escenario {
+  position: relative;
+  transform: scale(var(--jg-escala));
+  transform-origin: top left;
+  background: linear-gradient(180deg, #0b1236 0%, #182a6b 55%, #2a3f8f 100%);
+  image-rendering: pixelated;
+  overflow: hidden;
+}
+
+.jg-cielo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.jg-cielo i {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #fff;
+  opacity: 0.8;
+  box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.5);
+}
+
+.jg-loseta {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-size: 16px 16px;
+  image-rendering: pixelated;
+}
+
+.jg-actor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  background-size: 16px 16px;
+  image-rendering: pixelated;
+  will-change: transform;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.6));
+}
+.jg-actor.es-heroe {
+  filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.7));
+}
+.jg-actor.es-moneda {
+  filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.8));
+}
+.jg-actor.es-puerta {
+  filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.4));
+}
+.jg-actor.es-elegido {
+  outline: 1px solid #22d3ee;
+  outline-offset: 1px;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.35);
+}
+.jg-actor.es-herido {
+  animation: jg-parpadeo 0.16s steps(2) infinite;
+}
+@keyframes jg-parpadeo {
+  to {
+    opacity: 0.25;
+  }
+}
+
+.jg-mensaje {
+  position: absolute;
+  max-width: 110px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #fff;
+  color: #101828;
+  font: 800 6px/1.2 system-ui, sans-serif;
+  pointer-events: none;
+}
+
+.jg-pruebas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.jg-ruta {
+  fill: none;
+  stroke: #4ade80;
+  stroke-width: 1.2;
+  stroke-dasharray: 2 2;
+  opacity: 0.9;
+}
+.jg-calavera {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  pointer-events: none;
+  filter: drop-shadow(0 0 2px #000);
+}
+.jg-calavera.es-novato {
+  opacity: 0.95;
+}
+.jg-calavera.es-medio {
+  opacity: 0.75;
+}
+.jg-calavera.es-experto {
+  opacity: 0.6;
+}
+
+.jg-hud {
+  position: absolute;
+  left: 4px;
+  top: 3px;
+  display: flex;
+  gap: 6px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font: 800 6px/1.4 system-ui, sans-serif;
+  pointer-events: none;
+}
+.jg-hud-vidas {
+  color: #f87171;
+}
+.jg-hud-monedas {
+  color: #fde047;
+}
+
+.jg-final {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 2px;
+  text-align: center;
+  background: rgba(2, 6, 23, 0.55);
+  color: #fff;
+  pointer-events: none;
+}
+.jg-final strong {
+  font: 900 13px/1.2 system-ui, sans-serif;
+}
+.jg-final span {
+  font: 700 6px/1.3 system-ui, sans-serif;
+  opacity: 0.9;
+}
+.jg-final.es-gano strong {
+  color: #4ade80;
+  text-shadow: 0 0 6px rgba(74, 222, 128, 0.7);
+}
+.jg-final.es-perdio strong {
+  color: #f87171;
+}
+
+.jg-rejilla {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(22, 16px);
+  grid-template-rows: repeat(12, 16px);
+}
+.jg-casilla {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.jg-casilla:hover {
+  background: rgba(34, 211, 238, 0.28);
+  outline: 1px solid rgba(34, 211, 238, 0.7);
+  outline-offset: -1px;
+}
+.jg-rejilla[data-herramienta='borrar'] .jg-casilla:hover {
+  background: rgba(239, 68, 68, 0.35);
+}
+
+/* ── las pruebas ─────────────────────────────────────────────────────────── */
+
+.jg-pruebas-panel {
+  display: flex;
+  gap: 8px;
+}
+.jg-prueba {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 9px;
+  border-radius: 10px;
+  border: 1px solid var(--jg-borde);
+  background: var(--jg-panel);
+}
+.jg-prueba-nombre {
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #c7d2fe;
+}
+.jg-prueba-estado {
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.jg-prueba-estado.es-nada {
+  color: #8fa6e0;
+}
+.jg-prueba-estado.es-corre {
+  color: #fcd34d;
+}
+.jg-prueba-estado.es-bien {
+  color: #4ade80;
+}
+.jg-prueba-estado.es-mal {
+  color: #f87171;
+}
+.jg-prueba[data-estado='bien'] {
+  border-color: rgba(74, 222, 128, 0.6);
+}
+.jg-prueba[data-estado='mal'] {
+  border-color: rgba(248, 113, 113, 0.6);
+}
+
+/* ── la paleta ───────────────────────────────────────────────────────────── */
+
+.jg-paleta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--jg-borde);
+  background: var(--jg-panel);
+}
+.jg-paleta-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.jg-paleta-fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.jg-herr {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px 5px 6px;
+  border-radius: 9px;
+  border: 2px solid #2b3a7a;
+  background: #0a1130;
+  color: #dce6ff;
+  font: 800 12px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+.jg-herr:hover {
+  border-color: #6d81c4;
+}
+.jg-herr.es-activa {
+  border-color: var(--jg-acento);
+  background: rgba(34, 211, 238, 0.14);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.35);
+}
+.jg-herr-icono {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  font-size: 15px;
+}
+.jg-mini {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-size: 20px 20px;
+  image-rendering: pixelated;
+}
+
+.jg-accion-nivel {
+  border: 0;
+  background: none;
+  padding: 2px 0;
+  color: #7ee0ff;
+  font: 800 12px/1 system-ui, sans-serif;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ── las propiedades ─────────────────────────────────────────────────────── */
+
+.jg-props {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--jg-borde);
+  background: var(--jg-panel);
+}
+.jg-props.es-vacio p {
+  margin: 0;
+  color: #8fa6e0;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.jg-props-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.jg-props-nombre {
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+}
+.jg-props-quitar {
+  margin-left: auto;
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  border-radius: 8px;
+  background: rgba(248, 113, 113, 0.12);
+  padding: 4px 9px;
+  color: #fecaca;
+  font: 800 11px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+.jg-props-desc {
+  margin: 0;
+  color: #c7d2fe;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.jg-prop {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.jg-prop-etiqueta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 800;
+  color: #dce6ff;
+}
+.jg-prop-etiqueta b {
+  color: #fcd34d;
+  font-variant-numeric: tabular-nums;
+}
+.jg-prop input[type='range'] {
+  width: 100%;
+  accent-color: var(--jg-acento);
+}
+.jg-props-salto {
+  margin: 0;
+  padding: 6px 9px;
+  border-radius: 9px;
+  background: rgba(34, 211, 238, 0.1);
+  border-left: 3px solid var(--jg-acento);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #cffafe;
+}
+.jg-props-salto b {
+  color: #fff;
+  font-size: 14px;
+}
+
+/* ── los guiones ─────────────────────────────────────────────────────────── */
+
+.jg-bloques {
+  flex: 0 0 auto;
+  height: 330px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 12px 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--jg-borde);
+}
+.jg-bloques .blq {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+}
+.jg-bloques-vacio {
+  flex: 1 1 auto;
+  display: grid;
+  place-content: center;
+  gap: 6px;
+  text-align: center;
+  background: var(--jg-panel);
+}
+.jg-bloques-vacio p {
+  margin: 0;
+  max-width: 420px;
+  color: #a5b4fc;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  .jg {
+    --jg-escala: 1.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jg-actor.es-herido {
+    animation: none;
+    opacity: 0.6;
+  }
+}

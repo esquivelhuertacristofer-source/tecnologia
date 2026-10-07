@@ -14,6 +14,11 @@ import { LabAltoAlCiberacoso } from './LabAltoAlCiberacoso';
  * letras, antes incluso de entrar al laboratorio— lo que no se puede quedar
  * a medias: que nunca es culpa del alumno, que pelear no ayuda, que
  * reportar no es exagerar y el orden de qué hacer.
+ *
+ * 6-oct-2026 (§69.1): el laboratorio pasó a hacerse DENTRO del muro, en dos
+ * misiones (te pasa a ti, le pasa a Lía). La cuarta ficha ganó el paso que la
+ * clase enseña con su consecuencia —guardar la prueba antes de bloquear—, y
+ * la entrada deja de prometer que «se pierde nada»: no se pierde puntaje.
  */
 
 const CONFIG: ConfigEntradaN6 = {
@@ -23,10 +28,10 @@ const CONFIG: ConfigEntradaN6 = {
   parada: 3,
   globo: 'A veces alguien escribe algo cruel debajo de lo que publicas. Aquí no hay sustos: vamos a ver juntos qué hacer, paso a paso.',
   arranqueSub:
-    'Vas a publicar algo tuyo en Tecnia Muro. En algún momento, alguien va a burlarse en los comentarios. No es un examen sobre qué contestar rápido: es sobre qué SÍ funciona.',
+    'Vas a publicar algo tuyo en Tecnia Muro y alguien va a burlarse en los comentarios. Después, le va a pasar a una compañera. No es un examen sobre qué contestar rápido: es sobre qué SÍ funciona, hecho de verdad en la red social.',
   stats: [
-    { etiqueta: 'Publicaciones', valor: '1', acento: '#22d3ee' },
-    { etiqueta: 'Pasos si pasa', valor: '3', acento: '#34d399' },
+    { etiqueta: 'Misiones', valor: '2', acento: '#22d3ee' },
+    { etiqueta: 'Pasos si pasa', valor: '4', acento: '#34d399' },
     { etiqueta: 'Insignia', valor: '1', acento: '#a78bfa' },
   ],
   letrero: 'Lo que siempre es cierto',
@@ -60,14 +65,14 @@ const CONFIG: ConfigEntradaN6 = {
       tag: 'En este orden',
       numero: 4,
       titulo: 'Qué hacer si pasa',
-      detalle: 'No contestar igual. Reportar el comentario. Bloquear a esa persona. Y no quedarte sola: cuéntaselo a alguien de confianza.',
+      detalle: 'No contestes. **Guarda la prueba** antes de que desaparezca. Bloquea y reporta a esa persona. Y no te quedes sola: cuéntaselo a un adulto de confianza, con la prueba.',
       acento: { c: '#34d399', deep: '#0f766e' },
     },
   ],
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre Tecnia Muro',
   ctaDetalle:
-    'Publica algo tuyo y vive lo que pasa después. Si te equivocas, te lo explico y lo intentas otra vez: aquí nunca se pierde. Y recuerda siempre: **nada de lo que te escriban ahí es tu culpa**.',
+    'Todo lo haces dentro de Tecnia Muro: en los comentarios, en el perfil de cada persona y en Mensajes. Si te equivocas, vas a ver qué pasa y lo puedes arreglar: aquí no se pierden puntos. Y recuerda siempre: **nada de lo que te escriban ahí es tu culpa**.',
   assetsPendientes: false,
 };
 

@@ -19,6 +19,9 @@ import { RUTA_N7_PYTHON_1 } from './rutaN7Python1';
  * `assetsPendientes: false`. OJO si escribes pruebas: con el video puesto, el
  * primer `<button>` del documento ya no es el CTA sino el de la portada, así
  * que no lo busques por posición — búscalo por su texto.
+ *
+ * 6-oct-2026 (§69.17): la clase pasó al juez de programas; las fichas ya no
+ * traen código y las cifras cuentan los encargos nuevos.
  */
 
 const CONFIG: ConfigEntradaN4 = {
@@ -29,10 +32,10 @@ const CONFIG: ConfigEntradaN4 = {
   globo:
     'Un programa que se cumple de arriba abajo una sola vez no alcanza para casi nada. Los bucles son la manera de decirle a Python: esto, otra vez.',
   arranqueSub:
-    'Abres **bucles.py** y escribes cuatro bucles distintos, hasta provocar uno que no se detiene solo — y sobrevivirlo.',
+    'Abres **entrenamiento.py** y escribes cuatro programas que repiten lo que dice el dato. Un juez los prueba con cero vueltas, con una y con doce.',
   stats: [
-    { etiqueta: 'Encargos', valor: '9', acento: '#22d3ee' },
-    { etiqueta: 'Bucles', valor: '4', acento: '#fbbf24' },
+    { etiqueta: 'Encargos', valor: '6', acento: '#22d3ee' },
+    { etiqueta: 'Problemas con juez', valor: '4', acento: '#fbbf24' },
     { etiqueta: 'Insignia', valor: '1', acento: '#34d399' },
   ],
   letrero: 'Dos formas de repetir',
@@ -43,7 +46,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 1,
       titulo: 'for … in range()',
       detalle:
-        'Repite una vez por cada número del rango: `for i in range(5):` da exactamente cinco vueltas, ni una más.',
+        'Repite una vez por cada número de un rango, y el rango puede salir de un dato: **cuántas vueltas lo decide quien teclea**, no quien escribe el programa.',
       acento: { c: '#22d3ee', deep: '#0e7490' },
     },
     {
@@ -61,7 +64,7 @@ const CONFIG: ConfigEntradaN4 = {
       numero: 3,
       titulo: 'Acumular',
       detalle:
-        '`total = total + i` guarda en la MISMA caja el valor de antes más uno más. Así se suma una lista entera sin escribir una línea por cada número.',
+        'Una caja que nace una sola vez y **crece en cada vuelta** con lo de esa vuelta. Así se suma una lista entera sin escribir una línea por cada número.',
       acento: { c: '#a78bfa', deep: '#5b21b6' },
     },
     {
@@ -77,7 +80,7 @@ const CONFIG: ConfigEntradaN4 = {
   gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5',
   ctaTitulo: 'Abre el editor de código',
   ctaDetalle:
-    'Nueve encargos: repite con for y range(), suma diez números en una caja que se actualiza sola, cuenta regresivo con while, **provoca un bucle infinito a propósito** y sobrevívelo, sal de un bucle antes de tiempo con break, y decide cuál de tres bucles nunca para solo.',
+    'Cuatro problemas con juez sobre el entrenamiento de la carrera, un experimento donde **provocas un bucle infinito a propósito**, y una pregunta sobre el while que pidió un dato de más.',
   assetsPendientes: false,
 };
 

@@ -78,6 +78,85 @@ export function useBit(lineaInicial?: string) {
   return { linea, hablar };
 }
 
+/**
+ * Cuánto se deja leer una línea de Bit antes de recogerla: un alumno de
+ * primaria lee ~2 palabras por segundo, y la voz ya la dijo en voz alta.
+ */
+export function tiempoDeLectura(texto: string): number {
+  const palabras = texto.trim().split(/\s+/).length;
+  return Math.min(18000, Math.max(7000, 3000 + palabras * 450));
+}
+
+const ES_CAMPO = 'input, textarea, select, [contenteditable="true"], [contenteditable=""]';
+
+/**
+ * El globo de Bit se recoge solo, y vuelve a asomar si pasas el ratón por su cara.
+ *
+ * Medido el 12-sep-2026 abriendo con Chromium las 80 actividades de N7–N10: en
+ * **39** el globo tapaba algo que el alumno usa y seguía ahí a los 10 s —el
+ * 43–48 % de la consola en todas las clases de Tecnia Código, parte del editor
+ * en las de Tecnia Web, un botón de respuesta entero en `n10-capstone`—. No se
+ * iba nunca: `bit` sólo cambia cuando Bit vuelve a hablar.
+ *
+ * Tres decisiones:
+ * - **Se recoge, no se borra.** El texto se queda en el DOM (`data-recogido`
+ *   lo oculta por CSS): `aria-live` ya lo anunció, la voz ya lo dijo y las
+ *   pruebas que leen `.bit-globo` siguen leyéndolo.
+ * - **Se recoge antes si el alumno se pone a trabajar**: una tecla o entrar en
+ *   un campo dentro de la pantalla.
+ * - **El retrato NO atrapa clics.** La misma medición encontró el retrato
+ *   encima de botones (hasta el 84 % de `dis-pag`); volverlo botón para reabrir
+ *   el globo habría bloqueado esos clics, que hoy pasan a través. Por eso el
+ *   globo reaparece por **posición del puntero** sobre la cara, sin capturarlo.
+ */
+export function useGloboDeBit(bit: string | null) {
+  const pantallaRef = useRef<HTMLDivElement>(null);
+  const retratoRef = useRef<HTMLSpanElement>(null);
+  const bitRef = useRef(bit);
+  const [recogida, setRecogida] = useState<string | null>(null);
+  const [asomado, setAsomado] = useState(false);
+
+  useEffect(() => {
+    bitRef.current = bit;
+    if (!bit) return;
+    const t = window.setTimeout(() => setRecogida(bit), tiempoDeLectura(bit));
+    return () => window.clearTimeout(t);
+  }, [bit]);
+
+  useEffect(() => {
+    const pantalla = pantallaRef.current;
+    if (!pantalla) return;
+    const recoger = () => {
+      if (bitRef.current) setRecogida(bitRef.current);
+    };
+    const alTeclear = (e: KeyboardEvent) => {
+      if (!(e.target instanceof Element) || !e.target.closest('.bit-puesto')) recoger();
+    };
+    const alEntrar = (e: FocusEvent) => {
+      if (e.target instanceof Element && e.target.matches(ES_CAMPO)) recoger();
+    };
+    const alMover = (e: PointerEvent) => {
+      const r = retratoRef.current?.getBoundingClientRect();
+      const encima = !!r && r.width > 0 && e.clientX >= r.left - 6 && e.clientX <= r.right + 6 && e.clientY >= r.top - 6 && e.clientY <= r.bottom + 6;
+      setAsomado((antes) => (antes === encima ? antes : encima));
+    };
+    const alSalir = () => setAsomado(false);
+    pantalla.addEventListener('keydown', alTeclear, true);
+    pantalla.addEventListener('focusin', alEntrar);
+    pantalla.addEventListener('pointermove', alMover);
+    pantalla.addEventListener('pointerleave', alSalir);
+    return () => {
+      pantalla.removeEventListener('keydown', alTeclear, true);
+      pantalla.removeEventListener('focusin', alEntrar);
+      pantalla.removeEventListener('pointermove', alMover);
+      pantalla.removeEventListener('pointerleave', alSalir);
+    };
+  }, []);
+
+  const recogido = !!bit && recogida === bit && !asomado;
+  return { pantallaRef, retratoRef, recogido };
+}
+
 export function ArcadeSala({
   titulo,
   pasoEtiqueta,
@@ -91,6 +170,7 @@ export function ArcadeSala({
   alSalir,
   children,
 }: ArcadeSalaProps) {
+  const { pantallaRef, retratoRef, recogido } = useGloboDeBit(bit);
   return (
     <div className="arcade-n1">
       <div className="sala">
@@ -115,11 +195,11 @@ export function ArcadeSala({
           )}
         </header>
 
-        <div className="maquina-pantalla">
+        <div className="maquina-pantalla" ref={pantallaRef}>
           {children}
           {bit && !final && (
-            <div className="bit-puesto">
-              <span className="bit-retrato">
+            <div className="bit-puesto" data-recogido={recogido ? 'si' : undefined}>
+              <span className="bit-retrato" ref={retratoRef}>
                 <Image src={BIT_CARA} alt="" fill sizes="62px" className="object-cover" />
               </span>
               <p className="bit-globo" key={bit} aria-live="polite">

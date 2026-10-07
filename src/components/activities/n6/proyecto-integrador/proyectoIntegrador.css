@@ -116,11 +116,16 @@
 
 /* ── el panel de Bit dentro del acto 2 (`PanelDelProyecto`) ─────────────── */
 
+/* Fondo PROPIO: el panel de clase de Tecnia Diapositivas es claro, y este texto
+   claro sobre él no se leía (medido en la quinta puerta del §69.5). */
 .pdp-panel {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 4px 2px 12px;
+  padding: 10px 12px 14px;
+  border-radius: 12px;
+  background: #0f1a2e;
+  box-shadow: inset 0 0 0 1px rgba(167, 139, 250, 0.35);
   color: #eaf3ff;
   font-size: 13px;
 }
@@ -164,4 +169,41 @@
   font-size: 12px;
   color: #9db3cc;
   line-height: 1.5;
+}
+
+/* §69.5 · lo que el juez dice de la frase del alumno */
+.pdp-juicio {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px solid #475569;
+  background: #111c2e;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #e2e8f0;
+}
+.pdp-juicio p {
+  margin: 0;
+}
+.pdp-juicio-titulo {
+  font-weight: 900;
+  font-size: 13px;
+  margin-bottom: 2px !important;
+}
+.pdp-juicio-frase {
+  font-style: italic;
+  color: #c7d2fe;
+  margin-bottom: 4px !important;
+}
+.pdp-juicio.es-sostenida {
+  border-color: #34d399;
+  background: #052e22;
+}
+.pdp-juicio.es-falsa {
+  border-color: #fb7185;
+  background: #3b0a16;
+}
+.pdp-juicio.es-fuera-de-alcance {
+  border-color: #fbbf24;
+  background: #3a2604;
 }

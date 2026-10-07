@@ -26,6 +26,7 @@
  * escribe su propia corrección.
  */
 
+export { celdasDe, recortarCelda, type Celda } from './celdas';
 export { type ClaseError, type ErrorPy, textoDeError } from './errores';
 export {
   correr,

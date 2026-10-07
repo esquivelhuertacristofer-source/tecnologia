@@ -23,6 +23,7 @@ import {
 import { ArcadeSala, useBit, type FinalMaquina } from '../n1/arcade/ArcadeSala';
 import { formatTiempo, useLabActividad } from '../lib/useLabActividad';
 import './salaBloques.css';
+import { barajadas } from '@/lib/ordenDeOpciones';
 
 /**
  * LA SALA DE LAS CLASES DE TECNIA BLOQUES — el chasis, no el programa.
@@ -80,6 +81,8 @@ export interface EncargoBloques<M> {
   id: string;
   titulo: string;
   instruccion: string;
+  /** Un programa en texto que el encargo da para leer (§69.12). Se pinta tal cual, en monoespaciada. */
+  codigo?: string;
   pista: string;
   logro: LogroEncargo<M>;
   aprendido: string;
@@ -151,7 +154,7 @@ interface PortadaBloquesProps {
   onEmpezar: () => void;
 }
 
-function PortadaBloques({ portada, encargos, minutos, insignia, onEmpezar }: PortadaBloquesProps) {
+export function PortadaBloques({ portada, encargos, minutos, insignia, onEmpezar }: PortadaBloquesProps) {
   const boton = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
@@ -248,7 +251,7 @@ function PanelEncargo<M,>({ paso, indice, total, hecho, eleccion, onElegir }: Pa
   const bloqueEleccion =
     logro.tipo === 'eleccion' ? (
       <div className="blqs-panel-opciones" role="radiogroup" aria-label="Elige una respuesta">
-        {logro.opciones.map((op, i) => (
+        {barajadas(logro.opciones, paso.id).map(([op, i]) => (
           <button
             key={op}
             type="button"
@@ -274,6 +277,11 @@ function PanelEncargo<M,>({ paso, indice, total, hecho, eleccion, onElegir }: Pa
           </span>
         )}
       </div>
+      {paso.codigo && (
+        <pre className="blqs-panel-codigo" data-testid="blqs-panel-codigo">
+          {paso.codigo}
+        </pre>
+      )}
       <h3 className="blqs-panel-titulo">{paso.titulo}</h3>
       <p className="blqs-panel-instruccion">{paso.instruccion}</p>
       {bloqueEleccion}

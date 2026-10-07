@@ -449,16 +449,12 @@ const FUERA_DE_LA_CINTA: Record<string, { donde: string; etiqueta: string; glifo
   'ir-a': { donde: '[data-control="ir-a"]', etiqueta: 'Ir a', glifo: '➜' },
   reemplazar: { donde: '[data-control="reemplazar"]', etiqueta: 'Reemplazar', glifo: '🔁' },
   /*
-   * Las dos gráficas que `INSERTAR_BASICO` (`tecniaHojas.ts`) no declara a
-   * propósito: el bloque 17 sólo nombra tres tipos, y `barras` y `dispersion`
-   * viven en el modelo desde el §45.5 sin botón hasta que el bloque 37
-   * —«elegir la gráfica correcta»— las necesita. Entran por el panel
-   * «Gráficas» de `n6-elige-la-grafica» (`PanelGraficas.tsx`), el mismo
-   * criterio que las ocho de la tabla dos entradas más arriba: `ubicar()` no
-   * las va a encontrar en ninguna pestaña, porque tampoco viven en ninguna.
+   * `grafico-barras` y `grafico-dispersion` vivieron aquí mientras entraban por
+   * un panel de `n6-elige-la-grafica`. Desde el §69.8 la clase trae su propia
+   * cinta (`CINTA_ELIGE_GRAFICA`) con las cinco en Insertar → Gráficos, así que
+   * `ubicar()` ya las encuentra, y dejarlas en esta tabla les daría el
+   * domicilio falso de «La ventana».
    */
-  'grafico-barras': { donde: '[data-control="grafico-barras"]', etiqueta: 'Gráfico de barras', glifo: '▤' },
-  'grafico-dispersion': { donde: '[data-control="grafico-dispersion"]', etiqueta: 'Gráfico de dispersión', glifo: '⁘' },
   /*
    * Los cuatro del panel «Y si» de `of-excel-y-si» (bloque 57) — el mismo
    * criterio que las ocho de la tabla, dos entradas más arriba: `ubicar()`
@@ -1321,7 +1317,23 @@ export default function VentanaHojas({
             : l.tipo === 'documento'
               ? l.comprueba(libro)
               : false;
-      if (cumple) acertar();
+      if (cumple) {
+        acertar();
+        return;
+      }
+      // §69.8 · los encargos de elegir dicen qué está mal sin nombrar el botón
+      // bueno, y cobran una vez por error distinto (`PasoClase.equivocado`).
+      const mal = p.equivocado?.(libro);
+      const marca = mal ? `${p.id}~${mal.clave}` : null;
+      if (mal && marca && !cobrados.current.has(marca)) {
+        cobrados.current.add(marca);
+        setAviso({ titulo: mal.titulo, queHace: mal.motivo });
+        if (mal.cuesta) {
+          setFallos((n) => n + 1);
+          setErro(true);
+          setTropiezos((n) => n + 1);
+        }
+      }
     },
     [acertar, guion, paso],
   );

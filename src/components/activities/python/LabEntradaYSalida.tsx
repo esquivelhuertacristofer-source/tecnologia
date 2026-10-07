@@ -2,66 +2,96 @@
 
 import type { ActivityProps } from '@/types/activity-contract';
 import { nombreDeTipo } from '@/components/simuladores/codigo';
-import type { Ejecucion, GuionCodigo, PanelCodigoProps } from '@/components/simuladores/codigo/ventana';
+import type { Ejecucion, GuionCodigo, PanelCodigoProps, PasoCodigo } from '@/components/simuladores/codigo/ventana';
+import { aceptado, crearPanelJuezProgramas, lineasImpresas } from '@/components/simuladores/juez';
 import { SalaCodigo, type ClaseCodigo } from './SalaCodigo';
+import {
+  CELDAS_ENTRADA_Y_SALIDA,
+  MANUAL_ENTRADA_Y_SALIDA,
+  P1,
+  P2,
+  P3,
+  PROBLEMAS_ENTRADA_Y_SALIDA,
+} from './problemasEntradaYSalida';
 
 /**
- * N7 · U2 «Programación en texto I (Python)» · parada 2 — «Entrada y salida»
- * (documento §50.4).
+ * N7 · U2 «Programación en texto I (Python)» · parada 2 — «Entrada y salida».
+ * **1.º de secundaria, 12–13 años**, comprobado en `curriculo.ts`.
  *
- * **1.º de secundaria, 12–13 años**, comprobado en `curriculo.ts`. Viene de
- * `n7-variables-y-tipos`, así que ya sabe que un dato tiene tipo y que
- * convertir fabrica un dato nuevo. Aquí el programa deja de ser un monólogo.
+ * Documento maestro §68.4. Reescrita el 12-sep-2026 sobre el juez de programas.
  *
- * ── La mecánica: la entrevista ─────────────────────────────────────────────
+ * ── Qué era y por qué se reescribió ─────────────────────────────────────────
  *
- * El alumno **contesta de verdad**, escribiendo en la consola del programa. No
- * se le dan `entradas` preparadas al armazón a propósito: media clase es ver
- * el programa **detenerse** a esperarte, y con las respuestas puestas de
- * antemano eso no pasa nunca. El precio es que hay que teclear las respuestas
- * en cada ejecución; el cuadro de la consola se enfoca solo y Enter envía, así
- * que son tres teclas por pregunta.
+ * Ocho encargos cuya instrucción era la línea que había que escribir
+ * («Escribe abajo `nombre = input("¿Cómo te llamas? ")`») y cuyos predicados
+ * leían variables llamadas `nombre`, `edad` y `ciudad`, o textos fijos como
+ * `'FICHA · '`. La secuencia era buena y se conserva: el programa **se detiene
+ * a esperarte**, sumarle 1 a lo que llegó **revienta**, se convierte, y
+ * contestar «trece» enseña que a veces lo que no vale es el dato.
  *
- * ── El orden, que es lo que hace que la clase funcione ─────────────────────
+ * ── Qué es ahora ────────────────────────────────────────────────────────────
  *
- * `input` → `print` → **`edad + 1` revienta** → `int(edad) + 1` → contestar mal
- * a propósito → varios datos en un `print` → f-string.
+ * Tres encargos de exploración, **escritos como metas** y comprobados por lo
+ * que pasa (el programa esperó, se rompió con un error de tipo, se rompió con
+ * uno de valor), y **tres problemas con juez** (`problemasEntradaYSalida.ts`):
+ * el juez teclea los datos de cada caso y compara sólo lo que el programa
+ * imprime. Nadie le dice al alumno cómo se llaman sus variables.
  *
- * El encargo 3 va **antes** de la conversión y ése es el corazón de la clase:
- * el alumno escribe 13, ve `13` en la pantalla, le suma 1 y el programa se
- * rompe. Sin ese golpe, `int(input(...))` es una fórmula que se copia de una
- * pizarra y no una decisión que se entiende.
+ * Lo que sustituye al dictado es **el manual**: cada encargo trae una ficha con
+ * un programa de otro tema que usa la herramienta necesaria. El alumno la tiene
+ * que trasladar a su problema.
  *
- * El encargo 5 pide **contestar mal**, que es distinto de escribir mal el
- * programa: aquí el código está bien y el que no vale es el dato. Un alumno de
- * 12 años no separa esas dos cosas solo, y es la puerta de entrada a la
- * validación que enseña la parada siguiente (`n7-condicionales-python`).
+ * ── El archivo, en celdas ───────────────────────────────────────────────────
+ *
+ * Tres programas no caben en un archivo sin estorbarse —al probar el tercero,
+ * el primero volvería a preguntar la edad—. La plantilla viene partida en
+ * celdas `# %%`, la convención de VS Code y Spyder: ▶ corre la celda del
+ * encargo en que va el alumno, y el juez, la de su problema. Ver
+ * `simuladores/codigo/celdas.ts`.
+ *
+ * ── El panel ────────────────────────────────────────────────────────────────
+ *
+ * En los problemas, el tablero del juez con su ficha plegada. En los encargos
+ * de exploración, la ficha abierta y **el buzón de respuestas**, que se queda de
+ * la versión anterior porque es lo mejor que tenía: enseña lo que llegó **con
+ * sus comillas** y la chapa de su tipo.
  */
 
 /* ─────────────────────────────── el archivo ──────────────────────────────── */
 
 const ARCHIVO = 'entrevista.py';
 
-const PLANTILLA = [
-  '# entrevista.py · el programa te entrevista',
-  'print("Hola. Voy a hacerte tres preguntas.")',
+export const PLANTILLA = [
+  '# entrevista.py · programas que preguntan y contestan',
+  '#',
+  '# El archivo está partido en celdas: cada línea «# %%» abre una.',
+  '# ▶ corre la celda del encargo en que vas, y tú contestas en la consola.',
+  '# «Enviar al juez» corre la celda de su problema y teclea los datos por ti.',
   '',
-  '# ↓ de aquí para abajo escribes tú',
+  '# %% Calentamiento',
+  '',
+  '',
+  '# %% Problema 1 · El año que viene',
+  '',
+  '',
+  '# %% Problema 2 · En 2030',
+  '',
+  '',
+  '# %% Problema 3 · La cuenta de la tiendita',
   '',
 ].join('\n');
 
-const CANDADOS = [1, 2, 3, 4];
-
 /* ───────────────────────── lectores del programa ─────────────────────────── */
 
-/** Una línea `algo = input("pregunta")` del archivo del alumno. */
+/** Una línea `algo = input("pregunta")` —o con `int(`/`float(` alrededor— del archivo. */
 interface Buzon {
   caja: string;
   pregunta: string;
   linea: number;
 }
 
-const ASIGNA_INPUT = /^\s*([A-Za-z_][A-Za-z_0-9]*)\s*=\s*input\s*\(\s*(?:"([^"]*)"|'([^']*)')?\s*\)\s*$/;
+const ASIGNA_INPUT =
+  /^\s*([A-Za-z_][A-Za-z_0-9]*)\s*=\s*(?:(?:int|float|str)\s*\(\s*)?input\s*\(\s*(?:"([^"]*)"|'([^']*)')?\s*\)\s*\)?\s*$/;
 
 function buzones(fuente: string): Buzon[] {
   const salida: Buzon[] = [];
@@ -73,139 +103,30 @@ function buzones(fuente: string): Buzon[] {
   return salida;
 }
 
-/** El texto guardado en una variable, o `null` si no existe o no es texto. */
-function textoDe(e: Ejecucion, nombre: string): string | null {
-  const v = e.variables.find((x) => x.nombre === nombre);
-  return v && v.valor.t === 'cad' ? v.valor.v : null;
+/** Los textos no vacíos que hay guardados ahora mismo. */
+function textosGuardados(e: Ejecucion): string[] {
+  return e.variables.flatMap((v) => (v.valor.t === 'cad' && v.valor.v.trim() !== '' ? [v.valor.v.trim()] : []));
 }
 
-function contestada(e: Ejecucion, nombre: string): boolean {
-  const valor = textoDe(e, nombre);
-  return valor !== null && valor.trim() !== '';
+/**
+ * ¿El programa **contestó** con algo de lo que le dijeron? Se mira lo que
+ * imprimió `print`, nunca los ecos de `input`: la línea «¿Cómo te llamas? Sofi»
+ * contiene «Sofi» y no es un saludo.
+ */
+function contestoConLoQueLlego(e: Ejecucion): boolean {
+  if (e.fase !== 'terminada' || e.ecos.length === 0) return false;
+  const impresas = lineasImpresas(e.salida, e.ecos);
+  return textosGuardados(e).some((t) => impresas.some((l) => l.includes(t)));
 }
 
-/* ─────────────────────────────── el guion ────────────────────────────────── */
-
-const GUION: GuionCodigo = {
-  pasos: [
-    {
-      id: 'pregunta',
-      titulo: 'Que te pregunte',
-      instruccion:
-        'Escribe abajo  nombre = input("¿Cómo te llamas? ")  y ejecuta. El programa se va a detener: te está esperando. Contesta en la consola, abajo del todo.',
-      pista:
-        'La pregunta va entre comillas dentro del input, con un espacio al final para que tu respuesta no salga pegada. Al ejecutar aparece un cuadro con ⌨ en la consola: escribe ahí y pulsa Enter.',
-      senal: { control: 'consola' },
-      logro: { tipo: 'ejecucion', comprueba: (e) => e.fase === 'terminada' && contestada(e, 'nombre') },
-      aprendido: 'input detiene el programa y espera. Lo que escribas se guarda en la caja de la izquierda.',
-    },
-    {
-      id: 'contesta',
-      titulo: 'Que te conteste',
-      instruccion: 'Añade  print("Encantado, " + nombre + ".")  y ejecuta otra vez.',
-      pista: 'Los dos textos fijos van entre comillas; nombre va sin comillas, porque es la caja y no la palabra.',
-      logro: {
-        tipo: 'ejecucion',
-        comprueba: (e) => e.fase === 'terminada' && e.salida.some((l) => l.startsWith('Encantado, ') && l.length > 12),
-      },
-      aprendido: 'input entra, print sale. Ésa es toda la conversación de un programa de consola.',
-    },
-    {
-      id: 'llega-texto',
-      titulo: 'Lo que llega es texto',
-      instruccion:
-        'Añade  edad = input("¿Cuántos años tienes? ")  y debajo  print(edad + 1). Ejecuta y contesta con un número. Se va a romper.',
-      pista: 'Escríbelo tal cual y contesta con cifras, por ejemplo 13. Después mira el buzón, a la derecha.',
-      logro: { tipo: 'ejecucion', comprueba: (e) => e.fase === 'error' && e.error?.clase === 'tipo' },
-      aprendido:
-        'Escribiste 13 y llegó el texto "13". input SIEMPRE devuelve str, aunque escribas un número.',
-    },
-    {
-      id: 'conviertelo',
-      titulo: 'Conviértelo',
-      instruccion:
-        'Cambia esa línea por  print(int(edad) + 1)  y ejecuta. Contesta con un número: te dirá cuántos años vas a cumplir.',
-      pista: 'int(edad) fabrica el número a partir del texto. La caja edad sigue guardando texto: mira el buzón.',
-      logro: {
-        tipo: 'ejecucion',
-        comprueba: (e, fuente) =>
-          /int\s*\(\s*edad\s*\)/.test(fuente) && e.fase === 'terminada' && e.error === null && contestada(e, 'edad'),
-      },
-      aprendido: 'int(texto) convierte lo que llegó en número. La caja no cambia: se fabrica un dato nuevo.',
-    },
-    {
-      id: 'contesta-mal',
-      titulo: 'Contesta mal a propósito',
-      instruccion:
-        'Ejecuta otra vez y, cuando te pregunte la edad, contesta «trece» con letras. Lee el error: el programa está bien, lo que no vale es el dato.',
-      pista: 'No cambies ni una línea. Sólo escribe trece en el cuadro de la consola y pulsa Enter.',
-      logro: { tipo: 'ejecucion', comprueba: (e) => e.fase === 'error' && e.error?.clase === 'valor' },
-      aprendido:
-        'Un programa que pide un número tiene que contar con que le den otra cosa. Comprobarlo se aprende en la parada siguiente.',
-    },
-    {
-      id: 'tres-datos',
-      titulo: 'Tres datos en una línea',
-      instruccion:
-        'Añade  ciudad = input("¿De qué ciudad eres? ")  y luego  print(nombre, "tiene", edad, "años y vive en", ciudad). Ejecuta y contesta las tres.',
-      pista:
-        'Aquí las cosas van separadas por comas, no pegadas con +. Fíjate en que edad entra sin convertir y no se rompe nada.',
-      logro: {
-        tipo: 'ejecucion',
-        comprueba: (e) =>
-          e.fase === 'terminada' && contestada(e, 'ciudad') && e.salida.some((l) => l.includes('años y vive en')),
-      },
-      aprendido:
-        'print con comas escribe cualquier cosa con un espacio en medio y no exige convertir nada; el + sí.',
-    },
-    {
-      id: 'la-ficha',
-      titulo: 'La ficha',
-      instruccion:
-        'Última línea:  print(f"FICHA · {nombre} · {edad} años · {ciudad}"). Fíjate en la f pegada a las comillas. Ejecuta y contesta.',
-      pista:
-        'La f va antes de la primera comilla, sin espacio. Dentro del texto, lo que pongas entre llaves se cambia por el valor de esa caja.',
-      logro: {
-        tipo: 'ejecucion',
-        comprueba: (e) => e.fase === 'terminada' && e.salida.some((l) => l.startsWith('FICHA · ') && l.length > 10),
-      },
-      aprendido:
-        'Con una f delante de las comillas, lo de entre llaves se sustituye por el valor. Es la forma corta de armar un texto.',
-    },
-    {
-      id: 'que-trae-input',
-      titulo: '¿De qué tipo es lo que trae input?',
-      instruccion: 'Para cerrar: cuando alguien contesta 13 a un input, ¿qué tipo tiene ese dato al llegar?',
-      pista: 'Vuelve a mirar el buzón de la derecha: ¿con comillas o sin comillas?',
-      logro: {
-        tipo: 'eleccion',
-        opciones: [
-          'El tipo que escriban: int si escriben un número',
-          'Siempre str, aunque escriban un número',
-          'Depende de cómo esté escrita la pregunta',
-        ],
-        correcta: 1,
-      },
-      aprendido: 'Siempre str. Por eso existen int() y float(): para pasar de lo que llega a lo que necesitas.',
-    },
-  ],
-  cierre: 'Tu programa ya pregunta, escucha, convierte y contesta. Con eso solo ya se escriben programas útiles.',
-};
-
-/* ───────────────────────── el panel de esta clase ────────────────────────── */
+/* ─────────────────────────────── el panel ────────────────────────────────── */
 
 /**
  * «El buzón de respuestas» — qué pregunta el programa y qué llegó.
  *
- * Lee el archivo del alumno buscando las líneas `algo = input(...)` y, por
- * cada una, enseña la pregunta, **lo que llegó con sus comillas** y la chapa
- * de su tipo. Las comillas no son un detalle de formato: son el argumento
- * entero de la clase. No hay explicación que convenza como ver `'13'`
- * entrecomillado al lado de una caja que se llama `edad`.
- *
- * Se queda vacío mientras no haya `input` escrito, y eso también informa: la
- * primera fila aparece en el momento en que el alumno escribe su primera
- * pregunta, antes incluso de ejecutar.
+ * Por cada línea con `input` enseña la pregunta, **lo que llegó con sus
+ * comillas** y la chapa de su tipo. Las comillas no son un detalle de formato:
+ * son el argumento entero de la clase.
  */
 function PanelBuzon({ ejecucion, texto, senalarLinea }: PanelCodigoProps) {
   const cajas = buzones(texto);
@@ -213,8 +134,8 @@ function PanelBuzon({ ejecucion, texto, senalarLinea }: PanelCodigoProps) {
   if (cajas.length === 0) {
     return (
       <p className="pyc-vacio">
-        Todavía no le has pedido nada a nadie. En cuanto escribas una línea con <b>input</b>, aparecerá aquí con
-        lo que te contesten.
+        Todavía no le has pedido nada a nadie. En cuanto escribas una línea con <b>input</b>, aparecerá aquí con lo
+        que te contesten.
       </p>
     );
   }
@@ -255,38 +176,142 @@ function PanelBuzon({ ejecucion, texto, senalarLinea }: PanelCodigoProps) {
   );
 }
 
+const PanelEntrevista = crearPanelJuezProgramas({
+  problemas: PROBLEMAS_ENTRADA_Y_SALIDA,
+  manual: MANUAL_ENTRADA_Y_SALIDA,
+  fuera: PanelBuzon,
+});
+
+/* ─────────────────────────────── el guion ────────────────────────────────── */
+
+const APRENDIDO: Readonly<Record<string, string>> = {
+  [P1.id]:
+    'int() convierte lo que llegó en un número con el que ya se puede sumar. Y el juez lee letra por letra: un espacio antes del punto ya es otra respuesta.',
+  [P2.id]:
+    'Un programa puede preguntar varias cosas y juntar un texto con una cuenta en la misma frase. El orden de las preguntas es parte de lo que le prometes a quien lo usa.',
+  [P3.id]:
+    'float() es para números con punto e int() para enteros: cada dato se convierte con la herramienta que le toca. Y sin convertir, multiplicar un texto no da error: lo repite.',
+};
+
+function pasoDeProblema(p: typeof P1): PasoCodigo {
+  return {
+    id: p.id,
+    titulo: p.titulo,
+    instruccion: `${p.enunciado} Escríbelo en la celda «${p.celda}» (▶ corre sólo esa celda) y, cuando creas que está listo, pulsa «Enviar al juez».`,
+    pista: p.pistas[0],
+    senal: { control: 'editor' },
+    logro: { tipo: 'ejecucion', comprueba: (_e, fuente) => aceptado(p.id, fuente) },
+    aprendido: APRENDIDO[p.id],
+  };
+}
+
+const GUION: GuionCodigo = {
+  pasos: [
+    {
+      id: 'que-te-pregunte',
+      titulo: 'Que te pregunte',
+      instruccion:
+        'En la celda «Calentamiento», escribe un programa que te pregunte cómo te llamas y después te salude usando tu nombre. Ejecuta con ▶ y contesta en la consola. Si no sabes cómo se pregunta, mira la ficha del manual, a la derecha.',
+      pista:
+        'La ficha del manual pregunta otra cosa, pero la forma es la misma. Al ejecutar aparece un cuadro con ⌨ abajo de la consola: escribe ahí tu nombre y pulsa Enter.',
+      senal: { control: 'consola' },
+      logro: { tipo: 'ejecucion', comprueba: contestoConLoQueLlego },
+      aprendido:
+        'input detiene el programa y espera. Lo que contestan se guarda en la variable de la izquierda, y tu programa lo puede usar después.',
+    },
+    {
+      id: 'lo-que-llega-es-texto',
+      titulo: 'Lo que llega es texto',
+      instruccion:
+        'En la celda «Problema 1», haz que el programa pregunte la edad y, sin convertir nada, intenta imprimir cuántos años se cumplen el año que viene sumándole 1 a lo que llegó. Ejecuta, contesta con un número y deja que se rompa: el encargo es leer el error.',
+      pista:
+        'Escribe la suma como la pensarías: lo que llegó más 1. Contesta con cifras, por ejemplo 13, y después mira el buzón: ¿lo que llegó tiene comillas?',
+      senal: { control: 'consola' },
+      logro: {
+        tipo: 'ejecucion',
+        comprueba: (e) =>
+          e.fase === 'error' &&
+          e.error?.clase === 'tipo' &&
+          e.ecos.length > 0 &&
+          e.variables.some((v) => v.valor.t === 'cad' && /^\s*-?\d+\s*$/.test(v.valor.v)),
+      },
+      aprendido:
+        'Escribiste un número y llegó un texto: input SIEMPRE devuelve str, aunque teclees cifras. Y un texto no se puede sumar con un número.',
+    },
+    pasoDeProblema(P1),
+    {
+      id: 'el-dato-que-no-vale',
+      titulo: 'El dato que no vale',
+      instruccion:
+        'Ejecuta tu Problema 1 otra vez y, cuando pregunte la edad, contesta con letras: «trece». Lee el error. Esta vez tu programa está bien escrito: lo que no vale es el dato.',
+      pista: 'No cambies ni una línea. Sólo contesta trece en el cuadro de la consola y pulsa Enter.',
+      senal: { control: 'consola' },
+      logro: {
+        tipo: 'ejecucion',
+        comprueba: (e) => e.fase === 'error' && e.error?.clase === 'valor' && e.ecos.length > 0,
+      },
+      aprendido:
+        'Un programa que pide un número tiene que contar con que le den otra cosa: int() no sabe leer «trece». Comprobar lo que llega antes de usarlo se aprende con las condicionales.',
+    },
+    pasoDeProblema(P2),
+    pasoDeProblema(P3),
+    {
+      id: 'para-cerrar',
+      titulo: 'Para cerrar · Pagas 12.512.512.5 pesos',
+      instruccion:
+        'Un compañero envió «La cuenta de la tiendita» y el juez le enseñó esto: tecleó 12.5 y 3, y su programa imprimió «Pagas 12.512.512.5 pesos.». ¿Qué le pasó?',
+      pista: 'Piensa en qué tipo tenía el precio cuando llegó, y en qué hace un * cuando de un lado hay un texto.',
+      logro: {
+        tipo: 'eleccion',
+        opciones: [
+          'Python se equivocó al multiplicar un número con decimales.',
+          'El precio llegó como texto y nunca lo convirtió: multiplicar un texto por 3 lo repite tres veces.',
+          'El juez tecleó el precio tres veces.',
+          'Le faltó convertir las piezas; el precio estaba bien.',
+        ],
+        correcta: 1,
+      },
+      aprendido:
+        'Un texto multiplicado por un número no da error: se repite. Por eso es un tropiezo tan traicionero, y por eso lo que llega por input se convierte antes de hacer cuentas.',
+    },
+  ],
+  cierre:
+    'Tus programas ya preguntan, convierten y contestan, y un juez los probó con datos que no elegiste tú: edades de cien años, nombres con espacio y precios sin centavos.',
+};
+
 /* ─────────────────────────────── la clase ────────────────────────────────── */
 
-const CLASE: ClaseCodigo = {
+export const CLASE: ClaseCodigo = {
   actividadId: 'n7-entrada-y-salida',
   titulo: 'Entrada y salida',
   archivo: ARCHIVO,
   insignia: { nombre: 'Pregunta y responde', emoji: '💬' },
-  minutos: 30,
+  minutos: 35,
   portada: {
     situacion: 'Nivel 7 · Programación en texto I · Parada 2 de 5',
     tema: 'El programa pregunta y contesta',
     objetivo:
-      'Vas a escribir un programa que te entrevista: pregunta con input, escucha lo que contestas y responde con print. Y vas a entender por qué lo que llega hay que convertirlo casi siempre.',
+      'Vas a escribir programas que preguntan con input y contestan con print, y un juez los va a probar tecleando datos que no has visto. Hoy no hay líneas que copiar: hay problemas, un manual con ejemplos de otros temas y tu consola.',
     vasAHacer: [
-      'Hacer que el programa se detenga a preguntarte, y contestarle tú en la consola.',
+      'Hacer que tu programa se detenga a preguntarte, y contestarle tú en la consola.',
       'Descubrir, rompiéndolo, que lo que entra por input siempre es texto.',
-      'Convertirlo con int() y contestar mal a propósito para ver el otro error.',
-      'Armar una ficha con tres datos usando print con comas y una f-string.',
+      'Resolver tres problemas con juez: convertir con int() y float() y armar la frase exacta que se pide.',
+      'Contestar mal a propósito y explicar por qué un texto multiplicado se repite.',
     ],
   },
   plantilla: PLANTILLA,
-  soloLectura: CANDADOS,
+  celdas: CELDAS_ENTRADA_Y_SALIDA,
   guion: GUION,
-  panelFijo: { titulo: 'El buzón de respuestas', Cuerpo: PanelBuzon },
+  panelFijo: { titulo: 'El juez de la entrevista', Cuerpo: PanelEntrevista },
   bit: {
-    inicio: 'Hasta ahora tus programas hablaban solos. Éste te va a preguntar, y va a esperar a que le contestes.',
-    cierre: 'Preguntar, convertir y contestar. Con eso tu programa ya trabaja con datos que no escribiste tú.',
+    inicio:
+      'Hoy tus programas preguntan. Cuando pulsas ▶, contestas tú en la consola. Cuando lo envías, el juez teclea por ti y sólo lee lo que tu programa contesta.',
+    cierre: 'Preguntar, convertir y contestar, probado con datos que no escogiste. Con eso ya se escriben programas útiles.',
   },
   final: {
     titulo: 'Pregunta y responde',
     detalle:
-      'Tu programa entrevista a quien lo usa y arma una ficha con lo que le contestan. Y sabes lo que casi nadie sabe el primer día: lo que entra por input es texto, siempre, y convertirlo es decisión tuya.',
+      'Tres programas que preguntan y contestan, aceptados por un juez que tecleó datos que no conocías. Y sabes lo que casi nadie sabe el primer día: lo que entra por input es texto, siempre, y convertirlo es decisión tuya.',
   },
 };
 

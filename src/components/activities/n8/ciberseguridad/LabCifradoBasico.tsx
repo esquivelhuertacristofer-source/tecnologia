@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useLabActividad } from '../../lib/useLabActividad';
 import { VentanaBase } from '../../../simuladores/VentanaBase';
 import {
@@ -484,14 +485,14 @@ export function LabCifradoBasico(props: ActivityProps & { alSalir?: () => void }
                   <button
                     type="button"
                     onClick={() => resolverSitio(pasoActual, true)}
-                    className="px-4 py-3 rounded-xl bg-emerald-500 text-slate-950 font-bold"
+                    className="px-4 py-3 rounded-xl bg-slate-700 text-white font-semibold"
                   >
                     🔒 Sí, es seguro
                   </button>
                   <button
                     type="button"
                     onClick={() => resolverSitio(pasoActual, false)}
-                    className="px-4 py-3 rounded-xl bg-rose-500 text-white font-bold"
+                    className="px-4 py-3 rounded-xl bg-slate-700 text-white font-semibold"
                   >
                     ⚠️ No, mejor no
                   </button>
@@ -523,7 +524,7 @@ export function LabCifradoBasico(props: ActivityProps & { alSalir?: () => void }
             <p className="text-lg text-white font-semibold leading-relaxed">{pasoActual.pregunta}</p>
             {!yaResuelto && (
               <div className="flex flex-col gap-2">
-                {pasoActual.opciones.map((o) => (
+                {ordenDeOpciones(pasoActual.opciones.length, pasoActual.id).map((idx) => pasoActual.opciones[idx]).map((o) => (
                   <button
                     key={o.id}
                     type="button"

@@ -22663,3 +22663,2578 @@ docstring del propio armazón lista `of-m365-copiloto` entre las clases que
 usan `compositor.libre` (texto libre). Es falso para esta clase —nunca se
 enciende, a propósito, por la regla de la casa— y quedó anotado en el código
 para que alguien corrija ese comentario cuando toque ese archivo.
+
+---
+
+## §67 · Tecnia Juegos y «Diseña tu videojuego» — la fase 1 del robustecimiento de secundaria (12-sep-2026)
+
+**De dónde viene.** Del encargo de Cristofer del 12-sep-2026 («robustecimiento general… programación y creación de videojuegos superbásicas, con geometrías o tonterías básicas») y de la auditoría que lo midió: `ROBUSTECIMIENTO-SECUNDARIA-Y-BACHILLERATO.md`, con las fichas en `docs/auditoria-2026-09-12/`. De los 71 laboratorios de N7–N10, 27 son cuestionarios; el caso estrella es `n8-disena-tu-videojuego`: dos deslizadores y tres botones sobre three.js escrito a mano, corrección que compara los cinco parámetros del panel y un nivel que **se gana manteniendo la flecha derecha sin saltar**. El canon lo había asignado a Tecnia Bloques (`CANON-ARMAZONES.md`, fila 61) y se construyó fuera de todo armazón.
+
+Este parágrafo es el documento pedagógico de la clase y el pliego del armazón nuevo, **Tecnia Juegos**, en el orden de la casa: primero qué se enseña, después qué se construye.
+
+# PARTE 1 — El documento pedagógico
+
+## 1. Teórica
+
+**Nivel y edad.** N8 = 2.º de Secundaria = **13–14 años** (`curriculo.ts:795`). Unidad «Producción multimedia y videojuegos», tema 3: «Diseño de videojuegos (mecánicas, niveles, prueba con jugadores)». Parada 3 de 4, después de «Imagen con capas» y «Video y audio», antes de «Derechos de autor y licencias».
+
+**Lo que el alumno ya sabe.** De N4·U3 y N5·U4 conoce los bloques: sombrero, orden, condición, `si`, `repetir`, el bloque propio y el mensaje. De N7 y del principio de N8 escribe Python con `if`, `while` y funciones. Lo que **no** ha hecho nunca en la plataforma es decidir cómo se comporta un juego y comprobar si ese comportamiento es jugable para otro.
+
+**La lección central, en una frase.** *Un videojuego no es una imagen que se mueve: es un conjunto de reglas que alguien más tiene que poder jugar.* Tres ideas cuelgan de ahí, una por acto:
+
+1. **La mecánica es una regla escrita.** «Cuando pulsan espacio → si estoy en el suelo → saltar» es una regla; sin el `si`, el personaje vuela. El comportamiento no está en el dibujo del personaje: está en su guion, y cambiar un número (la gravedad, el impulso) cambia lo que se puede y no se puede hacer en el nivel.
+2. **Las reglas del mundo son guiones de los otros actores.** La moneda no «sabe» que vale un punto: tiene un guion «cuando el héroe me toca → sumar un punto, desaparecer». El pincho, la puerta y el enemigo igual. Un nivel es un conjunto de actores, cada uno con sus reglas.
+3. **Un nivel se prueba con alguien que no lo hizo.** El diseñador siempre sabe dónde saltar. El jugador de prueba no. Un nivel que sólo puede terminar su autor no está terminado: está mal. La prueba no es opinión: es medir dónde muere, cuántos intentos necesita y si puede llegar.
+
+**Errores típicos que la clase provoca a propósito.**
+- El salto infinito (encargo 2): sin la condición «¿en el suelo?» se puede volver a saltar en el aire. Se ve, no se explica.
+- El salto que no llega (encargo 3): la repisa está a tres casillas y el impulso de fábrica sube una y media. El alumno sube el impulso o baja la gravedad y ve cambiar el arco del salto en pantalla.
+- La puerta que abre sin las monedas (encargo 6): la primera versión del guion de la puerta gana sin condición; el jugador de prueba lo demuestra terminando en cinco segundos sin tocar una moneda.
+- El nivel imposible (encargo 7): un hueco más ancho que el salto. El jugador de prueba devuelve «no se puede terminar» y marca el sitio.
+- El nivel injusto (encargo 8): el experto termina y el novato muere tres veces en el mismo pincho. Se equilibra moviendo el pincho o añadiendo una plataforma, no bajando la dificultad para todos.
+
+**Lo que NO se enseña aquí** (para no repetir ni adelantar): ni bloques propios ni mensajes (N5), ni Python (la unidad de al lado), ni 3D (no es el contenido: un plataformas es un plano). Tampoco «arte»: los sprites vienen hechos; el dibujo de personajes se hizo en «Imagen con capas».
+
+## 2. Gráfica
+
+**Regla:** todo lo que en la vida real es software se construye como software y tiene que parecer el programa de verdad (`office-ultra-lite`, 2-ago-2026). Tecnia Juegos es un **creador de juegos 2D de píxel**, en la línea de lo que un alumno de 13 años usa fuera de la escuela (Scratch, MakeCode Arcade, GDevelop), no una escena 3D con paneles encima.
+
+- **Sprites de píxel de 16×16, dibujados a mano** y guardados como texto en el código: el héroe (un explorador con casco y visor), la moneda (dorada, con brillo), el pincho (tres puntas de acero sobre base oscura), la puerta (madera con marco y cerradura), el enemigo (una babosa verde), y tres losetas: césped con tierra, ladrillo, bloque metálico. Nada de cubos ni esferas de colores.
+- **Nivel de 22×12 casillas**, escala ×2 en pantalla (704×384 px), sin desplazamiento de cámara: el nivel entero se ve, que es lo que necesita un diseñador de niveles.
+- **Fondo oscuro con drama de luz** (regla de la casa): cielo nocturno degradado, estrellas fijas, halo del héroe y de las monedas. Color pleno, no pastel.
+- **Ventana del programa** (`VentanaBase`, marca «Tecnia Juegos»): barra superior con **▶ Jugar / ■ Parar** y **🧪 Probar con jugadores**; a la izquierda la **paleta** (losetas y actores) y las **propiedades** del actor elegido (velocidad, impulso, gravedad, puntos); en el centro el **escenario**; abajo, **los guiones del actor elegido** en el editor de Tecnia Bloques con los mandos ocultos (`mandos={false}`), porque la palanca de probar es el ▶ del juego y dos palancas sería la doble interfaz prohibida.
+- **Marcador del juego** dentro del escenario, como en un juego de verdad: monedas recogidas / total, vidas, tiempo.
+- **Los resultados de la prueba con jugadores** se pintan **sobre el nivel**: una calavera donde murió cada jugador de prueba, y la ruta del que terminó. Las cifras (nodos explorados, segundos de juego, si terminó) van en la ficha de cada jugador.
+- **Portada de objetivos** antes de la práctica (`feedback-portada-de-objetivos`), como en toda clase.
+
+## 3. Sonora
+
+Efectos por Web Audio con el hook compartido `lib/useSfx.ts` (nunca un `AudioContext` por gesto, que es la fuga que este mismo laboratorio tuvo el 1-sep-2026): salto (seno ascendente 180→520 Hz, 150 ms), moneda (tres notas do-mi-sol, 250 ms), pincho (cuadrada descendente, 300 ms), puerta (acorde mayor, 500 ms). Voz de Bit por `hablar()` como en toda clase.
+
+## 4. Interacción real — los nueve encargos
+
+**Tres actos, nueve encargos, ~30 minutos.** Una sola pregunta de elección, la última (estándar de secundaria, regla 1). Cada encargo tiene tres pistas escalonadas: idea → estructura → una línea concreta; la tercera resta (regla 4). Ningún encargo se comprueba leyendo el panel: **todos se comprueban simulando el nivel con los guiones del alumno**, en el motor, sin reloj.
+
+**El nivel de partida** («La mina», nivel fijo de la clase): suelo continuo con un hueco de 3 casillas en el tercio central, una repisa de 3 casillas de alto a la derecha con la puerta encima, cuatro monedas repartidas (una sobre la repisa), un pincho en el borde del hueco, una babosa que patrulla la plataforma central. El héroe abajo a la izquierda. Los actores tienen sus sombreros puestos y **vacíos**: «mientras → pulsada», «mientras ← pulsada», «cuando pulsan espacio», «cuando el héroe me toca», «cada tic».
+
+### Acto 1 · La mecánica (el héroe no hace nada)
+
+**E1 · Que camine.** Bajo «mientras → pulsada» pon «mover a la derecha»; bajo «mientras ← pulsada», «mover a la izquierda». *Se comprueba* simulando 60 tics con → pulsada: el héroe avanzó ≥ 40 px; y 60 con ←: retrocedió. Sin ratón: se tocan la ficha y el hueco.
+
+**E2 · Que salte, pero una vez.** Bajo «cuando pulsan espacio», «saltar». Se juega y se descubre que pulsando en el aire vuelve a saltar: el héroe sube hasta el techo. Hay que envolverlo en «si ¿en el suelo?». *Se comprueba* simulando espacio cada 8 tics durante 240 tics: la altura máxima no supera 1,6 veces la altura de un salto, **y** existe un salto (el héroe despegó del suelo).
+
+**E3 · Que llegue a la repisa.** Con el impulso y la gravedad de fábrica (impulso 4,5, gravedad 0,35: sube 1,8 casillas) no se llega a la repisa de 3. Ajusta las propiedades del héroe hasta que el salto pase de 3,2 casillas sin pasar de 5 (si sube más de 5, sale del nivel por arriba y el juego se vuelve injugable). *Se comprueba* con la fórmula del motor sobre las propiedades **y** simulando: `alturaDeSalto(heroe)` entre 3,2 y 5 casillas, y el jugador de prueba alcanza la repisa.
+
+### Acto 2 · Las reglas del mundo
+
+**E4 · La moneda vale.** En el guion de la moneda («cuando el héroe me toca»): «sumar 1 punto» y «desaparecer». *Se comprueba* simulando al héroe caminando hasta la primera moneda: puntos ≥ 1 y la moneda ya no está.
+
+**E5 · El pincho duele.** En el guion del pincho: «perder una vida» y «volver al inicio». *Se comprueba* simulando la caída al pincho: vidas = 2 y el héroe vuelve a la posición inicial.
+
+**E6 · La puerta pide las monedas.** En el guion de la puerta: «si ¿todas las monedas? → ganar; si no → decir "Faltan monedas"». La primera versión sin `si` gana de inmediato: el jugador de prueba termina sin tocar una moneda y el panel lo señala. *Se comprueba* con dos simulaciones: héroe en la puerta con 0 monedas → no gana y hay un aviso; héroe en la puerta con todas → gana.
+
+### Acto 3 · El nivel y la prueba con jugadores
+
+**E7 · Diseña tu nivel.** Abre el editor de nivel: añade ≥ 2 monedas y ≥ 1 pincho, mueve o añade plataformas. Pulsa **Probar con jugadores**: el jugador de prueba tiene que **poder terminarlo**. Un hueco más ancho que el salto o una puerta inalcanzable devuelven «no se puede terminar» con el sitio marcado. *Se comprueba* con el resultado de la prueba almacenado y **vigente** (si el nivel cambió después de probar, el encargo pide volver a probar: se aprende que cada cambio se prueba).
+
+**E8 · Equilíbralo.** Tres jugadores de prueba con distinta pericia (novato, medio, experto: distinta finura de reacción). El nivel debe ser **terminable por los tres** y **no trivial**: el experto tarda más de 3 segundos de juego y tuvo que saltar (medido: el experto termina «La mina» resuelta en 3,4 s; una puerta pegada al héroe se termina en menos de 1). Las calaveras enseñan dónde cae el novato. *Se comprueba* con las tres pruebas vigentes.
+
+**E9 · Cierre (elección).** «¿Por qué se prueba con alguien que no hizo el nivel?» — (a) porque el autor ya sabe dónde está cada trampa y no puede medir la dificultad; (b) porque así se ve si los gráficos gustan; (c) porque el motor lo exige. Correcta: (a).
+
+**Insignia:** *Diseñadora de niveles* 🕹️.
+
+**Lo que pasa al jugar mal, escrito antes de construir:** pulsar ▶ sin guiones → el héroe se queda quieto y Bit lo dice; poner «saltar» en «mientras → pulsada» → el héroe salta al caminar, y E2 no se cumple porque no hay salto con espacio; borrar el `si` después de cumplir E2 → E2 se descumple (el panel vuelve a ese encargo; los encargos no son puertas de un solo sentido); poner 40 pinchos → la prueba dice imposible; poner la puerta sobre el héroe → E8 falla porque el experto termina en un segundo sin saltar; dejar el impulso en 12 → sale del nivel, E3 lo rechaza con su motivo.
+
+## 5. Video de ejercicio
+
+Pendiente, con el pipeline de la casa (edge-tts, Dalia MX, escalera reanclada en 150–160 palabras/min). Estructura del estándar robusto: gancho (un nivel que se gana caminando: el que había) → pregunta (¿qué hace que un juego sea juego?) → concepto (reglas, actores, guiones) → ejemplo real (el salto como regla en Celeste y Mario) → el error típico (el salto infinito) → comprobación (probar con alguien) → cierre. 25–35 frases. **El video actual (18-ago-2026) enseña Unity y hay que sustituirlo**; hasta entonces la entrada no lo muestra.
+
+# PARTE 2 — El pliego de construcción
+
+## Armazón asignado: **Tecnia Juegos** (nuevo) sobre **Tecnia Bloques** (existente)
+
+Las tres pruebas del canon:
+1. **Nómbrame el programa.** Es un creador de juegos 2D de píxel, como MakeCode Arcade o GDevelop.
+2. **Dos clases que salen distintas.** N8 (esta): mecánica, reglas de los actores y prueba con jugadores. N5 `n5-juego-con-niveles`: hoy un solo hilo de pantallas; con este armazón, un juego de dos niveles donde el mensaje cambia de nivel y la memoria sigue siendo la lección. N4 `n4-crea-tu-videojuego` (declarado inutilizable el 6-ago-2026): un solo actor, tres guiones, sin editor de nivel. Tres mecánicas distintas sobre el mismo programa.
+3. **El armazón no corrige.** Tecnia Juegos da `simular()`, `probarNivel()` y `alturaDeSalto()`; ninguna dice si el alumno acertó. La corrección la escribe la clase en su guion de encargos.
+
+## Lo que Tecnia Bloques DA — medido leyéndolo
+
+- `arbolBloques.ts`: programa = pilas con sombrero; `soltarFicha`, `moverBloque`, `quitar`, `ponerArg`; sombreros `fijo` que no se quitan; ranuras con valor.
+- `interpreteBloques.ts`: `ejecutarTodo(programa, catalogo, preguntar, { pila })` corre **una pila** hasta el final y devuelve el parte con `eventos` (acción con `args`, pregunta con respuesta) — puro, sin reloj.
+- `useBloques` + `VentanaBloques`: el editor controlado con las dos vías de encaje, `mandos={false}`, `escenario` y `panel` como huecos; `reiniciar(programa)` para cambiar de guion.
+
+## Lo que NO da — y qué hace Tecnia Juegos en su lugar
+
+- **No corre dos guiones a la vez** (cabecera de `bloques/index.ts`). Tecnia Juegos no lo necesita: cada tic, por cada actor, por cada sombrero disparado, llama `ejecutarTodo` **síncrono** y aplica las acciones al mundo. La simultaneidad la da el tic, no el intérprete. Un `por siempre` dentro de un guion de tic no tiene sentido y **no se expone** en la paleta; `repetir N` sí.
+- **No tiene físicas, colisiones, teclado ni sprites.** Eso es `simuladores/juego/`.
+- **No tiene un jugador de prueba.** Es la pieza nueva con más valor pedagógico y va en el motor porque N5 y N4 también la usarán («¿se puede terminar?»).
+
+## La forma concreta
+
+```
+src/components/simuladores/juego/
+  modelo.ts          Nivel, Actor, TipoActor, Loseta, constantes (CASILLA=16, 22×12)
+  sprites.ts         píxel-art como texto → SVG data-URI (run-length por fila), paleta fija
+  catalogo.ts        las fichas de Tecnia Bloques del juego (sombreros, órdenes, preguntas) y las categorías
+  fisica.ts          gravedad, movimiento, colisiones AABB con losetas (eje X, luego Y), enSuelo, alturaDeSalto
+  ejecucion.ts       cómo se corre cada pila con caché de respuestas (un trie por pila)
+  partida.ts         nuevaPartida(nivel), tic(partida, entradas), simular(): puntos, vidas, monedas, gano, perdio
+  jugadorDePrueba.ts búsqueda en anchura sobre macro-acciones con el simulador real; perfiles novato/medio/experto
+  index.ts
+  ventana/
+    useJuego.ts      el estado: nivel, herramienta, actor elegido, modo, partida en curso, pruebas con versión del nivel
+    VentanaJuego.tsx sin useState: barra, paleta, propiedades, escenario, editor de bloques abajo
+    ventanaJuego.css
+src/components/activities/n8/videojuegos/
+  nivelLaMina.ts     el nivel fijo de la clase
+  LabDisenaTuVideojuego.tsx  reescrito: ArcadeSala + VentanaBase + VentanaJuego + panel de encargos con tres pistas
+  EntradaDisenaTuVideojuego.tsx  textos nuevos; sin video hasta que se regrabe
+src/__tests__/
+  juego-motor.test.ts            físicas, colisiones, altura de salto, ejecución de guiones, jugador de prueba
+  n8-disena-tu-videojuego.test.tsx  el recorrido completo sin ratón y jugando mal
+```
+
+**Decisiones que no se pueden añadir después:**
+- **Tics fijos, sin `Date.now()` en el motor.** 60 tics por segundo en la ventana; el motor sólo conoce tics. Así `simular` es determinista y las pruebas no tocan relojes.
+- **Colisión por ejes separados** (mover X, resolver; mover Y, resolver) con el actor como caja. Es lo que hace que un plataformas se sienta bien y lo que evita el tunneling del laboratorio anterior.
+- **El contacto se dispara al entrar**, no en cada tic de solape: la moneda suma una vez, la puerta habla una vez, y el pincho se combina con un periodo de invulnerabilidad de 45 tics para que perder una vida no sea perder tres.
+- **Los sombreros son fijos por tipo de actor.** El alumno llena cuerpos; no crea sombreros. Es un límite aceptado para esta clase (igual que en N5) y se anota como deuda del armazón.
+- **La prueba con jugadores lleva la versión del nivel.** Un resultado sólo vale para el nivel con el que se calculó; si el nivel cambia, caduca. Lo contrario permitiría cumplir E7 con una prueba vieja.
+- **El jugador de prueba corre en trozos** (`avanzar(nodos)`), para que la ventana pinte «jugando…» sin congelar la pestaña, y en Jest de un tirón.
+
+## Las trampas que ya conocemos y que aplican aquí
+
+- **jsdom tira las coordenadas de puntero** (`trampas-de-jsdom`): el recorrido de prueba usa la vía de toque (botones) del editor de bloques y el editor de nivel expone cada casilla como `<button>` con `data-casilla="x,y"`.
+- **La prueba verde y vacía**: cada encargo se prueba en las dos direcciones (se cumple con el guion correcto, **no** se cumple con el señuelo).
+- **Un botón que cambia de oficio arrastra a las clases que lo usaban**: `VentanaBloques` no se toca; se monta con `mandos={false}`.
+- **Un `AudioContext` por gesto**: se usa `useSfx`.
+- **El video que enseña otra clase** (`video-contra-laboratorio`): la entrada no muestra el video de Unity; `assetsPendientes: true` hasta regrabar.
+
+## Qué hay que verificar jugando MAL
+
+Los siete casos de la parte 1, más: cambiar de actor a media edición (el guion del anterior no se pierde); pulsar ▶ y editar a la vez (el juego se para al editar); probar con jugadores, cambiar el nivel y ver caducar la prueba; salir y repetir.
+
+## El riesgo nº 1
+
+**El jugador de prueba.** Si es lento, la clase se atasca en E7; si es tonto, dice «imposible» de niveles posibles y el alumno aprende que la prueba miente. Mitigación: presupuesto de nodos acotado, macro-acciones de 3/6/12 tics según el perfil, estado discretizado a 2 px, y una prueba de motor que compruebe que **termina «La mina» resuelta dentro del presupuesto** y que **declara imposible un hueco de 8 casillas**. Se mide antes de escribir la ventana.
+
+
+## §68 · El juez y «Problemas tipo concurso» — la fase 2 del robustecimiento de secundaria (12-sep-2026)
+
+**De dónde viene.** Del mismo encargo de §67 y de la segunda familia que midió la auditoría: **F2, los 14 laboratorios que dictan la solución**. Son clases de código cuyo enunciado contiene el programa que hay que teclear, y cuya corrección compara el texto del alumno con una expresión regular. La cabeza de familia es `n10-problemas-de-concurso`, y la queja de Cristofer sobre ella fue exacta: «se llama concurso y no hay ni un problema». Tenía razón literalmente: el enunciado del primer «problema» decía, palabra por palabra, `avanzan = 0` luego `for p in puntajes:` con sangría `if p >= 70:` con más sangría `avanzan = avanzan + 1`.
+
+Este parágrafo es el documento pedagógico de la clase reescrita y el pliego de la pieza de motor nueva, **el juez**, en el orden de la casa: primero qué se enseña, después qué se construye.
+
+# PARTE 1 — El documento pedagógico
+
+## 1. Teórica
+
+**Nivel y edad.** N10 = 3.º de Bachillerato = **15–18 años**. Unidad «Programación aplicada» (`n10-programacion-aplicada`), parada 2 de 3, entre «Python intermedio» y «Análisis con código». Tono profesional, sin diminutivos, mismo hilo de TecniMarket que la parada 1.
+
+**Lo que el alumno ya sabe.** De N7 y de la parada 1 escribe Python real: `for`, `while`, `if`/`elif`/`else`, listas, índices, `def` con `return`, `%` y `//`, `.append()`, `range()` con paso negativo, `len`, `min`. Nada nuevo de lenguaje entra hoy.
+
+**La lección central, en una frase.** *Un programa no se juzga por lo que escribiste: se juzga por lo que hace con datos que no elegiste tú.* Tres ideas cuelgan de ahí:
+
+1. **Un juez corre el programa, no lo lee.** Le pasa unos datos, mira lo que imprime y lo compara con la respuesta exacta. No hay «casi», no hay «se entiende la idea». Es la diferencia entre una calificación y una medida.
+2. **El caso que te hunde es el que no viste.** La lista vacía, el cero, el empate, el uno. Casi ningún programa falla en el caso normal; falla en el borde, y el borde casi siempre está escrito en el enunciado sin que nadie lo lea dos veces. De ahí los casos **ocultos**: de cada problema se conocen un par de ejemplos y el resto sólo por su nombre.
+3. **Escribir la prueba es la otra mitad del oficio.** Un caso de prueba que no distingue lo correcto de lo incorrecto no prueba nada. El encargo final le da la vuelta a la clase: el alumno recibe una solución con un error y tiene que encontrar el dato con el que se equivoca.
+
+**Los seis problemas, y la decisión que esconde cada uno.** Ninguno pide un algoritmo nuevo; cada uno pide una decisión que el alumno suele tomar sin darse cuenta, y el caso oculto es el que se la enseña.
+
+| # | Problema | Firma | El oculto que lo tumba | Lo que descubre |
+|---|---|---|---|---|
+| 1 | El corte de la primera ronda | `avanzan(puntajes)` | `[69, 70, 71]` → 2 | «llegaron a setenta» incluye al setenta: `>` contra `>=` |
+| 2 | El mejor tiempo | `mejor(tiempos)` | `[]` → -1 | el mínimo de una lista vacía no existe, y el enunciado ya lo decía |
+| 3 | El orden de premiación | `al_reves(ids)` | `["A","B","A","C"]` | invertir conserva los repetidos; no es un filtro |
+| 4 | La suma de verificación | `suma_digitos(folio)` | `1000` → 1 | un `while` que para en el primer cero se come tres cifras |
+| 5 | La regla de las mesas | `es_primo(n)` | `1` → False y `2` → True | el uno no es primo y el dos sí; el bucle ingenuo se equivoca en los dos |
+| 6 | El campeón | `campeon(nombres, puntos)` | `[7, 7, 7]` → «A» | «mayor» y «mayor o igual» eligen a personas distintas |
+
+**Dos reglas de redacción que salieron de medir, no de opinar.** Las dos son la misma regla vista dos veces, y las dos se encontraron con la prueba en rojo:
+
+- **El ejemplo visible no puede hacerle el trabajo al caso oculto.** El ejemplo del problema 1 llevaba un 70 dentro, así que el error del `>` ya se veía sin enviar nada y el caso oculto era decoración. Se le quitó el 70. El ejemplo del problema 6 llevaba un empate: se le quitó igual.
+- **Un caso oculto tiene que distinguir.** El caso de folios repetidos era `["A","B","A"]`, que es capicúa: una solución que devolviera la lista tal cual lo aprobaba. Se le añadió una C al final.
+
+**Errores típicos que la clase provoca a propósito.** Los seis de la tabla, más los tres que el juez tiene que saber contar sin asustar: el programa que no define la función (el juez dice «llamé a `avanzan` y tu programa no la tiene con ese nombre», no `NameError`), el bucle infinito (dice «no termina», que en un concurso de verdad es «tiempo excedido» y **no es lo mismo que estar mal**) y el `input()` (dice que los datos de cada caso entran por los argumentos).
+
+**Lo que NO se enseña aquí.** Ni lenguaje nuevo, ni complejidad asintótica con su notación (el problema 5 sí enseña la idea —un divisor nunca viene solo— sin ponerle nombre), ni `try`/`except`, ni pruebas automatizadas con su vocabulario. Y una sola pregunta de opción múltiple en toda la clase, la última, que es lo que el estándar de secundaria permite: máximo 1 de 9 y sólo de cierre.
+
+## 2. Gráfica
+
+El juez es **el tablero de un concurso dentro del editor**, no una ventana nueva: vive en el panel lateral que Tecnia Código ya da a cada clase. Arriba, la fila de seis solapas con su marca (`·` sin enviar, `✓` aceptado, `✗` rechazado), que es lo único que un alumno mira de reojo para saber cómo va. Debajo, el enunciado, la firma en una caja aparte —es el contrato, no una pista—, los ejemplos con su flecha y su salida en verde, y el aviso ámbar de cuántos casos ocultos hay. El botón «Enviar al juez» es el único elemento en color pleno cálido de todo el panel, porque es el único gesto que importa. El veredicto llega con su cabecera verde o roja y **3 de 4 casos** en cifras tabulares, y cada caso con su glifo de color: verde `✓`, rojo `✗`, ámbar `!` para el tropiezo, violeta `⏱` para el que no termina.
+
+Los casos ocultos llevan una chapa violeta que dice «OCULTO» y no llevan datos. Los visibles que fallan sí enseñan **tu salida** contra **esperada**, una debajo de otra, que es el material con el que el alumno corrige.
+
+Fondo oscuro y color pleno, heredado del editor; ningún control flotante; nada del panel se superpone al editor (medido en Chromium: editor en x 230–921, panel en x 951–1250).
+
+## 3. Sonora
+
+Ninguna propia. La clase usa los sonidos que ya trae Tecnia Código.
+
+## 4. Interacción real — los ocho encargos
+
+**Encargos 1 a 6 · los seis problemas.** Cada uno se cierra cuando el juez lo acepta: **todos** sus casos, visibles y ocultos. El alumno escribe en el editor, pulsa «Enviar al juez» y lee el veredicto. Tres pistas por problema, pedidas una a una, en escalera: la primera reencuadra el enunciado, la segunda señala el sitio, la tercera dice el método y **cuesta puntos, con el precio escrito en el botón antes de pulsarlo**. Ninguna pista lleva código.
+
+**Encargo 7 · el caso que la rompe.** Aparece sólo con el torneo ganado. El panel enseña una versión rota del problema 1 —la del `>` por `>=`— y le pide una función `caso()` que devuelva una lista de puntajes con la que su solución y la rota **no contesten lo mismo**. La respuesta correcta contra la que se compara no la trae la clase: **es la suya**, la que el juez ya aceptó. Por eso el encargo exige las dos cosas a la vez —que su `avanzan` siga pasando el problema 1 y que su caso separe a las dos—, y romper su propia solución para «ganar» no cuela: el panel lo dice con esas palabras.
+
+**Encargo 8 · para cerrar.** La única pregunta de opción: ¿para qué sirve que el juez guarde casos ocultos? La correcta es «para que no se pueda aprobar escribiendo la respuesta del ejemplo en lugar de resolver el problema».
+
+## 5. Video de ejercicio
+
+El publicado explica los cinco problemas dictados de la versión vieja, así que enseña otra clase: `assetsPendientes: true` hasta regrabar con el guion nuevo, y la entrada no lo muestra. Es la misma avería de `video-contra-laboratorio` y se trata igual que en §67.
+
+# PARTE 2 — El pliego del motor
+
+## Pieza asignada: **el juez** (`simuladores/juez/`), sobre **Tecnia Código** y **Tecnia Datos**
+
+No es un armazón: no monta una ventana ni gobierna una sala. Es una pieza que se le cuelga a los dos motores que ya existen y que da lo que ninguno de los dos tenía: **la forma de preguntar «¿esto funciona?» sin mirar el texto del alumno**. Por eso entra en el censo de `armazones-un-solo-aviso.test.tsx` (es un paquete de `simuladores/`) pero con un conductor distinto a todos los demás: su estado vive en un **componente** y no en un gancho.
+
+## Lo que Tecnia Código y Tecnia Datos DAN — medido leyéndolos
+
+- `ejecutar(fuente, { entradas, topes })` devuelve una `Maquina` con `.salida: string[]`, `.estado`, `.error` y `.pasos`. **No lanza**: los errores salen como dato, con línea, columna, pista y el nombre que ese error tendría en Python de verdad.
+- `TOPES.PASOS` corta los bucles infinitos con un error de clase `'limite'`.
+- `ejecutar(base, sql)` de Tecnia Datos devuelve los resultados con sus columnas y sus filas en orden estable, y los errores también como dato.
+- Ninguno de los dos trae una sola función que diga si el alumno acertó, **a propósito** (canon, prueba 3: un armazón que corrige es un motor de plantillas).
+
+## Lo que NO dan — y qué hace el juez en su lugar
+
+Un problema, un caso, una salida esperada y un veredicto explicable. Eso es todo lo que el juez añade, y son cinco archivos.
+
+## La forma concreta
+
+- **`modelo.ts`** — `Problema` (id, título, enunciado, **firma**, casos, tres pistas), `Caso` (nombre, `llamada`, `esperada: string[]`, `oculto`), `Veredicto`, `ResultadoCaso` con su `clase` de cinco valores (`pasa`, `falla`, `error`, `no-termina`, `pregunta`). Más `normalizar`, `iguales`, `explicarDiferencia`, `redactar`, `veredictoDe` y `revisarProblema`.
+- **`juezPython.ts`** — `juzgar(problema, fuente)` y `juzgarCaso`. Más `salidaDe(fuente, añadido)`, para los encargos que no son «resuelve esto» sino «demuéstrame algo».
+- **`juezSql.ts`** — `juzgarSql(problema, sql)` con `CasoSql` (siembra, filas esperadas, `ordenImporta`). La siembra de un caso oculto es **otra tabla**, que es la única forma de tumbar la trampa que la auditoría del 2-sep-2026 encontró en `n10-consultas-sql`: un encargo que se regalaba porque los datos estaban sembrados en orden alfabético y `SELECT * FROM x` ya salía ordenado.
+- **`registro.ts`** — el tablero de veredictos, fuera de React.
+- **`ventana/PanelJuez.tsx`** + su CSS — `crearPanelJuez({ problemas, onPista, onEnvio, pie })` devuelve el componente que se le pone a `panelFijo`.
+
+## Las decisiones de modelo, y por qué
+
+1. **La salida esperada es LITERAL, nunca calculada.** En el momento en que el juez tiene una solución de referencia, esa solución está en el código fuente que se le sirve al navegador del alumno y el problema se resuelve con Ctrl+U. Un literal no se puede leer al revés. Corolario de método: **las soluciones de referencia viven en el archivo de pruebas**, que no se descarga, y de paso son las que comprueban que los literales son correctos.
+2. **Hay casos ocultos y el MODELO los tacha él mismo.** `redactar()` deja `esperada`, `obtenida` y `ruido` en nulo antes de que el veredicto salga del paquete. No es una regla de pintado que un panel pueda olvidar: **lo que no está en el objeto no se puede pintar**.
+3. **Se comparan LÍNEAS, no un chorro de texto.** Porque el veredicto tiene que poder decirse en voz alta: «sobra una línea al final», «la línea 2 dice X y tenía que decir Y». Se quita el blanco de la derecha de cada línea y las líneas vacías del final —las dos cosas que no se ven en pantalla y que hace cualquier juez de concurso— y **nada de dentro de la línea**: `5` y ` 5` son respuestas distintas.
+4. **Lo que el programa imprime por su cuenta no cuenta, pero se ve.** El juez imprime una marca, llama a la función y compara sólo lo de después. Un `print` de depuración olvidado sale como `ruido` con un aviso, y no tumba el caso: un juez que suspende por una línea de depuración enseña a no depurar.
+5. **La llamada del juez va AL FINAL del programa, nunca al principio.** De ahí salen tres propiedades gratis: los números de línea de los errores siguen siendo los del editor del alumno; su depuración queda antes de la marca; y un tropiezo con línea mayor que las suyas se distingue del suyo, lo que permite traducir «NameError» a «el juez llamó a `avanzan` y tu programa no la define con ese nombre».
+6. **El orden de las filas de una consulta SQL no importa de fábrica.** Un `SELECT` sin `ORDER BY` no promete orden, ni aquí ni en Postgres: comparar en orden sería suspender a quien tiene razón. `ordenImporta` se pone a `true` sólo cuando el enunciado pide un orden, y entonces ese orden **es** la respuesta. Y los nombres de las columnas no se juzgan; el número, sí.
+7. **`revisarProblema()` y `revisarProblemaSql()` son la defensa de contenido.** La trampa que este paquete viene a tapar se puede volver a abrir **al escribir la clase**, no al escribir el motor: un problema con casos sólo visibles vuelve a ser un ejercicio que se aprueba copiando. Así que el paquete trae un revisor que se queja de menos de tres casos, de que no haya ninguno oculto, de dos casos con la misma llamada o la misma siembra, de una pista vacía y **de un enunciado con código dentro**; y cada clase que use el juez lo llama en su propia prueba y exige lista vacía.
+
+## Lo que costó, medido
+
+- **`print("")` imprime `u0001`.** El léxico de este subconjunto sólo reconoce `\n`, `\t`, `\\` y `\"`, así que `JSON.stringify(MARCA)` no servía y la marca no aparecía en la salida en ninguno de los 29 casos. Se construye con el carácter crudo. Y el defecto trajo un regalo: como `\u` no se interpreta y `chr()` no existe, la marca **no se puede teclear**, así que es infalsificable de verdad y no «improbable».
+- **El tope de pasos del juez es 100 000 y no un millón.** Medido: la solución más cara de los seis problemas (`es_primo(9973)` con el método bueno) gasta 1 694 pasos, y con el método ingenuo 89 765. Cien mil deja pasar cualquier solución razonable de bachillerato y para un `while True:` en décimas. El millón de fábrica es correcto en la ventana —ahí hay un alumno mirando y puede pulsar ⏹— y es demasiado para seis casos seguidos sin nadie delante.
+- **El panel saltaba al problema siguiente en el mismo instante en que aceptaba**, así que el alumno no llegaba a ver su propio veredicto: enviaba y el tablero ya estaba en otro sitio. Se arregló **anclando** el problema al enviar, con un ancla que **caduca con el texto**: en cuanto vuelve a teclear, el panel se suelta y enseña otra vez el primero sin aceptar, que es donde está trabajando. Sin la caducidad, el ancla del problema 1 se quedaba puesta y el envío del problema 2 juzgaba el problema 1.
+- **El encargo no se cerraba hasta la siguiente tecla.** El tablero vive fuera de React y el predicado del guion lo lee desde otro sitio del árbol: el botón del panel repintaba su propio panel y nada más. Se amplió el contrato de Tecnia Código con **`revisar()`** —«vuelve a mirar si el encargo está hecho»—, que no corrige nada (sigue corrigiendo el predicado del guion) y sólo vuelve a preguntar. Es la primera prop nueva de `PanelCodigoProps` desde que se escribió, y la justifica una regla general: **un panel de clase que mueve algo que el guion lee tiene que poder decirlo.**
+- **Todo paquete nuevo de `simuladores/` pone en rojo `armazones-un-solo-aviso.test.tsx`** hasta registrarle sus avisos y un conductor en modo estricto. Es la segunda vez en el día (§67 fue la primera) y ya se puede decir como medida: es el precio fijo de una pieza nueva.
+
+## Las trampas que ya conocemos y que aplican aquí
+
+- **La prueba verde y vacía** (`trampas-de-jsdom`): cada problema se prueba en las dos direcciones. Seis soluciones de referencia tienen que salir aceptadas y **seis señuelos tienen que fallar, y fallar en el caso oculto que los caza**. Son los seis errores que un alumno de bachillerato comete de verdad la primera vez, no errores inventados.
+- **El video que enseña otra clase** (`video-contra-laboratorio`): `assetsPendientes: true` hasta regrabar.
+- **La quinta puerta** (`auditoria-adversarial-2026-09-01`): abierta en Chromium. El único ruido de consola son los 401 de Supabase sin sesión y el aviso de `eval` de React en desarrollo. A 400 px de ancho, `scrollWidth` = 400: ni una barra horizontal.
+- **Un falso positivo que conviene anotar**: buscar «69» en el HTML de la página da dos aciertos, y los dos son identificadores del *payload* RSC de Next (`$69`). La filtración de un caso oculto se comprueba sobre el **texto visible** del panel, no sobre el HTML entero.
+
+## Qué hay que verificar jugando MAL
+
+Enviar sin escribir nada; enviar la respuesta del ejemplo copiada; enviar el error del `>` por `>=` (y comprobar que pasa **todo** lo visible); pedir las tres pistas y comprobar que la tercera avisa **antes**; enviar un bucle infinito; enviar un programa que pide teclado; intentar el encargo final con un caso que no separa nada y con la propia solución rota; y comprobar que el panel del encargo final **no existe** antes de ganar el torneo, porque enseña justo el error del problema 1.
+
+## Lo que este pliego deja listo para las 13 clases que faltan
+
+`juezSql.ts` está escrito y probado pero **todavía no lo usa ninguna clase**: se escribió junto al de Python porque las dos mitades comparten el modelo y separarlas habría dejado el modelo sesgado hacia Python. Su primera clase será `n10-consultas-sql`, que es la que la auditoría del 2-sep-2026 dejó anotada con evaluación por texto en vez de por resultado real.
+
+
+---
+
+## §68.1 · `n10-consultas-sql` — la segunda clase del juez, y la primera de SQL (12-sep-2026)
+
+§68 es el pliego de toda la fase 2 y se escribió **antes** de tocar código; ya nombraba
+esta clase como la primera consumidora de `juezSql.ts`. Esto es el registro de lo que
+salió al construirla, y de las tres cosas que sólo se supieron midiendo.
+
+### Por qué era la peor de las catorce
+
+No hace falta argumentarlo. Su primer encargo decía, palabra por palabra:
+
+```
+instruccion: 'SELECT nombre, grado FROM integrantes ORDER BY nombre;'
+pista:       'SELECT nombre, grado FROM integrantes ORDER BY nombre;'
+```
+
+La instrucción **era** la respuesta y la pista la repetía. Los nueve encargos estaban
+escritos así. Y encima tenía el segundo agujero que la auditoría del 2-sep-2026 ya
+había anotado: las doce filas estaban sembradas en orden alfabético, así que hasta el
+que no copiaba aprobaba el primer encargo **sin escribir el `ORDER BY`**.
+
+### 1. Teórica
+
+Siete problemas, y el orden es el de las deudas conceptuales, no el del temario:
+
+| # | Problema | Lo que obliga a decidir | `ordenImporta` |
+|---|---|---|---|
+| 1 | La lista del club | que las filas de una tabla **no tienen orden propio** | sí |
+| 2 | Los de tercero, al revés | que filtrar y ordenar son dos decisiones | sí |
+| 3 | Los que empiezan por A | que «se parece a» no es «es igual a» | no |
+| 4 | El podio | que un corte sin desempate tiene varias respuestas | sí |
+| 5 | Quién está en qué equipo | que un número de equipo es una flecha a otra tabla | no |
+| 6 | El que se quedó fuera | que `NULL` es ausencia, no valor | no |
+| 7 | La plantilla de Los Circuitos | que un identificador interno no es un nombre | no |
+
+`ordenImporta` es `false` de fábrica porque **un `SELECT` sin `ORDER BY` no promete
+orden**, ni aquí ni en Postgres: comparar en orden sería suspender a quien tiene razón.
+Se pone a `true` sólo en los tres cuyo enunciado **pide** un orden, y entonces ese
+orden es la respuesta.
+
+Los dos encargos de cierre no son problemas y se quedan como estaban: la tabla de 150
+sesiones y el tope de 100 filas del pie de la rejilla. Es lo único de esta clase que no
+se puede aprender resolviendo nada —hay que verlo en pantalla—, y la única pregunta de
+opción múltiple de los nueve encargos.
+
+**Lo que esta clase sigue sin usar a propósito:** `COUNT`, `SUM`, `AVG`, `GROUP BY`,
+`HAVING`. Son de `n10-conecta-tus-datos` (canon, fila 89) y `subconjunto.ts` es explícito:
+«si ninguna clase agrupa, sobran».
+
+### Los dos errores clásicos, ahora sin dictarlos
+
+La versión anterior pedía «provoca el error de columna ambigua» con la consulta escrita
+al lado. Ahora el problema 5 pide el nombre del integrante junto al de su equipo, y las
+dos tablas tienen una columna `nombre`: **el error le sale solo en su primer intento**, y
+la segunda pista se lo explica cuando ya lo ha visto.
+
+Con el `NULL` pasa algo mejor. El problema 5 devuelve once filas de doce integrantes y el
+juez **lo acepta**: esas once son la respuesta correcta. El que falta es el problema 6,
+cuyo enunciado empieza diciendo «en el problema anterior desapareció gente». La avería
+se convierte en el enunciado siguiente en vez de en una pregunta de opción múltiple.
+
+### 2. Gráfica
+
+El tablero del juez es el mismo de §68 —fondo oscuro y color pleno, `.jz-*`— con tres
+cambios que eran los que tenían que cambiar:
+
+- **el contrato son las columnas**, no una firma: en SQL el alumno no define nada con un
+  nombre, devuelve una tabla, y lo que hay que pactar es qué columnas lleva y en qué
+  orden. Los *nombres* de esas columnas no se juzgan —llamarle `total` o `cuantos` a lo
+  mismo es correcto—; el número, sí;
+- **un ejemplo se enseña como tabla**, con sus filas, porque una respuesta de SQL son
+  filas; y si el orden importa, lo dice una chapa;
+- **los datos de un caso oculto son OTRA siembra**, no otros argumentos.
+
+### 3. Sonora
+
+Bit, igual que en §68. Sin sonido propio: el veredicto es texto y se lee.
+
+### 4. Interacción real — los nueve encargos
+
+Siete de `{ tipo: 'programa', comprueba: (sql) => aceptado(p.id, sql) }`, uno de
+`ejecucion` (las 150 sesiones, con el ▶) y una elección de cierre. `aceptado` exige que
+el texto sea **el mismo** que se envió, así que cambiar la consulta después de aprobar
+reabre el encargo, que es lo correcto.
+
+### 5. Video de ejercicio
+
+**Deuda declarada.** El publicado el 18-ago-2026 es de la tanda vieja (32 escenas, sin
+`papeles`, 125 palabras/min) y narra otra clase: habla de «proyectos» y de «la tabla
+alumnos con la tabla notas», que no existen aquí, y no menciona ni el juez ni los casos
+ocultos, que es lo que esta clase **es** ahora. Los conceptos sí cuadran —`WHERE`,
+`ORDER BY`/`DESC`, `LIKE`, `LIMIT`, `JOIN`, columna ambigua, `IS NULL`—, así que el video
+no dice nada falso sobre SQL; dice cosas falsas sobre **esta clase**. Se regraba.
+
+---
+
+## Las tres cosas que sólo se supieron midiendo
+
+### 1. `LIKE` no distingue mayúsculas, y la pista decía lo contrario
+
+La tercera pista del problema 3 terminaba con «ojo con las mayúsculas: los nombres
+empiezan con A mayúscula». Es **falso**: `patronDeLike` (`modelo.ts:297`) compila el
+patrón con la bandera `i`, sin distinguir mayúsculas y a propósito, «como SQLite».
+
+No lo cazó una revisión: lo cazó un señuelo. La prueba escribía `LIKE 'a%'` esperando
+que el juez lo rechazara, y el juez lo **aceptó** —con razón—. Dos arreglos de un solo
+fallo: la pista ahora dice lo que el motor hace de verdad (mayúsculas da igual, acentos
+no), el señuelo pasó a ser el `=` en lugar del `LIKE`, y hay una prueba que afirma las
+dos mitades a la vez, para que la pista no pueda volver a mentir sin que algo caiga.
+
+**La lección, que vale para las doce clases que faltan:** una pista es una afirmación
+sobre el motor. Si no hay una prueba que la ate al motor, es un comentario.
+
+### 2. El segundo cliente es el que dice qué era común
+
+`PanelJuez.tsx` se partió en `TableroJuez.tsx` + dos envoltorios al escribir el de SQL,
+no antes: con un solo cliente habría sido adivinar. Lo que resultó común fueron las
+solapas, el enunciado, el contrato, los ejemplos, el botón, el veredicto y la escalera de
+pistas; lo que no, **tres funciones** —cómo se llama el contrato, cómo se pintan los
+ejemplos y quién juzga—.
+
+Y un detalle de tipos que sólo apareció cuando `tsc` se quejó: el tablero recortaba los
+props a los tres que usa, y eso obligaba al **pie** de `n10-problemas-de-concurso` —que
+lo escribe la clase, no el tablero— a renunciar a `ejecucion`. El tablero pasó a ser
+genérico sobre los props completos del armazón. La regla: **un trozo de panel que escribe
+la clase tiene derecho a lo que su propio panel recibe.**
+
+### 3. El botón principal estaba a 942 px de una columna de 544
+
+Medido en Chromium, no deducido. Con el problema 1 abierto:
+
+| | antes | después |
+|---|---|---|
+| bloque de ejemplos | 408 px (tabla de 12 filas: 275) | 295 px (6 filas + «y 6 más») |
+| veredicto del caso visible | 911 px | 775 px |
+| `«Enviar al juez»` desde arriba | 942 px | 872 px |
+| columna entera | 2413 px | 2203 px |
+
+Nada estaba inalcanzable —`aside.dat-lateral` se desliza, y el botón de pistas se pulsa
+después de deslizar—, pero el cotejo de doce filas contra doce no explicaba nada que la
+`explicacion` no dijera ya nombrando la fila exacta: era contexto, y ocho líneas de
+contexto bastan. El ejemplo se acotó a seis filas por la misma razón: seis ya dicen qué
+columnas y en qué orden. Y el encargo ahora **nombra el botón** («pulsa Enviar al
+juez»), porque está en orden de lectura pero por debajo del pliegue.
+
+Los dos topes viven en el juez, no en la clase, así que también aplican a Python —donde
+casi nunca se llega a ellos, porque las salidas esperadas son de una o dos líneas—.
+
+De paso, tres mensajes del juez decían «3 fila(s)» y «4 columna(s)». Eso es un mensaje
+de compilador, no algo que lea una persona de quince años: ahora dicen «3 filas» y «4
+columnas».
+
+---
+
+## Una sola fuente de verdad para la base
+
+`siembrasClub.ts` guarda las tres siembras **como texto SQL**, y la base del editor y la
+del caso visible salen de ejecutar el mismo texto. Si fueran dos listas de filas escritas
+a mano, el día que alguien tocara una el alumno vería un resultado en su pantalla y otro
+distinto en el veredicto —la peor avería que puede tener un juez: la que le hace creer
+que miente—. Hay una prueba que compara las dos tabla por tabla.
+
+Las tres siembras cumplen, cada una, las mismas seis condiciones (nombres no ascendentes,
+los de grado 3 no descendentes entre ellos, al menos un nombre que empieza por A y al
+menos uno que no, un `equipo_id` en `NULL`, un equipo «Los Circuitos» con gente distinta,
+y su número de equipo **no** igual en todas). Hay una prueba que las exige: si una deja
+de cumplirlas, su problema se regala sin que nadie se entere, que es exactamente lo que
+pasó antes del 2-sep-2026.
+
+El motor, además, cazó un fallo de la siembra antes de que llegara a ninguna prueba: el
+reparto ingenuo de las 150 sesiones (`mes = i/30, dia = i%30`) pedía un **29 de febrero de
+2026**, y `esFechaValida` valida el calendario. Se arregló con aritmética de fechas en UTC.
+
+## Lo que costó, medido
+
+| | |
+|---|---|
+| archivos nuevos | 4 (`siembrasClub.ts`, `problemasSql.ts`, 2 de prueba) |
+| archivos reescritos | 3 (`LabConsultasSql.tsx`, `EntradaConsultasSql.tsx`, fila del registro) |
+| piezas del juez tocadas | 4 (`TableroJuez`, `PanelJuez`, `PanelJuezSql`, `juezSql`) |
+| problemas / casos / ocultos | 7 / 21 / 14 |
+| pruebas nuevas | 44 (29 de modelo + 15 de DOM) |
+| suite completa | 170 suites, 4110 pruebas, verde |
+| quinta puerta | sin solape (editor 176–902, panel 916–1264), sin fuga de datos ocultos, 400 px sin desbordar, sólo el ruido conocido de consola |
+
+## Lo que este apéndice deja listo para las 12 clases que faltan
+
+`juezSql.ts` ya tiene cliente y `TableroJuez.tsx` ya está partido, así que la siguiente
+clase de SQL —`n9-bases-de-datos-iniciales`— es enunciados, siembras y pistas: cero
+motor. Y queda una regla nueva que no estaba en §68: **cada pista es una afirmación sobre
+el motor y necesita una prueba que la ate**, porque una pista falsa ensaña peor que una
+pista ausente.
+
+
+---
+
+## §68.2 · `n9-busqueda-y-ordenamiento` — la eficiencia, juzgada (pliego, 12-sep-2026)
+
+Tercera de las catorce clases dictadas. **Este apartado se escribe antes que el código**;
+lo que salga al construirla se anota debajo, como en §68.1.
+
+### Lo que hay hoy, leído entero
+
+Once encargos (`LabBusquedaYOrdenamiento.tsx`, 420 líneas). El primero dice, en la instrucción:
+«crea `nombres = ['Ana', 'Luis', …]` · `objetivo = 'Ana'` · `comparaciones = 0` ·
+`for i in range(len(nombres)):` · (con sangría) `comparaciones = comparaciones + 1` …», y
+el predicado exige con **nueve expresiones regulares** que cada línea esté escrita así.
+Una búsqueda correcta que llame `n` al contador **suspende**; la copia **aprueba**. Los
+demás encargos repiten el patrón, y dos de ellos son «cambia sólo esta línea».
+
+La idea de fondo era buena y se conserva: **la eficiencia no se memoriza, se cuenta**. Lo
+que no se conserva es que el conteo lo dicte el guion.
+
+### 1. Teórica
+
+El currículo pide «búsqueda y ordenamiento (noción de eficiencia)» para 3.º de
+secundaria, 14–15 años, con dos años de Python detrás (`def`, `return`, listas, índices,
+`for`, `while`). Seis problemas en dos bloques, y cada uno deja una decisión en manos del
+alumno:
+
+| # | Función | Lo que obliga a decidir |
+|---|---|---|
+| 1 | `posicion(canciones, titulo)` | que buscar es **parar en el primero**, y qué contestar cuando no está |
+| 2 | `comparaciones(canciones, titulo)` | que el costo de buscar **depende de dónde esté el dato**, y que no encontrarlo es el caso más caro |
+| 3 | `comparaciones_ordenada(numeros, objetivo)` | que en una lista ordenada **se puede parar antes**, y cuándo exactamente |
+| 4 | `una_pasada(numeros)` | el mecanismo del burbuja: vecinos, intercambio, y hasta dónde llega el índice |
+| 5 | `burbuja(numeros)` → ordenada e intercambios | el algoritmo completo, **contando** su trabajo |
+| 6 | `pasadas(numeros)` | que un burbuja que se detiene cuando ya no cambia nada **cuesta distinto según la lista** |
+
+**Por qué cada problema devuelve un número de trabajo y no sólo un resultado.** `sorted()` y
+`.sort()` existen en el intérprete (`maquina.ts`). Un problema que pidiera «devuelve la lista
+ordenada» se aprobaría con una línea que no enseña nada, y prohibirlo leyendo el texto
+sería volver a juzgar por regex. En cambio **ninguna función de Python devuelve cuántos
+intercambios hace un burbuja**, ni cuántas pasadas necesita, ni lo que hay tras una sola
+pasada. Esos tres números sólo salen de escribir el algoritmo. Es la misma idea de la clase
+vieja —contar—, puesta al servicio de que no haya atajo.
+
+**Sin búsqueda binaria, y a propósito.** El problema 3 se queda en la optimización que ya
+estaba en la clase: en una lista ordenada, en cuanto el valor actual alcanza al buscado, ya no
+puede aparecer después. Es un paso de abstracción pequeño y medible con el mismo contador;
+descartar la mitad en cada paso es otro, y el currículo pide «noción».
+
+**Sin Big-O.** Los números los producen las funciones del alumno. La única pregunta de opción
+de la clase va al final y es sobre esos números.
+
+### Los casos ocultos, uno por decisión
+
+Cada ejemplo visible está elegido para que **el error típico lo pase**, y cada caso oculto
+para que lo tumbe. Si el ejemplo ya delatara el error, el oculto no haría ningún trabajo
+—es la lección del 70 de §68—.
+
+| Problema | El error típico | Por qué pasa lo visible | El oculto que lo tumba |
+|---|---|---|---|
+| 1 | seguir recorriendo y quedarse con **la última** coincidencia | el ejemplo no tiene títulos repetidos | una lista con «Calle 9» dos veces |
+| 2 | devolver `0` cuando **no está** («no hubo búsqueda») | el ejemplo sí lo encuentra | buscar una canción que no está: costó las cinco |
+| 3 | parar sólo cuando el valor es **mayor** (`>`), olvidando el igual | el ejemplo busca un valor que no está | buscar un valor que sí está |
+| 4 | recorrer **un par de menos** | en el ejemplo el máximo ya está al final | `[2, 1]` y la lista al revés |
+| 5 | intercambiar también **los iguales** (`>=`) | el ejemplo no tiene repetidos: la lista sale igual | `[3, 1, 3, 1]`: 5 intercambios en vez de 3 |
+| 6 | contar siempre **n − 1** pasadas, sin detenerse | en los dos ejemplos coincide con n − 1 | una lista ya ordenada: 1 pasada, no 3 |
+
+### 2. Gráfica
+
+La ventana de Tecnia Código con el tablero del juez de §68 en el panel fijo. El panel de
+variables se queda, como en el concurso: es con lo que el alumno depura antes de enviar.
+El «Contador de Operaciones» de la clase vieja se retira —leía variables con nombres
+dictados—; su trabajo ahora lo hacen las funciones 2, 3, 5 y 6.
+
+### 3. Sonora
+
+Bit, igual que en §68.
+
+### 4. Interacción real — siete encargos
+
+Seis `ejecucion` que se cierran con `aceptado(p.id, fuente)` y una elección de cierre. Un
+solo archivo, `playlist.py`, donde las seis funciones conviven: resolver la 4 no puede
+romper la 1, y el recorrido de la prueba lo comprueba acumulándolas.
+
+### 5. Video de ejercicio
+
+El publicado el 2-sep-2026 es de la tanda nueva; **se revisa contra la clase reescrita al
+terminar** y se regraba sólo si narra los encargos dictados.
+
+### Qué hay que verificar jugando MAL
+
+Enviar el archivo vacío; enviar cada uno de los seis errores típicos de la tabla y
+comprobar que **pasan todo lo visible y caen en el oculto**; resolver el 5 con `sorted()`
+y comprobar que el conteo lo tumba; un bucle `while` que nunca apaga su bandera; y que
+ningún dato de un caso oculto aparezca en el texto visible del panel.
+
+### Lo que salió (§68.2), 12-sep-2026
+
+**Medido.** `juez-busqueda.test.ts` 19/19 —las seis referencias aceptadas, también las seis
+juntas en un solo archivo, y los seis señuelos de la tabla **pasan todo lo visible y caen en un
+oculto**—; `n9-busqueda-y-ordenamiento.test.tsx` 7/7 con el recorrido entero, `sorted()`
+rechazado a medio camino; `tsc` y lint limpios; jest **172 suites / 4 137 pruebas**; y la
+quinta puerta en Chromium: editor y panel sin solape, el señuelo de la última coincidencia
+rechazado con «la pidieron dos veces», ningún caso oculto con una cifra en pantalla y a 400 px
+el cuerpo mide 400.
+
+**La llamada de varias líneas se leía en una.** El problema 5 llama con tres líneas
+(`r = burbuja(...)`, `print(r[0])`, `print(r[1])`) y el tablero las pintaba seguidas en un
+renglón, porque `.jz-ej-llamada` no conservaba los saltos. Arreglado con `white-space: pre-wrap`
+en `panelJuez.css`. Ninguna prueba de jsdom lo podía ver: lo vio el navegador.
+
+**Los planes docentes seguían describiendo la clase dictada.** No sólo el de ésta: también los
+de `n10-consultas-sql` y `n10-problemas-de-concurso`, que se habían reescrito antes sin mirar su
+plan. Un maestro que abría la planeación leía encargos que ya no existen. Se reescribieron los
+tres (4 fases, 45 min). **Regla: reescribir una clase incluye su plan docente** —
+`planeacion.test.ts` sólo vigila la forma del plan, no que describa la clase que hay—.
+
+**El video, sin ComfyUI.** De sus 33 escenas, diez decían cosas que la clase ya no hace (el
+contador dictado, «once encargos», el `IndexError` como encargo). Se cambió la narración de esas
+diez **con id nuevo** (`…b`), para que `narracion-vox.py` generara sólo esos diez audios, y se
+conservaron sus imágenes, que siguen valiendo. Render de 5 min 5 s (1280×720, 22,4 MB),
+publicado con portada nueva y comprobado en Chromium: la entrada sirve el archivo de 305,19 s.
+Queda subirlo a R2 para producción.
+
+---
+
+## §68.3 · `n9-datos-con-python` — un dato que falta no es un cero (pliego, 12-sep-2026)
+
+Cuarta de las catorce clases dictadas. **Este apartado se escribe antes que el código**; lo que
+salga al construirla se anota debajo.
+
+### Lo que hay hoy, leído entero
+
+Nueve encargos (`LabDatosConPython.tsx`, 404 líneas) sobre `reporte_calificaciones.py`: ocho
+registros `{"nombre", "calificacion"}` ya cargados, uno con `None`. Cada instrucción es el
+programa: «escribe `validos = []` · `for alumno in calificaciones:` · (con sangría)
+`if alumno['calificacion'] != None:` …», y cada predicado exige esas líneas con expresiones
+regulares **y además textos literales** (`fuente.includes('print("Promedio del grupo:", round(promedio, 1))')`).
+Cambiar la etiqueta de un `print` suspende. El encargo 2 pide escribir una suma que revienta
+«a propósito», y el cierre es un reporte cuyo `else` ya viene elegido en la pista.
+
+Lo que se conserva, porque es bueno: **el orden limpiar → filtrar → agregar → concluir**, el
+registro con `None` que revienta de verdad al sumarlo, y que `max()` da el número pero no el
+nombre. Lo que no se conserva es que todo eso lo dicte el guion.
+
+### Lo medido antes de diseñar
+
+- El intérprete imprime diccionarios y listas como Python (`{'nombre': 'Ana', 'calificacion': 8.5}`,
+  `['Diego', 'Mateo']`); `None + 5` y `None < 6` dan error de tipo con su línea; `0` y `0.0` son
+  falsos en un `if`, igual que `None`; `max([])` da error de valor; `!= None` funciona (`is` no existe).
+- **`round(x, n)` no redondeaba como Python** —`round(6.35, 1)` daba 6.4 y CPython 6.3—: redondeaba
+  `x * 10^n`, que ya viene redondeado. Corregido en `maquina.ts` antes de escribir un solo caso
+  (ver el estado del 12-sep-2026 en `ROBUSTECIMIENTO-SECUNDARIA-Y-BACHILLERATO.md`).
+- **CPython 3.14 está instalado en la máquina de trabajo.** Las salidas literales de los 31 casos y
+  el comportamiento de los señuelos se midieron con él (`scratchpad/datos-medir.py`), no con el
+  intérprete que se está juzgando; la prueba de Jest vuelve a medirlas con el intérprete.
+
+### 1. Teórica
+
+El currículo pide «proyectos de datos con Python» para 3.º de secundaria, 14–15 años, como cierre
+de la unidad «Algoritmos y datos». Seis problemas sobre la app de calificaciones del grupo. Todos
+reciben la misma forma de dato —una lista de registros `{"nombre": …, "calificacion": …}` donde
+la calificación puede ser `None` («no ha entregado»)— y cada uno deja una decisión en manos del
+alumno:
+
+| # | Función | Lo que obliga a decidir |
+|---|---|---|
+| 1 | `con_calificacion(registros)` → cuántos | que **un cero es un dato y `None` no**: preguntar «¿tiene algo?» no es preguntar «¿no está vacío?» |
+| 2 | `promedio(registros)` → a un decimal, o `None` si nadie entregó | **entre cuántos se divide**, y qué contesta un promedio sin datos |
+| 3 | `reprobados(registros, minima)` → lista de nombres | que filtrar es **guardar**, en orden, y dónde cae el límite exacto |
+| 4 | `mejor(registros)` → un nombre, o «nadie» | que el número más alto no dice **de quién es**, y qué pasa con un empate |
+| 5 | `por_nivel(registros)` → `[reprueban, aprueban, sobresalen]` | agrupar en rangos con **fronteras cerradas por un solo lado** |
+| 6 | `conclusion(registros, minima)` → «reforzar», «va bien» o «sin datos» | que «más de la mitad» se cuenta **sobre los que tienen dato**, y reutilizar funciones propias |
+
+**Sin atajo de fábrica que valga.** `sum()`, `max()` y `min()` existen y se pueden usar: ninguno
+de los seis problemas se resuelve con ellos solos, porque todos tienen `None` en algún caso y
+`sum()` revienta con `None`, `max()` no sabe de quién es el número y ninguna función de fábrica
+decide entre cuántos se divide. Aquí no hace falta pedir «el número de trabajo» como en §68.2: el
+atajo lo cierra la forma del dato.
+
+**El error del 0 es el centro de la clase.** Un alumno que escribe `if r["calificacion"]:` hace
+exactamente lo que harían muchos adultos con una hoja de cálculo: tratar «entregó en blanco» igual
+que «no entregó». Es un error de datos real, silencioso —no revienta, da un número que parece
+bueno— y sólo lo caza un caso con un cero. Por eso hay un cero oculto en cinco de los seis
+problemas.
+
+### Los casos ocultos, uno por decisión
+
+Cada ejemplo visible está elegido para que **el error típico lo pase** (sin ceros, sin empates,
+sin nadie justo en el límite, sin `None` donde el error es de denominador), y cada oculto para
+que lo tumbe. Medido con CPython: cada señuelo pasa los dos visibles.
+
+| Problema | El error típico | El oculto que lo tumba |
+|---|---|---|
+| 1 | `if r["calificacion"]:` — el cero cuenta como «no entregó» | «alguien sacó cero» |
+| 2 | sumar sólo los que tienen dato pero **dividir entre todos** | «alguien no entregó»: 6.3 en vez de 7.2 |
+| 3 | `<=` en vez de `<` | «justo en el límite» |
+| 4 | `max()` sobre las notas y ese índice **en la lista original**, desalineada por el `None` | «alguien no entregó»: sale Mateo en vez de Renata |
+| 4 | quedarse con el **último** de un empate | «empate arriba» |
+| 5 | `<= 9` en la frontera de sobresaliente | «justo en los límites» |
+| 6 | «más de la mitad» **sobre el total**, contando a quien no entregó | «dos no entregaron» |
+
+Además, con nombre y sin cifras: «nadie ha entregado» (1, 2, 4, 6), «el grupo está vacío» (1, 5)
+y «el único sacó cero» (4, que tumba a quien empieza la búsqueda del máximo en 0).
+
+### 2. Gráfica
+
+La ventana de Tecnia Código con el tablero del juez de §68 en el panel fijo, como §68.2. «El
+Reporte en Vivo» se retira: leía variables llamadas `validos`, `reprobados` y `promedio`, nombres
+que dictaba el guion. El panel de variables de Tecnia Código se queda.
+
+La plantilla conserva la línea con los ocho registros (`calificaciones = […]`), **ya sin
+candado**: es el dato con el que el alumno prueba sus funciones con `print` antes de enviarlas. Lo
+que imprima por su cuenta no tumba ningún caso (decisión 4 de §68).
+
+### 3. Sonora
+
+Bit, igual que en §68.
+
+### 4. Interacción real — siete encargos
+
+Seis `ejecucion` cerrados con `aceptado(p.id, fuente)` y una elección de cierre sobre números que
+produjo la función `promedio` del alumno: con Emilio sin entregar el grupo promedia 7.2; si Emilio
+hubiera entregado en blanco, 6.3. La pregunta es qué significa esa diferencia. Las seis funciones
+conviven en un archivo, y la pista 3 del problema 6 dice que **puede llamar a las que ya escribió**.
+
+Pistas en escalera, nunca código: la primera reencuadra con una pregunta sobre el dato, la segunda
+señala el caso, la tercera dice el método en palabras.
+
+### 5. Video de ejercicio
+
+Se revisa el publicado contra la clase reescrita y se regraba sólo lo que narre encargos dictados,
+con el método de §68.2 (id nuevo por escena, imágenes conservadas si siguen valiendo).
+
+### 6. Lo que acompaña a la clase
+
+Entrada (`EntradaDatosConPython.tsx`), plan docente, fila del canon y descripción del registro se
+reescriben con la clase: es la regla que dejó §68.2.
+
+### Qué hay que verificar jugando MAL
+
+Enviar el archivo vacío; enviar cada señuelo de la tabla y comprobar que **pasa lo visible y cae
+en su oculto**; el promedio que suma también el `None` —tiene que llegar como error con la línea
+del alumno, no como «falla»—; `max()` sobre la lista de diccionarios; dejar un `print` de
+depuración y comprobar que no tumba nada; y que ningún dato de un caso oculto se asome al panel.
+
+### Lo que salió (§68.3), 12-sep-2026
+
+**Medido.** `juez-datos.test.ts` 21/21 —las seis referencias aceptadas con el intérprete, también
+juntas y debajo de la plantilla con un `print` de depuración; los **siete** señuelos pasan todo lo
+visible y caen en un oculto, exactamente donde CPython dijo que caerían; sumar el `None` llega
+como tropiezo en la línea 4 del alumno; y el problema 6 solo, sin las funciones que reutiliza, se
+rechaza nombrando `con_calificacion`—; `n9-datos-con-python.test.tsx` 7/7 con el recorrido entero
+y la suma del `None` rechazada a medio camino; `tsc` y lint limpios; jest **174 suites / 4 165
+pruebas**. Quinta puerta en Chromium: sin solape (editor 176–924, panel 952–1250), la entrada
+dice 19 casos ocultos y ya no habla de encargos, el señuelo del cero rechazado 4 de 5 con
+«alguien sacó cero», ningún oculto con cifras, y a 400 px el cuerpo mide 400.
+
+**Medir con CPython antes que con el intérprete cazó un defecto de `round`** (ver «Lo medido
+antes de diseñar»). Es la razón de que la referencia de las salidas literales sea desde hoy CPython,
+no el intérprete que se juzga: medir el intérprete contra sí mismo no puede encontrar nada.
+
+**La primera versión de los casos rompía la regla de §68.1 sin que ninguna prueba lo viera.** El
+ejemplo visible del problema 1 era el grupo de ocho registros: doce renglones de diccionarios en
+una columna de 276 px. Se recortaron todos los ejemplos visibles a tres registros como mucho
+—los grupos grandes quedan en los ocultos, que nunca se pintan— y cada señuelo sigue pasándolos.
+
+**Y al medirlo salió que el botón «Enviar al juez» no se veía al entrar en las clases del juez.**
+La columna lateral enseña 544 px a 1440×900 y el botón quedaba a 871 (SQL), 893 (búsqueda) y
+986 px (datos) de su borde; el concurso no se midió antes del arreglo. §68.1 lo había mitigado recortando
+el cotejo y nombrando el botón en el encargo; no estaba curado. Ahora `.jz-enviar` es
+`position: sticky; bottom: 10px`: se queda pegado abajo de la columna mientras no esté a la vista
+y en su sitio cuando se llega. Medido en las cuatro clases: botón en 806–852 dentro de 318–862,
+es el elemento que recibe el clic en su centro, y el clic real saca el veredicto. A 400 px la
+columna no desplaza por dentro —desplaza la página— y el botón sigue su flujo normal, como antes.
+
+**El video, sin ComfyUI.** Su idea central ya era «None no es un cero» y casi todo seguía siendo
+cierto. Cinco escenas de 31 decían cosas falsas sobre la clase nueva: dos narraban el encargo de
+«sumar sin limpiar a propósito», una decía que el promedio sale «con sum y el número de registros»
+—justo la trampa que caza el juez—, y el cierre contaba nueve encargos. Se renarraron con id nuevo
+(`…b`) sobre sus imágenes de siempre. Render de 5 min 5 s (1280×720, 22,3 MB), publicado con
+portada nueva y comprobado en Chromium (la entrada sirve el archivo de 305,49 s). Queda subirlo a R2.
+
+
+
+---
+
+## §68.4 · El juez de programas y `n7-entrada-y-salida` — resolver antes de saber `def` (pliego, 12-sep-2026)
+
+Quinta de las catorce clases dictadas y **la primera de N7**. Decisión de Cristofer del mismo día:
+«Adelante, hazlo todo». **Este apartado se escribe antes que el código**; lo que salga al
+construirlo se anota debajo.
+
+### Por qué hace falta otro juez
+
+El juez de §68 llama a una **función**: pega `print(avanzan([78, 92, 65]))` al final del archivo y
+compara lo que sale después de la marca. Las cinco clases de Python de N7 van **antes de que el
+alumno sepa `def`** (1.º de secundaria, 12–13 años), y un programa de esa edad no recibe
+argumentos: **pregunta con `input` y contesta con `print`**. Así es también un juez de concurso de
+verdad (entrada estándar → salida estándar). El juez de programas es ése: **cada caso trae lo que
+se teclea y lo que tiene que imprimirse**.
+
+### Lo que hay hoy, leído entero
+
+`LabEntradaYSalida.tsx`, 297 líneas, ocho encargos. La secuencia es buena y se conserva: el
+programa **se detiene a esperarte**, `edad + 1` **revienta** porque lo que llega es texto, se
+convierte con `int()`, se contesta «trece» para ver el otro error, y se arman salidas con varios
+datos. Lo que no se conserva: cada instrucción es la línea que hay que escribir
+(`Escribe abajo  nombre = input("¿Cómo te llamas? ")`), y los predicados leen variables llamadas
+`nombre`, `edad` y `ciudad` —nombres dictados— o textos fijos como `'FICHA · '`. El encargo 5 se
+aprueba tecleando «trece» sin haber escrito nada propio. El panel «El buzón de respuestas» es
+bueno (enseña lo que llegó **con sus comillas** y su tipo) y se queda.
+
+### Lo medido antes de diseñar
+
+Con la sonda `scratchpad/n7/sonda.ts` sobre el intérprete, y con CPython 3.14 para las salidas:
+
+- `ejecutar(fuente, { entradas })` ya consume una cola de respuestas; cada `input` deja en la
+  salida **una línea con la pregunta y la respuesta pegadas** (`"Precio: 12.5"`). Si la cola se
+  agota, la máquina se queda `esperando`; si sobran respuestas, quedan en `maq.entradas`.
+- **La salida no distingue un eco de `input` de un `print`.** Hay que marcarlo en la máquina.
+- `"12.5" * 3` imprime `12.512.512.5`, igual que Python: multiplicar un texto lo repite. `int("12.5")`
+  da error de valor; `int(" 13")` vale 13; `float("10") * 2` imprime `20.0`; `print(..., end="")` e
+  `import` no existen en este subconjunto.
+
+### El motor: cuatro decisiones
+
+**1. Se comparan sólo las líneas de `print`.** Los avisos de `input` no cuentan. En un juez de
+consola real el aviso sale por la salida estándar y se pega a la respuesta, y un alumno de 12 años
+suspendería por escribir «¿Cómo te llamas?» en vez de «Nombre:». El texto de la pregunta **es
+libre**; lo que el programa **contesta** es lo que se juzga. Para eso la máquina apunta en
+`ecos` qué líneas de su salida salieron de un `input`, y `Ejecucion` las expone también, para que
+los predicados de exploración tampoco confundan un eco con una respuesta.
+
+**2. El contrato es qué se lee y en qué orden.** Donde el juez de funciones enseña una firma, el
+de programas enseña «Tu programa lee, en este orden: tu edad». Pedir un dato de más es un veredicto
+propio (`pide-de-mas`: «pidió un 3.er dato y este caso sólo trae 2»), **no** «no termina». Dejar
+datos sin leer suspende aunque lo impreso cuadre: el contrato es parte del problema.
+
+**3. Todo lo que imprime cuenta.** Aquí no hay marca ni ruido: el programa entero es la respuesta,
+como en un concurso. Un `print` de más da «sobra una línea al final: «…»», que ya lo explica.
+
+**4. Los casos siguen la regla de §68: literales, medidos con CPython, ocultos tachados por el
+propio modelo**, y `revisarProblemaPrograma` exige al menos tres casos, uno oculto, uno visible, y
+que no haya dos con las mismas entradas.
+
+### El panel: tablero, buzón y manual
+
+Tres cambios que sirven a todas las clases del juez:
+
+- **El panel sabe en qué encargo va el alumno** (`encargoId` en los props del panel). El tablero
+  enseña el problema del encargo, y deja de adivinarlo por «el primero sin aceptar».
+- **En los encargos que no son problemas, el tablero se esconde (no se desmonta) y aparece el panel
+  propio de la clase**, aquí el buzón. Desmontarlo borraría el tablero de veredictos.
+- **El manual.** Un alumno de 12 años no puede inventar `int(input(...))` de la nada, y dictárselo
+  es lo que se viene a quitar. Lo que hace un programador cuando no sabe algo es buscarlo en la
+  documentación: cada encargo puede traer **una ficha del manual con un programa de otro tema**
+  («¿cuántas mascotas tienes?», no «¿cuántos años tienes?»), qué se tecleó y qué salió en la consola.
+  El alumno tiene que **trasladarlo**, que es el aprendizaje. Cada ficha es una afirmación sobre el
+  motor y la prueba de Jest la ejecuta (regla de §68.1).
+
+### 1. Teórica — la clase
+
+Siete encargos: tres de exploración (el programa para, lo que llega es texto, el dato que no vale),
+tres problemas con juez y un cierre.
+
+| # | Encargo | Tipo | Lo que se comprueba |
+|---|---|---|---|
+| 1 | Que te pregunte | exploración | terminó, alguien contestó, y una línea de `print` (no un eco) contiene lo contestado |
+| 2 | Lo que llega es texto | exploración | error de tipo después de contestar un número |
+| 3 | El año que viene | **juez** | lee una edad → `El año que viene cumples 14.` |
+| 4 | El dato que no vale | exploración | error de valor al convertir lo contestado (sin tocar el código: el programa del 3) |
+| 5 | En 2030 | **juez** | lee nombre y año de nacimiento → `Ana, en 2030 cumples 18 años.` |
+| 6 | La cuenta de la tiendita | **juez** | lee precio (con decimales) y piezas → `Pagas 37.5 pesos.` |
+| 7 | Para cerrar | elección | por qué alguien obtuvo `Pagas 12.512.512.5 pesos.` |
+
+Casos medidos con CPython (`scratchpad/n7/medir-es.py`), con los señuelos que cada uno caza:
+
+| Problema | Visible | Ocultos | Señuelo → dónde cae |
+|---|---|---|---|
+| 3 | 13 → `…cumples 14.` | 9, 100, 0 | escribir el 14 fijo → los tres ocultos; `print("…cumples", e + 1, ".")` → **el visible** («cumples 14 .»: la coma pone un espacio) |
+| 5 | Ana, 2012 → 18 | María José (nombre con espacio), nació en 2030 (0 años), 1950 (80) | el año fijo → ocultos; preguntar en otro orden → el visible (error de valor) |
+| 6 | 12.5 × 3 → `37.5` | 10 × 2 → `20.0`, 8.75 × 1, 2.5 × 40 → `100.0` | no convertir el precio → el visible (`12.512.512.5`); `int()` al precio → error en el visible; `round` → visible; el 37.5 fijo → ocultos |
+
+Soluciones con otra estructura se aceptan: `print` con comas en el problema 5 y `float()` también
+para las piezas en el 6 pasan los cuatro casos (medido).
+
+### 2. Gráfica
+
+Tecnia Código con el panel «El juez de la entrevista»: en los encargos 3, 5 y 6 el tablero del juez
+con su ficha del manual plegada; en los demás, la ficha abierta y el buzón de respuestas.
+
+### 3. Sonora
+
+Bit, igual que en §68. Su línea de entrada explica la regla nueva: el juez teclea por ti y sólo lee
+lo que tu programa contesta.
+
+### 4. Interacción real
+
+El alumno **sigue contestando en la consola** cuando pulsa ▶ —media clase es ver el programa
+detenerse a esperarlo—; «Enviar al juez» corre los casos con la cola de respuestas. Pistas en
+escalera, nunca código.
+
+### 5. Video
+
+Se revisa el publicado contra la clase nueva y se regraba sólo lo que narre encargos dictados.
+
+### 6. Lo que acompaña
+
+Entrada, plan docente, registro, canon y prueba de la clase se rehacen con ella.
+
+### Qué hay que verificar jugando MAL
+
+Enviar el archivo vacío; el 14 fijo; la coma que mete un espacio; contestar en otro orden; pedir un
+dato de más y uno de menos; un `print` de depuración; que el eco de un `input` no apruebe el
+encargo 1 por sí solo; que el buzón siga enseñando las comillas; y que ningún dato oculto se asome.
+
+---
+
+## §68.5 · `n7-condicionales-python` — decidir, juzgado en las fronteras (pliego, 12-sep-2026)
+
+Sexta de las catorce clases dictadas y segunda de N7 sobre el juez de programas de §68.4. **Este
+apartado se escribe antes que el código.**
+
+### Lo que hay hoy, leído entero
+
+`LabCondicionales.tsx`, 377 líneas, nueve encargos sobre `acceso.py` (la montaña rusa «La
+Serpiente»). Cada instrucción es el programa: «escribe `altura = 130` y luego `if altura >= 120:`…»,
+y cada predicado exige esas líneas con expresiones regulares (`/if\s+altura\s*>=\s*120\s*:/`). La
+altura está **fijada en 130 en el código**: el programa nunca decide sobre nada que no haya escrito el
+propio alumno, así que un `if` que siempre toma el mismo camino aprueba igual que uno bien hecho.
+
+El clímax era un error que **Python no da**: `120 <= altura <= 150` es Python válido, y quien lo
+rechazaba era el intérprete de este editor. La clase lo presentaba con cuidado («este editor no lo
+admite»), pero con el juez midiendo contra CPython (§68.3) ese rechazo tumba soluciones correctas.
+
+Lo que se conserva: la montaña rusa, las fronteras de altura, `==` contra `=`, `and` y `or`, el
+panel «El Semáforo» (qué rama se tomó) y la pregunta final sobre el orden de un `elif`.
+
+### Lo medido antes de diseñar
+
+- **El intérprete ahora encadena comparaciones como Python.** `a < b < c` se compila como
+  `a < b and b < c` con `b` evaluado una sola vez (instrucción nueva `COMP_CADENA`). Medido contra
+  CPython 3.14: `0 < m() < 10` imprime la «m» una vez, y `1 < 2 > 3`, `3 == 3 == 3`,
+  `1 < 5 <= 5 != 4`, `"a" in "abc" in "xabcx"` y `10 > 5 > 7` dan lo mismo que CPython. El
+  mensaje «aquí no se pueden encadenar dos comparaciones» desaparece.
+- `if x = 3:` sigue dando su frase propia: «en un «if» se compara con «==», no con «=»».
+- Casos y señuelos medidos con CPython (`scratchpad/n7/medir-cond.py`).
+
+### 1. Teórica — la clase
+
+Cuatro problemas con juez, una exploración y un cierre. Las decisiones se toman sobre **datos que
+teclea otro**, y los casos ocultos viven en las fronteras, que es donde se equivoca un condicional.
+
+| # | Encargo | Tipo | Lo que se pide |
+|---|---|---|---|
+| 1 | ¿Alcanzas? | **juez** | lee la altura → `Puedes subir.` desde 120 cm, si no `Todavía no.` |
+| 2 | Tres caminos | **juez** | altura → `No puedes subir.` / `Subes con un adulto.` (120 a 149) / `Subes solo.` (150 o más) |
+| 3 | Un igual o dos | exploración | provocar el error de comparar con un solo `=` y leer lo que dice el editor |
+| 4 | El pase VIP | **juez** | altura y boleto → `No puedes subir.` / `Acceso VIP: subes ya.` / `Fila normal.` |
+| 5 | Entrada gratis | **juez** | edad y si es su cumpleaños → `Entrada gratis.` si tiene menos de 5 **o** es su cumpleaños |
+| 6 | Para cerrar | elección | el `elif` en otro orden: por qué el juez aceptó los ejemplos y rechazó un oculto |
+
+| Problema | Visibles | Ocultos | Señuelo → dónde cae |
+|---|---|---|---|
+| 1 | 130, 100 | 120, 119, 200 | `>` en vez de `>=` → «justo en la marca» |
+| 2 | 130, 170 | 100, 120, 149, 150 | el `elif` al revés (`< 150` primero) → «alguien que no alcanza»; `<= 120` → primera marca; `<= 150` → segunda marca |
+| 4 | 140 vip, 140 normal | 110 vip, 120 vip, 100 normal | preguntar el boleto antes que la altura → «VIP que no alcanza»; `or` → el mismo; `and` sin rama para los bajitos → dos ocultos |
+| 5 | 30 sí, 30 no | 3 no, 5 no, 4 sí | sólo el cumpleaños → «pequeño sin cumpleaños»; `and` → cae ya en un visible; `<= 5` → «justo en la edad límite» |
+
+Con otra estructura también se acepta: el problema 2 escrito con la cadena `120 <= a < 150` pasa
+los seis casos (medido).
+
+**El orden del `elif` es la lección que no revienta.** Los visibles del problema 2 (130 y 170)
+están elegidos para que el `elif` al revés los pase; sólo el oculto de alguien bajito lo tumba.
+La pregunta de cierre enseña ese veredicto y pide explicarlo.
+
+### 2. Gráfica
+
+Tecnia Código con «El juez de la Serpiente»: el tablero del juez con su ficha del manual y, debajo,
+**El Semáforo**, que sigue enseñando qué rama tomó la última ejecución. En la exploración, la ficha
+abierta y el Semáforo.
+
+### 3. Manual
+
+Cinco fichas de otros temas: `if/else` con la temperatura, `elif` con una calificación, `==`
+con un color, `and` con una excursión que pide edad y permiso, `or` con el fin de semana. Todas
+ejecutadas por la prueba.
+
+### 4. Lo que acompaña
+
+Plantilla en celdas (`# %% Calentamiento`, `# %% Problema 1`…), entrada, plan docente, registro,
+canon, prueba de la clase y video.
+
+### Qué hay que verificar jugando MAL
+
+El `>` en la frontera; el `elif` al revés; comparar con un solo `=`; el boleto preguntado antes
+que la altura; `and` donde iba `or`; la cadena de comparaciones aceptada; ningún dato oculto en
+pantalla; y que el Semáforo siga marcando la rama tomada con las celdas.
+
+
+---
+
+## §69 · Plan de calidad N6–N10 — un programa por materia (pliego, 6-oct-2026)
+
+> «El cliente solicitó una mejora sustancial de calidad en toda la plataforma… lo mejor
+> construido es Office; los bloques del nivel 6 en adelante son deficientes». El plan, el
+> diagnóstico medido de N6 y la política de modelos viven en `PLAN-CALIDAD-N6-N10.md`.
+
+Lo que este § fija para todas las clases que siguen:
+
+1. **La clase ocurre dentro del programa.** Si la clase es de redes sociales, el alumno reporta,
+   bloquea y escribe en la red social, no en un panel de botones al lado. El simulador deja de ser
+   una pantalla que se mira.
+2. **La misión dice el resultado, nunca los pasos.** «Que deje de molestarte y que un adulto pueda
+   ayudarte con pruebas» se evalúa leyendo el estado del programa. Los pasos los descubre el alumno.
+   Bit explica DESPUÉS del gesto, nunca antes.
+3. **El error cuesta y no encierra.** Cada tropiezo tiene una consecuencia visible dentro del
+   programa (el comentario que desaparece, el reporte que rechazan, el agresor que responde peor) y
+   resta una vez. La misión sigue abierta.
+4. **Las opciones se barajan** (`src/lib/ordenDeOpciones.ts`, determinista por id) y van todas del
+   mismo color.
+
+## §69.1 · `n6-alto-al-ciberacoso` — el protocolo, hecho en el muro (pliego, 6-oct-2026)
+
+### Qué estaba mal (medido)
+
+Exigencia 1. Tres botones al lado del muro, con «Reporto el comentario» como el único en esmeralda
+(`LabAltoAlCiberacoso.tsx:170`). Bloquear era un booleano local: el muro no sabía bloquear. Se
+aprobaba con el botón verde sin hacer nada en la red social.
+
+### Lo que se aprende (11–12 años)
+
+Ante el ciberacoso hay un protocolo y se puede ejecutar sin pelear:
+
+1. **No contestar.** Contestar le da al agresor lo que busca.
+2. **Guardar la prueba ANTES de bloquear.** Al bloquear, lo que escribió deja de verse, y sin
+   prueba un adulto no puede hacer mucho.
+3. **Bloquear** a la persona, no solo ocultar el comentario.
+4. **Reportar con el motivo correcto.** «No me gusta» no es acoso, y la plataforma no hace nada con
+   ese motivo.
+5. **Contárselo a un adulto de confianza**, con la prueba.
+
+Y como testigo: **no amplificar** (ni «me gusta» ni compartir), reportar, y escribirle en privado a
+quien lo está pasando mal.
+
+«No es tu culpa» se dice cinco veces con esas letras exactas en el camino bueno, igual que antes
+(criterio de `n4-si-algo-me-incomoda`).
+
+### Lo que el armazón gana (Tecnia Muro)
+
+Es la deuda que el propio archivo declaraba: «bloquear a una PERSONA es una deuda del armazón… si
+una segunda clase lo llegara a pedir, ahí sí pasaría a ser una capacidad». La pide
+`n6-privacidad-en-juegos` (§69.2). Todo es aditivo, así que las ocho clases que ya montan el muro
+no cambian:
+
+| Capacidad | Dato | Regla |
+|---|---|---|
+| Bloquear / desbloquear a una persona | `bloqueados: string[]` | `visibles()` oculta sus publicaciones y sus comentarios; el dato no se borra |
+| Capturar | `evidencias` | La captura es una COPIA del texto: sobrevive a que el comentario se oculte o se borre. No se puede capturar lo que no se ve |
+| Reportar con motivo | `motivoReporte`, por publicación y por comentario | Cuatro motivos: no me gusta, spam, acoso o burlas, información falsa |
+| Mensajes privados | `contactos`, `mensajes` | Un mensaje lleva adjuntas capturas. A alguien bloqueado no se le puede escribir |
+
+La relación de cada contacto (adulto, amigo, otro) es un dato que lee la clase para evaluar. La
+ventana nunca la pinta: «Mamá» no lleva una etiqueta de «adulto de confianza».
+
+### La clase: dos actos y una misión cada uno
+
+**Acto 1 · Te pasa a ti.** Sofi publicó su dibujo del gato astronauta. Tras «Seguir», Uriel comenta
+«jajaja qué feo te quedó, ni parece gato».
+
+Misión: *«Haz que Uriel deje de molestarte y que un adulto de confianza pueda ayudarte, con
+pruebas.»*
+
+Se cumple cuando, en el estado del muro:
+- hay una captura del comentario de Uriel;
+- el comentario está reportado como acoso;
+- Uriel está bloqueado;
+- un adulto (Mamá o la profe Lupita) recibió un mensaje con esa captura adjunta.
+
+| Tropiezo | Consecuencia dentro del muro | Puntos |
+|---|---|---|
+| Contestarle en los comentarios | Uriel responde peor («jaja ya te enojaste») | 0 |
+| Bloquear antes de capturar | El comentario desaparece y ya no se puede capturar. Desde el perfil de Uriel se puede desbloquear un momento | 0 |
+| Reportar con otro motivo | Aviso de la plataforma: «Revisamos tu reporte: con ese motivo no podemos hacer nada». Se puede volver a reportar | 0 |
+| Escribirle a un adulto sin la captura | Mamá contesta «¿Me enseñas qué te escribió?» | 0 (es la conversación natural) |
+| Escribirle solo a Valentina | Valentina te apoya, pero la misión pide un adulto | 0 |
+
+**Acto 2 · Le pasa a Lía.** Mateo comparte una foto de Lía con «😂 miren a Lía». Lleva 23 «me gusta»
+y comentarios de risa.
+
+Misión: *«Ahora le pasa a Lía. Haz lo que haría un buen amigo.»*
+
+Se cumple con:
+- la publicación reportada como acoso;
+- un mensaje privado a Lía de al menos dos palabras;
+- y sin tu «me gusta» puesto al final.
+
+| Tropiezo | Consecuencia | Puntos |
+|---|---|---|
+| «Me gusta» | El contador sube y Mateo escribe «¿verdad que sí da risa?». Se puede quitar | 0 |
+| Compartir | +1 compartido: ahora también lo ven tus amigos. No se deshace | 0 |
+
+**Cierre.** El historial con las cinco frases «No es tu culpa» y la insignia «Sabe defenderse sin
+pelear». No hay opción múltiple. **Los tropiezos no restan puntos.** La clase original lo decidió así, igual que `n4-si-algo-me-incomoda`: a quien sufre acoso no se le quita calificación por reaccionar mal. Se respeta. El costo es la consecuencia dentro del muro, y los tropiezos quedan contados para el docente. La regla 3 del §69 (el error cuesta) cede aquí ante esta.
+
+### Qué hay que verificar jugando MAL
+
+- Bloquear primero y descubrir que ya no hay captura.
+- Reportar como «no me gusta».
+- Contestarle a Uriel.
+- Mandarle el mensaje a Mamá sin la captura.
+- Darle «me gusta» y compartir en el acto 2.
+- Que ningún botón de una misma decisión sea de otro color.
+- Que la misión se cierre leyendo el muro y no un botón.
+- Que las ocho clases que ya montan el muro sigan verdes.
+
+
+## §69.2 · `n6-privacidad-en-juegos` — lo que tu perfil dice de ti (pliego, 6-oct-2026)
+
+### Qué estaba mal (medido)
+
+Exigencia 1. «Ajustas la visibilidad» era un botón del panel lateral. El muro no recibía ninguna
+acción (`LabPrivacidadEnJuegos.tsx:152`), el botón correcto era esmeralda y en la fase de
+publicar avanzaba cualquiera de los tres.
+
+### Lo que se aprende (11–12 años)
+
+1. Lo que publicas **en público** lo lee cualquiera, y junto dice cosas: a qué hora juegas, a qué
+   escuela vas.
+2. No todo hay que esconderlo. Un dibujo puede seguir público. Cerrar de más también es no saber
+   elegir.
+3. Un desconocido amable que pide datos (la escuela, el WhatsApp) es una señal. No se le dan, se le
+   bloquea y se le reporta, y se le cuenta a un adulto.
+4. La audiencia se elige **antes** de publicar. Lo que ya vio un desconocido no se des-ve.
+
+### Lo que el muro gana (aditivo)
+
+| Pieza | Para qué |
+|---|---|
+| Selector de audiencia en cada publicación propia (`onVisibilidad`) | Cambiar Público, Sólo amigos o Sólo yo donde se cambia en una red de verdad |
+| Selector de audiencia en el compositor (`compositor.visibilidad`) | Elegir antes de publicar |
+| Motivo «Me pide datos personales» y lista de motivos por clase (`motivos`) | El reporte correcto para un desconocido que pide datos. Ciberacoso sigue con sus cuatro |
+| Vista «Así te ve un desconocido» | Es la ya existente `perfilDe(…, { visibilidad: ['publico'] })` con su panel de pistas |
+
+### La clase: tres misiones
+
+**Misión 1 · Tu perfil habla de más.** Ary tiene tres publicaciones públicas: el horario de juego
+(«todos los días de 6 a 8»), la foto del primer día con el uniforme de la Secundaria 14 y un dibujo
+de un dragón. Jugador_Nocturno comenta en el horario: «te veo hoy a las 6 😉».
+
+Misión: *«Que un desconocido no pueda saber cuándo juegas ni a qué escuela vas, sin esconder lo que
+no hace falta.»*
+
+Se cumple cuando las pistas públicas del perfil ya no dicen ni el horario ni la escuela, y el dibujo
+sigue público y sin borrar. Esconder también el dibujo no cierra la misión: Bit pregunta qué tenía
+de peligroso.
+
+**Misión 2 · El desconocido amable.** Jugador_Nocturno escribe por Mensajes: «¡juegas muy bien! ¿en
+qué escuela vas? pásame tu whats y jugamos juntos».
+
+Misión: *«Jugador_Nocturno te escribió. Haz lo que harías para protegerte.»*
+
+Se cumple cuando:
+- no recibió ningún dato (si se le contesta, insiste: «¿y vives cerca?»);
+- está bloqueado;
+- está reportado con «Me pide datos personales»;
+- un adulto lo sabe.
+
+**Misión 3 · Elige antes de publicar.** *«Quieres invitar a tus amigos a tu torneo de mañana.
+Publícalo para que lo vean ellos y nadie más.»*
+
+Se cumple con una publicación nueva **publicada ya** como «Sólo amigos». Si se publica en público,
+un desconocido le da «me gusta» antes de que se cambie, y cambiarla después no deshace que ya la
+vio. Hay que borrarla y publicarla bien.
+
+Como en el resto de las clases de ciudadanía digital de la casa, **nada resta puntos**. El costo es
+la consecuencia dentro del muro.
+
+### Qué hay que verificar jugando MAL
+
+- Esconder las tres publicaciones.
+- Contestarle al desconocido con la escuela.
+- Reportarlo con otro motivo.
+- Publicar el torneo en público.
+- Que el selector de audiencia sea el del muro y no un botón de panel.
+- Que las clases que ya montan el muro sigan verdes.
+
+
+## §69.3 · `n6-crea-con-ia` — la imagen sale de la petición (pliego, 6-oct-2026)
+
+### Qué estaba mal (medido)
+
+Exigencia 1. Las tres tandas de imágenes eran fijas y salían **según el número de encargo**, no
+según la petición (`LabCreaConIa.tsx:133`, `guionCreaConIa.ts:116`). Cada tarjeta traía escrito por
+qué descartarla. «Pide lo mismo otra vez» no comprobaba nada. Lo que la clase promete —armar una
+petición, descartar lo que no cumple, ver que la misma petición no da lo mismo y firmar— era un
+recorrido de botones.
+
+### Lo que se aprende (11–12 años)
+
+1. Una petición es una lista de requisitos: qué, cómo, para dónde y qué no. **Lo que no pides lo
+   decide la máquina.**
+2. El generador **no obedece del todo**. Lo que prohíbes casi nunca aparece, pero a veces se cuela:
+   hay que mirar cada imagen contra la petición antes de usarla.
+3. La misma petición dos veces **no da lo mismo**. Una imagen generada no se puede volver a pedir
+   igual, así que se firma de dónde salió.
+4. Firmar es decir la verdad sobre la imagen: la herramienta, **la petición que de verdad la
+   generó** y la fecha.
+
+### El motor: `simuladores/generador/` (pieza compartida)
+
+Sirve a esta clase y, después, a `n8-genera-con-ia`. Es puro, sin React y determinista por semilla.
+
+| Regla | Dato |
+|---|---|
+| Cada imagen tiene tema, estilo, formato y elementos (texto con letras revueltas, persona, marca de refresco) | `ImagenGenerada` |
+| Pieza que no se pide = la elige el generador, al azar de la semilla | tema, estilo y formato salen del catálogo |
+| Elemento no prohibido = aparece con probabilidad 0,4 por imagen | lo que no se dice, se cuela |
+| Elemento prohibido = se cuela con probabilidad 0,15 por imagen | el generador no obedece del todo |
+| Petición completa = al menos una de las tres cumple | se garantiza rehaciendo la primera |
+| Cada generación usa una semilla nueva (petición + número de generación) | la misma petición nunca da lo mismo |
+| `cumple(imagen, requisitos)` | quien evalúa compara contra el encargo, no contra un texto |
+
+Las imágenes se DIBUJAN (fondo por estilo, glifo por tema, proporción por formato, y encima lo que
+se coló): el alumno descubre lo que falla mirando. Ninguna tarjeta trae escrito su defecto.
+
+### La clase: el encargo del comité
+
+> «Necesito el fondo del cartel vertical de la Feria de Ciencias: un volcán de bicarbonato, en
+> dibujo de plastilina. El título lo pongo yo encima, así que la imagen va **sin texto**. No tenemos
+> permiso de nadie para usar su cara, y es para la escuela: **nada de marcas**.» — Profe Ávila
+
+| # | Encargo (dice el resultado) | Se cumple cuando |
+|---|---|---|
+| 1 | Prueba el generador con la petición más corta que puedas | Generó una tanda con una sola pieza. Lo que sale es al azar, y se ve |
+| 2 | Pide lo que necesita el comité | Generó una tanda con todos los requisitos del encargo |
+| 3 | Vuelve a pedir **exactamente** lo mismo | Dos generaciones seguidas con la misma petición. Las dos tandas quedan lado a lado y no coinciden |
+| 4 | Pon en el cartel una imagen que cumpla el encargo | La imagen del cartel cumple (`cumple`). Poner una que no cumple **cuesta** y el comité la rechaza diciendo qué falta |
+| 5 | Firma de dónde salió | Herramienta, petición y fecha coinciden con la generación de la que salió esa imagen. Las peticiones a elegir son las del propio historial del alumno, no una lista con una correcta |
+| 6 | Cierre | Una pregunta: ¿por qué hace falta firmar una imagen generada? |
+
+Errores que cuestan (6 puntos cada uno, piso 60): poner en el cartel una imagen que no cumple y
+firmar con datos que no corresponden. Generar muchas veces no cuesta: explorar es la clase.
+
+### Qué hay que verificar jugando MAL
+
+- La petición vaga.
+- Olvidar «sin texto».
+- Poner en el cartel la imagen con una persona que se coló.
+- Firmar con otra petición del historial.
+- Que la misma petición dé tandas distintas.
+- Que una petición completa siempre deje al menos una imagen buena.
+- Que ninguna tarjeta diga su defecto.
+
+### Lo que salió (6-oct-2026)
+
+Construida tal cual el pliego, con tres correcciones al motor que sólo aparecieron jugando:
+
+1. **La petición completa podía repetir tanda.** Con todo pedido, lo único que varía es lo que se cuela,
+   y tres imágenes limpias seguidas son frecuentes: ~5 % de los pares de tandas salían idénticos y el
+   encargo 3 («no coinciden») habría mentido. Cada imagen lleva ahora un **encuadre** propio (dónde
+   cae el tema, a qué tamaño, cuánto gira) que no es requisito de nada. Medido: 0 de 300 pares iguales.
+2. **Lo que no se pide tiene que VERSE decidido.** La primera generación de casi todo el grupo es
+   «volcán» a secas, y con la semilla de esa petición salían las tres en plastilina y verticales: el
+   encargo 1 no enseñaba nada. Regla nueva del motor: si el estilo no se pide, las tres imágenes salen
+   en estilos distintos; si el formato no se pide, nunca salen las tres iguales.
+3. **Una imagen de la petición vaga puede pasar el comité.** Pasó en la quinta puerta. No se corrige:
+   es justo la lección de la firma. Se firma la petición que de verdad generó esa imagen, aunque no sea
+   la que el alumno planeaba, y la clase lo exige (hay prueba para eso).
+
+El estudio son tres columnas —lo que pides, lo que salió, lo que usas— con una lupa: ninguna miniatura
+dice su defecto, y lo que se coló se ve sólo de cerca. El comité rechaza enumerando lo que falta con
+las frases de `queLeFalta`. Bit nunca dice CUÁL pieza falta en el encargo 2, sólo cuántas.
+
+El generador es determinista: dos alumnos que piden lo mismo en el mismo orden ven las mismas
+imágenes. Es lo que hace repetibles las pruebas; el plan docente no promete lo contrario.
+
+---
+
+## §69.4 · `n6-contrasenas-fuertes` — la llave se arma, y la máquina la prueba (pliego, 6-oct-2026)
+
+### Qué estaba mal (medido)
+
+Familia 1 y familia 6. El alumno nunca arma una llave: «Sacar cuatro palabras» acierta siempre al
+primer clic (`LabContrasenasFuertes.tsx:470`), las tres cuentas se llenan con dos botones —«la misma
+frase en las tres» o «frases distintas»— y cambiar una llave saca otra frase al azar (`:535`). La
+máquina de adivinar es buena, pero sólo la usan los tres personajes del marcador de E1.
+
+Y el motor tiene un hueco que no se veía porque nadie armaba nada: todo lo que no está en la lista, no
+es un dato del perfil y no es un disfraz **no cae** (`adivinador.ts:153`). `gato` aguanta. Una sola
+palabra de la bolsa aguanta. Tres palabras aguantan.
+
+### La regla que NO se toca
+
+§24, heredada en el pliego de esta clase: **el alumno no teclea ninguna contraseña**, ni la suya ni una
+«inventada» (a esta edad, «inventa una» acaba siendo la de verdad). Todo es de Dani. Por eso la llave
+**se arma con fichas**, nunca con el teclado: el armador no tiene ningún campo para escribir.
+
+### El motor: dos pasos nuevos en `adivinador.ts`
+
+| Paso | Cae cuando | Se ve como |
+|---|---|---|
+| 1 · lista | igual que hoy | «Está en la lista…» |
+| 2 · dato | igual que hoy, comparando **sin espacios** (`rocky 2014` = `rocky2014`) | «Es un dato de su perfil…» |
+| 3 · disfraz | igual que hoy, sin espacios | «Debajo del disfraz…» |
+| 4 · piezas conocidas | la llave son piezas que la máquina conoce y, multiplicadas, no llegan a su **paciencia**: mil millones de intentos | «Son N piezas que ya conoce: …» |
+| 5 · a lo bruto | lo que no son piezas conocidas se cuenta por letras (`alfabeto^largo`), y cae si no llega a la paciencia | «Es corta: a lo bruto…» |
+
+Cuánto vale cada pieza (después de quitarle el disfraz): un dato del perfil de Dani, **1** —ya lo sabe—;
+una palabra de la lista común, 60; una palabra de la bolsa, ~300; un número, 10 por cifra; lo demás, por
+letras. El disfraz no suma nada: la máquina lo quita primero.
+
+Con eso, y medido: tres palabras de la bolsa = 27 millones → **cae**; cuatro = 8 100 millones →
+**aguanta**; cuatro palabras con la mascota dentro = 1 × 300³ → **cae**. Es la lección entera: no es
+el largo ni los símbolos, es cuántas piezas desconocidas tiene.
+
+`PACIENCIA = 1 000 000 000` es un número de la clase, no de la vida real (una computadora de verdad
+prueba mucho más). Se dice así en la ficha de la máquina: «Esta máquina se rinde a los mil millones».
+
+### El armador de llaves
+
+Se abre desde la acción «Poner llave» / «Cambiar la llave» de cada cuenta, y desde la página de la
+bolsa. Es un diálogo del sitio, no un panel de la clase. Las fichas, barajadas por bandeja:
+
+- **Del perfil de Dani** (lo que se ve en su perfil de NivelMax): su nombre, su mascota, su equipo, su juego, sus años.
+- **Palabras de siempre**: una muestra de la lista común.
+- **De la bolsa**: seis palabras sacadas al azar. Se pueden volver a sacar.
+- **Números y signos**: 1, 2, 3, 0, !, @.
+- **Disfrazar** (interruptor): a→@, o→0, e→3.
+- **Reusar**: la llave que ya tiene otra cuenta. Es una opción real, como en la vida: sus consecuencias
+  llegan en E4.
+
+La llave se va escribiendo con las fichas puestas (máximo seis). «Probar en la máquina» corre
+`intentarAdivinar` y deja el informe: paso, motivo e intento. Probar no cuesta nada. «Guardar» guarda
+la llave **aunque caiga**: la cuenta se queda con el informe pegado («Esta llave cae en el intento
+nº 12») y el encargo no se cumple.
+
+### Los encargos
+
+| # | Encargo | Se cumple cuando |
+|---|---|---|
+| 1 | Mira cómo cae cada llave del marcador | Igual que hoy (motivo de cada una, barajado) |
+| 2 | Arma una llave que la máquina no tumbe | Una llave armada por el alumno no cae. Si la primera ya aguanta, Bit le pide probar también una con un dato de Dani, sin que cuente para el encargo |
+| 3 | Ponle llave a cada cuenta | Las tres cuentas tienen una llave que no cae. Reusar está permitido |
+| 4 | Una página perdió su lista | Igual que hoy, pero cambiar es armar: ninguna cuenta se queda con la llave filtrada, y las nuevas no caen |
+| 5 | La segunda llave | Igual que hoy |
+| 6 | El código que no pediste | Igual que hoy, y la llave nueva del juego se arma y no cae |
+| 7 | Dónde se guardan | Igual que hoy |
+
+Nada resta puntos (clase de ciudadanía, decisión original). El costo es la consecuencia en las cuentas.
+
+### Qué hay que verificar jugando MAL
+
+- Armar con la mascota y un año: cae en el paso 2 aunque las fichas vayan separadas.
+- Disfrazar `password`: cae en el paso 3.
+- Tres palabras de la bolsa: caen en el paso 4. Cuatro aguantan.
+- Cuatro palabras con la mascota dentro: caen.
+- Guardar una llave que cae: la cuenta lo dice y E3 no se cumple.
+- Reusar en las tres: E4 revela las otras dos y exige cambiar las tres.
+- Cambiar la llave filtrada por otra que cae: no cierra E4.
+- Que el armador no tenga ni un campo para escribir (la barra de direcciones es del navegador y no recibe llaves).
+
+### Lo que salió (6-oct-2026)
+
+Construida según el pliego. Medido en Chromium con el motor nuevo: `rocky 2014` cae en el intento 65
+(paso 2, aunque vaya separada); tres palabras de la bolsa caen con 36 594 368 combinaciones; cuatro
+aguantan con 12 149 330 176. La bolsa tiene 332 palabras, no 300.
+
+Dos correcciones al pliego: el armador vive en un **portal al body** (dentro de la ventana del navegador
+quedaba cortado y Probar/Guardar caían bajo el pliegue), y el informe y los botones van **justo debajo
+de la llave**, antes de las bandejas: lo que se mira después de cada ficha tiene que estar a la vista.
+La regla «ningún campo» se refiere al armador; la barra de direcciones del navegador sigue, y no recibe llaves.
+
+---
+
+## §69.5 · `n6-proyecto-integrador` — la frase la escribe el alumno, y la tabla la juzga (pliego, 6-oct-2026)
+
+### Qué estaba mal (medido)
+
+Familia 1 disfrazada. El E4 —«escribe lo que vas a sostener»— compara el título con **seis frases
+fijas** que el panel de Bit lista (`pruebas.ts`, `afirmacionDe` por igualdad de texto). Escribir es
+copiar una de seis; tres las sostiene la tabla, tres no. Y la clase promete lo contrario: «vas a sostener
+una afirmación con tus propios datos, y a decir hasta dónde llega lo que sabes». Con seis frases dadas,
+nadie decide qué dicen los datos ni dónde se acaban.
+
+### La pieza: el juez de afirmaciones (`juezDeAfirmaciones.ts`, pura)
+
+Lee una frase en español sobre la tabla del salón (cinco días × cuatro categorías; semana: papel 45,
+plástico 30, comida 18, otros 12; total 105) y devuelve uno de cuatro veredictos, con el motivo en
+números:
+
+| Veredicto | Cuándo | Ejemplo |
+|---|---|---|
+| **sostenida** | la tabla lo confirma | «Lo que más se tira es papel» |
+| **falsa** | la tabla dice otra cosa | «Se tira más comida que plástico» (18 contra 30) |
+| **fuera de alcance** | habla de lo que no se midió: otras escuelas, el país, otros años, el futuro, lo que habría que hacer | «En el país se tira sobre todo plástico» |
+| **no entiendo** | no nombra de qué habla (una categoría o un día) ni qué dice de eso | «La basura es mala» |
+
+Lo que entiende, y la gráfica que habla de cada cosa:
+
+| Tipo de frase | Gráfica |
+|---|---|
+| Qué categoría es la que más (o menos) se tira, en la semana o en un día | barras |
+| Una categoría comparada con otra («más papel que plástico») | barras |
+| Qué día se tiró más (o menos), de todo o de una categoría | líneas |
+| Un día comparado con otro | líneas |
+| Qué parte del total es una categoría (la mitad, la cuarta parte, «casi», «más de», «menos de») | pastel |
+
+Un «no» delante invierte la frase. Un empate no sostiene «el día de menos»: el lunes y el miércoles
+tienen 18 los dos, y el juez lo dice. Las frases del panel viejo siguen dando lo mismo que antes.
+
+### Los encargos que cambian
+
+| # | Antes | Ahora |
+|---|---|---|
+| 4 · Lo que vas a sostener | Copiar una de seis | Escribir **su** frase como título de la diapositiva de los datos. Se cumple cuando el juez dice «sostenida». El panel de Bit ya no lista frases: enseña qué TIPOS de cosas puede decir una tabla, y el veredicto del juez sobre la frase del alumno con su motivo |
+| 5 · La gráfica | Elegir el tipo de la frase elegida | El tipo que el juez le asigna a la frase escrita |
+| 9 · ¿Qué proponen? | La propuesta de una de las tres frases | La propuesta que sale del **tema** de su frase (el papel, el jueves…), entre otras dos de temas distintos |
+
+Nada más cambia: la portada, las fuentes y las dos preguntas del público siguen igual.
+
+### Qué hay que verificar jugando MAL
+
+- Una frase falsa con números a la vista («más comida que plástico»): no cierra y el motivo da los números.
+- Una frase del país o de otro año: «fuera de alcance», no «falsa».
+- Una frase sin tema («la basura es mala»): «no entiendo», y dice qué falta.
+- «El lunes fue el día de menos basura»: empate, no se sostiene.
+- Cambiar la frase después de poner la gráfica: la gráfica deja de sostenerla si el tipo ya no corresponde.
+- La propuesta del E9 sigue al tema de la frase que quedó, no a la primera que se escribió.
+
+### Lo que salió (6-oct-2026)
+
+Construida según el pliego; las seis frases del panel viejo quedaron como prueba del juez (mismo
+veredicto, misma gráfica). La quinta puerta encontró un defecto anterior a esta reescritura: la tabla
+del grupo y las listas del panel eran texto claro sobre el fondo claro del panel de clase de Tecnia
+Diapositivas. Con la frase escrita por el alumno, esa tabla es lo que hay que leer, así que el panel
+ganó fondo propio y el veredicto va arriba, a la vista nada más escribir. El video no se tocó: ya
+contaba la clase como es ahora.
+
+## §69.6 · `n6-que-es-un-robot` — Bit describe la pieza y el sensor ve la caja (pliego, 6-oct-2026)
+
+### Qué estaba mal (medido)
+
+Dos defectos, los dos de la familia «la clase lo resuelve por el alumno»:
+
+1. **Bit dicta la clasificación al levantar la pieza** (`VOZ_TOMA`, `LabQueEsUnRobot.tsx:135`). Al
+   tomar el motor dice «Salida»; al tomar el sensor de luz, «los tres sensores meten información»;
+   al tomar la tarjeta, «No mide ni suena: decide». El encargo de la ronda 1 es justo decidir en
+   qué charola va cada pieza (ENTRA, DECIDE, SALE), y Bit lo dice antes del gesto. Rompe la regla 2
+   del §69: Bit explica DESPUÉS del gesto. Las frases que sí explican ya existen y están en su sitio,
+   en `VOZ_ACIERTO_CHAROLA`, que suena al acertar.
+2. **El robot no ve: consulta una tabla.** `robotSeDetiene` es `dondeEsta(banco, 'sensor-distancia')
+   === 'frente'`. El desenlace de la ronda 3 no depende de la geometría que el alumno ve: si mañana
+   se movieran el anclaje o la caja, la prueba seguiría diciendo «se detiene» aunque el sensor
+   apuntara al techo. Y la clase promete lo contrario: «cabe no es lo mismo que sirve». Un sensor
+   sirve si **mira hacia** lo que tiene que medir.
+
+### La pieza
+
+- **Un rayo de verdad.** El sensor de distancia lanza un rayo desde el punto de su anclaje en la
+  dirección de su `mira`, y se intersecta con la caja (un cubo alineado con los ejes, método de
+  las losas). Si choca a menos del alcance del sensor (1,2 m de escena), mide esa distancia.
+- **La parada sale de la medición.** La caja se acerca desde `CAJA_Z_LEJOS` hacia el robot en pasos
+  pequeños; en cuanto el sensor lee una distancia de 0,35 o menos, la tarjeta manda parar y la caja
+  se queda ahí. Si nunca la lee, llega a `CAJA_Z_CHOCA`: choque. El sitio donde se detiene no está
+  escrito: es la consecuencia de la medición (y coincide con `CAJA_Z_PARA` porque el frente está a
+  0,35 de la cara de la caja, comprobado en una prueba).
+- **El dibujo y la cuenta usan las mismas constantes.** `Caja3D` toma su altura (`CAJA_Y`) y su
+  tamaño (`CAJA_MEDIA`) de `bancoRobot.ts`, para que lo que el alumno ve y lo que el rayo cruza no
+  puedan separarse.
+- **Bit describe, no clasifica.** Al tomar una pieza Bit dice qué es y qué hace en el mundo físico
+  («le llega corriente y hace girar una rueda»), sin decir ENTRA, SALE ni DECIDE. Llevar esa
+  descripción a la charola es el trabajo del alumno; el acierto lo nombra después.
+
+### Qué debe verificar (jugando MAL)
+
+1. Sensor de distancia en el frente: se detiene, a 0,35 de la caja.
+2. En el techo o en la panza: el rayo no cruza la caja y choca.
+3. Ninguna frase de `VOZ_TOMA` contiene «entra», «sale», «salida», «decide» ni «sensores meten».
+4. La tarjeta y el resto de la clase siguen como estaban: 9 encargos, la pregunta final, la portada.
+
+### Lo que salió
+
+Las dos piezas, como dice el pliego: `sensorVeLaCaja` (rayo desde el anclaje en la dirección de su
+`mira`, método de las losas, alcance 1,2) y `dondeSeDetiene` (la caja avanza en pasos de 0,05 y se
+para en la primera lectura de 0,35 o menos). La prueba comprueba que el frente mide 0,35 justo en
+`CAJA_Z_PARA` y que en el techo y en la panza el rayo no cruza la caja en ninguna posición. `Caja3D`
+dibuja con `CAJA_Y` y `CAJA_MEDIA`. Las siete frases de `VOZ_TOMA` describen la pieza; una prueba lee
+el bloque y falla si vuelve a aparecer «entra», «sale», «decide» o «meten información».
+
+La quinta puerta encontró dos defectos que la reescritura no había causado:
+
+1. **Sin WebGL no se podía montar nada.** `BancoFisico3D` pone en `window` un oyente de `pointerup`
+   que devuelve la pieza si se suelta fuera del lienzo. En el respaldo no hay lienzo, y el `pointerup`
+   del propio botón «Poner en…» llegaba antes que su `click`: la pieza volvía a su sitio y el botón ya
+   no tenía nada que poner. En jsdom no se ve porque `fireEvent.click` no dispara `pointerup`. El
+   oyente ya sólo se registra con escena. La pieza es compartida: arregla también el respaldo de
+   `n5-conecta-perifericos`, `n5-manos-al-mantenimiento` y `n7-diagnostica-y-soluciona` (33/33 pruebas
+   siguen en verde). En Chromium sin WebGL la clase se jugó entera: el techo choca, el frente para, 9/9
+   y la consola limpia.
+2. **Los letreros de las charolas se tapaban** desde la cámara inicial: las charolas están a 1,0 una
+   de otra y el letrero mide 1,15 por defecto. El de la bahía, colgado delante, tapaba a las tres. Las
+   charolas llevan ahora letreros de 0,84 y el de la bahía va bajo y al frente.
+
+La escena sigue pidiendo la fase C: las piezas se ven pequeñas sobre una mesa grande y vacía. El
+video no se tocó, porque explica los tres oficios antes de la clase, que es su trabajo.
+
+## §69.7 · `n6-funciones-esenciales` — la tesorera pregunta y nadie dicta la fórmula (pliego, 6-oct-2026)
+
+### Qué estaba mal (medido)
+
+Familia 1, motor bueno y solución dictada. Los seis encargos del bloque 25 dan la fórmula entera
+(«escribe **=SUMAR.SI(B4:B11,"Entradas",E4:E11)**»). Los predicados eran buenos: función usada, valor y
+que la fórmula se entere si cambia un dato. Pero también exigían el rango **exacto**, así que una
+respuesta correcta como `B3:B11` (con el encabezado) no pasaba. Y la clase prometía que el alumno
+«caza un rango corrido»: el encargo 6 le dictaba el rango BIEN y el corrido sólo aparecía contado en
+el texto del final. Nunca lo veía.
+
+### La regla de N6, aplicada
+
+La primera vez que aparece una herramienta se nombra y se dice qué pide (SUMAR.SI: dónde buscar, qué
+buscar, qué sumar). Lo que no se dicta nunca es la fórmula. Cada encargo es una **pregunta** de la
+tesorera, con la celda donde va la respuesta.
+
+### La pieza: juzgar lo que la fórmula hace, no cómo se escribió
+
+`cuentaSoloEstosRenglones(libro, celda, filas, toque)` toca, uno por uno, los ocho renglones de la
+tabla (suma 1 a «Cuántos» o cambia la categoría) y comprueba que la respuesta cambia **exactamente** con
+los renglones que la pregunta dice. Transporte se entera del camión y del estacionamiento, y de nada
+más. «Más de 300» se entera del camión y de la guía. Así pasa cualquier forma correcta (con encabezado,
+con `$`, en otro orden si la función lo admite), y no pasa una suma a mano, un número tecleado ni un
+rango corrido. Para «Regalos», la fórmula tiene que dar `#¡DIV/0!` **y** dejar de darlo si un renglón
+pasa a llamarse Regalos: busca de verdad en la categoría.
+
+### El error sembrado (encargo 6)
+
+El libro llega con la fórmula de la tesorera ya escrita en B19, con lo pagado corrido una fila
+(`E5:E12`): da **3170**, se ve normal y no marca ningún error. Sus recibos dicen 3610 + 700. El encargo:
+«no le cuadra; encuentra qué tiene mal y arréglala, sin borrarla para escribir el número». El número
+tecleado no pasa, porque no se entera de la tabla.
+
+### Lo que queda igual
+
+La segunda mitad (HOY, el formato Fecha, quitarle y ponerle el disfraz a la salida, AHORA) es uso de
+herramientas: se siguen nombrando. La resta de los días pasa a ser pregunta («¿cuántos días faltan?»)
+y no se dicta `=B11-B10`.
+
+### Qué debe verificar (jugando MAL)
+
+1. Una respuesta correcta escrita distinto (con encabezado `B3:B11`) cierra el encargo.
+2. Un número tecleado, una suma a mano de dos celdas y un rango corrido no lo cierran.
+3. B19 abre con 3170 y el encargo 6 no se da por bueno hasta que la fórmula da 4310 leyendo la tabla.
+4. Ninguna instrucción del bloque 25 contiene una fórmula completa.
+
+### Lo que salió
+
+Los seis predicados del bloque 25 dejaron de comparar el rango escrito y pasaron a
+`cuentaSoloEstosRenglones`: se toca cada uno de los ocho renglones y la respuesta tiene que moverse
+exactamente con los que la pregunta nombra. Pasan con `$B$3:$B$11` y el encabezado dentro. No pasan
+el 4980 tecleado, `=E4+E5` ni `=SUMAR.SI(B4:B4,"Transporte",E4:E4)+180`, que da el número justo y no se
+entera del estacionamiento como parte de la pregunta (los tres están en la prueba). B19 llega con
+`=SUMAR.SI(B4:B11,"Entradas",E5:E12)` y enseña 3170. Hay una prueba que lee los seis encargos y sus
+pistas y falla si vuelve a aparecer una fórmula `=…SI(` escrita. Pruebas 13/13, contrato 1380/1380.
+Quinta puerta en Chromium: B19 en 3170, el número tecleado no cierra, sin comillas sale
+`#¿NOMBRE?`, la forma con encabezado y `$` avanza al encargo 2, y la consola queda limpia.
+
+Dos deudas a la vista. **La columna A corta los conceptos y las preguntas** («Total en Transp…»): el
+modelo de hoja no guarda ancho de columna, así que es de toda la sala de Excel y no de esta clase. Y
+**el video sigue en la voz vieja**: su escena g4 promete «provocarás a propósito el error de las
+comillas» y la g2 se repite en la g6. Renarrarlo espera la decisión de XTTS.
+
+## §69.8 · `n6-elige-la-grafica` — la pregunta llega y la gráfica la eliges tú (pliego, 6-oct-2026)
+
+### Qué estaba mal (medido)
+
+La clase se llama «elige la gráfica», y los cuatro encargos donde había que elegir dictaban el tipo y el
+rango («marca desde **A4 hasta B9** y pulsa **Barras**»). Además, la señal del modo guía ponía el aro
+sobre el botón exacto, y las cinco gráficas vivían en dos sitios: tres en la cinta y dos en un panel.
+Nadie elegía nada.
+
+### La pieza
+
+1. **Las cinco juntas.** El panel «Gráficas» trae las cinco (columnas, barras, líneas, circular y
+   dispersión) en el orden de Excel y con el mismo aspecto. Las tres de la cinta siguen también en la cinta.
+2. **Cuatro encargos pasan a pregunta**: ¿cuál puesto vendió más?, ¿cómo fue cambiando la venta?,
+   ¿qué parte del total se llevó cada categoría?, ¿ayuda preparar más a vender más? Cada uno nombra la
+   tabla y dónde está, y nada más. La señal apunta al grupo de gráficas, no al botón. La pista razona
+   la pregunta («¿esto compara cosas o sigue una misma cosa en el tiempo?»), nunca nombra el tipo.
+3. **Se acepta lo que contesta, no un botón.** «¿Cuál vendió más?» acepta barras o columnas, que son
+   la misma comparación. Y el rango puede ir con o sin la fila de encabezados.
+4. **Las provocaciones se quedan** (la línea sobre los puestos, el pastel sobre las semanas, el pastel
+   de veinte, el de cosas que no suman), porque son errores pedidos a propósito y comprobados. También
+   se quedan dictadas las dos gráficas gemelas del eje cortado: son el montaje de un experimento, no
+   una elección.
+
+### Qué debe verificar (jugando MAL)
+
+1. Un pastel o una línea sobre los puestos no cierra el encargo 1; barras o columnas sí.
+2. El rango sin encabezado vale.
+3. Ningún encargo de elegir nombra el tipo de gráfica, ni en la instrucción, ni en la pista, ni en la señal.
+
+### Lo que salió
+
+Distinto de lo que decía el pliego, en un punto: **no hay panel**. La primera versión juntó las cinco
+gráficas en el panel «Gráficas», y la quinta puerta mostró que el panel le quitaba a la hoja dos
+columnas y media. La gráfica de los puestos (8 columnas de ancho) se cortaba justo en la barra de
+Pintacaritas, 71: la respuesta de la pregunta. Ahora la clase pasa su propia cinta
+(`CINTA_ELIGE_GRAFICA`, derivada de la del Básico sin tocarla), con las cinco en Insertar → Gráficos
+como en Excel, y la hoja recupera su ancho. `PanelGraficas.tsx` se borró, y Barras y Dispersión
+salieron de `FUERA_DE_LA_CINTA`, que les habría dado el domicilio falso de «La ventana».
+
+**Una pieza nueva del motor de Office: `PasoClase.equivocado`.** Sin señal sobre el botón, la guarda del
+desvío no veía nada, y probar los cinco tipos al tanteo salía gratis. El campo es opcional (no cambia
+ninguna otra clase): la ventana lo lee tras cada cambio que no cumple el encargo, muestra el motivo y
+cobra un tropiezo, una sola vez por error distinto. Una elección defendible pero no la mejor (columnas
+para una evolución) avisa sin restar.
+
+La entrada traía en su primera ficha la tabla de respuestas («Barras: ¿cuál es más grande? Líneas:
+¿cómo cambió?…»). Ahora nombra las cuatro preguntas y dice que cuál va con cuál lo descubre el alumno.
+
+Pruebas 11/11: pastel y línea no cierran y avisan; columnas sin encabezado cierran; ningún encargo de
+elegir nombra el tipo; la cinta de la clase trae cinco y la compartida sigue con tres. **Costo medido**:
+el recorrido completo tarda 101 s a solas sin panel, contra 79 s con panel (jsdom pinta más columnas),
+así que esa prueba lleva su propio límite de 240 s. Quinta puerta en Chromium: el pastel no cierra y
+avisa, las columnas avanzan, la gráfica se ve entera y la consola queda limpia.
+
+## §69.9 · `n6-interpreta-la-informacion` — la avería se caza, no se señala (pliego y lo que salió, 6-oct-2026)
+
+> Esta sección se escribió **después** del parche, al revés de la regla. Va junta, pliego y resultado,
+> para que el orden quede dicho.
+
+### Qué estaba mal (medido)
+
+La clase es auditar el libro que dejó otro tesorero: encontrar lo que está mal sin que nadie lo diga.
+Las herramientas (Mostrar fórmulas, Inspeccionar libro, Hipervínculo) se nombran, lo que la regla de N6
+admite. Pero tres averías llegaban ya cazadas:
+
+1. **El número a mano.** El texto final del encargo 1 decía «Uno —el de Camila— dice sólo `140`», y el
+   encargo 2 daba la celda y la fórmula: «ponte en **D6** y escribe **=B6*C6**».
+2. **El `#¡REF!`.** Daba la celda y la fórmula arreglada.
+3. **El `#¡DIV/0!`.** Daba la celda vacía, la causa y el número.
+
+Además los predicados aceptaban un atajo: `=150` y `=900-300` «guardan una regla» y dan el número justo,
+así que cerraban el encargo sin leer la fila.
+
+### Lo que cambió
+
+- El encargo 1 explica qué enseña la tapa levantada y termina con «mira bien la columna: no todas son
+  reglas». No nombra a nadie.
+- El encargo 2 («El Total escrito a mano») pide encontrar el Total que no es una regla y hacerlo calcular
+  como sus vecinas. La pista razona; no da ni la celda ni la fórmula.
+- Los encargos 5 y 6 parten del parte de Inspeccionar libro («uno está en Torneos», «el otro en
+  Resumen»), que es lo que esa herramienta de verdad dice, y piden encontrar y arreglar. El dato de los
+  meses se sigue dando, porque es un dato del tesorero y no la respuesta. Lo que se caza es dónde falta.
+- Los predicados del 2 y del 5 exigen además que la celda **se entere** de su fila: si cambian los
+  meses, la cuota, lo cobrado o lo gastado, el resultado cambia. `=150` y `=900-300` ya no cierran.
+- Los hipervínculos siguen dictando su destino (`h2!A1`): es la sintaxis de la herramienta, no el
+  resultado de una avería.
+
+Pruebas 10/10, con los dos atajos nuevos en la prueba. La batería de Office (28 suites, 1772 pruebas)
+pasó con los cambios compartidos de §69.8 dentro.
+
+Quinta puerta en Chromium: `=150` en el Total de Camila no cierra el encargo, `=B6*C6` sí, y la consola
+queda limpia. (La insignia «1 Issue» del modo de desarrollo de Next.js tapa las pestañas de hoja abajo
+a la izquierda e intercepta el clic. Es ruido de desarrollo y no existe en producción; el script la oculta.)
+
+## §69.10 · `n6-reto-robot` — un programa, dos mapas (pliego, 6-oct-2026)
+
+### Qué estaba mal (medido)
+
+Se llama «Reto: resuélvelo con tu robot» y era una receta: los seis encargos dictaban bloque por bloque
+(«pon “avanzar” DOS veces», «pon “si”…; en su hueco, “¿hay pared adelante?”; dentro, “girar derecha”»),
+en una cuadrícula de 3×3 sin un solo obstáculo. El «si» se usaba porque el texto lo mandaba, no porque
+hiciera falta: con tres casillas, contar bastaba.
+
+### Lo que se aprende (11–12 años)
+
+Un programa que cuenta pasos sólo sirve para el mapa que contó. Uno que **mira antes de moverse** sirve
+para mapas que nunca vio. Ésa es la razón de ser de un «si» dentro de un «repetir», y aquí tiene que
+hacer falta de verdad.
+
+### La pieza
+
+- **Dos mapas de 5×5 con paredes**, en pestañas sobre la cuadrícula: «El pasillo» (la pared llega a la
+  columna 4) y «La esquina lejana» (llega al borde). Los dos se resuelven yendo al este hasta topar y
+  luego al sur, pero el sitio del giro es distinto.
+- **La bandera detiene al robot**, como la zona de meta de un campo de competencia. Así un programa que
+  repite de más no se pasa de largo.
+- **El juez corre el programa en los DOS mapas sin pintarlos** y pide llegar sin chocar. Una secuencia
+  fija no puede: o gira antes de tiempo en un mapa, o choca en el otro. Hace falta mirar.
+- **Bit y los encargos dan la meta y el mapa, nunca los bloques.** Los bloques nuevos («si»,
+  «¿hay pared adelante?», «repetir») se nombran la primera vez, como admite la regla de N6.
+
+### Los encargos
+
+1. **Llega a la bandera** en el Mapa 1, con lo que quieras.
+2. **Otro mapa, el mismo programa**: cambia de pestaña y prueba sin tocar nada. (Provocación: casi
+   siempre falla, y ése es el punto.)
+3. **El reto**: un solo programa que llegue en los dos mapas sin chocar y sin cambiarlo.
+4. **Un «si» sin pregunta**: vaciar el hexágono a propósito y ver al robot chocar (se conserva de la
+   versión anterior: la lección de que una pregunta vacía se contesta «no» es buena).
+5. **¿Por qué chocó?**, con opciones barajadas.
+
+### Qué debe verificar (jugando MAL)
+
+1. «avanzar ×4, girar, avanzar ×4» llega a las dos banderas, pero chocando en el Mapa 1: no cierra el reto.
+2. «avanzar ×3, girar, avanzar ×4» llega en el Mapa 1 y en el Mapa 2 se estrella: no cierra el reto.
+3. «repetir: si hay pared → girar derecha; avanzar», con repeticiones suficientes, cierra el reto.
+   Con muy pocas repeticiones, no llega.
+4. Ningún encargo nombra el orden de los bloques.
+
+### Lo que salió
+
+Como dice el pliego. El juez es `correrEnMapa` (el intérprete paso a paso, con el mundo puesto al día
+antes de cada pregunta, igual que en la sala) más `llegaEnLosDosMapas`. La clase no tenía prueba propia,
+sólo la del contrato. Ahora tiene `n6-reto-robot.test.ts` (7 pruebas): la secuencia contada del Mapa 1
+falla en el 2; «avanzar ×4, girar, avanzar ×4» llega a las dos banderas chocando y no cierra; el programa
+que mira cierra con 10 y con 12 repeticiones, y no con 5; el «si» vacío se estrella; ninguna instrucción
+dicta cantidades ni posiciones. Contrato y plan docente en verde.
+
+La quinta puerta encontró dos cosas:
+
+1. **La sala de bloques pinta texto plano**: los `**…**` de los encargos salían como asteriscos. Se
+   quitaron (las clases viejas de la sala usaban mayúsculas para enfatizar, y ésa es la convención).
+2. **La cara de Bit tapaba el arranque del texto del encargo** en las tres clases de la sala, aun con el
+   globo recogido. El panel del encargo ganó un margen izquierdo de 88 px. El globo sigue encima unos
+   segundos, mientras Bit habla (3 s + 450 ms por palabra), y luego se recoge. En reposo el texto queda libre.
+
+Las dos pestañas de mapa son parte del marco del mapa, no un panel aparte; se apagan mientras el robot
+corre. La entrada se reescribió: decía «seis encargos» y «9 casillas», y su cuarta ficha («Una pregunta
+vacía se contesta que no») era la respuesta literal de la pregunta final. Ahora esa ficha es el reto,
+«Un programa, dos mapas». El video existe (18-ago) y está en la voz vieja; la cabecera de la entrada decía que faltaba, y era el
+comentario el que estaba desfasado. La arena sigue siendo
+2D, como fija el canon para BLOQUES; un robot 3D con sensor de rayo es de la fase C.
+
+## §69.11 · `n6-programa-un-microbit` — qué sombrero corre lo descubre el alumno (pliego, 6-oct-2026)
+
+### Qué estaba mal (medido)
+
+Es la parada 2 de robótica y la puerta de entrada a los **eventos**: cada guion empieza con un sombrero
+que dice cuándo corre. Pero el encargo 1 decía «**bajo el sombrero “al presionar A”** arrastra “mostrar
+icono” y elige feliz», o sea, la respuesta a la pregunta de la clase. Y se cumplía con **cualquier** cara
+feliz en pantalla, aunque saliera del sombrero de B o de «al empezar». El encargo 5 («Arréglalo») dictaba
+el orden correcto.
+
+### Lo que cambia
+
+- Encargos 1 y 2 en forma de meta: «que al pulsar A la placa ponga una cara feliz», «y que B ponga una
+  triste». Se nombran el bloque «mostrar icono» y la idea de que el sombrero dice cuándo corre; no se
+  dice cuál. **Se juzgan corriendo sin pantalla la pila de ESE botón**, y piden haberlo pulsado.
+- El encargo 5 pide el resultado («al reiniciar, que quede la estrella, **sin quitar ninguno de los dos
+  bloques**») sin dictar el orden: con los dos bloques obligados, el orden es lo único que se puede cambiar,
+  y ésa es la lección. Se juzga corriendo «al empezar» sin pantalla.
+- Se quedan la provocación del sombrero vacío, la del orden al revés y la pregunta final (barajada).
+
+### Qué debe verificar (jugando MAL)
+
+1. La cara feliz puesta bajo «al presionar B» (o bajo «al empezar») no cierra el encargo 1.
+2. Armar bien la pila de A sin pulsar A no lo cierra.
+3. En el encargo 5, quitar «apagar pantalla» no cierra; «estrella» y luego «apagar» tampoco; «apagar» y luego
+   «estrella», sí.
+
+### Lo que salió (6-oct-2026)
+
+- `pantallaTras(programa, pila, desde)` corre una pila sin pantalla con el mismo `reducirMicrobit` de la
+  placa. El encargo 1 pide tres cosas a la vez: que la **última corrida** haya sido la del botón A
+  (`ultimaPila`, que pone `manejarAccion`), que la foto del programa con la que corrió (`parte.programa`)
+  deje la cara feliz, y que el editor la siga dejando. Así no cierra ni la cara de B, ni la pila bien armada
+  sin pulsar, ni haber pulsado A vacío antes de armarla. El 2 pide además que A siga poniendo la feliz.
+- El encargo 5 (`reinicioDejaLaEstrella`) exige los dos bloques en «al empezar» y lo corre desde una pantalla
+  con la cara triste puesta, para que «apagar» tenga algo que apagar.
+- Prueba propia nueva, 14/14 (antes no tenía): las tres maneras de fallar el 1, el 2 sin la feliz de A, los
+  dos órdenes del 5, el orden bueno sin reiniciar, y que ninguna instrucción diga bajo qué sombrero va ni
+  traiga markdown. Contrato y planeación, 1639/1639.
+- Quinta puerta en Chromium, jugando mal el encargo 1 con el editor de verdad (tocar ficha, tocar hueco):
+  la feliz bajo B pulsando B no cierra, pulsar A vacío después tampoco, armarla bajo A sin pulsar tampoco,
+  pulsar A sí. Consola limpia.
+- La entrada no cambia: sus fichas explican qué es un sombrero sin decir cuál corre, y los números siguen
+  siendo seis encargos y tres guiones.
+- El video estaba desfasado desde antes de este cambio: narra contar números, un bloque de pausa, un evento
+  «A y B a la vez» y un corazón que la clase no tiene, y g3 = g6. Queda en la lista que espera la decisión
+  de la voz.
+
+## §69.12 · `n6-bloques-vs-codigo` — leer el texto, no sólo verlo (pliego, 6-oct-2026)
+
+Diseño original en el §61.3. Esto lo corrige; no lo sustituye.
+
+### Qué estaba mal (medido)
+
+- **Los encargos 3, 4 y 5 eran receta**: «agrega un segundo decir al final», «pon repetir, elige 3, y suelta
+  un decir DENTRO de su boca», «pon otro decir abajo del todo, fuera del repetir». El alumno no tenía que
+  pensar dónde va nada: la sangría se le daba hecha y sólo la miraba.
+- Los jueces eran sueltos: el 4 pedía «un decir dentro de un repetir» y **cinco renglones en la consola**, sin
+  importar qué dijeran.
+- **La clase promete «leer en texto un programa que armaste con bloques» y nunca pide leer texto para hacer
+  algo.** El texto sólo se mira.
+- **El texto mentía**. La cara de la derecha escribe `for vuelta in range(3):` / `print(vuelta)`, que en
+  Python dice 0, 1, 2; la consola de la clase decía 1, 2, 3. Además contaba por cada `print(vuelta)` y no
+  por vuelta: dos `print(vuelta)` en la misma boca salían con números distintos. La parada siguiente es
+  Python de verdad; lo primero que vería el alumno es que la clase anterior le contó mal.
+
+### Lo que cambia
+
+- **El número de vuelta, como en Python**: empieza en 0, cambia una vez por vuelta (no por renglón), y la
+  variable es una sola —un `repetir` dentro de otro la reescribe, igual que en Python—. Fuera de cualquier
+  repetir, antes de que exista, la consola dice que todavía no existe. Se detecta la vuelta nueva cuando
+  vuelve a correr el primer bloque de la boca, porque el intérprete avisa `entra` una sola vez por bucle.
+- Encargo 3 (`tres-veces`), en forma de meta: «que la consola diga una misma palabra tres veces seguidas,
+  con UN solo bloque decir para ella». Se nombra el bloque «repetir _ veces» y dónde está; no se dice dónde
+  va el decir. Juez: se corre sin pantalla la foto del programa que corrió.
+- Encargo 4 (`dentro-y-fuera`): «que después de las tres, diga otra cosa UNA sola vez». Se juzga por lo que
+  sale: la palabra nueva puesta dentro saldría tres veces. Bit señala después los cuatro espacios.
+- **Encargo 5 nuevo (`lee-y-arma`), el que faltaba: el programa se da EN TEXTO** y el alumno lo arma en
+  bloques. El texto trae un `for` con un `print(vuelta)` dentro y una línea después; se juzga que la cara
+  de la derecha del programa que corrió diga eso mismo (sin importar mayúsculas en lo que se dice). Lo que
+  sale, 0 1 2 3, deja la segunda sorpresa: Python cuenta desde 0.
+- Se va `linea-nueva` (un bloque más es una línea más): el encargo 4 ya lo hace.
+- La sala de bloques gana un campo opcional, `EncargoBloques.codigo`, que se pinta como texto de código
+  bajo la instrucción. Ninguna otra clase lo usa todavía.
+- Se quedan los encargos 1, 2, 6, 7 y 8. Siguen siendo 8.
+
+### Qué debe verificar (jugando MAL)
+
+1. Encargo 3: tres decir iguales en fila no cierran; un repetir con el decir dentro, sí.
+2. Encargo 4: la palabra nueva dentro de la boca (sale tres veces) no cierra; antes del repetir, tampoco.
+3. Encargo 5: el `print` de después metido en la boca no cierra; `range(3)` en vez de `range(4)`, tampoco;
+   el texto exacto, sí.
+4. `print(vuelta)` dos veces en la misma boca sale con el mismo número en cada vuelta; anidado, el de dentro
+   reinicia a 0.
+
+### Lo que salió (6-oct-2026)
+
+- La vuelta, en `reducirTexto`: una pila de `repetir` abiertos; cada uno recuerda el primer nodo que corrió
+  en su boca, y cuando ese nodo vuelve a correr empieza otra vuelta (y los de dentro ya terminaron). Así sale
+  lo mismo que en Python con UNA sola variable: `range(2)` dentro de `range(2)` da 0 1 0 1, y un
+  `print(vuelta)` después sigue diciendo 1. Antes de cualquier repetir, la consola dice «Error: «vuelta»
+  todavía no existe».
+- Los jueces 3, 4 y 5 corren sin pantalla la foto del programa que corrió (`parte.programa`, que el hook
+  guarda al cerrar): `tresVecesConUnBloque`, `despuesUnaVez`, `armaElTexto` (compara la cara de texto
+  línea a línea con `TEXTO_A_ARMAR`).
+- Suite de la clase 29/29 (antes 22): los tres jueces nuevos jugando mal, tres pruebas de la vuelta y que
+  ninguna instrucción dicte dónde va un bloque; la partida perfecta por la vía del dedo, reescrita, saca 100.
+  Las cinco suites de la sala de bloques, 119/119.
+- **Quinta puerta, con dos hallazgos de antes**:
+  1. **La consola cortaba en silencio todo lo que pasara de seis renglones**: `max-height` con
+     `overflow: hidden` y una lista que, sin `min-height: 0`, nunca encogía. El repetir 5 dentro de
+     repetir 5 de la propia suite escribe 26 renglones; el alumno veía 6. Ahora la lista se desplaza y sigue
+     al último.
+  2. El código del encargo, debajo de la instrucción, quedaba bajo el globo de Bit justo en las líneas que
+     importan → flota a la derecha del panel.
+  Jugado en Chromium hasta el encargo 5: «Ya» dentro de la boca no cierra (sale cuatro veces), después sí,
+  y la consola dice Cuenta 0 1 2 3 Ya. Consola del navegador limpia.
+- El video (voz nueva) contaba bien la clase salvo una cosa falsa: c10 decía que con cinco espacios en vez de
+  cuatro Python se queja. No: cinco en todas las líneas de la boca es Python válido; lo que no perdona es
+  mezclar. c10 y a3 (que ahora nombra el encargo de leer) renarradas con sufijo `b`.
+
+## §69.13 · Las tres clases web de N6 — la meta se ve, el código no se dicta (pliego, 6-oct-2026)
+
+`n6-como-se-hace-una-pagina`, `n6-html-basico` y `n6-publica-tu-pagina` (unidad «Mi primera página web»).
+
+### Qué estaba mal (medido)
+
+Los jueces están bien hechos —leen el árbol de la página, no el texto, y ya se jugaban mal—. Lo que falla es
+lo que se le dice al alumno: **casi todas las instrucciones traen la línea de código que hay que escribir**.
+
+- `html-basico`, la clase de construir la página desde cero, dicta las siete: `<h1>Robots del 6.º B</h1>`,
+  `<img src="robot.png">`, `<img src="robot.png" alt="…">`, `<a href="https://feriadeciencias.mx">…</a>`,
+  `<h2>Nuestros proyectos</h2>`, y la pista de la lista trae el `<ul>` entero con sus tres `<li>`. Se
+  termina copiando.
+- `como-se-hace-una-pagina`: el encargo 6 dicta la línea (`<p>Aquí cuentas qué hacen en el club</p>`) y el 5
+  dice el arreglo que el aviso de abajo ya trae («vuelve a poner </h1>»).
+- `publica-tu-pagina`, la clase de REVISAR antes de publicar: el encargo 2 señala la línea exacta de los
+  datos («la línea 10 entera, la que empieza por <p class="contacto">»), el 3 dice la línea y la pista dice
+  el error («una ese de más»), y el 4 dicta los dos arreglos con su código en la pista. La revisión la hace
+  el texto de la instrucción, no el alumno.
+
+### Lo que cambia
+
+- **La meta se ve.** El encargo de la sala web gana un campo opcional, `PasoWeb.modelo`: el HTML de cómo tiene
+  que quedar la página. La sala lo pinta pequeño junto a la instrucción, con la misma `VistaPagina` y las
+  mismas hojas de estilo del proyecto, bajo el rótulo «Así se tiene que ver (con tus palabras)». Se ve el
+  resultado; el código no aparece en ningún sitio.
+- `html-basico`: cada encargo dice QUÉ tiene que tener la página y nombra la etiqueta (es la primera vez que
+  se usa: la concesión de N6), nunca la línea. La lista nombra `ul` y `li` y la regla de que el `li` va
+  dentro; la imagen nombra `img` y `src`; el enlace nombra `a` y `href` y da la dirección (es un dato, no
+  código). Los encargos de construir llevan modelo; el 5 (el `alt`) no, porque el `alt` no se ve —ésa es su
+  lección— y se pide leyendo el aviso amarillo.
+- `como-se-hace-una-pagina`: el 5 pide arreglarla leyendo el aviso, sin decir qué escribir; el 6 pide un
+  segundo párrafo que cuente qué hacen en el club, con modelo y la pista de copiar la FORMA del que ya hay.
+  Los encargos 1, 2 y 4 (cambiar el título, la pestaña, romperla a propósito) se quedan: son el primer
+  contacto y nombrar dónde está algo es la concesión de N6; la provocación se dicta por diseño.
+- `publica-tu-pagina`: **los datos que delatan dejan de estar juntos en un párrafo marcado**. El teléfono, la
+  calle y la hora de salida quedan repartidos en tres sitios de la página, mezclados con cosas que sí van.
+  El encargo 2 pide quitar lo que diga dónde encontrarte sin borrar lo demás; el juez ya lee el texto que
+  se ve y ya exige que la página siga en pie. El 3 y el 4 piden arreglar lo que dicen los avisos sin
+  decirlo; la pista del 3 sugiere comparar el nombre del `<link>` con el de la pestaña del archivo.
+
+### Qué debe verificar (jugando MAL)
+
+1. Ninguna instrucción ni pista de las tres clases trae una etiqueta completa con su contenido (`<x>…</x>` o
+   `<img …>`) salvo la provocación del encargo 4 de `como-se-hace-una-pagina`, que nombra `</h1>`.
+2. `publica-tu-pagina`: quitar sólo el párrafo del teléfono no cierra el 2 (quedan la calle y la hora);
+   borrar la lista entera para quitar un dato, tampoco (la página ya no sigue en pie).
+3. El modelo se pinta en los encargos que lo traen y en ningún otro, sin que la vista del alumno cambie.
+
+### Lo que salió (6-oct-2026)
+
+- Nota de orden: este pliego se escribió antes del código, pero entró al documento después (se me quedó sin
+  pegar). El contenido es el de entonces.
+- `PasoWeb.modelo` en `tiposWeb.ts`; `EstudioWeb` lo pinta en el encargo con `analizarPagina` sobre las hojas
+  del proyecto, a 390 px y al 50 %, bajo «Así se tiene que ver (con tus palabras)», y lo quita al cumplirse.
+  `VistaPagina` gana `testId` (prefijo también de su lienzo) para que el modelo no se confunda con la vista
+  del alumno: la primera corrida rompió dos pruebas justo por eso.
+- `html-basico` lleva modelo en seis de siete encargos (el del `alt` no); el último modelo es una página sin
+  un solo problema que cumple su propio encargo, y hay prueba de ello. `como-se-hace-una-pagina`, en el
+  párrafo nuevo. `publica-tu-pagina`: la hora en el párrafo del club, la calle dentro de un proyecto de la
+  lista, el teléfono en un párrafo con información que sí va; `laPaginaSigueEnPie` pide además que siga el
+  día en que se junta el club.
+- Una prueba nueva en las tres suites: ninguna instrucción ni pista trae una etiqueta entera con su contenido.
+  Publica gana dos jugadas malas: borrar el proyecto entero para quitar la calle y borrar el párrafo entero
+  para quitar la hora no cierran. Suites web 40/40, todas las que tocan la sala web 1497/1497.
+- **Quinta puerta, con un hallazgo de antes y uno mío**:
+  1. **En `html-basico` la mesa de imágenes tapaba «Lo que hay que arreglar»** —la lista que los encargos 5 y
+     siguientes piden leer—: el cuerpo de la sala encogía a 360 px para dejarle sitio y sus columnas se salían
+     por debajo (medido: lista 656–800, mesa 659–768). Ahora, en el marco de estas clases (`.pgw-marco`), el
+     cuerpo no encoge y se desplaza la pantalla del gabinete: lista hasta 800, mesa desde 812. Comprobado que
+     `n10-proyecto-web-real`, que comparte el marco, se ve igual.
+  2. El modelo alargaba el encargo y el botón de pista quedaba bajo la mesa → el lateral se limita a su fila y
+     se desplaza.
+  Consola limpia; a 400 px, sin desplazamiento lateral.
+- Las entradas: la ficha 3 de `publica` daba la respuesta del encargo 3 («una letra de más»), y el registro
+  también. Cambiadas.
+- Los tres videos son de la voz vieja. El de `publica` cuenta un formulario de contacto, un error 404 y un
+  `contacto.html` que la clase no tiene; el de `como-se-hace` rompe `</p>` en la línea 12 y la clase rompe
+  `</h1>` en la 8. A la lista que espera la decisión de la voz.
+
+## §69.14 · `n6-carteles-e-infografias` — una infografía de verdad (pliego, 6-oct-2026)
+
+Diseño original en el §54.1. Esto lo amplía.
+
+### Qué estaba mal (medido)
+
+- **La clase se llama «Carteles e infografías» y no tiene infografía.** Cuatro encargos de un cartel de feria:
+  título, agrandar y centrar, un segundo texto debajo, fondo. Ningún dato, ninguna figura que represente un
+  número. 15 minutos.
+- Los cuatro dictaban los botones en orden («Pulsa “Texto” → “+ Cuadro de texto”», «con “A+” súbelo hasta 44
+  pt, y con “Alinear” → “Centrar ↔”»). Es la primera clase del armazón de diseño y nombrar la herramienta está
+  permitido en N6; dictar la secuencia, no.
+
+### Lo que cambia
+
+La situación: el 6.º B hizo una encuesta, «¿Cómo llegas a la escuela?» (30 alumnos: caminando 12, autobús 8,
+coche 6, bici 4), y el cartel va al periódico mural. Tiene que contestar la pregunta de un vistazo. Los datos
+se dan; son datos, no la respuesta.
+
+1. **El título** es la pregunta. Se nombra la herramienta Texto.
+2. **Grande y centrado**: lo primero que se ve. Se nombran A+ y Alinear, sin orden ni valores que copiar
+   salvo el mínimo de 44 pt, que es la regla.
+3. **Las barras**: una por cada forma de llegar, con la herramienta Formas, y **la altura proporcional a su
+   número**. Se da la escala con un solo caso («si 12 alumnos son 6 casillas…»); las otras tres las calcula
+   el alumno. El juez acepta cualquier escala que sea proporcional.
+4. **Misma base y mismo ancho**: si una barra empieza más arriba o es más gorda, el ojo cree que es más. Las
+   cuatro sobre la misma línea, del mismo ancho y sin taparse.
+5. **Etiquetas**: debajo de cada barra, qué es y cuántos. El juez comprueba que el número de la etiqueta sea el
+   de ESA barra (el que corresponde a su altura).
+6. **La respuesta destaca**: la barra más alta de otro color, las otras tres de uno mismo.
+7. **La fuente**: abajo del todo, en letra chica, de dónde salen los datos.
+8. **Color sin pasarse y jerarquía**: fondo pintado, cuatro colores como máximo en total, y el título por
+   encima y más grande que todo lo demás.
+
+En el panel, con una forma seleccionada, se lee su tamaño en casillas y hay «Alto +» y «Alto −», que crecen
+hacia arriba sin mover la base. 25 minutos.
+
+### Qué debe verificar (jugando MAL)
+
+1. Barras de 6, 4, 4 y 2 (una mal calculada) no cierran el 3; de 12, 8, 6 y 4 sí (otra escala, proporcional).
+2. Una barra subida una casilla, o más ancha que las demás, no cierra el 4.
+3. Las etiquetas con los números cambiados entre dos barras no cierran el 5.
+4. Pintar las cuatro barras de colores distintos no cierra el 6.
+5. Un quinto color, o un texto más grande que el título, no cierran el 8.
+
+### Lo que salió (6-oct-2026)
+
+- Los jueces, puros y exportados: `sonProporcionales` (ordenadas de mayor a menor, `alto × 12 = mayor × n`),
+  `mismaBaseYAncho` (misma última fila, mismo ancho, ninguna se mete en la otra), `cadaBarraConSuEtiqueta`
+  (un texto en las dos filas de debajo, en sus columnas, con el número que le toca POR SU ALTURA y su nombre),
+  `destacaLaRespuesta` y `diceLaFuente` (el texto de más abajo, por debajo de todo, más chico que todos y
+  que diga «encuesta», «fuente» o «datos»). El último encargo pide además `hayJerarquia` y que nada tape nada.
+- El armazón no se tocó: la herramienta Formas y `redimensionar` ya existían. Lo nuevo vive en el panel de
+  la clase: la medida de la forma seleccionada y «Alto +» / «Alto −», que crecen hacia arriba sin mover la base.
+- Pruebas: la partida buena de la suite compartida, reescrita con los ocho encargos y sus ocho momentos
+  («no antes»: la barra de la bici nace una casilla más arriba para que la base llegue después); suite propia
+  nueva con las cinco jugadas malas del pliego más otras dos (11 no es 12, una etiqueta sin nombre). 16/16.
+- Quinta puerta en Chromium: la barra nace 4×4, se selecciona, el panel dice «4 de alto × 4 de ancho»,
+  «Alto +» da 5 con la base en la fila 10, dos «Alto −» dan 3 con la misma base, y arrastrada con el ratón se
+  mueve exactamente tres casillas. Consola limpia.
+- **Deuda que deja**: el lienzo del cartel mide 704 px y la ventana enseña 440; el tapete se desplaza (llega a
+  las filas de abajo, donde van las etiquetas y la fuente) pero **el cartel no se ve entero mientras se
+  compone**. Escalarlo toca la cuenta de píxeles a casillas del arrastre, que es del armazón, y no se hace a
+  ciegas en una clase.
+- El video (voz vieja) cuenta sólo el cartel: ni datos ni barras. No basta renarrar: hace falta guion nuevo, y
+  cambiar la voz de un video publicado es decisión del cliente. A la lista.
+
+## §69.15 · `n7-privacidad-en-redes` — auditar tu pasado dentro del muro (pliego, 6-oct-2026)
+
+N7, 1.º de secundaria, 12–13 años. Misma pieza (Tecnia Muro) y mismo patrón que `n6-privacidad-en-juegos` (§69.2),
+un nivel más arriba: aquí el alumno audita lo que YA publicó hace semanas.
+
+### Qué estaba mal (medido)
+
+- **El panel decidía qué mirar**: un bloque por publicación con su nombre («Publicación 2 de 3 · La mascota»)
+  y dos botones, uno de ellos la acción correcta. El alumno no buscaba nada: el panel le decía qué publicación
+  delataba y le daba a elegir entre dejarla o la respuesta.
+- La cuarta publicación (el concurso de matemáticas, que no delata nada) nunca estaba en juego: cerrar de más
+  no se podía hacer, así que tampoco se podía aprender a no hacerlo.
+- La consecuencia («alguien ya la había visto») llegaba con un botón «Seguir» y no pedía nada.
+
+### Lo que cambia
+
+Tres misiones dentro del muro; cada una dice el resultado y se cumple leyendo el estado del muro. Nada resta
+puntos (regla de las clases de ciudadanía): el costo es la consecuencia.
+
+1. **Tu perfil habla de más.** Que un desconocido no pueda saber a qué escuela vas ni por dónde vives y a qué
+   hora vas solo, sin esconder lo que no delata nada. Herramientas: el selector de audiencia de cada
+   publicación, borrar, y la pestaña «Así te ve un desconocido», que enseña las pistas. El concurso y la
+   película tienen que seguir públicos.
+2. **La pregunta de seguridad.** Aparece un reto viral («tu nombre de estrella de rock = tu primera mascota +
+   tu calle, ¡coméntalo!») que tus compañeros ya contestaron. La misión: que tu perfil no conteste preguntas
+   de seguridad, ni por lo que ya publicaste (Rocko) ni por lo que comentes. Si el alumno comenta con sus
+   datos, una cuenta le contesta repitiéndolos; la salida no es un botón de deshacer (el muro no borra
+   comentarios) sino reportar el reto por pedir datos personales, y la plataforma lo retira con todo lo que
+   colgaba de él.
+3. **Alguien ya lo había visto.** Cuenta_Nueva21 comenta en tu concurso «¿sigues regresando sola a las 3 por el
+   parque?»: leyó la publicación de la calle semanas antes de que la cerraras, y eso no se deshace. La misión:
+   hacer lo que sí sirve ahora — guardar la prueba (captura), contárselo a un adulto con la captura adjunta, y
+   bloquear la cuenta. Bloquear antes de capturar esconde el comentario: hay que desbloquear un momento.
+
+### Qué debe verificar (jugando MAL)
+
+1. Borrar todo el perfil no cumple la 1 (el concurso tiene que seguir público); cerrar sólo la escuela, tampoco.
+2. Comentar el reto con «Rocko» y la calle no cumple la 2 hasta reportar el reto; cerrar sólo la mascota y no
+   comentar, sí.
+3. En la 3: el mensaje al amigo con la captura no vale; al adulto sin la captura, tampoco; bloquear sin
+   capturar deja el comentario oculto y la misión esperando.
+4. Ningún botón del panel lateral hace nada en el muro: el panel sólo cuenta la misión y la historia.
+
+### Lo que salió (6-oct-2026)
+
+- **Dos cambios al pliego, medidos al escribir el juez.** (a) La misión 2 tal como estaba llegaba *resuelta*
+  a quien en la 1 cerró también a Rocko (y muchos lo harán: la pestaña del desconocido lo enseña como pista).
+  Ahora pide además que el reto deje de juntar las respuestas de los compañeros: reportarlo por «Me pide datos
+  personales». «Cerrar sólo la mascota y no comentar» ya **no** basta. (b) Bloquear esconde el comentario
+  *y* el único camino al perfil de la cuenta, así que «desbloquear un momento desde su perfil» no tenía salida:
+  la clase trae una pestaña «🚫 Bloqueados» (aparece cuando hay alguien bloqueado), como en las redes de verdad.
+- Las publicaciones propias borradas se quedan como tarjeta fantasma, y en la misión 3 la de la calle recibe
+  la copia («Cuenta_Nueva21 la había leído hace semanas»); si sólo se le cambió la audiencia, la consecuencia
+  la cuenta el comentario.
+- El juez de la respuesta (`DELATA_RESPUESTA`) ignora acentos y mayúsculas y deja pasar lo inventado.
+- Pruebas: suite reescrita, 12/12, con los cuatro casos del pliego y tres más (cerrar de más y reabrir,
+  contestarle a la cuenta, desbloquear para capturar). Quinta puerta en Chromium a 1440 y 400 px: las tres
+  misiones jugadas con ratón y teclado, consola limpia.
+- De paso: `n6-privacidad-en-juegos` y `n6-alto-al-ciberacoso` reportaban un tiempo inventado
+  (`pasos × 20`); ahora miden desde que se abre la clase, como el resto.
+- **Deuda compartida con las dos de N6**: a 400 px el panel (misión y «Seguir») queda debajo de todo el muro.
+- Video: el viejo cuenta tres publicaciones y un «Seguir»; hace falta guion nuevo. A la lista.
+
+## §69.16 · `n7-equilibrio-digital` — el teléfono de verdad, con sus datos (pliego, 6-oct-2026)
+
+N7, 1.º de secundaria, 12–13 años. Tercera parada de «Ciudadanía digital crítica». El CANON la pone en el
+armazón de sistema («panel de tiempo de uso: mira el suyo y pone límites»), pero ese armazón es un explorador
+de archivos: no tiene teléfono ni avisos. Como sólo esta clase lo usa, el teléfono se construye en la clase.
+
+### Qué estaba mal (medido)
+
+- Era un cuestionario: cuatro avisos con dos botones en el panel, y la respuesta en el texto del botón («Ese
+  tiempo límite no es real, sigo en lo mío»). El teléfono era una imagen: no se podía tocar.
+- Los ajustes eran tres interruptores con una sola combinación buena, dictada por la ficha 4 («deja sonando a
+  tu familia») y la 3 («el cofre no es urgente»).
+- La entrada prometía 5 avisos y había 4. El alumno nunca miraba **su** tiempo de uso, que es lo que dice el CANON.
+
+### Lo que cambia
+
+Un teléfono que se usa (pantalla de inicio, apps, banners de aviso, centro de notificaciones y Ajustes →
+Bienestar digital con los datos de la semana). Tres misiones, cada una dice el resultado; ninguna resta puntos.
+
+1. **El teléfono te interrumpe de más.** Bienestar digital enseña cuántos avisos mandó cada app y cada canal
+   la semana pasada (el grupo del salón 214, las ofertas del juego 126, las recomendaciones de videos 70, la
+   energía del juego 49, Kevin 38, Mamá 12…). La misión: que con tus ajustes el teléfono no te hubiera
+   interrumpido más de 10 veces al día (70 a la semana) **sin dejar de oír a Mamá**. Silenciar no es bloquear:
+   lo silenciado sigue llegando al centro de notificaciones, sin sonar. Apagar la app de Mensajes entera apaga
+   también a Mamá.
+2. **Viernes, 8:10 pm: la tarea.** La app Tarea trae cinco ejercicios de verdad (porcentajes, fracciones,
+   proporciones, enteros, redondeo). El reloj del teléfono avanza con lo que haces: cada ejercicio resuelto,
+   4 minutos; cada aviso que suena, 2 minutos de volver a concentrarte; abrir el aviso, más (el cofre del juego
+   es un cofre tras otro). A las 8:30 Mamá escribe «¿Ya casi? La cena se enfría». La misión: tener la tarea
+   terminada antes de cenar (8:45) **y** contestarle a Mamá en menos de 5 minutos. Lo que configuraste en la 1
+   decide cuántos avisos suenan; si no sale, se repite la tarde desde las 8:10 (los ajustes se pueden cambiar).
+3. **Ya es de noche.** A las 11:02 pm Kevin escribe para intercambiar algo del juego. Bienestar digital enseña
+   a qué hora usas el juego entre semana (de 9 a 12 de la noche). La misión: que en las noches antes de un día
+   de escuela nada te despierte ni te tiente después de las 10, que la alarma de las 6:30 siga sonando y que
+   Mamá pueda llamarte. La herramienta es «Hora de dormir» (inicio, fin, qué noches, excepciones y un
+   interruptor de «silenciar también alarmas»). Las noches antes de escuela son de domingo a jueves: elegir de
+   lunes a viernes deja sin cubrir la del domingo y cubre la del viernes, que no hacía falta.
+
+### Qué debe verificar (jugando MAL)
+
+1. Silenciar sólo el grupo no baja de 70; apagar Mensajes entero baja, pero apaga a Mamá: no cumple.
+2. Con los avisos de fábrica la tarde no sale (la cena llega antes que la tarea); abrir el cofre la hunde más.
+   Terminar la tarea sin contestarle a Mamá no cumple; contestarle tarde, tampoco.
+3. Hora de dormir de lunes a viernes no cumple; con «silenciar también alarmas», tampoco; empezando a las 11,
+   tampoco; sin Mamá en las excepciones, tampoco.
+4. Un ejercicio mal contestado no resta ni avanza el reloj: sólo dice que se revise.
+5. El panel lateral no tiene botones que cambien el teléfono: cuenta la misión y la historia.
+
+### Lo que salió (6-oct-2026)
+
+- Los jueces, puros y exportados: `avisosQueSuenan`/`mision1Cumple`, `correrReloj` (cada aviso que suena
+  suma 2 minutos y puede traer el siguiente) con `estadoDeLaTarde`, y `faltasDeDormir`. Los números se
+  cuadraron antes de escribir el código: con los avisos de fábrica el primer ejercicio ya termina a las 8:26;
+  con la misión 1 cumplida, la tarea acaba a las 8:30 y Mamá recibe respuesta a las 8:33.
+- La Hora de dormir de fábrica viene de lunes a viernes, como en muchos teléfonos: la trampa la pone el
+  teléfono, no la clase. El resumen («esta noche, el mensaje de Kevin habría sonado / llegado en silencio»)
+  deja que el alumno compruebe solo.
+- Pruebas: suite reescrita, 13/13, con los cinco casos del pliego. Quinta puerta en Chromium a 1440 y 400 px,
+  las tres misiones con ratón y teclado, consola limpia (una captura a 400 enseñó el interruptor de Mamá
+  apagado: era la animación de 150 ms; `aria-checked` medido después, encendido).
+- Video: el viejo cuenta cuatro avisos con botones; guion nuevo, a la lista.
+
+## §69.17 · `n7-bucles-python` — repetir lo que el juez teclea (pliego, 6-oct-2026)
+
+N7, 1.º de secundaria, 12–13 años. Parada 4 de «Programación en texto I». Viene de `n7-entrada-y-salida`
+(§68.4) y `n7-condicionales-python` (§68.5): el alumno ya lee datos con `input`, los convierte y decide con
+`if`. Esta clase pasa al juez de programas con el mismo patrón que esas dos.
+
+### Qué estaba mal (medido)
+
+- Nueve encargos y los nueve dictaban la línea («escribe `for i in range(5):` y en la siguiente `print(i)`»).
+  Los predicados buscaban ESAS líneas con expresiones regulares (`/for\s+i\s+in\s+range\s*\(\s*5/`): otro nombre
+  de variable, o la misma idea con `while`, suspendía.
+- Ningún bucle dependía de un dato: `range(5)` y `range(1, 11)` fijos. Un bucle que siempre da las mismas
+  vueltas se puede sustituir por cinco `print` y la clase no lo notaría.
+
+### Lo que cambia
+
+Cuatro problemas con juez sobre **el entrenamiento para la carrera de la escuela**, una exploración y un cierre.
+El juez teclea; el número de vueltas, de días o de salidas **lo decide el caso**, así que sólo un bucle de verdad
+pasa los ocultos.
+
+| # | Encargo | Tipo | Lee → imprime |
+|---|---|---|---|
+| 1 | Las vueltas | **juez** | cuántas vueltas → `Vuelta 1` … `Vuelta n` y `¡Terminaste!` |
+| 2 | Los kilómetros de la semana | **juez** | cuántos días y luego los km de cada día → `Total: 12 km` |
+| 3 | El bucle que no para | exploración | un `while` que nunca se detiene solo: el editor lo para (error de límite) |
+| 4 | La meta | **juez** | la meta en km y luego los km de cada salida hasta juntarla → `Salidas para llegar: 3` |
+| 5 | La alcancía de los uniformes | **juez** | monedas hasta que se teclee 0 → `3 monedas, 16 pesos` |
+| 6 | Para cerrar | elección | por qué `while total <= meta` pasó el ejemplo y «pidió un dato de más» en los ocultos |
+
+Casos y señuelos medidos con CPython 3.14 (`scratchpad/n7/medir-bucles.py`):
+
+| Problema | Visible | Ocultos | Señuelo → dónde cae |
+|---|---|---|---|
+| 1 | 3 | 1, 0 (sólo `¡Terminaste!`), 12 | `range(n)` → «Vuelta 0» en el visible; `range(1, n)` → falta la última; 3 fijo → ocultos; `¡Terminaste!` dentro del bucle → visible |
+| 2 | 3 días: 5, 3, 4 | 1 día, 0 días, 5 días con un 0 | `total = 0` dentro del bucle → visible (4); `print` dentro → líneas de más; 3 días fijos → «pide de más» y datos sin leer; sin `int` → error de tipo |
+| 4 | meta 10: 4, 3, 5 | meta 5: 5 (justo en la meta), meta 10: cinco de 2, meta 3: tres de 1 | **`<= meta` pasa el visible y cae en los tres ocultos con «pide de más»** (la pregunta de cierre); el contador empezando en 1 → todos; no sumar → «pide de más» |
+| 5 | 10, 5, 1, 0 | sólo 0, cuatro de 2, 5 y 10 | contar el 0 como moneda → todos; tres monedas fijas → datos sin leer |
+
+Otra estructura vale: en el 5, leer antes del bucle y otra vez al final de cada vuelta (`while m != 0`) pasa los
+cuatro casos (medido).
+
+El manual trae fichas de **otro tema** (los pisos de un edificio, los puntos de un juego, vasos que se vacían,
+el ahorro de la semana, palabras hasta «fin»), y la prueba ejecuta cada una. El 3 es la experiencia de la clase
+vieja que se conserva —ver al editor parar un bucle infinito—, pero ya sin dictar qué línea quitar: la ficha
+enseña un `while` que termina, y el alumno tiene que escribir uno que no.
+
+El panel: el tablero del juez con su ficha y, debajo, **el Cuentapasos** de la clase vieja (los pasos que lleva
+el intérprete, y el aviso cuando para por el tope).
+
+### Qué debe verificar (jugando MAL)
+
+1. Cada señuelo de la tabla cae donde dijo CPython, con el intérprete.
+2. Ninguna instrucción ni pista dicta código (`for … in`, `range(`, `print(`, `input(`, asignaciones).
+3. Un `while` que sí termina no cumple el encargo 3.
+4. Ningún dato oculto se asoma al DOM.
+5. Las fichas no hablan de vueltas, kilómetros, metas, monedas ni alcancías.
+
+### Lo que salió (6-oct-2026)
+
+- **El juez no sabía de bucles.** `revisarProblemaPrograma` exigía un dato por cada cosa de `lee`, y un
+  problema de bucles trae tantos datos como diga el caso (0 días = un solo dato). Se añadió al modelo
+  `repiteElUltimo`: el último dato de `lee` se repite cero o más veces. Sin la bandera la regla es la de
+  siempre; las suites del juez de §68 siguen verdes (83/83).
+- «Meta en 1 salidas.» sonaba mal: el formato quedó `Salidas para llegar: 3`. La ficha de los vasos, igual
+  («Quedan 1 vasos» → «Vasos que quedan: 1»).
+- Los señuelos, con el intérprete, cayeron donde dijo CPython. Además de la tabla: cinco `print` a mano pasan
+  el ejemplo y caen en los tres ocultos, y otras estructuras valen (las vueltas con `while`, la alcancía con
+  lectura previa).
+- Pruebas: `juez-bucles.test.ts` nueva (26) y la de la clase reescrita (5). El Cuentapasos está dos veces en el
+  DOM (el tablero oculto conserva su `pie`, como el Semáforo en §68.5): la prueba lo busca dentro de
+  `jz-fuera`.
+- Quinta puerta en Chromium: `range(n)` rechazado con «la línea 1 dice «Vuelta 0» y tenía que decir «Vuelta 1»»,
+  ▶ contestado en la consola, y la versión buena aceptada. Consola limpia.
+- Video: el viejo dicta los nueve encargos; guion nuevo, a la lista.
+
+## §69.18 · `n7-retos-python` — el cierre de la unidad, sin una línea dictada (pliego, 6-oct-2026)
+
+N7, 1.º de secundaria, 12–13 años. Parada 5 y última de «Programación en texto I». No enseña nada nuevo: combina
+lo de las cuatro paradas (tipos y conversión, `input`/`print`, `if`/`elif`/`else` con `and`/`or`, `for`/`while`
+con acumuladores y `break`). Con el juez de programas, como §68.4, §68.5 y §69.17.
+
+### Qué estaba mal (medido)
+
+- Diez encargos que dictaban **programas enteros**: la instrucción del Reto 3 trae las once líneas del candado,
+  con su sangría explicada entre paréntesis. El alumno copiaba; no combinaba nada.
+- Los datos venían en el código (`precio = 20`, una lista fija de ocho notas): ningún programa se probaba con
+  otro dato que el del dictado.
+
+### Lo que cambia
+
+Tres problemas con juez, más grandes que los de las paradas (cada uno junta tres herramientas), y un cierre:
+
+| # | Encargo | Junta | Lee → imprime |
+|---|---|---|---|
+| 1 | El precio justo | conversión + `if`/`elif` con dos fronteras | precio unitario (con decimales) y piezas → `Pagas 90.0 pesos.` (10 % desde 100, 20 % desde 500) |
+| 2 | Aprobados y promedio | `for` + dos acumuladores + `if` dentro + un caso especial | cuántos alumnos y cada calificación → `Aprobados: 3` y `Promedio: 7.0`; sin alumnos, `Sin calificaciones.` |
+| 3 | El candado del casillero | `while` + `input` dentro + `break` + lo que pasa después | intentos hasta acertar el 47 o gastar tres → `Incorrecto.` por cada fallo y `¡Casillero abierto!` o `Casillero bloqueado.` |
+| 4 | Para cerrar | elección | por qué el que no revisó el grupo vacío pasó los ejemplos y «falló con error» en un oculto |
+
+Casos y señuelos medidos con CPython 3.14 (`scratchpad/n7/medir-retos.py`). Los totales del 1 se eligieron
+para que `t * 0.9`, `t - t * 0.1` y `t - t / 10` den **exactamente** lo mismo (medido en los diez candidatos):
+el juez no puede suspender a nadie por la manera de escribir el 10 %.
+
+| Problema | Visibles | Ocultos | Señuelo → dónde cae |
+|---|---|---|---|
+| 1 | 20 × 5 (justo 100), 12.5 × 4 | 99.5 × 1, 25 × 4, 100 × 5 (justo 500), 62.5 × 8 | `> 100` → visible; **sin el 20 %, o con las fronteras al revés → pasan los dos visibles y caen sólo en los de 500**; `int` al precio → error en el visible |
+| 2 | 4 notas (8, 5, 9, 6), 2 notas (10, 7) | 0 alumnos, 1 alumno con 6 justo, 3 alumnos con 5 | **sin revisar el 0 → pasa todo menos el grupo vacío (división entre cero)**, la pregunta de cierre; `> 6` → visible; `//` → todos |
+| 3 | falla y acierta (10, 47) | a la primera (47), tres fallos, acierta en el último intento | sin `break` → «pide de más» en el visible; «bloqueado» siempre al final → visible; cuatro intentos → tres fallos |
+
+Otra estructura vale: en el 3, sacar «abierto» dentro del bucle y «bloqueado» con una pregunta al contador
+después pasa los cuatro casos (medido).
+
+El panel: el tablero del juez con sus fichas (de otros temas: un descuento del cine, contar números de un
+rango, una adivinanza con dos vidas) y, fuera de los problemas, **la caja de herramientas de la unidad**: qué
+herramienta se aprendió en qué parada, sin una línea de código.
+
+### Qué debe verificar (jugando MAL)
+
+1. Cada señuelo de la tabla cae donde dijo CPython, con el intérprete.
+2. Ninguna instrucción ni pista dicta código.
+3. Ningún dato oculto se asoma al DOM.
+4. Las fichas no hablan de precios, piezas, calificaciones, casilleros ni del 47.
+
+### Lo que salió (6-oct-2026)
+
+- Todos los señuelos cayeron donde dijo CPython, con el intérprete; el 10 % escrito de tres maneras pasa los
+  seis casos, y el candado con «bloqueado» decidido por el contador también.
+- La prueba de las fichas cazó una mía: la del cine preguntaba «Precio del boleto», demasiado cerca de la
+  papelería. Quedó «¿Cuánto cuesta el boleto?».
+- La entrada decía en cada ficha qué herramienta usar en cada reto; ahora cuenta el problema. Elegir las
+  herramientas es el reto.
+- Pruebas: `juez-retos.test.ts` nueva (20) y la de la clase reescrita (4). Quinta puerta en Chromium: el descuento
+  sin el 20 % rechazado en «justo 500» (sin enseñar los datos), la versión buena aceptada. Consola limpia.
+- Video: el viejo dicta los tres programas; guion nuevo, a la lista.
+
+## §69.19 · `n7-variables-y-tipos` — un juez que cambia los datos de arriba (pliego, 6-oct-2026)
+
+N7, 1.º de secundaria, 12–13 años. Parada 1 de «Programación en texto I»: **todavía no hay `input`**. Los tipos
+básicos (`int`, `float`, `str`, `bool`), `type()`, `/` contra `//`, mezclar tipos hasta que revienta
+(`TypeError`, `ValueError`) y convertir con `str()` e `int()`.
+
+### Qué estaba mal (medido)
+
+- Nueve encargos y los nueve dictaban la línea («Debajo, escribe estas tres líneas: `estatura = 1.62` ·
+  `nombre = "Bit"` · `aprobado = True`»). El de «provócalo» traía la línea que revienta.
+- Los datos venían con candado (`edad = 13`) para que la salida exacta («Tengo 13 años») se pudiera comprobar:
+  la corrección leía una salida fija, así que `print("Tengo 13 años")` aprobaba igual.
+
+### Por qué hace falta tocar el juez
+
+El juez de programas (§68.4) prueba con lo que se teclea, y aquí no se teclea nada: sin `input`, cualquier
+salida fija se puede escribir a mano con un `print`. **Lo que tiene que cambiar caso a caso son los datos**. El
+juez aprende `datos`: el problema nombra las variables que el juez rellena; la celda empieza con una línea
+`nombre = …` por cada una (con candado en la plantilla, con el dato del ejemplo); y cada caso trae sus propios
+valores. El juez cambia esa línea **sin mover ninguna**, así que el número de línea de un error sigue siendo el
+del alumno. El tablero enseña los datos del ejemplo (`nombre = "Ana"`) en vez de lo que se teclea, y dice que
+escribir el resultado a mano sólo sirve para un caso.
+
+### Lo que cambia
+
+Ocho encargos: cuatro de exploración —la meta dicha, nunca la línea— y tres problemas con juez, y un cierre.
+
+| # | Encargo | Tipo | Lo que se comprueba / lo que se imprime |
+|---|---|---|---|
+| 1 | Cuatro cajas | exploración | en la celda «Cajas», al menos una variable de cada tipo, con los nombres y valores que quiera |
+| 2 | Pregúntale a Python | exploración | la salida trae lo que contesta `type()` (`<class '…'>`) |
+| 3 | Mézclalos a propósito | exploración | un error de tipo al juntar un texto con un número |
+| 4 | La credencial | **juez** (datos `nombre`, `edad`) | `Credencial: Ana, 13 años` |
+| 5 | Las pizzas del equipo | **juez** (datos `pizzas`, `equipos`) | `Cada equipo: 2.5 pizzas` y `Enteras por equipo: 2` |
+| 6 | El que no se deja convertir | exploración | un error de valor al convertir a número un texto que no lo es |
+| 7 | El marcador | **juez** (datos `puntos` —un texto, como llega de un formulario— y `bono`) | `Puntos con bono: 10` |
+| 8 | Para cerrar | elección | después de convertir un texto a número, ¿de qué tipo es la variable del texto? |
+
+Medido con CPython 3.14 (`scratchpad/n7/medir-tipos.py`), sustituyendo la línea del dato como lo hará el juez:
+
+| Problema | Visible | Ocultos | Señuelo → dónde cae |
+|---|---|---|---|
+| 4 | Ana, 13 | María José (con espacio), Leo con 9, Ximena con 100 | sin `str` → error de tipo en todos; con comas sueltas → «Ana , 13» en todos; **escrito a mano → pasa el ejemplo y cae en los tres** |
+| 5 | 10 entre 4 | 12 entre 3 (`4.0`), 7 entre 2, 5 entre 5 | `//` en las dos → todos; `/` en las dos → todos |
+| 7 | "7" y 3 | "0" y 5, "45" y 0, "12" y 8 | pegar en vez de sumar → «73»; sin convertir → error de tipo; `float` → «10.0» |
+
+Otras formas valen: las comas bien puestas (`nombre + ","`) en el 4, y `int(pizzas / equipos)` en el 5 (medido).
+
+El panel: el tablero con su ficha (de fútbol: goles, estatura, el equipo, si ganó) y, fuera de los problemas,
+**la Mesa de tipos** de la clase vieja, con cada caja, su valor (los textos con comillas) y la chapa de su tipo.
+
+### Qué debe verificar (jugando MAL)
+
+1. Cada señuelo cae donde dijo CPython, con el intérprete.
+2. Borrar la línea del dato da un error que dice cuál falta y que no se borre.
+3. Ninguna instrucción ni pista dicta código.
+4. Ningún dato oculto se asoma al DOM.
+5. Las clases que ya usan el juez de programas siguen igual (sus suites, verdes).
+
+### Lo que salió (6-oct-2026)
+
+- **Sin candado.** El pliego ponía las líneas de los datos con candado, pero el candado es por número de línea
+  y prohíbe meter líneas por encima: habría congelado la celda «Cajas», que va antes. No hace falta: el juez
+  cambia la primera línea `nombre = …` de la celda **diga lo que diga** (si el alumno puso `edad = 99`, el juez
+  la cambia igual), y si la borró, el veredicto dice cuál falta y que no se borre.
+- El juez, ya con `datos`: el tablero enseña `nombre = "Ana"` en vez de las teclas, el contrato dice «nada por
+  teclado: usa nombre, edad, que el juez cambia en cada caso», y `revisarProblemaPrograma` exige un valor por
+  dato en cada caso. Las suites de las clases que ya lo usaban, 225/225.
+- Las exploraciones juzgan la meta: `cuatroTipos` (cualquier nombre, los cuatro tipos), la salida de `type()`
+  (un `print("int")` no vale), y la familia del error (el de tipo no cumple el de valor, ni al revés).
+- Pruebas: `juez-tipos.test.ts` nueva (28) y la de la clase reescrita (3).
+- Quinta puerta en Chromium: las tres exploraciones previas cumplidas con su meta, la credencial escrita a mano
+  rechazada en los tres ocultos («con estos datos tu programa contesta otra cosa», sin enseñarlos) y la buena
+  aceptada. Consola limpia. Cazado en la puerta: el rótulo del contrato decía «Tu programa lee, en este orden»
+  encima de «nada por teclado»; el tablero acepta ahora el rótulo por problema («Tu programa trabaja con»).
+  También salió algo que vivirá cualquier alumno: la línea que revienta en «Mézclalos a propósito» se queda en
+  la celda del Problema 1, y el juez la señala con su número de línea hasta que se quita. Es lo que tiene que
+  pasar; el veredicto ya lo dice.
+- Video: el viejo dicta los nueve encargos; guion nuevo, a la lista.
+
+## §69.20 · `n8-listas-y-diccionarios` — el juez cambia la lista (pliego, 6-oct-2026)
+
+N8, 2.º de secundaria, 13–14 años. Parada 1 de «Programación en texto II»: todavía no hay `def`. Viene de toda la
+unidad de N7 (tipos, `input`, `if`, bucles).
+
+### Qué estaba mal (medido)
+
+- Diez encargos y los diez dictaban la línea (`mochila = ['cuaderno', 'lápiz', 'regla']` · `print(mochila[0])`…).
+  El `IndexError` «provocado» venía escrito (`print(mochila[10])`) y su arreglo también.
+- La lista era siempre la misma: `mochila[2]` aprobaba igual que `mochila[-1]`.
+
+### Lo que cambia
+
+El juez con `datos` (§69.19) es justo lo que pide esta clase: **el caso cambia la lista o el diccionario**, con un
+elemento, con cinco, vacía, con un producto en 0. Cinco problemas con juez, una exploración y un cierre.
+
+| # | Encargo | Datos | Imprime |
+|---|---|---|---|
+| 1 | Lo primero y lo último | `mochila` (lista de textos) | `Primero: cuaderno`, `Último: regla`, `Cosas: 3` |
+| 2 | La casilla que no existe | — | exploración: un error de índice al pedir una posición que la lista no tiene |
+| 3 | El pedido nuevo | `mochila`, `nuevo` | la lista ya con lo nuevo al final (como la escribe Python) y `Ahora son 3` |
+| 4 | Lo que cuesta | `precios` (lista de enteros, nunca vacía) | `Total: 64 pesos` y `Más caro: 30` |
+| 5 | ¿Lo tenemos? | `inventario` (diccionario producto → piezas), `buscar` | `lápiz: 12 en el almacén` o `No tenemos compás.` |
+| 6 | Los agotados | `inventario` | una línea `Falta: goma` por cada producto en 0, en orden, y `Agotados: 1` |
+| 7 | Para cerrar | elección | por qué `mochila[len(mochila)]` siempre da error |
+
+Medido con CPython 3.14 (`scratchpad/n7/medir-listas.py`):
+
+| Problema | Visible | Ocultos | Señuelo → dónde cae |
+|---|---|---|---|
+| 1 | tres cosas | una sola (`mapa`), cinco, dos | `[2]` por «último» → pasa el visible, error de índice o «compás» en los ocultos; `[len(…)]` → todos; a mano → ocultos |
+| 3 | dos + regla | lista vacía + mapa, una repetida (goma otra vez) | imprimir antes de agregar → todos; sumar la lista con un texto → error de tipo |
+| 4 | 12, 30, 22 | uno solo, de mayor a menor, de menor a mayor, el más caro repetido | «el último es el más caro» → visible y de mayor a menor |
+| 5 | lápiz, compás | **goma (hay 0 piezas)**, otro inventario sin la regla, otro con ella | leer la clave sin preguntar con `in` → error de clave en el visible; **preguntar «¿hay piezas?» en vez de «¿existe?» → cae sólo en la goma** |
+| 6 | lápiz, goma en 0, regla | ninguno en 0, todos en 0, vacío, dos en 0 salteados | contar todos los productos → visible |
+
+Valen otras formas: `sum` y `max` en el 4, y recorrer el diccionario por clave en el 6 (medido).
+
+El panel: el tablero y, debajo y fuera, **La Mochila** de la clase vieja, generalizada: las casillas de la primera
+lista que corrió con su número de posición (y las claves si es un diccionario), y el aviso cuando el error es de
+índice. Las fichas son de otro tema (la fila de la tiendita, los goles de un torneo).
+
+### Qué debe verificar (jugando MAL)
+
+1. Cada señuelo cae donde dijo CPython, con el intérprete (la representación de una lista con acentos incluida).
+2. Ninguna instrucción ni pista dicta código.
+3. Ningún dato oculto se asoma al DOM.
+4. Las fichas no hablan de mochilas, precios ni inventarios.
+
+### Lo que salió (6-oct-2026)
+
+- `problemasListas.ts`: cinco problemas, 22 casos, 16 ocultos. `LabListasYDiccionarios.tsx` reescrito: siete
+  encargos (cinco con juez, la casilla que no existe y la pregunta de la casilla de `len`), 35 min.
+- La Mochila generalizada: la primera lista o diccionario que corrió, casilla por casilla con su número (o clave por
+  clave), y la nota cambia cuando el error es de índice («las que existen van de 0 a N»). Va fuera del tablero en la
+  exploración y al pie en los problemas.
+- Todos los señuelos de la tabla caen donde dijo CPython, también con el intérprete: `[2]` por «último» pasa el
+  ejemplo y cae en los tres ocultos (en «una sola cosa», con error de índice); preguntar «¿hay piezas?» —con `and` o
+  con `.get`— cae **sólo** en la goma, como estaba previsto.
+- La tercera pista de «Los agotados» escribía `inventario.items()` tal cual; la prueba de «no dictar» la cazó y ahora
+  nombra el método sin escribir la línea.
+- La ficha «Una lista es una referencia» salió de la entrada: no tenía encargo y el plan docente ya la hace en el
+  pizarrón al cierre, ahora enganchada con el problema 2 (`append` cambió la misma mochila).
+- Pruebas: `juez-listas.test.ts` nueva (30) y `clase-listas-y-diccionarios.test.tsx` nueva (3; la clase no tenía).
+- Quinta puerta en Chromium (1440 px): `[2]` por «último» rechazado en 1 de 4 casos, con el que se tropieza señalado
+  en la línea 9 y sin enseñar las mochilas ocultas; la buena aceptada; la casilla que no existe, lograda. Consola
+  limpia.
+- Video: el viejo dicta los diez encargos (incluido `print(mochila[10])`); guion nuevo, a la lista.
+
+## §69.21 · `n10-python-intermedio` — módulos, archivos y librerías de verdad (pliego, 6-oct-2026)
+
+Bachillerato, 15–18 años. Parada 1 de «Programación aplicada»; el currículo declara el tema entre paréntesis:
+**archivos, módulos, librerías**. Viene de N8 (funciones, listas, diccionarios) y N9 (búsqueda, datos).
+
+### Qué estaba mal (medido)
+
+- El motor no tenía `import`, `from`, `with` ni `open`: `PALABRAS_PROHIBIDAS` los rechazaba con una frase. El
+  laboratorio lo sabía y lo dejó escrito en su cabecera; por eso **«archivos» y «módulos» eran dos preguntas de
+  opción múltiple** y «librerías» era `sum(ventas)` contra un bucle. El tema de la clase no se podía practicar.
+- Los nueve encargos dictaban la línea entera (`ventas = [120, 340, 95, 210, 480, 150]`, `def suma_manual(lista):`
+  con la sangría explicada en palabras).
+- ROBUSTECIMIENTO §M4 pedía la pieza («varios archivos `.py` con `import`, un disco virtual con `open`/`with` y los
+  módulos de fábrica»). Nadie la construyó: esta clase la necesita entera y la construye.
+
+### La pieza: M4 ligero, en el motor de Tecnia Código
+
+Todo es opcional: una clase que no da archivos ve el mismo motor de siempre, salvo que `import`, `from`, `with`,
+`as` y `open` dejan de estar prohibidos y pasan a dar su error de verdad.
+
+| Qué | Cómo | Copia a CPython en |
+|---|---|---|
+| **Proyecto de varios archivos** | La ventana enseña una pestaña por archivo: el principal (el de siempre, con sus celdas y candados), los módulos `.py` y los de datos (`.csv`, `.txt`). ▶ corre el `.py` de la pestaña abierta; desde una de datos, el principal. | — |
+| `import clima`, `import clima as c`, `from clima import a, b` | El módulo se analiza y se compila **la primera vez que se importa**, en su propio espacio de nombres, y corre su nivel de arriba una vez (sus `print` salen). Las funciones del módulo leen las variables del módulo, no las del principal. | importar dos veces no lo corre dos veces; `from x import *` no existe aquí (con su frase) |
+| `__name__` | `"__main__"` en el archivo que se corre y el nombre del módulo al importarlo: `if __name__ == "__main__":` funciona. No sale en el panel de variables. | igual |
+| `math` | `sqrt`, `floor`, `ceil`, `pi`. | `floor`/`ceil` devuelven `int`; `sqrt(-1)` es `ValueError` |
+| `statistics` | `mean`, `median`. | `mean` suma **exacto** y redondea una vez (`mean([2, 4])` es `3`, un `int`); `median` par es `float`; vacío es error |
+| `random` | **No.** Un programa que contesta distinto cada vez no se puede juzgar; la frase lo dice. | — |
+| `open(nombre)`, `open(nombre, "w")`, `"a"` | Un **disco virtual**: los archivos del proyecto más los que el programa escriba en esa ejecución. Lo escrito sale en pestañas «generado» de sólo lectura; **no pisa** los archivos del proyecto (así un `"w"` sobre el CSV por error no borra los datos de la clase). | `read`, `readline`, `readlines`, `write` (devuelve cuántos caracteres), `close`; `for linea in f` con su `\n`; leer cerrado y leer uno abierto con `"w"` dan error |
+| `with open(...) as f:` | Abre, corre el bloque y cierra. | igual |
+| Errores nuevos | `FileNotFoundError` (archivo), `ModuleNotFoundError` e `ImportError` (importación), cada uno con su qué, su línea, su pista **y el archivo**: un error dentro de `clima.py` dice «clima.py · línea 4», y la ventana abre esa pestaña. | |
+| `modulo.nombre` sin paréntesis | Nuevo en la sintaxis (`math.pi`, `clima.UMBRAL`). Sobre lo que no es módulo da la frase de siempre: los métodos se llaman con paréntesis. | |
+
+El juez aprende tres cosas:
+
+- `archivos` del problema: los archivos de datos que **cada caso cambia** (como `datos`, pero para el disco).
+- `principal` de un caso: un programa del juez, **oculto**, que importa el módulo del alumno y lo prueba por su
+  frontera (`clasifica(15.0)`). Así se distingue «la regla está en el módulo» de «la regla está copiada en el
+  principal», que imprime lo mismo con los datos del ejemplo.
+- `escribe` de un caso: las líneas que tiene que tener cada archivo que el programa escribe.
+
+### La clase: la estación meteorológica de la escuela
+
+Tres archivos: `estacion.py` (el principal, del alumno), `clima.py` (un módulo que el club de ciencias dejó a
+medias, con su bloque de prueba bajo `if __name__ == "__main__":` ya escrito) y `lecturas.csv` (`dia,maxima,minima`,
+temperaturas con un decimal, como las da un sensor). 45 minutos.
+
+| # | Encargo | Juzga |
+|---|---|---|
+| 1 | **La librería** — importa `statistics` y saca la mediana y el promedio de cinco números tuyos | exploración: `statistics` importada y las dos usadas, sin error |
+| 2 | **Problema 1 · La semana en números** — lee el CSV y escribe `Días: 7`, `Máxima promedio: 24.6` (un decimal) y `Día más caluroso: jueves (31.0)` | juez; los casos cambian el CSV |
+| 3 | **El archivo que no existe** — abre uno que no está en el proyecto y lee el error | exploración: error de archivo |
+| 4 | **Problema 2 · Tu módulo** — en `clima.py`, `clasifica` devuelve `frío` (menos de 15), `templado` (de 15 a 25) o `calor` (más de 25); el principal imprime `lunes: templado` por día | juez; CSV cambiado **y** un caso con `principal` que prueba 14.9, 15.0, 25.0 y 25.1 |
+| 5 | **Corre el módulo solo** — abre `clima.py` y pulsa ▶ | exploración: corrió `clima.py` y salió su línea de prueba |
+| 6 | **Problema 3 · El reporte** — escribe `reporte.txt` con una línea por día (`lunes 24.5 templado`) y avisa `Días en el reporte: 7` (medido: «Reporte listo: 1 días» con un solo día) | juez: la consola **y** el archivo |
+| 7 | **Para cerrar** — por qué la línea de prueba de `clima.py` no salió cuando `estacion.py` lo importó | elección |
+
+Medido con CPython 3.14 antes de escribir los casos (`scratchpad/n7/medir-intermedio.py`):
+
+| Problema | Ocultos | Señuelo → dónde cae |
+|---|---|---|
+| 1 | un solo día; empate de máximas (gana el primero); otra semana; el CSV sin salto de línea al final | no saltarse el encabezado → error de valor al convertir `maxima`; `max` sobre los textos → «9.5» gana a «31.0»; contar las líneas con el encabezado → `Días: 8` |
+| 2 | otra semana; justo 15.0 y 25.0 en el CSV; el `principal` del juez | `<` donde iba `<=` → cae en 25.0; la regla escrita en el principal → el `principal` del juez no encuentra `clasifica` o la encuentra vacía |
+| 3 | otra semana; un día; sin salto al final | escribir sin `\n` → todo en una línea; abrir con `"w"` dentro del `for` → sólo queda el último día (con un solo día pasa: por eso el visible es la semana) |
+
+### Qué debe verificar (jugando MAL)
+
+1. El motor: cada comportamiento de la tabla de arriba contra CPython (incluidos `mean` exacto, `floor` entero, el
+   `\n` de cada línea, leer cerrado), y que una clase vieja no note nada (sus 4 300 pruebas).
+2. Que un error en `clima.py` diga el archivo y la ventana abra su pestaña.
+3. Cada señuelo cae donde dijo CPython; el `principal` del juez no se asoma al DOM.
+4. Ninguna instrucción ni pista dicta código; las fichas del manual son de otro tema.
+
+
+### Lo que salió (6-oct-2026)
+
+- **M4 construido** en `simuladores/codigo`: `import` / `from … import … as …`, `with … as f:`, atributos
+  (`math.pi`) y `__name__`. Un módulo del proyecto se compila al importarse en la misma cinta del programa y corre
+  su nivel superior en un marco propio; sus funciones recuerdan sus globales, y cada tramo de cinta sabe de qué
+  archivo es, así que el error dice «clima.py · Línea 13». Disco con `open` en `r`/`w`/`a`, `read`, `readline`,
+  `readlines`, `write`, `close` y recorrido por renglones; de fábrica, `math` (`sqrt`, `floor`, `ceil`, `pi`) y
+  `statistics` (`mean` exacto con fracciones, `median`). `random` y los demás ausentes explican por qué no están.
+  Cinco clases de error nuevas (archivo, módulo, importación, estadística, operación). Tabla de 33 programas medida
+  con CPython 3.14 (`simulador-m4.test.ts`).
+- **Tres infidelidades del motor salieron midiendo, no en esta clase**: `sum` no compensaba como CPython 3.12+
+  (`sum([0.1] * 10)` es `1.0`, no `0.9999999999999999`; ahora Neumaier), faltaba `repr` y elegía mal las comillas,
+  y `print` con `\n` dentro dejaba un renglón con salto en medio (lo notaba la pestaña generada).
+- La ventana ganó pestañas: el principal sigue siendo `texto`, los demás viven aparte; ▶ con un módulo abierto corre
+  ese módulo (`Ejecucion.corrio`), un error o una pausa en otro archivo abre su pestaña, ↺ devuelve el proyecto
+  entero y lo que escribe el programa aparece como pestaña de sólo lectura «lo escribió tu programa».
+- El juez ganó archivos por caso, lo que el programa escribe (`escribe`) y un `principal` oculto que escribe el juez
+  para probar el módulo solo. Las explicaciones de los ocultos se tapan como siempre, salvo `publica`: un error de
+  importación que provoca el programa del juez se explica, porque no enseña datos y sin él el alumno no sabría qué
+  arreglar.
+- `problemasIntermedio.ts`: tres problemas, 14 casos (11 ocultos); `LabPythonIntermedio.tsx` reescrito con siete
+  encargos y el panel «El disco de la estación», 45 min. Pruebas: `juez-intermedio.test.ts` (34, un señuelo por fila
+  de la tabla) y `clase-python-intermedio.test.tsx` (5).
+- Quinta puerta en Chromium, la clase entera a 1440 y a 400 px: un error dentro de `clima.py` abrió su pestaña solo
+  y marcó la línea 13; la regla copiada en el principal con `clima.py` sin función pasó 4 de 5 y cayó en «el juez
+  prueba tu módulo solo»; `reporte.txt` apareció como pestaña con sus siete renglones. Consola limpia.
+  **Cazado ahí, y de todas las clases de código**: a 400 px el editor quedaba en 111 px, un scroll metido en otro
+  (la barra se envuelve, `.cod-cuerpo` se encoge y `.cod-izquierda` scrolleaba por su cuenta). Arreglado en
+  `salaCodigo.css`: con las columnas apiladas cada pieza toma su alto y scrollea el cuerpo de la ventana; el editor
+  queda en 376 px. Cazado en las pruebas: el panel decía «renglónes».
+- Lo que M4 desbloquea fuera de esta clase: `n9-datos-con-python` puede leer su CSV de verdad y
+  `n10-analisis-con-codigo` tiene ya librerías e importaciones.
+- Video: el viejo cuenta otra clase; guion nuevo, a la lista.
+
+## §69.22 · `n6-primeras-lineas-python` — el juez cambia el nombre de la caja (pliego, 6-oct-2026)
+
+**La avería medida.** El arco de §50.2 es bueno —ejecutar, mirar despacio, escribir, guardar, romper, arreglar,
+decidir— y se queda. Lo que no sirve es cómo se comprueba:
+
+- El encargo 4 dicta las dos líneas (`nombre = "tu nombre"` y `print("Mucho gusto,", nombre)`); `print("Mucho
+  gusto, Sofi")` con la caja puesta aprueba igual, y es justo el programa que no entendió qué es una variable.
+- La pista del 7 trae las cuatro líneas del `if` y el predicado es una expresión regular sobre
+  `if len(nombre) > 6:` —`>= 7`, que es igual de correcto, no pasa—; la decisión corre con UN solo nombre, así que
+  `print("Tu nombre es corto.")` sin `if` cumple la salida.
+- El panel «Las tres piezas» se enciende con expresiones regulares: dice «hecha» de cosas que no corren.
+
+**La clase nueva (6.º de primaria, 11–12 años; 30 min).** El archivo `saludo.py` trae arriba, con candado, las dos
+líneas de la computadora, y debajo dos celdas —«Problema 1 · El saludo» y «Problema 2 · ¿Largo o corto?»—, cada
+una con su caja `nombre = "Sofi"` arriba. **El juez del entrenamiento entra en primaria con `datos`**: cambia el
+nombre de la caja por otros y mira lo que sale. Es la lección de la variable dicha por la máquina: un programa que
+saluda a Sofi escribiendo «Sofi» no saluda a nadie más.
+
+| # | Encargo | Se da por hecho cuando |
+|---|---|---|
+| 1 | Dale al ▶ (se nombra el botón) | la consola dice «Hola, soy tu computadora.» |
+| 2 | Míralo ir despacio con ⏭ | la ejecución está en pausa con una línea encendida |
+| 3 | Que la computadora diga una frase más, la que tú quieras | el programa termina sin error con una tercera línea que no es de las dos suyas |
+| 4 | **Problema 1 · El saludo**: «Mucho gusto, Sofi» con el nombre de la caja | el juez lo acepta (4 casos, 3 ocultos) |
+| 5 | ¿Para qué son las comillas? Quítaselas a lo que guarda la caja y ejecuta | la celda para con un error de nombre (o de sintaxis) |
+| 6 | Que vuelva a correr | el juez vuelve a aceptar el Problema 1 |
+| 7 | **Problema 2 · ¿Largo o corto?**: más de 6 letras → «Tu nombre es largo.»; si no, «Tu nombre es corto.» | el juez lo acepta (4 casos, 3 ocultos) |
+| 8 | Para cerrar: el juez cambió el nombre y tu `if` contestó distinto. ¿Qué decidió la frase? | elige «lo que valía *nombre* cuando el programa llegó al if» |
+
+**Se nombra, no se dicta.** Las herramientas se nombran la primera vez —▶, ⏭, `print`, la caja, `if` / `else`,
+`len`— y los moldes son las dos líneas de la plantilla y las fichas del manual, que son de otra cosa (una mascota,
+la montaña rusa). Ninguna instrucción ni pista trae la línea que hay que escribir.
+
+**Los casos y los señuelos** (medidos con CPython 3.14, `scratchpad/n7/medir-primeras.py`):
+
+| P | Casos ocultos | Señuelo → dónde cae |
+|---|---|---|
+| 1 | «Ana»; «María José» (con espacio); «Maximiliano» | el saludo escrito a mano pasa a Sofi y cae en los tres; `"Mucho gusto, nombre"` con la caja entre comillas, sin la coma, o `+` sin espacio caen ya en el ejemplo (se ve la diferencia) |
+| 2 | «Rodrigo» (7 justas → largo); «Camila» (6 justas → corto); «Maximiliano» | la frase a mano cae en Rodrigo y Maximiliano; `>= 6` cae **sólo** en Camila; `> 7` **sólo** en Rodrigo; sin `else` imprime las dos frases con los largos; el `else` sangrado es un error de sintaxis |
+
+Se acepta lo que contesta: `> 6`, `>= 7`, la pregunta al revés con `<= 6`, la coma o `+` con su espacio.
+
+**El panel.** «Las tres piezas» se queda —es el mapa de la clase— pero se enciende con lo que corrió: escribir, cuando
+el programa dijo una frase tuya; guardar, cuando el juez aceptó el saludo; decidir, cuando aceptó ¿largo o corto?
+Tocar una fila sigue llevando el cursor a su línea. Va fuera del tablero en la exploración y al pie en los problemas.
+
+**Lo que esta clase sigue sin usar, a propósito:** `input`, listas, bucles, funciones, `elif`.
+
+### Qué debe verificar (jugando MAL)
+
+1. Cada señuelo de la tabla cae donde dijo CPython, también con el intérprete.
+2. Que la tercera frase no se cumpla con las dos de la computadora repetidas ni con un error.
+3. Que romper las comillas y arreglarlas se juzgue en la celda del saludo, y que «arreglado» sea el juez aceptando.
+4. Ninguna instrucción ni pista dicta código; las fichas del manual son de otro tema y corren como dicen.
+5. Quinta puerta a 1440 y 400 px.
+
+### Lo que salió (6-oct-2026)
+
+- `problemasPrimeras.ts`: dos problemas, 8 casos (6 ocultos), y tres fichas del manual de otro tema (la mascota, con
+  y sin comillas, la montaña rusa). `LabPrimerasLineasPython.tsx` reescrito: ocho encargos, dos con juez, 30 min.
+  La plantilla trae dos celdas con su caja `nombre = "Sofi"`; el candado sigue sólo en las cinco de arriba, porque se
+  fija por número de línea y lo que el alumno escribe debajo de la flecha movería las de abajo.
+- «Las tres piezas» se enciende con lo que corre (escribir: lo de arriba de las celdas, corrido, dice una frase que
+  no es de la computadora) y con el último veredicto de cada problema; una frase sin su paréntesis ya no enciende
+  nada. Las expresiones regulares quedan sólo para llevar el cursor.
+- Todos los señuelos cayeron donde dijo CPython, también con el intérprete y en Chromium: el saludo a mano 1 de 4;
+  sin `if` 2 de 4; `>= 6` 3 de 4, sólo en «seis letras justas»; `> 7` sólo en Rodrigo; sin `else`, las dos frases.
+- **Cazado en la quinta puerta, y jsdom no podía verlo**: «Arréglalo» pedía mandar el saludo otra vez al juez, pero
+  el tablero sólo se ve en los encargos que SON problemas: el botón «Enviar al juez» estaba dentro de un `hidden` y
+  la prueba pasaba porque jsdom pulsa botones escondidos. Arreglado en la pieza compartida con una opción nueva,
+  `vuelven` (encargo → problema cuyo tablero se ve), que ninguna otra clase nota. La prueba de la clase ahora exige
+  que el botón no esté bajo un `hidden` antes de pulsarlo; quitando `vuelven`, tres pruebas caen.
+- **Cazado mirando la captura del encargo 5**, el que pide leer con calma la caja roja: la pista del motor para
+  `nombre = Valentina` hablaba de mayúsculas («Total» y «total»). Ahora, cuando lo que no existe es todo el lado
+  derecho de una asignación, la pista nombra las dos causas posibles —el texto sin comillas y la caja usada antes
+  de crearla—. Un nombre parecido sigue ganando; fuera de una asignación, la pista de siempre.
+- Pruebas: `juez-primeras.test.ts` nueva (26) y `clase-primeras-lineas-python.test.tsx` reescrita (10). Batería de
+  código: 2878/2878 en 72 suites.
+- Quinta puerta en Chromium, la clase entera a 1440 y 400 px, jugando mal en cada problema. Consola limpia.
+- Video: el viejo dicta las líneas del encargo 4 y del 7; guion nuevo, a la lista.

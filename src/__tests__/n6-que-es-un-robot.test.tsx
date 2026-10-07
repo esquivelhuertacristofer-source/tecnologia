@@ -10,6 +10,8 @@
  *    WebGL): botones «Tomar»/«Sacar» por pieza y uno por hueco, exactamente
  *    lo que el canon pide para que el recorrido completo exista de verdad.
  */
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import EntradaQueEsUnRobot from '@/components/activities/lab3d/EntradaQueEsUnRobot';
 import {
@@ -20,7 +22,12 @@ import {
   ESPERADO_ROBOT,
   PIEZAS_ROBOT,
   PREGUNTA_SENSOR,
+  CAJA_Z_CHOCA,
+  CAJA_Z_LEJOS,
+  CAJA_Z_PARA,
+  dondeSeDetiene,
   robotSeDetiene,
+  sensorVeLaCaja,
 } from '@/components/activities/lab3d/bancoRobot';
 import {
   ESTADO_VACIO,
@@ -169,6 +176,25 @@ describe('n6-que-es-un-robot · los dos bancos, en aritmética pura', () => {
     expect(robotSeDetiene(enFrente)).toBe(true);
   });
 
+  it('§69.6: el sensor ve la caja con un rayo, y la parada sale de lo que mide', () => {
+    const en = (sitio: string) =>
+      soltarEn(BANCO_ROBOT, tomar(BANCO_ROBOT, BANCO_ROBOT_INICIAL, 'sensor-distancia'), sitio).estado;
+    const frente = en('frente');
+    // La caja lejos queda fuera del alcance; cerca, mide la distancia a su cara.
+    expect(sensorVeLaCaja(frente, CAJA_Z_LEJOS)).toBeNull();
+    expect(sensorVeLaCaja(frente, CAJA_Z_PARA)).toBeCloseTo(0.35, 6);
+    // Se detiene donde mide 0,35, que es CAJA_Z_PARA: el número no está escrito.
+    expect(dondeSeDetiene(frente)).toBeCloseTo(CAJA_Z_PARA, 6);
+    // Jugar MAL: en el techo o en la panza el rayo nunca cruza la caja.
+    for (const sitio of ['techo', 'panza']) {
+      const b = en(sitio);
+      for (let z = CAJA_Z_LEJOS; z >= CAJA_Z_CHOCA; z -= 0.1) expect([sitio, sensorVeLaCaja(b, z)]).toEqual([sitio, null]);
+      expect(dondeSeDetiene(b)).toBeNull();
+    }
+    // Sin sensor de distancia puesto, no hay lectura.
+    expect(sensorVeLaCaja(BANCO_ROBOT_INICIAL, CAJA_Z_PARA)).toBeNull();
+  });
+
   it('la trampa de `montajeCompleto`: todo en una charola da `true` y aun así está mal clasificado', () => {
     // Exactamente la nota del pliego ("Lo que el armazón NO da", punto 6):
     // la clase nunca puede fiarse de `montajeCompleto` para decidir una ronda.
@@ -184,6 +210,15 @@ describe('n6-que-es-un-robot · los dos bancos, en aritmética pura', () => {
     expect(PREGUNTA_SENSOR.opciones[PREGUNTA_SENSOR.correcta]).toBe(
       'Que meta información del mundo hacia adentro del robot',
     );
+  });
+});
+
+describe('n6-que-es-un-robot · Bit describe, no clasifica (§69.6)', () => {
+  it('al tomar una pieza, Bit no dice en qué charola va', () => {
+    const fuente = readFileSync(join(__dirname, '../components/activities/lab3d/LabQueEsUnRobot.tsx'), 'utf8');
+    const bloque = fuente.slice(fuente.indexOf('const VOZ_TOMA'), fuente.indexOf('const VOZ_ACIERTO_CHAROLA'));
+    expect(bloque.length).toBeGreaterThan(100);
+    expect(bloque).not.toMatch(/(entra|sale|salida|decide|meten informaci)/i);
   });
 });
 

@@ -24,13 +24,16 @@ import type { ContextoEncargo } from '@/components/activities/bloques/SalaBloque
 import {
   CATALOGO,
   CLASE,
+  AVISO_SIN_VUELTA,
   MUNDO_INICIAL,
   PROGRAMA_INICIAL,
+  TEXTO_A_ARMAR,
   reducirTexto,
+  salidaDe,
   type MundoTexto,
 } from '@/components/activities/bloques/LabBloquesVsCodigo';
 import { traducir } from '@/components/activities/bloques/traduccionPython';
-import { ejecutarTodo, pilaDe, soltarFicha, type Programa } from '@/components/simuladores/bloques';
+import { ejecutarTodo, pila, pilaDe, programaDe, soltarFicha, type Programa } from '@/components/simuladores/bloques';
 import { CURRICULO } from '@/data/curriculo';
 import type { ActivityResult } from '@/types/activity-contract';
 
@@ -196,9 +199,9 @@ describe('el guion: ocho encargos, sólo los dos últimos de elección', () => {
     expect(CLASE.guion.map((p) => p.id)).toEqual([
       'dos-caras',
       'cambia-lo-que-dice',
-      'linea-nueva',
-      'boca-y-sangria',
+      'tres-veces',
       'dentro-y-fuera',
+      'lee-y-arma',
       'intenta-escribir',
       'bloque-sin-linea',
       'pregunta-del-truco',
@@ -214,6 +217,14 @@ describe('el guion: ocho encargos, sólo los dos últimos de elección', () => {
 });
 
 /* ────────────────── 4 · los seis jueces de estado, uno a uno ───────────────── */
+
+/** El último bloque del tronco. */
+const ultimo = (p: Programa) => pilaDe(p, 'p-main')!.bloques[pilaDe(p, 'p-main')!.bloques.length - 1];
+/** Cambia las vueltas de un repetir del tronco. */
+const veces = (p: Programa, id: string, n: number): Programa => ({
+  ...p,
+  pilas: p.pilas.map((pl) => ({ ...pl, bloques: pl.bloques.map((b) => (b.id === id ? { ...b, args: { ...b.args, veces: n } } : b)) })),
+});
 
 describe('cada juez rechaza lo que tiene que rechazar', () => {
   function juezDe(id: string) {
@@ -242,41 +253,87 @@ describe('cada juez rechaza lo que tiene que rechazar', () => {
     expect(juez(contexto(conservadaVacia))).toBe(false);
   });
 
-  it('3 · «línea nueva» pide DOS decires puestos, no basta con uno solo aunque corra', () => {
-    const juez = juezDe('linea-nueva');
-    expect(juez(contexto(PROGRAMA_INICIAL))).toBe(false);
-    const dosDecires = anadir(PROGRAMA_INICIAL, 'p-main', 'decir');
-    expect(juez(contexto(dosDecires))).toBe(true);
+  /** Pone el texto de la ranura «que» de un decir, como hace el editor. */
+  const conTexto = (p: Programa, bloqueId: string, que: string): Programa => ({
+    ...p,
+    pilas: p.pilas.map((pl) => ({ ...pl, bloques: retocar(pl.bloques, bloqueId, que) })),
   });
+  function retocar(bloques: Programa['pilas'][number]['bloques'], id: string, que: string): typeof bloques {
+    return bloques.map((b) =>
+      b.id === id
+        ? { ...b, args: { ...b.args, que } }
+        : b.ramas
+          ? { ...b, ramas: Object.fromEntries(Object.entries(b.ramas).map(([k, v]) => [k, retocar(v, id, que)])) }
+          : b,
+    );
+  }
 
-  // El encargo 4 llega, en la partida real, con los DOS decires del encargo 3
-  // ya puestos: los jueces de estado se prueban contra el árbol acumulado que
-  // de verdad hay en ese punto del guion, no contra un árbol minimalista.
-  const conDosDeciresDeFabrica = () => anadir(PROGRAMA_INICIAL, 'p-main', 'decir');
-
-  it('4 · «boca y sangría» exige un decir DENTRO del repetir, no al lado', () => {
-    const juez = juezDe('boca-y-sangria');
-    const repetirVacio = anadir(conDosDeciresDeFabrica(), 'p-main', 'repetir');
-    expect(juez(contexto(repetirVacio))).toBe(false); // boca vacía: no cuenta
-
-    const repetirId = pilaDe(repetirVacio, 'p-main')!.bloques[2].id;
-    // Un decir AL LADO del repetir (en el tronco) no es lo mismo que dentro.
-    const decirAlLado = anadir(repetirVacio, 'p-main', 'decir');
-    expect(juez(contexto(decirAlLado))).toBe(false);
-
-    const decirDentro = anadirDentro(repetirVacio, repetirId, 'cuerpo', 'decir');
-    expect(juez(contexto(decirDentro))).toBe(true);
-  });
-
-  it('5 · «dentro y fuera» exige las DOS cosas a la vez: uno dentro Y otro después', () => {
-    const juez = juezDe('dentro-y-fuera');
-    let p = anadir(conDosDeciresDeFabrica(), 'p-main', 'repetir');
-    const repetirId = pilaDe(p, 'p-main')!.bloques[2].id;
+  /** «Oye», y un repetir 3 con «Vamos» dentro: lo que deja una partida buena al acabar el encargo 3. */
+  function conRepetirVamos(): { p: Programa; repetirId: string } {
+    let p = conTexto(PROGRAMA_INICIAL, 'blq-0', 'Oye');
+    p = anadir(p, 'p-main', 'repetir');
+    const repetirId = ultimo(p).id;
     p = anadirDentro(p, repetirId, 'cuerpo', 'decir');
-    expect(juez(contexto(p))).toBe(false); // sólo el de dentro, todavía no hay uno fuera
+    const dentro = pilaDe(p, 'p-main')!.bloques[1].ramas!.cuerpo[0].id;
+    return { p: conTexto(p, dentro, 'Vamos'), repetirId };
+  }
 
-    const conFuera = anadir(p, 'p-main', 'decir');
-    expect(juez(contexto(conFuera))).toBe(true);
+  it('3 · «tres veces» no se cumple con tres decir iguales en fila; con uno dentro de un repetir, sí', () => {
+    const juez = juezDe('tres-veces');
+    let enFila = conTexto(PROGRAMA_INICIAL, 'blq-0', 'Vamos');
+    for (let i = 0; i < 2; i++) {
+      enFila = anadir(enFila, 'p-main', 'decir');
+      enFila = conTexto(enFila, ultimo(enFila).id, 'Vamos');
+    }
+    expect(salidaDe(enFila)).toEqual(['Vamos', 'Vamos', 'Vamos']);
+    expect(juez(contexto(enFila))).toBe(false);
+
+    expect(juez(contexto(conRepetirVamos().p))).toBe(true);
+    // Sin haber corrido, no.
+    expect(juez({ ...contexto(conRepetirVamos().p), parte: null })).toBe(false);
+  });
+
+  it('4 · «dentro y fuera»: la palabra nueva dentro de la boca, o antes del repetir, no cierra; después, sí', () => {
+    const juez = juezDe('dentro-y-fuera');
+    const { p, repetirId } = conRepetirVamos();
+    expect(juez(contexto(p))).toBe(false);
+
+    let dentro = anadirDentro(p, repetirId, 'cuerpo', 'decir');
+    dentro = conTexto(dentro, pilaDe(dentro, 'p-main')!.bloques[1].ramas!.cuerpo[1].id, 'Listo');
+    expect(salidaDe(dentro).filter((x) => x === 'Listo')).toHaveLength(3);
+    expect(juez(contexto(dentro))).toBe(false);
+
+    // «Oye» antes de las tres ya existía y no cuenta: tiene que ir DESPUÉS.
+    const fuera = anadir(p, 'p-main', 'decir');
+    expect(juez(contexto(fuera))).toBe(true); // el nuevo dice «Hola», una vez, después de las tres
+  });
+
+  /** El texto del encargo 5, armado en bloques; `ajuste` lo estropea a propósito. */
+  function armado(ajuste: 'bien' | 'ya-dentro' | 'range-3'): Programa {
+    let p = programaDe(pila('p-main', PROGRAMA_INICIAL.pilas[0].sombrero, []));
+    p = anadir(p, 'p-main', 'decir');
+    p = conTexto(p, ultimo(p).id, 'Cuenta');
+    p = anadir(p, 'p-main', 'repetir');
+    const repetirId = ultimo(p).id;
+    p = veces(p, repetirId, ajuste === 'range-3' ? 3 : 4);
+    p = anadirDentro(p, repetirId, 'cuerpo', 'decir-vuelta');
+    if (ajuste === 'ya-dentro') {
+      p = anadirDentro(p, repetirId, 'cuerpo', 'decir');
+      return conTexto(p, pilaDe(p, 'p-main')!.bloques[1].ramas!.cuerpo[1].id, 'Ya');
+    }
+    p = anadir(p, 'p-main', 'decir');
+    return conTexto(p, ultimo(p).id, 'ya');
+  }
+
+  it('5 · «lee y arma» pide el texto dado: el print de después metido en la boca no vale, range(3) tampoco', () => {
+    const juez = juezDe('lee-y-arma');
+    expect(juez(contexto(armado('ya-dentro')))).toBe(false);
+    expect(juez(contexto(armado('range-3')))).toBe(false);
+    const bien = armado('bien');
+    expect(traducir(bien, CATALOGO).texto.split('\n').slice(1).join('\n').toLowerCase()).toBe(TEXTO_A_ARMAR.toLowerCase());
+    expect(juez(contexto(bien))).toBe(true);
+    // Y lo que sale es lo que diría Python: desde 0.
+    expect(salidaDe(bien)).toEqual(['Cuenta', '0', '1', '2', '3', 'ya']);
   });
 
   it('6 · «intenta escribir» sólo se cumple tras al menos un intento', () => {
@@ -289,19 +346,46 @@ describe('cada juez rechaza lo que tiene que rechazar', () => {
     expect(juez(conIntento)).toBe(true);
   });
 
-  it('regla (c): la partida perfecta deja los predicados 1 a 6 TODOS verdaderos a la vez', () => {
-    let p = anadir(conDosDeciresDeFabrica(), 'p-main', 'repetir');
-    const repetirId = pilaDe(p, 'p-main')!.bloques[2].id;
-    p = anadirDentro(p, repetirId, 'cuerpo', 'decir');
-    p = anadir(p, 'p-main', 'decir'); // el «fuera, después», del encargo 5
-    const ctx: ContextoEncargo<MundoTexto> = {
-      ...contexto(p),
-      mundo: { ...mundoDeCorrida(p), intentosDeEscribir: 1 },
-    };
-    for (const id of ['dos-caras', 'linea-nueva', 'boca-y-sangria', 'dentro-y-fuera', 'intenta-escribir']) {
-      const juez = juezDe(id);
-      expect([id, juez(ctx)]).toEqual([id, true]);
+  it('ninguna instrucción de estado dicta dónde va un bloque', () => {
+    for (const id of ['tres-veces', 'dentro-y-fuera', 'lee-y-arma']) {
+      const { instruccion } = CLASE.guion.find((p) => p.id === id)!;
+      expect([id, /suelta|dentro de su boca|fuera del repetir|abajo del todo/i.test(instruccion)]).toEqual([id, false]);
     }
+  });
+});
+
+describe('la vuelta, como en Python (§69.12)', () => {
+  it('empieza en 0 y cambia una vez por vuelta: dos print(vuelta) en la misma boca dicen lo mismo', () => {
+    let p = anadir(PROGRAMA_INICIAL, 'p-main', 'repetir');
+    const id = ultimo(p).id;
+    p = anadirDentro(p, id, 'cuerpo', 'decir-vuelta');
+    p = anadirDentro(p, id, 'cuerpo', 'decir-vuelta');
+    expect(salidaDe(p)).toEqual(['Hola', '0', '0', '1', '1', '2', '2']);
+  });
+
+  it('anidado, el de dentro vuelve a 0 en cada vuelta del de fuera, y un print(vuelta) después sigue con el último valor', () => {
+    let p = anadir(PROGRAMA_INICIAL, 'p-main', 'repetir');
+    const fuera = ultimo(p).id;
+    p = veces(p, fuera, 2);
+    p = anadirDentro(p, fuera, 'cuerpo', 'repetir');
+    const dentro = pilaDe(p, 'p-main')!.bloques[1].ramas!.cuerpo[0].id;
+    p = {
+      ...p,
+      pilas: p.pilas.map((pl) => ({
+        ...pl,
+        bloques: pl.bloques.map((b) =>
+          b.id === fuera ? { ...b, ramas: { cuerpo: b.ramas!.cuerpo.map((c) => ({ ...c, args: { veces: 2 } })) } } : b,
+        ),
+      })),
+    };
+    p = anadirDentro(p, dentro, 'cuerpo', 'decir-vuelta');
+    p = anadir(p, 'p-main', 'decir-vuelta');
+    // Python: for v in range(2): for v in range(2): print(v)  →  0 1 0 1; y después print(v) → 1
+    expect(salidaDe(p)).toEqual(['Hola', '0', '1', '0', '1', '1']);
+  });
+
+  it('antes de cualquier repetir, la consola dice que «vuelta» todavía no existe', () => {
+    expect(salidaDe(anadir(PROGRAMA_INICIAL, 'p-main', 'decir-vuelta'))).toEqual(['Hola', AVISO_SIN_VUELTA]);
   });
 });
 
@@ -449,11 +533,7 @@ function jugarBien() {
   fireEvent.change(screen.getByLabelText('que'), { target: { value: 'Oye' } });
   correr();
 
-  // 3 · una línea nueva
-  poner('p-main', 'decir');
-  correr();
-
-  // 4 · la boca y la sangría
+  // 3 · tres veces, un solo bloque: el decir nuevo dice «Hola» y el de fábrica ya dice «Oye»
   irA('Repetir');
   poner('p-main', 'repetir');
   const repetirId = idDelUltimoBloque('p-main', 'repetir');
@@ -461,8 +541,27 @@ function jugarBien() {
   ponerDentro(repetirId, 'cuerpo', 'decir');
   correr();
 
-  // 5 · dentro y fuera
+  // 4 · dentro y fuera
   poner('p-main', 'decir');
+  const ranuras = screen.getAllByLabelText('que');
+  fireEvent.change(ranuras[ranuras.length - 1], { target: { value: 'Listo' } });
+  correr();
+
+  // 5 · lee y arma: se vacía el guion y se arma el texto dado
+  vaciarGuion('p-main');
+  poner('p-main', 'decir');
+  fireEvent.change(screen.getByLabelText('que'), { target: { value: 'Cuenta' } });
+  irA('Repetir');
+  poner('p-main', 'repetir');
+  const contarId = idDelUltimoBloque('p-main', 'repetir');
+  fireEvent.change(document.querySelector(`[data-bloque="${contarId}"] select[aria-label="veces"]`)!, {
+    target: { value: '4' },
+  });
+  irA('Decir');
+  ponerDentro(contarId, 'cuerpo', 'decir-vuelta');
+  poner('p-main', 'decir');
+  const ultimas = screen.getAllByLabelText('que');
+  fireEvent.change(ultimas[ultimas.length - 1], { target: { value: 'Ya' } });
   correr();
 
   // 6 · intenta escribir en la otra cara
@@ -538,7 +637,7 @@ describe('la clase, de punta a punta', () => {
     empezar();
     jugarBien();
     // La pantalla de cierre ya está en pantalla: la consola tiene las seis
-    // líneas de la partida perfecta, y el texto trae el repetir con «Oye».
+    // líneas del encargo 5 (Cuenta, 0, 1, 2, 3, Ya), y el texto trae su repetir.
     expect(screen.getByTestId('bvc-consola').querySelectorAll('li')).toHaveLength(6);
     expect(screen.getByTestId('cod-area')).toHaveTextContent(/for vuelta in range/);
 

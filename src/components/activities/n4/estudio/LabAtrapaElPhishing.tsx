@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityProps } from '@/types/activity-contract';
 import { reproducirTono } from '../../n1/mision/audio';
@@ -945,7 +946,7 @@ export function LabAtrapaElPhishing(props: ActivityProps & { alSalir?: () => voi
         Pregunta {idxCierre + 1} de {CIERRE.length}
       </p>
       <h2 className="phish-cierre-tit">{pregunta.titulo}</h2>
-      {pregunta.opciones.map((opcion, i) => (
+      {ordenDeOpciones(pregunta.opciones.length, pregunta.titulo).map((k) => pregunta.opciones[k]).map((opcion, i) => (
         <button
           key={opcion.id}
           type="button"

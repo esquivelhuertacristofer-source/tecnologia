@@ -91,6 +91,36 @@ export interface FuncionV {
   /** Dónde empieza su código en la cinta de instrucciones. */
   readonly dir: number;
   readonly linea: number;
+  /**
+   * Las variables de arriba que ve la función: las de **su** módulo (M4). Sin
+   * esto, `clasifica` de `clima.py` leería `UMBRAL_CALOR` en el programa
+   * principal, que no lo tiene. Ausente en las del archivo que se corre.
+   */
+  readonly globales?: Map<string, Valor>;
+}
+/**
+ * Un módulo importado (M4, §69.21): sus variables de arriba, que es todo lo que
+ * un módulo es. Los de fábrica (`math`, `statistics`) traen nativas dentro.
+ */
+export interface ModuloV {
+  readonly t: 'modulo';
+  readonly nombre: string;
+  readonly globales: Map<string, Valor>;
+  readonly deFabrica: boolean;
+}
+/**
+ * Un archivo abierto con `open` (M4). Lo que se lee se copia al abrirlo; lo que
+ * se escribe va directo al disco de la máquina, que es quien sabe de discos.
+ */
+export interface ArchivoV {
+  readonly t: 'archivo';
+  readonly nombre: string;
+  readonly modo: 'r' | 'w' | 'a';
+  /** El contenido al abrirlo (en modo `r`). */
+  readonly texto: string;
+  /** Por dónde va la lectura, en caracteres. */
+  pos: number;
+  abierto: boolean;
 }
 export interface NativaV {
   readonly t: 'nativa';
@@ -126,7 +156,9 @@ export type Valor =
   | FuncionV
   | NativaV
   | TipoV
-  | IteradorV;
+  | IteradorV
+  | ModuloV
+  | ArchivoV;
 
 /* ── fábricas, con los baratos pre-creados ──────────────────────────────────*/
 
@@ -208,6 +240,10 @@ export function nombreDeTipo(v: Valor): string {
       return 'type';
     case 'iter':
       return 'iterator';
+    case 'modulo':
+      return 'module';
+    case 'archivo':
+      return 'TextIOWrapper';
   }
 }
 
@@ -238,6 +274,10 @@ export function enCastellano(v: Valor): string {
       return 'un tipo';
     case 'iter':
       return 'un iterador';
+    case 'modulo':
+      return 'un módulo';
+    case 'archivo':
+      return 'un archivo abierto';
   }
 }
 
@@ -297,12 +337,24 @@ export function aTexto(v: Valor): string {
       return `<class '${v.nombre}'>`;
     case 'iter':
       return '<iterator>';
+    case 'modulo':
+      return v.deFabrica ? `<module '${v.nombre}' (built-in)>` : `<module '${v.nombre}' from '${v.nombre}.py'>`;
+    case 'archivo':
+      return `<_io.TextIOWrapper name='${v.nombre}' mode='${v.modo}' encoding='utf-8'>`;
   }
 }
 
 /** `repr(x)`: como se ve **dentro** de una lista. La diferencia son las comillas. */
 export function repr(v: Valor): string {
-  if (v.t === 'cad') return `'${v.v.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n')}'`;
+  if (v.t === 'cad') {
+    /* Las comillas las elige como CPython: dobles si el texto trae un apóstrofo
+     * y ninguna comilla doble —`"it's"`—, simples en todo lo demás. Hasta el
+     * 6-oct-2026 siempre eran simples y salía `'it\'s'`. Medido con 3.14. */
+    const comilla = v.v.includes("'") && !v.v.includes('"') ? '"' : "'";
+    let cuerpo = v.v.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t');
+    if (comilla === "'") cuerpo = cuerpo.replace(/'/g, "\\'");
+    return `${comilla}${cuerpo}${comilla}`;
+  }
   return aTexto(v);
 }
 
@@ -372,6 +424,7 @@ export function iguales(a: Valor, b: Valor): boolean {
   if (a.t === 'tipo' && b.t === 'tipo') return a.nombre === b.nombre;
   if (a.t === 'fn' && b.t === 'fn') return a === b;
   if (a.t === 'nativa' && b.t === 'nativa') return a.nombre === b.nombre;
+  if ((a.t === 'modulo' && b.t === 'modulo') || (a.t === 'archivo' && b.t === 'archivo')) return a === b;
   return false;
 }
 

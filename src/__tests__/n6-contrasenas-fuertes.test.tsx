@@ -3,8 +3,11 @@
  * (COMO-SE-CONSTRUYE.md, §4): el recorrido de punta a punta, los dos caminos
  * del E3, el callejón sin salida de la llave repetida en el E4, el código que
  * nunca sale de la pantalla en el E6, y las dos guardas que el pliego pide
- * probar de verdad: «Sacar cuatro palabras» (E2) y «Activar verificación en
- * dos pasos» (E5) — botones que SIGUEN en pantalla después de la acción.
+ * probar de verdad: la mesa de pruebas (E2) y «Activar verificación en dos
+ * pasos» (E5) — botones que SIGUEN en pantalla después de la acción.
+ *
+ * Desde el §69.4 las llaves las ARMA el alumno con fichas (nunca con el
+ * teclado) y la máquina las ataca: aquí se arman a propósito llaves que caen.
  */
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { EntradaContrasenasFuertes } from '@/components/activities/n6/ciberseguridad/EntradaContrasenasFuertes';
@@ -31,26 +34,57 @@ function resolverE1() {
   pulsar('Era una palabra común disfrazada con símbolos.');
 }
 
+type Cuenta = 'NivelMax' | 'Aula Tecnia' | 'ClipZone';
+const armador = () => screen.getByTestId('armador');
+/** La ficha nº i de una bandeja, en el orden en que se ve. */
+const fichaDe = (bandeja: string, i: number) => within(screen.getByTestId(bandeja)).getAllByRole('button').filter((b) => b.hasAttribute('data-ficha'))[i];
+const ficha = (valor: string) => fireEvent.click(armador().querySelector(`[data-ficha="${valor}"]`)!);
+const armarDeLaBolsa = (indices: number[]) => indices.forEach((i) => fireEvent.click(fichaDe('armador-bolsa', i)));
+const probar = () => fireEvent.click(screen.getByTestId('armador-probar'));
+const guardar = () => fireEvent.click(screen.getByTestId('armador-guardar'));
+const informe = () => screen.getByTestId('armador-informe');
+
 function resolverE2() {
-  pulsar('Sacar cuatro palabras');
+  pulsar('Armar una llave');
+  armarDeLaBolsa([0, 1, 2, 3]);
+  probar();
+  fireEvent.click(screen.getByTestId('armador-cerrar'));
   pulsar('Seguir');
-}
-
-function resolverE3Misma() {
-  pulsar('Usar la misma frase en las tres cuentas');
-}
-
-function resolverE3Distintas() {
-  pulsar('Sacar una frase distinta para cada cuenta');
 }
 
 function irATab(nombre: string) {
   fireEvent.click(within(screen.getByTestId('nav-tabs')).getByRole('button', { name: nombre }));
 }
 
-function cambiarLlave(cuenta: 'NivelMax' | 'Aula Tecnia' | 'ClipZone') {
+function abrirLlave(cuenta: Cuenta) {
   irATab(cuenta);
-  pulsar('Cambiar la llave');
+  pulsar(/^(Poner llave|Cambiar la llave)$/);
+}
+
+function ponerLlave(cuenta: Cuenta, indices: number[]) {
+  abrirLlave(cuenta);
+  armarDeLaBolsa(indices);
+  guardar();
+}
+
+function resolverE3Distintas() {
+  ponerLlave('NivelMax', [0, 1, 2, 3]);
+  ponerLlave('Aula Tecnia', [1, 2, 3, 4]);
+  ponerLlave('ClipZone', [2, 3, 4, 5]);
+}
+
+/** Reusar es una ficha más del armador, como en la vida: la consecuencia llega en el E4. */
+function resolverE3Misma() {
+  ponerLlave('NivelMax', [0, 1, 2, 3]);
+  for (const cuenta of ['Aula Tecnia', 'ClipZone'] as Cuenta[]) {
+    abrirLlave(cuenta);
+    fireEvent.click(armador().querySelector('[data-reusar="NivelMax"]')!);
+    guardar();
+  }
+}
+
+function cambiarLlave(cuenta: Cuenta) {
+  ponerLlave(cuenta, [5, 4, 3, 2]);
 }
 
 function resolverE5() {
@@ -104,7 +138,7 @@ describe('n6-contrasenas-fuertes', () => {
     pulsar('Estaba en la lista de las contraseñas más usadas.'); // ahora sí
     // Sólo un personaje resuelto de tres: el E1 no se da por bueno todavía.
     expect(onProgress).not.toHaveBeenCalledWith(1 / 7);
-    expect(screen.queryByRole('button', { name: 'Sacar cuatro palabras' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Armar una llave' })).toBeNull();
   });
 
   it('recorrido completo E1→E2→E3(misma frase)→E4(3 cambios)→E5→E6(dio el código)→E7→cierre: termina con 100 y 3 estrellas', () => {
@@ -135,8 +169,7 @@ describe('n6-contrasenas-fuertes', () => {
     expect(screen.getByTestId('tira-telefono').textContent).toContain('482913');
     pulsar('Escribir el código');
     expect(screen.queryByTestId('nav-emergente')).toBeNull(); // se cierra tras el clic
-    irATab('NivelMax');
-    pulsar('Cambiar la llave');
+    cambiarLlave('NivelMax');
 
     resolverE7();
     expect(screen.getByRole('button', { name: 'Terminar' })).not.toBeNull();
@@ -183,23 +216,106 @@ describe('n6-contrasenas-fuertes', () => {
 
     // Cerrar sola NUNCA completa el encargo: sigue pidiendo cambiar la llave.
     expect(screen.getByText('Cuando termines, cambia la llave de NivelMax.')).not.toBeNull();
-    irATab('NivelMax');
-    pulsar('Cambiar la llave');
+    cambiarLlave('NivelMax');
     expect(screen.getByText(/última pregunta|Última pregunta/i)).not.toBeNull();
   });
 
-  it('guarda de "Sacar cuatro palabras": el botón sigue en pantalla y sacar tres veces sólo avanza el encargo UNA — se puede romper', () => {
+  it('guarda de la mesa de pruebas: tres llaves que aguantan sólo avanzan el encargo UNA vez', () => {
     const { onProgress } = abrirLab();
     resolverE1();
     onProgress.mockClear();
 
-    pulsar('Sacar cuatro palabras');
-    pulsar('Sacar cuatro palabras');
-    pulsar('Sacar cuatro palabras');
+    pulsar('Armar una llave');
+    for (const indices of [[0, 1, 2, 3], [1, 2, 3, 4], [2, 3, 4, 5]]) {
+      fireEvent.click(screen.getByRole('button', { name: 'Vaciar' }));
+      armarDeLaBolsa(indices);
+      probar();
+    }
 
-    // Sólo debió avanzar UN paso (E2), no tres.
     expect(onProgress).toHaveBeenCalledTimes(1);
     expect(onProgress).toHaveBeenCalledWith(2 / 7);
+  });
+
+  /* ── §69.4: jugar MAL con el armador ─────────────────────────────────── */
+
+  it('la llave se arma con fichas: el armador no tiene ni un campo para escribir', () => {
+    abrirLab();
+    resolverE1();
+    pulsar('Armar una llave');
+    expect(armador().querySelectorAll('input, textarea, [contenteditable]')).toHaveLength(0);
+  });
+
+  it('E2, jugar mal: la mascota y el año de Dani caen aunque vayan separados, y tres palabras de la bolsa también', () => {
+    const { onProgress } = abrirLab();
+    resolverE1();
+    onProgress.mockClear();
+    pulsar('Armar una llave');
+
+    ficha('rocky');
+    ficha('2014');
+    probar();
+    expect(informe().getAttribute('data-cae')).toBe('si');
+    expect(informe().textContent).toMatch(/dato de su perfil/);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Vaciar' }));
+    ficha('password');
+    fireEvent.click(screen.getByTestId('armador-disfraz'));
+    expect(screen.getByTestId('armador-llave').textContent).toBe('p@ssw0rd');
+    probar();
+    expect(informe().textContent).toMatch(/disfraz/);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Vaciar' }));
+    fireEvent.click(screen.getByTestId('armador-disfraz'));
+    armarDeLaBolsa([0, 1, 2]);
+    probar();
+    expect(informe().getAttribute('data-cae')).toBe('si');
+    expect(informe().textContent).toMatch(/piezas que la máquina ya conoce/);
+    expect(onProgress).not.toHaveBeenCalled();
+
+    // Cuatro con la mascota dentro: caen. Cuatro de la bolsa: aguantan.
+    fireEvent.click(screen.getByRole('button', { name: 'Vaciar' }));
+    ficha('rocky');
+    armarDeLaBolsa([0, 1, 2]);
+    probar();
+    expect(informe().getAttribute('data-cae')).toBe('si');
+    fireEvent.click(screen.getByRole('button', { name: 'Vaciar' }));
+    armarDeLaBolsa([0, 1, 2, 3]);
+    probar();
+    expect(informe().getAttribute('data-cae')).toBe('no');
+    expect(onProgress).toHaveBeenCalledWith(2 / 7);
+  });
+
+  it('E3, jugar mal: guardar una llave que cae deja la cuenta abierta, lo dice la cuenta y el encargo no se cumple', () => {
+    const { onProgress } = abrirLab();
+    resolverE1();
+    resolverE2();
+    onProgress.mockClear();
+
+    abrirLlave('NivelMax');
+    ficha('rocky');
+    ficha('2014');
+    guardar();
+    expect(screen.getByTestId('nav-ficha-datos').textContent).toMatch(/En la máquina\s*Cayó por: un dato de su perfil/);
+    ponerLlave('Aula Tecnia', [1, 2, 3, 4]);
+    ponerLlave('ClipZone', [2, 3, 4, 5]);
+    expect(onProgress).not.toHaveBeenCalled();
+
+    cambiarLlave('NivelMax');
+    expect(onProgress).toHaveBeenCalledWith(3 / 7);
+  });
+
+  it('E4, jugar mal: cambiar la llave filtrada por otra que cae no cierra el encargo', () => {
+    abrirLab();
+    resolverE1();
+    resolverE2();
+    resolverE3Distintas();
+    pulsar('Seguir');
+    abrirLlave('ClipZone');
+    armarDeLaBolsa([0]);
+    guardar();
+    expect(screen.queryByText(/Ve a la pestaña de Aula Tecnia/)).toBeNull();
+    cambiarLlave('ClipZone');
+    expect(screen.getByText(/Ve a la pestaña de Aula Tecnia/)).not.toBeNull();
   });
 
   it('guarda de "Activar verificación en dos pasos": sigue en pantalla y pulsarla otra vez no avanza dos veces', () => {
@@ -280,11 +396,14 @@ describe('n6-contrasenas-fuertes', () => {
 
     // Y la clase se puede seguir jugando y terminar con normalidad.
     pulsar('Cambiar la llave');
+    armarDeLaBolsa([5, 4, 3, 2]);
+    guardar();
     fireEvent.change(barra, { target: { value: 'clipzone.mx/cuenta' } });
     fireEvent.submit(barra.closest('form')!);
     pulsar('Cambiar la llave');
-    irATab('Aula Tecnia');
-    pulsar('Cambiar la llave');
+    armarDeLaBolsa([4, 3, 2, 1]);
+    guardar();
+    cambiarLlave('Aula Tecnia');
     resolverE5();
     expect(screen.getByTestId('nav-emergente')).not.toBeNull();
   });
@@ -327,8 +446,7 @@ describe('n6-contrasenas-fuertes', () => {
     cambiarLlave('Aula Tecnia');
     resolverE5();
     pulsar('Escribir el código');
-    irATab('NivelMax');
-    pulsar('Cambiar la llave');
+    cambiarLlave('NivelMax');
     resolverE7();
     pulsar('Terminar');
     pulsar('Salir');

@@ -287,3 +287,29 @@ test('la entrada habla de ESTA clase y abre el laboratorio', () => {
   fireEvent.click(screen.getByText('Abre el proyecto'));
   expect(screen.getByTestId('pgw-portada')).toBeInTheDocument();
 });
+
+/* ── §69.13 · la meta se ve, el código no se dicta ─────────────────────────── */
+
+/** Una etiqueta entera con su contenido: «<h1>Robots</h1>» o «<img src="x">». «<title> y </title>» no cuenta. */
+const LINEA_DICTADA = /<(\w+)[^>]*>(?!\s*y\s*<)[^<]{2,}<\/\1>|<img\s[^>]*>/;
+
+test('§69.13 · ninguna instrucción ni pista trae la línea de código hecha', () => {
+  for (const paso of GUION.pasos) {
+    expect([paso.id, LINEA_DICTADA.test(`${paso.instruccion} ${paso.pista}`)]).toEqual([paso.id, false]);
+  }
+});
+
+test('§69.13 · los encargos de construir traen modelo, y el del «alt» no (el alt no se ve)', () => {
+  const conModelo = GUION.pasos.filter((p) => p.modelo).map((p) => p.id);
+  expect(conModelo).toEqual(['titulo', 'parrafo', 'lista', 'imagen', 'enlace', 'orden']);
+  /* El último modelo es una página bien hecha: cumple el encargo que lo trae, sin un solo problema. */
+  const ultimo = GUION.pasos.find((p) => p.id === 'orden')!;
+  const pagina = analizarPagina({
+    html: ultimo.modelo!,
+    archivo: 'index.html',
+    hojas: [{ nombre: 'estilo.css', texto: PLANTILLA_CSS }],
+    recursos: IMAGENES_DE_PRACTICA,
+  });
+  expect(pagina.problemas).toEqual([]);
+  if (ultimo.logro.tipo === 'pagina') expect(ultimo.logro.comprueba(pagina)).toBe(true);
+});

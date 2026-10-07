@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityProps } from '@/types/activity-contract';
 import { reproducirTono } from '../../n1/mision/audio';
@@ -473,7 +474,7 @@ export function LabBuscaYCompara(props: ActivityProps & { alSalir?: () => void }
           <span className="mesa3d-atril-tit">Atril · pregunta {pregunta + 1} de {PREGUNTAS.length}</span>
           <span className="mesa3d-atril-preg">{preguntaViva.texto}</span>
           <div className="mesa3d-atril-ops">
-            {preguntaViva.opciones.map((o) => (
+            {ordenDeOpciones(preguntaViva.opciones.length, preguntaViva.texto).map((k) => preguntaViva.opciones[k]).map((o) => (
               <button
                 key={o.id}
                 type="button"
@@ -559,7 +560,7 @@ export function LabBuscaYCompara(props: ActivityProps & { alSalir?: () => void }
             </button>
           ))}
         {fase === 'decidir' &&
-          preguntaViva.opciones.map((o) => (
+          ordenDeOpciones(preguntaViva.opciones.length, preguntaViva.texto).map((k) => preguntaViva.opciones[k]).map((o) => (
             <button key={o.id} type="button" className="pieza3d-boton" aria-label={o.texto} onClick={() => responder(o)}>
               {o.texto}
             </button>

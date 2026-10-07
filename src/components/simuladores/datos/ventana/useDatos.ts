@@ -105,6 +105,12 @@ export interface Datos {
 
   // ── señalar ──────────────────────────────────────────────────────────────
   senalarLinea: (linea: number) => void;
+  /**
+   * «Vuelve a mirar si el encargo está hecho.» Para los paneles de clase cuyo
+   * botón cambia algo que el predicado del guion lee y que no es ni el texto ni
+   * la ejecución —el tablero del juez—. Gemelo del de `useCodigo.ts`.
+   */
+  revisar: () => void;
   foco: { linea: number; sello: number } | null;
   aviso: AvisoDatos | null;
   descartarAviso: () => void;
@@ -242,6 +248,25 @@ export function useDatos(opciones: OpcionesDatos): Datos {
     setFoco({ linea, sello: selloRef.current });
   }, []);
 
+  /*
+   * Ver el comentario de `revisar` en la interfaz.
+   *
+   * Aquí no sirve el truco de `useCodigo` —volver a publicar la foto de la
+   * ejecución con otra identidad— porque en Tecnia Datos esa foto **es `null`
+   * hasta que el alumno pulsa ▶**, y los encargos juzgados no la necesitan:
+   * leen el texto de la consulta. Así que hace falta un número.
+   *
+   * Ese número entra en las dependencias de `preguntar` sin aparecer en su
+   * cuerpo, y la regla `exhaustive-deps` lo avisa. **Se deja avisado y no se
+   * calla**: un `eslint-disable` ahí apaga de paso el análisis de
+   * `set-state-in-effect` sobre el efecto de los encargos, que es el canario
+   * que este archivo declara vivo unas líneas más abajo —medido el
+   * 12-sep-2026 en `useCodigo.ts`, donde al poner el disable la regla dejó de
+   * saltar—. Un aviso visible vale más que una regla apagada.
+   */
+  const [revision, setRevision] = useState(0);
+  const revisar = useCallback(() => setRevision((n) => n + 1), []);
+
   const descartarAviso = useCallback(() => setAviso(null), []);
 
   const esquema = useMemo(() => esquemaDe(base), [base]);
@@ -313,7 +338,7 @@ export function useDatos(opciones: OpcionesDatos): Datos {
       }
       return false;
     },
-    [texto, ejecucion, avisar],
+    [texto, ejecucion, avisar, revision],
   );
 
   /*
@@ -394,6 +419,7 @@ export function useDatos(opciones: OpcionesDatos): Datos {
     reiniciar,
 
     senalarLinea,
+    revisar,
     foco,
     aviso,
     descartarAviso,

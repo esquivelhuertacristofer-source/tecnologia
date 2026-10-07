@@ -376,3 +376,271 @@
   flex-direction: column;
   gap: 14px;
 }
+
+/* ── §69.1 · Captura, reporte con motivo, bloquear y mensajes ────────────── */
+
+.tm-comentario {
+  flex-direction: column;
+}
+.tm-comentario-linea {
+  display: flex;
+  gap: 6px;
+}
+.tm-comentario-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.tm-comentario-accion {
+  background: transparent;
+  color: #d7cffb;
+  border: 2px solid #372a7a;
+  border-radius: 999px;
+  padding: 3px 11px;
+  font: inherit;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+}
+.tm-comentario-accion:hover,
+.tm-comentario-accion:focus-visible {
+  border-color: #a78bfa;
+  outline: none;
+}
+.tm-guardada,
+.tm-reportada {
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.tm-guardada {
+  color: #a7f3d0;
+  background: rgba(16, 185, 129, 0.16);
+}
+.tm-reportada {
+  color: #fecdd3;
+  background: rgba(244, 63, 94, 0.16);
+}
+
+.tm-reporte {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #171142;
+  border: 2px solid #4c3f8f;
+}
+.tm-reporte-titulo {
+  margin: 0;
+  font-weight: 900;
+  color: #f1ecff;
+}
+.tm-reporte-motivos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+/* Los cuatro motivos con el MISMO estilo: ninguno delata cuál es el correcto. */
+.tm-reporte-motivo {
+  background: #0e0a2a;
+  color: #ece7ff;
+  border: 2px solid #4c3f8f;
+  border-radius: 10px;
+  padding: 7px 12px;
+  font: inherit;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+}
+.tm-reporte-motivo:hover,
+.tm-reporte-motivo:focus-visible {
+  border-color: #a78bfa;
+  outline: none;
+}
+.tm-reporte-cancelar {
+  align-self: flex-start;
+  background: transparent;
+  border: 0;
+  color: #9c8fd6;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.tm-perfil-bloquear {
+  margin-left: auto;
+  align-self: center;
+  background: transparent;
+  color: #fecdd3;
+  border: 2px solid #fb7185;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* La bandeja vive fuera de `.tm` (la clase la monta en lugar del muro): trae su propio color. */
+.tm-bandeja {
+  color: #f1ecff;
+  font-size: 14.5px;
+  line-height: 1.5;
+  display: grid;
+  grid-template-columns: minmax(130px, 32%) 1fr;
+  gap: 10px;
+  min-height: 260px;
+  padding: 10px;
+  border-radius: 16px;
+  background: #110c33;
+  border: 2px solid #372a7a;
+}
+@media (max-width: 520px) {
+  .tm-bandeja {
+    grid-template-columns: 1fr;
+  }
+}
+.tm-bandeja-contactos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tm-bandeja-contacto {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: transparent;
+  color: #ece7ff;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 6px 8px;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: left;
+}
+.tm-bandeja-contacto.es-abierta {
+  border-color: #a78bfa;
+  background: #1c1550;
+}
+.tm-bandeja-bloq {
+  margin-left: auto;
+  font-size: 11px;
+  color: #fda4af;
+}
+.tm-bandeja-hilo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.tm-bandeja-con {
+  margin: 0;
+  font-weight: 900;
+  color: #c4b5fd;
+}
+.tm-bandeja-mensajes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1 1 auto;
+}
+.tm-mensaje {
+  color: #f1ecff;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 85%;
+  background: #241c5c;
+  border-radius: 14px 14px 14px 4px;
+  padding: 7px 11px;
+}
+.tm-mensaje.es-mio {
+  align-self: flex-end;
+  background: #6d28d9;
+  color: #ffffff;
+  border-radius: 14px 14px 4px 14px;
+}
+.tm-mensaje-adjunto {
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 4px 8px;
+  overflow-wrap: anywhere;
+}
+.tm-bandeja-aviso {
+  margin: 0;
+  color: #fda4af;
+  font-weight: 800;
+}
+.tm-bandeja-escribir {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tm-bandeja-adjuntar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px dashed #4c3f8f;
+  border-radius: 10px;
+  font-size: 12.5px;
+}
+.tm-bandeja-adjuntar legend {
+  font-weight: 800;
+  color: #c4b5fd;
+  padding: 0 4px;
+}
+.tm-bandeja-adjunto {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  overflow-wrap: anywhere;
+}
+.tm-comentario-autor-boton {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 900;
+  color: #c4b5fd;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(196, 181, 253, 0.45);
+  text-underline-offset: 3px;
+}
+
+/* §69.2 · La audiencia como selector, en la publicación y en el compositor. */
+.tm-visibilidad-selector {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ece7ff;
+  background: #1c1550;
+  border: 2px solid #4c3f8f;
+  border-radius: 999px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+.tm-visibilidad-selector:focus-visible {
+  outline: none;
+  border-color: #a78bfa;
+}
+.tm-compositor-audiencia {
+  align-self: flex-start;
+  font-size: 13px;
+  padding: 6px 12px;
+}

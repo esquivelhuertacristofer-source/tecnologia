@@ -141,6 +141,12 @@ export interface PasoWeb {
   logro: LogroWeb;
   /** La frase que se lleva el alumno al acertar. Es la clase, en una línea. */
   aprendido: string;
+  /**
+   * Cómo tiene que quedar la página (§69.13): un documento HTML entero que la
+   * sala pinta pequeño junto a la instrucción, con las hojas del proyecto. La
+   * meta se VE; el código no aparece en ningún sitio.
+   */
+  modelo?: string;
 }
 
 export interface GuionWeb {

@@ -18,8 +18,8 @@ import { crearMotor } from '@/components/office/motor-hojas/formula/calculo';
 import { cajaDeTexto } from '@/components/office/motor-hojas/comandos';
 import {
   CONTROLES_ELIGE_GRAFICA,
+  CINTA_ELIGE_GRAFICA,
 } from '@/components/activities/office/excel/elige-la-grafica/controles';
-import PanelGraficas from '@/components/activities/office/excel/elige-la-grafica/PanelGraficas';
 import {
   EJE_MINIMO_DEL_CORTE,
   GUION_ELIGE_LA_GRAFICA,
@@ -50,15 +50,13 @@ beforeAll(() => {
   Object.defineProperty(HTMLElement.prototype, 'clientHeight', { configurable: true, value: 3600 });
 });
 
-const PANEL_FIJO = { titulo: 'Gráficas', Cuerpo: PanelGraficas };
 
 async function abrir() {
   const salida = render(
     <VentanaHojas
-      cinta={CINTA_EXCEL_BASICO}
+      cinta={CINTA_ELIGE_GRAFICA}
       guion={GUION_ELIGE_LA_GRAFICA}
       controles={CONTROLES_ELIGE_GRAFICA}
-      panelFijo={PANEL_FIJO}
     />,
   );
   await waitFor(() => expect(document.querySelector('.hjw')).not.toBeNull());
@@ -153,10 +151,9 @@ describe('n6-elige-la-grafica · el recorrido completo', () => {
     const onTerminado = jest.fn();
     render(
       <VentanaHojas
-        cinta={CINTA_EXCEL_BASICO}
+        cinta={CINTA_ELIGE_GRAFICA}
         guion={GUION_ELIGE_LA_GRAFICA}
         controles={CONTROLES_ELIGE_GRAFICA}
-        panelFijo={PANEL_FIJO}
         onTerminado={onTerminado}
       />,
     );
@@ -165,7 +162,7 @@ describe('n6-elige-la-grafica · el recorrido completo', () => {
     await waitFor(() => expect(document.querySelector('.txtw-portada')).toBeNull());
     irAPestana('insertar'); // se queda activa: todo lo de columnas/líneas/circular vive aquí
 
-    // encargo 1 · barras, por el panel «Gráficas»
+    // encargo 1 · barras, por Insertar → Gráficos
     marcarRango('A4', 'B9');
     fireEvent.click(porControl('grafico-barras'));
     await celebrar();
@@ -203,7 +200,7 @@ describe('n6-elige-la-grafica · el recorrido completo', () => {
     await celebrar();
     expect(encargo()).toBe('¿Ayuda preparar más a vender más?');
 
-    // encargo 6 · dispersión de horas contra boletos, por el panel «Gráficas»
+    // encargo 6 · dispersión de horas contra boletos, por Insertar → Gráficos
     marcarRango('A67', 'C72');
     fireEvent.click(porControl('grafico-dispersion'));
     await celebrar();
@@ -278,7 +275,10 @@ describe('n6-elige-la-grafica · el recorrido completo', () => {
     expect(screen.getByText('Terminaste')).not.toBeNull();
     expect(onTerminado).toHaveBeenCalledTimes(1);
     expect(onTerminado.mock.calls[0][0]).toMatchObject({ pasos: GUION_ELIGE_LA_GRAFICA.pasos.length, tropiezos: 0 });
-  });
+    // §69.8: sin el panel aparte la hoja es más ancha y jsdom pinta más columnas.
+    // Medido a solas: 79 s con panel, 101 s sin él. El límite global (90 s) no
+    // alcanza para esta prueba; bajo la batería entera, menos.
+  }, 240_000);
 });
 
 /* ── (3) jugando mal a propósito ─────────────────────────────────────────── */
@@ -329,6 +329,45 @@ async function avanzarHastaLasDosGraficasGemelas() {
 describe('n6-elige-la-grafica · jugando mal a propósito', () => {
   beforeEach(() => jest.useFakeTimers({ advanceTimers: true }));
   afterEach(() => jest.useRealTimers());
+
+  it('§69.8 · el encargo 1 se contesta con lo que compara: pastel y línea no cierran y avisan; columnas, sin encabezado, sí', async () => {
+    await abrirYEmpezar();
+    irAPestana('insertar');
+    expect(encargo()).toBe('¿Cuál puesto vendió más?');
+    marcarRango('A4', 'B9');
+    fireEvent.click(porControl('grafico-circular'));
+    await celebrar();
+    fireEvent.click(porControl('grafico-lineas'));
+    await celebrar();
+    expect(encargo()).toBe('¿Cuál puesto vendió más?');
+
+    // Elegir mal cuesta y dice por qué, sin nombrar el tipo bueno.
+    expect(document.body.textContent).toContain('Esa gráfica no contesta la pregunta');
+    expect(document.body.textContent).toContain('Una línea une cada puesto con el siguiente');
+
+    // Las cinco viven juntas en Insertar → Gráficos; columnas es una respuesta tan buena como barras.
+    expect(Array.from(document.querySelectorAll('[data-control^="grafico-"]')).map((b) => b.getAttribute('data-control'))).toEqual([
+      'grafico-columnas',
+      'grafico-barras',
+      'grafico-lineas',
+      'grafico-circular',
+      'grafico-dispersion',
+    ]);
+    marcarRango('A5', 'B9');
+    fireEvent.click(porControl('grafico-columnas'));
+    await celebrar();
+    expect(encargo()).toBe('A propósito: compáralos con una línea');
+  });
+
+  it('§69.8 · ningún encargo de elegir nombra el tipo: ni la instrucción, ni la pista, ni la señal', () => {
+    const NOMBRES = /\b(barras|gráfico de columnas|l[ií]neas?|circular|pastel|dispersi[oó]n)\b/i;
+    const ELEGIR = ['barras-de-puestos', 'linea-de-semanas', 'pastel-de-presupuesto', 'dispersion-horas-boletos'];
+    for (const id of ELEGIR) {
+      const paso = GUION_ELIGE_LA_GRAFICA.pasos.find((p) => p.id === id)!;
+      expect([id, NOMBRES.test(paso.instruccion), NOMBRES.test(paso.pista)]).toEqual([id, false, false]);
+      expect([id, paso.senal?.control]).toEqual([id, undefined]);
+    }
+  });
 
   it('dispersión con una sola columna: avisa que el orden hace de eje X, y no revienta', async () => {
     await abrirYEmpezar();
@@ -387,7 +426,14 @@ describe('n6-elige-la-grafica · jugando mal a propósito', () => {
 
 /* ── (4) los dos botones nuevos no tocan la cinta compartida ────────────── */
 
-describe('n6-elige-la-grafica · barras y dispersión entran por el panel de la clase', () => {
+describe('n6-elige-la-grafica · barras y dispersión entran por la cinta de la clase', () => {
+  it('§69.8 · la cinta de la clase trae las cinco en Insertar → Gráficos, y la compartida sigue con tres', () => {
+    const ids = (cinta: typeof CINTA_EXCEL_BASICO) =>
+      cinta.find((p) => p.id === 'insertar')!.grupos.find((g) => g.id === 'graficos')!.controles.map((c) => c.id);
+    expect(ids(CINTA_ELIGE_GRAFICA)).toEqual(['grafico-columnas', 'grafico-barras', 'grafico-lineas', 'grafico-circular', 'grafico-dispersion']);
+    expect(ids(CINTA_EXCEL_BASICO)).toEqual(['grafico-columnas', 'grafico-lineas', 'grafico-circular']);
+  });
+
   it('«grafico-barras» y «grafico-dispersion» no existen en la tabla compartida de `motor-hojas/cinta.ts`', () => {
     expect(CONTROLES['grafico-barras']).toBeUndefined();
     expect(CONTROLES['grafico-dispersion']).toBeUndefined();

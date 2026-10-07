@@ -1,5 +1,6 @@
 'use client';
 
+import { ordenDeOpciones } from '@/lib/ordenDeOpciones';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityProps } from '@/types/activity-contract';
 import { reproducirTono } from '../../n1/mision/audio';
@@ -298,7 +299,7 @@ export function LabSafariDeDispositivos(props: ActivityProps & { alSalir?: () =>
           color="#0B3B2E"
         />
         {!revelado &&
-          pistaAct.opciones.map((op, i) => (
+          ordenDeOpciones(pistaAct.opciones.length, pistaAct.id).map((k) => pistaAct.opciones[k]).map((op, i) => (
             <PedestalBoton3D
               key={op}
               position={[(i - 1) * 1.7, MOSTRADOR_Y, 0.45]}
@@ -358,7 +359,7 @@ export function LabSafariDeDispositivos(props: ActivityProps & { alSalir?: () =>
           <p className="pista-visor-texto">{revelado ? DISPOSITIVOS[pistaAct.id].nombre : pistaAct.pista}</p>
           {!revelado && (
             <div className="safari-opciones" role="group" aria-label="Opciones de nombre">
-              {pistaAct.opciones.map((op) => (
+              {ordenDeOpciones(pistaAct.opciones.length, pistaAct.id).map((k) => pistaAct.opciones[k]).map((op) => (
                 <button
                   key={op}
                   type="button"

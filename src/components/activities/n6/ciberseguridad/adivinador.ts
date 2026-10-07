@@ -40,7 +40,21 @@ export interface PerfilPublico {
 export type Bolsa = string[];
 export type Diccionario = string[];
 
-export type PasoAtaque = 'lista' | 'dato' | 'disfraz' | 'fuerza';
+/**
+ * `piezas` (§69.4): la llave son fichas que la máquina ya conoce —palabras de
+ * la bolsa, de la lista, datos del perfil, números— y multiplicadas no llegan a
+ * su paciencia. `fuerza` con `cae: true`: era corta y salió a lo bruto.
+ */
+export type PasoAtaque = 'lista' | 'dato' | 'disfraz' | 'piezas' | 'fuerza';
+
+/**
+ * Hasta cuántos intentos aguanta la máquina antes de rendirse. Es un número
+ * DE LA CLASE, no de la vida real (una computadora de verdad prueba muchos
+ * más), y la página de la máquina lo dice así. Está puesto para que tres
+ * palabras de la bolsa caigan (332³ ≈ 37 millones) y cuatro aguanten
+ * (332⁴ ≈ 12 100 millones): ésa es la lección.
+ */
+export const PACIENCIA = 1_000_000_000;
 
 export interface Intento {
   cae: boolean;
@@ -143,15 +157,29 @@ export function combinacionesDeFrase(tamBolsa: number, palabras: number): number
 /**
  * Corre los pasos 1 (lista), 2 (dato) y 3 (disfraz) EN ESE ORDEN y devuelve
  * el primero que acierta, con el número de intento acumulado desde el
- * principio. Si ninguno acierta, `cae: false`, `paso: 'fuerza'`.
+ * principio. Los tres comparan SIN ESPACIOS: armada con fichas, «rocky 2014»
+ * es «rocky2014».
+ *
+ * Si ninguno acierta, quedan los pasos 4 y 5 (§69.4), que son una sola cuenta:
+ * la llave se parte en piezas y cada una vale lo que le cuesta a la máquina
+ * adivinarla —un dato del perfil, 1 (ya lo sabe); una palabra de la lista, su
+ * largo; una de la bolsa, el de la bolsa; un número, 10 por cifra; lo demás,
+ * por letras—, siempre después de quitarle el disfraz. Si el producto no llega
+ * a {@link PACIENCIA}, cae: por `piezas` si todas eran conocidas, por `fuerza`
+ * si alguna se contó por letras. Si llega, `cae: false`, `paso: 'fuerza'`.
  *
  * El paso 3 sólo vuelve a recorrer la lista cuando quitar el disfraz cambió
  * algo — si la clave no llevaba ningún carácter disfrazable, repetir la
  * pasada sería un segundo intento idéntico al del paso 1 (ya falló ahí) y
  * sólo inflaría el número de intento sin enseñar nada nuevo.
  */
-export function intentarAdivinar(clave: string, perfil: PerfilPublico, diccionario: Diccionario): Intento {
-  const claveNorm = clave.trim().toLowerCase();
+export function intentarAdivinar(
+  clave: string,
+  perfil: PerfilPublico,
+  diccionario: Diccionario,
+  bolsa: Bolsa = BOLSA_PALABRAS,
+): Intento {
+  const claveNorm = clave.trim().toLowerCase().replace(/\s+/g, '');
   let intento = 0;
 
   for (const palabra of diccionario) {
@@ -197,13 +225,57 @@ export function intentarAdivinar(clave: string, perfil: PerfilPublico, diccionar
     }
   }
 
+  const { total, conocidas, conDato, piezas } = contarPiezas(clave, perfil, diccionario, bolsa);
+  const cifra = total.toLocaleString('es-MX');
+  if (total < PACIENCIA) {
+    return conocidas
+      ? {
+          cae: true,
+          paso: 'piezas',
+          motivo:
+            `Son ${piezas === 1 ? 'una pieza' : `${piezas} piezas`} que la máquina ya conoce${conDato ? ', y una es un dato de su perfil' : ''}: con ${cifra} combinaciones le alcanza, y se rinde hasta los mil millones.`,
+          intento: intento + total,
+          combinaciones: total,
+        }
+      : {
+          cae: true,
+          paso: 'fuerza',
+          motivo: `Es corta: a lo bruto son ${cifra} combinaciones, y la máquina prueba hasta mil millones.`,
+          intento: intento + total,
+          combinaciones: total,
+        };
+  }
+
   return {
     cae: false,
     paso: 'fuerza',
-    motivo: 'No está en la lista, no es un dato de su perfil y no es un disfraz de nada. Sólo queda probarla a lo bruto.',
+    motivo: `No está en la lista, no es un dato de su perfil y no es un disfraz de nada. A lo bruto serían ${cifra} combinaciones: más de las que la máquina tiene paciencia de probar.`,
     intento,
-    combinaciones: combinacionesPorLongitud(claveNorm),
+    combinaciones: total,
   };
+}
+
+/** Pasos 4 y 5: cuánto le cuesta a la máquina cada pieza de la llave, multiplicado. */
+function contarPiezas(clave: string, perfil: PerfilPublico, diccionario: Diccionario, bolsa: Bolsa) {
+  const deDani = new Set([...candidatasDePerfil(perfil), ...perfil.anios.map(String)]);
+  const lista = new Set(diccionario.map((p) => p.toLowerCase()));
+  const deBolsa = new Set(bolsa.map((p) => p.toLowerCase()));
+  const trozos = clave.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  let total = 1;
+  let conocidas = true;
+  let conDato = false;
+  for (const trozo of trozos) {
+    const limpio = sinDisfraz(trozo);
+    if (deDani.has(limpio)) conDato = true;
+    else if (lista.has(limpio)) total *= lista.size;
+    else if (deBolsa.has(limpio)) total *= deBolsa.size;
+    else if (/^[0-9]+$/.test(trozo)) total *= Math.pow(10, trozo.length);
+    else {
+      conocidas = false;
+      total *= combinacionesPorLongitud(trozo);
+    }
+  }
+  return { total, conocidas, conDato, piezas: trozos.length };
 }
 
 // ─────────────────────────────────────────────────────────────────────────

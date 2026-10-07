@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useRef, useState, type ComponentType } from 'react';
 import type { ActivityProps } from '@/types/activity-contract';
 import { VentanaBase } from '@/components/simuladores/VentanaBase';
+import { recortarCelda } from '@/components/simuladores/codigo';
 import {
   VentanaCodigo,
   useCodigo,
+  type ArchivoProyecto,
   type GuionCodigo,
   type PanelCodigoProps,
   type ResumenCodigo,
@@ -69,6 +71,13 @@ export interface ClaseCodigo {
   /** Respuestas preparadas para `input()`. Sin ellas, contesta el alumno. */
   entradas?: string[];
   velocidad?: VelocidadId;
+  /**
+   * La celda `# %%` que corre ▶ en cada encargo, por id de encargo (§68.4).
+   * Los encargos que no están aquí corren el archivo entero.
+   */
+  celdas?: Readonly<Record<string, string>>;
+  /** Los otros archivos del proyecto (M4, §69.21): módulos y datos, cada uno con su pestaña. */
+  proyecto?: ArchivoProyecto[];
   guion: GuionCodigo;
   panelFijo?: { titulo: string; Cuerpo: ComponentType<PanelCodigoProps> };
   /**
@@ -99,6 +108,9 @@ function Mesa({ clase, onAvance, onTerminado, onAprendido, onFalloDeEleccion }: 
     soloLectura: clase.soloLectura,
     entradas: clase.entradas,
     velocidad: clase.velocidad,
+    celda: clase.celdas ? (texto, id) => (id && clase.celdas?.[id] ? recortarCelda(texto, clase.celdas[id]) : null) : undefined,
+    archivo: clase.archivo,
+    proyecto: clase.proyecto,
     guion: clase.guion,
     onAvance,
     onTerminado,

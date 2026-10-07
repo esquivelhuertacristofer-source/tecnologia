@@ -269,6 +269,38 @@
 @keyframes arcade-globo-entra {
   from { transform: translateY(8px) scale(0.94); opacity: 0; }
 }
+/* Bit recogido (ArcadeSala · useGloboDeBit): el globo se va sin salir del DOM y
+   la cara se queda, más discreta, con un punto que dice «tengo algo que decirte»
+   si pasas el ratón por encima. Nada de esto atrapa clics. */
+.arcade-n1 .bit-globo,
+.arcade-n1 .bit-retrato {
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s;
+}
+.arcade-n1 .bit-puesto[data-recogido] .bit-globo {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px) scale(0.96);
+}
+.arcade-n1 .bit-puesto[data-recogido] .bit-retrato {
+  opacity: 0.55;
+  transform: scale(0.72);
+  transform-origin: bottom left;
+}
+.arcade-n1 .bit-puesto[data-recogido]::after {
+  content: '';
+  position: absolute;
+  left: 38px;
+  bottom: 38px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #5ce1e6;
+  box-shadow: 0 0 8px #5ce1e6;
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcade-n1 .bit-globo,
+  .arcade-n1 .bit-retrato { transition: none; }
+}
 
 /* ── Aviso grande entre rondas (dentro de la pantalla, estilo attract mode) ── */
 .arcade-n1 .aviso-ronda {

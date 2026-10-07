@@ -26,6 +26,11 @@
  *
  * **Funciones de fábrica.** Las de `NATIVAS`, abajo.
  *
+ * **Archivos y módulos (M4, §69.21).** `import x`, `import x as y`,
+ * `from x import a, b`, `__name__`, `with open(...) as f:` y `open` sobre un
+ * disco virtual que trae la clase (`Opciones.archivos` de la máquina): leer,
+ * escribir y añadir. Los módulos de fábrica, en `MODULOS_DE_FABRICA`.
+ *
  * ── LO QUE NO, Y POR QUÉ ────────────────────────────────────────────────────
  *
  * Cada palabra prohibida tiene su frase en `PALABRAS_PROHIBIDAS` y el alumno la
@@ -33,8 +38,13 @@
  *
  * - **`class`** — la programación orientada a objetos es el nivel siguiente al
  *   último de este plan. Meterla aquí sería enseñarla mal.
- * - **`import`** — no hay disco, ni red, ni paquetes. Un `import random` que
- *   funciona a medias enseña que la biblioteca estándar es un misterio.
+ * - **`import` de lo que no existe** — hasta el 6-oct-2026 `import` entero
+ *   estaba aquí. Desde M4 (§69.21) se importan los `.py` del proyecto y dos
+ *   módulos de fábrica, `math` y `statistics`, **completos en lo que traen** y
+ *   medidos contra CPython; todo lo demás (`random` el primero) da su frase. Un
+ *   `random` a medias enseñaría que la biblioteca estándar es un misterio, y uno
+ *   entero haría que el juez no pudiera juzgar: el programa contestaría
+ *   distinto cada vez.
  * - **`try` / `except`** — el valor de este intérprete es que los errores se
  *   leen y se arreglan. Un alumno que aprende `try: ... except: pass` antes de
  *   saber leer un error aprende a taparlos, que es justo lo contrario.
@@ -48,10 +58,6 @@
  *   cadena y llamando a `print` una vez, que además es lo que hay que aprender.
  * - **paso en las rebanadas** (`a[::-1]`) — invertir con un truco de sintaxis
  *   tapa el bucle que la clase está enseñando. Queda `.reverse()`.
- * - **comparaciones encadenadas** (`0 < x < 10`) — ésta no se ignora: **se
- *   detecta y se explica**, porque leerla como `(0 < x) < 10` daría el resultado
- *   correcto unas veces y otras no, y un motor que miente a ratos es peor que
- *   uno que no sabe.
  * - **enteros gigantes** — Python los tiene exactos y sin límite; aquí un entero
  *   es un `number` de JavaScript. Pasado `9 007 199 254 740 991` el intérprete
  *   **avisa y para** en vez de imprimir un número casi correcto. Un número mal
@@ -93,6 +99,10 @@ export const PALABRAS_CLAVE: ReadonlySet<string> = new Set([
   'True',
   'False',
   'None',
+  'import',
+  'from',
+  'as',
+  'with',
 ]);
 
 /**
@@ -102,8 +112,6 @@ export const PALABRAS_CLAVE: ReadonlySet<string> = new Set([
  * es verdad y no sirve para nada.
  */
 export const PALABRAS_PROHIBIDAS: Readonly<Record<string, string>> = {
-  import: 'en este editor no se importan módulos: todo lo que puedes usar ya está disponible',
-  from: 'en este editor no se importan módulos: todo lo que puedes usar ya está disponible',
   class: 'las clases y los objetos son del curso siguiente; aquí se programa con funciones',
   try: 'aquí los errores no se tapan con «try»: se leen, se entiende qué dicen y se arreglan',
   except: 'aquí los errores no se tapan con «except»: se leen, se entiende qué dicen y se arreglan',
@@ -113,8 +121,6 @@ export const PALABRAS_PROHIBIDAS: Readonly<Record<string, string>> = {
   yield: 'los generadores son del curso siguiente; devuelve una lista con «return»',
   global: 'para que una función use un dato de fuera, pásaselo como argumento y devuélvelo con «return»',
   nonlocal: 'para que una función use un dato de fuera, pásaselo como argumento y devuélvelo con «return»',
-  with: 'aquí no hay archivos que abrir, así que «with» no hace falta',
-  as: 'aquí no hay «import» ni «with», que son los que usan «as»',
   assert: 'para comprobar algo, usa un «if» y un «print»',
   del: 'para quitar algo de una lista usa «.pop(i)» o «.remove(x)»',
   is: 'para comparar dos valores usa «==»; «is» compara otra cosa y confunde más de lo que ayuda',
@@ -153,6 +159,8 @@ export const NATIVAS: readonly string[] = [
   'abs',
   'round',
   'type',
+  'open',
+  'repr',
 ];
 
 /** Métodos de cadena. Cerrada igual que `NATIVAS`. */
@@ -185,6 +193,33 @@ export const METODOS_LISTA: readonly string[] = [
 
 /** Métodos de diccionario. */
 export const METODOS_DICC: readonly string[] = ['keys', 'values', 'items', 'get', 'pop'];
+
+/** Métodos de un archivo abierto con `open` (M4). */
+export const METODOS_ARCHIVO: readonly string[] = ['read', 'readline', 'readlines', 'write', 'close'];
+
+/**
+ * Los módulos de fábrica y lo que trae cada uno. Cerrada igual que `NATIVAS`:
+ * pedir a `math` algo que no está aquí es un `AttributeError` con la lista.
+ *
+ * No son todos los de Python, ni todo `math`: son los que una clase de
+ * bachillerato usa para ver que **la librería ya lo tenía resuelto**, y cada
+ * uno copia a CPython hasta el tipo que devuelve (`floor` da `int`, `mean` de
+ * enteros da `int` cuando la cuenta es exacta). Ver `maquina.ts`.
+ */
+export const MODULOS_DE_FABRICA: Readonly<Record<string, readonly string[]>> = {
+  math: ['sqrt', 'floor', 'ceil', 'pi'],
+  statistics: ['mean', 'median'],
+};
+
+/** Los módulos que alguien va a intentar importar y no están, con su porqué. */
+export const MODULOS_AUSENTES: Readonly<Record<string, string>> = {
+  random:
+    'aquí no está «random»: un programa que contesta distinto cada vez no se puede comprobar, y el juez de esta clase lo comprueba',
+  os: 'aquí no hay sistema operativo al que pedirle cosas: el disco es el de los archivos del proyecto',
+  sys: 'aquí no hay sistema al que pedirle cosas: lo que necesites, pídeselo a tu propio programa',
+  time: 'aquí no hay reloj: un programa que depende de la hora no contesta siempre lo mismo',
+  csv: 'aquí no está «csv»: un renglón de un CSV se parte con .strip() y .split(",")',
+};
 
 /**
  * Los cuatro topes que impiden que el navegador se cuelgue.

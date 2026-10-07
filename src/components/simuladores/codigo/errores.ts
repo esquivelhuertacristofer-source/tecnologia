@@ -35,7 +35,13 @@ export type ClaseError =
   | 'atributo'
   | 'division'
   | 'recursion'
-  | 'limite';
+  | 'limite'
+  /* M4 (§69.21): los que trae tener archivos y módulos. */
+  | 'archivo'
+  | 'modulo'
+  | 'importacion'
+  | 'estadistica'
+  | 'operacion';
 
 /** El nombre que ese mismo error tiene en Python, para que no suene a chino. */
 const FAMILIA: Readonly<Record<ClaseError, string>> = {
@@ -50,6 +56,11 @@ const FAMILIA: Readonly<Record<ClaseError, string>> = {
   division: 'ZeroDivisionError',
   recursion: 'RecursionError',
   limite: 'LimiteError',
+  archivo: 'FileNotFoundError',
+  modulo: 'ModuleNotFoundError',
+  importacion: 'ImportError',
+  estadistica: 'StatisticsError',
+  operacion: 'UnsupportedOperation',
 };
 
 export interface ErrorPy {
@@ -64,6 +75,12 @@ export interface ErrorPy {
   pista: string | null;
   /** `NameError`, `TypeError`… el nombre que verá el día que abra Python. */
   familia: string;
+  /**
+   * En qué archivo está `linea`, cuando no es el que se ejecutó: un error dentro
+   * de `clima.py` importado desde `estacion.py` (§69.21). Sin esto la ventana
+   * señalaba la línea 4 del archivo equivocado. Ausente o `null`: el que corrió.
+   */
+  archivo?: string | null;
 }
 
 /** La única excepción del paquete, y no cruza la puerta. */
@@ -103,9 +120,12 @@ export function fallo(
  */
 export function textoDeError(e: ErrorPy, fuente?: string): string {
   const partes: string[] = [];
-  partes.push(e.linea > 0 ? `Línea ${e.linea} · ${e.mensaje}` : e.mensaje);
+  const donde = e.archivo ? `${e.archivo} · ` : '';
+  partes.push(e.linea > 0 ? `${donde}Línea ${e.linea} · ${e.mensaje}` : `${donde}${e.mensaje}`);
 
-  if (fuente && e.linea > 0) {
+  /* La fuente que llega es la del archivo que corrió: con un error de otro
+   * archivo, pintar su línea pintaría otra cosa. */
+  if (fuente && e.linea > 0 && !e.archivo) {
     const linea = fuente.replace(/\r\n?/g, '\n').split('\n')[e.linea - 1];
     if (linea !== undefined && linea.trim() !== '') {
       partes.push(`    ${linea.replace(/\t/g, '    ')}`);
