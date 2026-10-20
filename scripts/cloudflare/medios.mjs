@@ -63,7 +63,8 @@ function listar(dir, base = dir) {
   return fuera;
 }
 
-const ES_VIDEO = /\.(mp4|webm|mov)$/i;
+// Además de los videos, la voz pregrabada de Bit (assets/voz/<hash>.mp3): 1.100 archivos chicos que no deben ir al bundle del Worker.
+const ES_VIDEO = /(\.(mp4|webm|mov)$|^voz\/[^/]+\.mp3$)/i;
 
 /** Todos los videos bajo un directorio, como rutas relativas a el. */
 function videosDe(dir) {
@@ -147,7 +148,7 @@ function credenciales() {
  */
 const claveDe = (rel) => 'assets/' + rel.split(path.sep).join('/');
 
-const TIPOS = { '.mp4': 'video/mp4', '.webm': 'video/webm', '.mov': 'video/quicktime' };
+const TIPOS = { '.mp3': 'audio/mpeg', '.mp4': 'video/mp4', '.webm': 'video/webm', '.mov': 'video/quicktime' };
 
 function videosPorSubir() {
   // Los videos pueden estar en cualquiera de los dos sitios según si hay un

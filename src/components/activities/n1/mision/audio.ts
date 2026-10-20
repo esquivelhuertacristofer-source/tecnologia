@@ -20,6 +20,9 @@
  * Bit con la voz mala.
  */
 
+import { hashVoz } from '@/lib/voz-bit/hash';
+import manifiestoVoz from '@/lib/voz-bit/manifiesto.json';
+
 export type TonoId =
   | 'select'
   | 'correct'
@@ -257,13 +260,58 @@ function hablarTrozos(trozos: string[], gen: number, volumen = 1): void {
   emitir(0);
 }
 
+/*
+ * Voz pregrabada de Bit (20-oct-2026): las frases fijas de los laboratorios están grabadas con Qwen3-TTS
+ * (`assets/voz/<hash>.mp3`, servidas desde R2) y `manifiesto.json` dice cuáles existen. Si la frase no está
+ * (lleva variables, se escribió después de la grabación) o el audio no carga, se habla con la voz del
+ * navegador como siempre: Bit nunca se queda mudo.
+ */
+const PREGRABADAS = new Set<string>(manifiestoVoz as string[]);
+let audioBit: HTMLAudioElement | null = null;
+
+function detenerPregrabada(): void {
+  if (!audioBit) return;
+  try {
+    audioBit.onended = null;
+    audioBit.onerror = null;
+    audioBit.pause();
+  } catch {
+    // Sin reproductor: nada que detener.
+  }
+  audioBit = null;
+}
+
+function reproducirPregrabada(mensaje: string, volumen: number, gen: number): boolean {
+  // jsdom define Audio pero no sabe reproducir: ahí se queda la ruta del navegador, como en las pruebas de siempre.
+  if (typeof Audio === 'undefined' || /jsdom/i.test(navigator.userAgent)) return false;
+  const h = hashVoz(mensaje);
+  if (!PREGRABADAS.has(h)) return false;
+  try {
+    window.speechSynthesis?.cancel();
+    const a = new Audio(`/assets/voz/${h}.mp3`);
+    a.volume = volumen;
+    audioBit = a;
+    // Si el archivo no llega, la misma frase sale con la voz del navegador.
+    a.onerror = () => {
+      if (audioBit !== a || gen !== generacion) return;
+      audioBit = null;
+      PREGRABADAS.delete(h);
+      decir(mensaje, { forzar: true, volumen });
+    };
+    void a.play().catch(() => a.onerror?.(new Event('error')));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Narra `mensaje` cancelando la locución previa. Solo habla si el sonido
  * está activo y el mensaje es corto (< 135 caracteres) o se fuerza — igual
  * que la referencia.
  */
 export function decir(mensaje: string, opciones?: { forzar?: boolean; volumen?: number }): void {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  if (typeof window === 'undefined') return;
   const forzar = opciones?.forzar ?? false;
   /*
    * `volumen` entró el 11-ago-2026 para el auditorio de §27.3: cuando el
@@ -275,8 +323,11 @@ export function decir(mensaje: string, opciones?: { forzar?: boolean; volumen?: 
    */
   const volumen = Math.max(0, Math.min(1, opciones?.volumen ?? 1));
   if (!sonidoActivo || (!forzar && mensaje.length >= 135)) return;
-  prepararVoz();
   const gen = ++generacion;
+  detenerPregrabada();
+  if (reproducirPregrabada(mensaje, volumen, gen)) return;
+  if (!('speechSynthesis' in window)) return;
+  prepararVoz();
   const trozos = trocear(mensaje);
   if (trozos.length === 0) return;
   try {
@@ -298,6 +349,7 @@ export function decir(mensaje: string, opciones?: { forzar?: boolean; volumen?: 
 /** Cancela cualquier locución en curso. */
 export function detenerVoz(): void {
   generacion++;
+  detenerPregrabada();
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
   try {
     window.speechSynthesis.cancel();

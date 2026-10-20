@@ -128,3 +128,4 @@ scripts/auditoria/assets-rotos.json
 # Altas masivas: estos archivos llevan contrasenas en claro y listas de menores.
 credenciales-*.csv
 /listas/
+public/assets/voz/
