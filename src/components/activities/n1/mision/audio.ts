@@ -21,7 +21,6 @@
  */
 
 import { hashVoz } from '@/lib/voz-bit/hash';
-import manifiestoVoz from '@/lib/voz-bit/manifiesto.json';
 
 export type TonoId =
   | 'select'
@@ -266,7 +265,14 @@ function hablarTrozos(trozos: string[], gen: number, volumen = 1): void {
  * (lleva variables, se escribió después de la grabación) o el audio no carga, se habla con la voz del
  * navegador como siempre: Bit nunca se queda mudo.
  */
-const PREGRABADAS = new Set<string>(manifiestoVoz as string[]);
+// El manifiesto (~60 KB) se carga SÓLO en el navegador y por separado: el Worker de Cloudflare (plan gratis, 10 ms de CPU
+// por petición) no debe leerlo ni procesarlo al renderizar páginas en el servidor. Hasta que llega, Bit usa la voz del navegador.
+const PREGRABADAS = new Set<string>();
+if (typeof window !== 'undefined') {
+  void import('@/lib/voz-bit/manifiesto.json')
+    .then((m) => (m.default as string[]).forEach((h) => PREGRABADAS.add(h)))
+    .catch(() => undefined);
+}
 let audioBit: HTMLAudioElement | null = null;
 
 function detenerPregrabada(): void {
